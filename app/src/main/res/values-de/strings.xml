@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Meine Aufgaben</string>
+    <string name="task_progress">%d/%d Aufgaben abgeschlossen</string>
+    <string name="subtask_progress">%d/%d Unteraufgaben abgeschlossen</string>
+    <string name="task_completed">Aufgabe abgeschlossen</string>
+    <string name="add_task">Aufgabe hinzufügen</string>
+    <string name="enter_title">Titel eingeben</string>
+    <string name="important_task">Wichtige Aufgabe</string>
+    <string name="edit_delete_task">Aufgabe bearbeiten/löschen</string>
+    <string name="create_task">Aufgabe erstellen</string>
+    <!-- Bevorzugte Titel -->
+    <string name="messages_header">Nachrichten</string>
+    <string name="sync_header">Synchronisieren</string>
+
+    <!-- Nachrichteneinstellungen -->
+    <string name="signature_title">Deine Signatur</string>
+    <string name="reply_title">Standardantwortaktion</string>
+
+    <!-- Synchronisierungseinstellungen -->
+    <string name="sync_title">E-Mails regelmäßig synchronisieren</string>
+    <string name="attachment_title">Eingehende Anhänge herunterladen</string>
+    <string name="attachment_summary_on">Anhänge für eingehende E-Mails automatisch herunterladen
+    </string>
+    <string name="attachment_summary_off">Anhänge nur herunterladen, wenn sie manuell angefordert werden</string>
+
+
+    <string name="feedback_text">Sende Feedback, wenn die App immer wieder abstürzt \'App-Daten löschen\' oder sende ihr eine E-Mail</string>
+    <string name="rating_text">Gefällt Ihnen diese App? Teilen Sie uns im Google Play Store mit, wie wir es noch besser machen können</string>
+    <string name="more_app_text">Schauen Sie sich andere Apps an</string>
+    <string name="share_text">Teile die App mit deinen Freunden und deiner Familie</string>
+    <string name="developer">Entwickler</string>
+    <string name="developer_name">Kaushal Vasava</string>
+    <string name="about">Über</string>
+    <string name="current_version">Aktuelle Version</string>
+    <string name="more">Mehr</string>
+    <string name="contact_support">Support kontaktieren</string>
+    <string name="rating">App bewerten</string>
+    <string name="more_apps">Weitere Apps</string>
+    <string name="share_app">App teilen</string>
+    <string name="delete_completed_task">Alle erledigten Aufgaben löschen</string>
+    <string name="hide_completed_task">Erledigte Aufgaben ausblenden</string>
+    <string name="settings">Einstellungen</string>
+    <string name="sorting_option">Sortieroption</string>
+    <string name="sort_by_name">Nach Namen sortieren</string>
+    <string name="sort_by_creation_date">Nach Erstellungsdatum sortieren</string>
+    <string name="search">Suchen</string>
+    <string name="select_all">Alle auswählen</string>
+    <string name="delete">Löschen</string>
+    <string name="add_date_time">Datum/Uhrzeit hinzufügen</string>
+    <string name="reminder">Erinnerung</string>
+    <string name="add_task_by_speak">Aufgabe durch Sprechen hinzufügen</string>
+    <string name="save">Speichern</string>
+    <string name="cancel_timer">Timer abbrechen</string>
+    <string name="overdue">Überfällig</string>
+
+    <string name="mark_as_completed">Als abgeschlossen markieren</string>
+    <string name="new_task">Neue Aufgabe</string>
+    <string name="create_new_sub_task">Klicke hier, um eine neue Unteraufgabe hinzuzufügen</string>
+    <string name="create_new_task">Klicke hier, um eine neue Aufgabe hinzuzufügen</string>
+    <string name="task_deleted">Aufgabe gelöscht</string>
+    <string name="undo">RÜCKGÄNGIG MACHEN</string>
+    <string name="cancel">Abbrechen</string>
+    <string name="confirm_deletion">Löschen bestätigen</string>
+    <string name="delete_all_task">Möchtest du alle Aufgaben löschen?</string>
+    <string name="notify_delete">Aufgaben wurden erfolgreich gelöscht</string>
+    <string name="please_select_task">Bitte wähle eine Aufgabe aus</string>
+    <string name="search_task">Suchaufgabe</string>
+    <string name="speach_not_support">Ihr Gerät unterstützt die Spracheingabe nicht</string>
+    <string name="search_subtask">Unteraufgabe suchen</string>
+    <string name="share">Teilen</string>
+    <string name="delete_task">Wollen Sie löschen?</string>
+    <string name="empty_task">Aufgabe ist leer</string>
+    <string name="set_time">ZEIT EINSTELLEN</string>
+    <string name="cancel_reminder">Erinnerung abgebrochen!</string>
+
+    <string name="progress_setting">Aufgabenfortschritt der einzelnen Aufgabe anzeigen</string>
+    <string name="reminder_setting">Erinnerung an einzelne Aufgabe anzeigen</string>
+    <string name="font_size">Schriftgröße</string>
+    <string name="enable">Aktivieren</string>
+    <string name="disable">Deaktivieren</string>
+
+    <string name="subtask_of_task">Unteraufgaben der einzelnen Aufgabe anzeigen</string>
+    <string name="grid_view">Rasteransicht</string>
+    <string name="list_view">Listenansicht</string>
+    <string name="theme">Design</string>
+    <string name="pm_format">na</string>
+</resources>

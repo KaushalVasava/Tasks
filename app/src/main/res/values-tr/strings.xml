@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Görevlerim</string>
+    <string name="task_progress">%d/%d görev tamamlandı</string>
+    <string name="subtask_progress">%d/%d alt görev tamamlandı</string>
+    <string name="task_completed">Görev tamamlandı</string>
+    <string name="add_task">Görev ekle</string>
+    <string name="enter_title">Başlık girin</string>
+    <string name="important_task">Önemli görev</string>
+    <string name="edit_delete_task">Görevi Düzenle/Sil</string>
+    <string name="create_task">Görev Oluştur</string>
+    <!-- Tercih Başlıkları -->
+    <string name="messages_header">Mesajlar</string>
+    <string name="sync_header">Senkronizasyon</string>
+
+    <!-- Mesaj Tercihleri ​​-->
+    <string name="signature_title">İmzanız</string>
+    <string name="reply_title">Varsayılan yanıt işlemi</string>
+
+    <!-- Senkronizasyon Tercihleri ​​-->
+    <string name="sync_title">E-postayı düzenli aralıklarla senkronize edin</string>
+    <string name="attachment_title">Gelen ekleri indirin</string>
+    <string name="attachment_summary_on">Gelen e-postalar için ekleri otomatik olarak indir
+    </string>
+    <string name="attachment_summary_off">Ekleri yalnızca manuel olarak istendiğinde indirin</string>
+
+
+    <string name="feedback_text">Geri bildirim gönder, Uygulama sürekli olarak \'Uygulama verilerini temizle\' hatasını veriyorsa veya bir E-posta gönderiyorsa</string>
+    <string name="rating_text">Bu uygulamayı sevdiniz mi? Google Play Store\'da bunu nasıl daha iyi hale getirebileceğimizi bize bildirin</string>
+    <string name="more_app_text">Diğer uygulamalara göz atın</string>
+    <string name="share_text">Uygulamayı arkadaşlarınız ve ailenizle paylaşın</string>
+    <string name="developer">Geliştirici</string>
+    <string name="developer_name">Kaushal Vasava</string>
+    <string name="about">Hakkında</string>
+    <string name="current_version">Geçerli sürüm</string>
+    <string name="more">Diğer</string>
+    <string name="contact_support">Desteğe Başvur</string>
+    <string name="rating">Uygulamayı derecelendirin</string>
+    <string name="more_apps">Daha Fazla Uygulama</string>
+    <string name="share_app">Uygulamayı Paylaş</string>
+    <string name="delete_completed_task">Tamamlanan tüm görevleri silin</string>
+    <string name="hide_completed_task">Tamamlanan görevleri gizle</string>
+    <string name="settings">Ayarlar</string>
+    <string name="sorting_option">Sıralama Seçeneği</string>
+    <string name="sort_by_name">Ada Göre Sırala</string>
+    <string name="sort_by_creation_date">Oluşturma tarihine göre sırala</string>
+    <string name="search">Ara</string>
+    <string name="select_all">Tümünü seç</string>
+    <string name="delete">Sil</string>
+    <string name="add_date_time">Tarih/saat ekle</string>
+    <string name="reminder">Hatırlatıcı</string>
+    <string name="add_task_by_speak">Konuşarak görev ekleyin</string>
+    <string name="save">Kaydet</string>
+    <string name="cancel_timer">Zamanlayıcıyı iptal et</string>
+    <string name="overdue">Gecikti</string>
+
+    <string name="mark_as_completed">Tamamlandı olarak işaretle</string>
+    <string name="new_task">Yeni görev</string>
+    <string name="create_new_sub_task">Yeni alt görev eklemek için burayı tıklayın</string>
+    <string name="create_new_task">Yeni görev eklemek için burayı tıklayın</string>
+    <string name="task_deleted">Görev silindi</string>
+    <string name="undo">GERİ AL</string>
+    <string name="cancel">İptal</string>
+    <string name="confirm_deletion">Silme işlemini onaylayın</string>
+    <string name="delete_all_task">Tüm görevleri silmek istiyor musunuz?</string>
+    <string name="notify_delete">Görevler başarıyla silindi</string>
+    <string name="please_select_task">Lütfen bir görev seçin</string>
+    <string name="search_task">Arama Görevi</string>
+    <string name="speach_not_support">Cihazınız konuşma girişi için desteklenmiyor</string>
+    <string name="search_subtask">Alt görevi ara</string>
+    <string name="share">Paylaş</string>
+    <string name="delete_task">Silmek istiyor musunuz?</string>
+    <string name="empty_task">Görev Boş</string>
+    <string name="set_time">ZAMAN AYARLA</string>
+    <string name="cancel_reminder">Hatırlatıcı iptal edildi!</string>
+
+    <string name="progress_setting">Tek tek görevin ilerleme durumunu göster</string>
+    <string name="reminder_setting">Bireysel görevin hatırlatıcısını göster</string>
+    <string name="font_size">Yazı tipi boyutu</string>
+    <string name="enable">Etkinleştir</string>
+    <string name="disable">Devre dışı bırak</string>
+
+    <string name="subtask_of_task">Показать подзадачи отдельной задачи</string>
+    <string name="grid_view">Сетка</string>
+    <string name="list_view">Список</string>
+    <string name="theme">Tema</string>
+    <string name="pm_format">ös</string>
+
+</resources>

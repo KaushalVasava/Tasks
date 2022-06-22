@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">मेरे कार्य</string>
+    <string name="task_progress">%d/%d कार्य पूर्ण</string>
+    <string name="subtask_progress">%d/%d सबटास्क पूरे हो गए हैं</string>
+    <string name="task_completed">कार्य पूरा हुआ</string>
+    <string name="add_task">कार्य जोड़ें</string>
+    <string name="enter_title">शीर्षक दर्ज करें</string>
+    <string name="important_task">महत्वपूर्ण कार्य</string>
+    <string name="edit_delete_task">कार्य संपादित करें/हटाएं</string>
+    <string name="create_task">कार्य बनाएं</string>
+    <!-- वरीयता शीर्षक -->
+    <string name="messages_header">संदेश</string>
+    <string name="sync_header">सिंक</string>
+
+    <!-- संदेश वरीयताएँ -->
+    <string name="signature_title">आपका हस्ताक्षर</string>
+    <string name="reply_title">डिफ़ॉल्ट उत्तर कार्रवाई</string>
+
+    <!-- सिंक वरीयताएँ -->
+    <string name="sync_title">ईमेल को समय-समय पर सिंक करें</string>
+    <string name="attachment_title">आने वाले अटैचमेंट डाउनलोड करें</string>
+    <string name="attachment_summary_on">आने वाले ईमेल के लिए अटैचमेंट अपने आप डाउनलोड करें</string>
+    <string name="attachment_summary_off">मैन्युअल रूप से अनुरोध किए जाने पर ही अटैचमेंट डाउनलोड करें</string>
+
+
+    <string name="feedback_text">फ़ीडबैक भेजें, अगर ऐप क्रैश हो रहा है \'ऐप डेटा साफ़ करें\' या इसे एक ईमेल भेजें</string>
+    <string name="rating_text">इस ऐप को पसंद करते हैं? हमें Google Play Store में बताएं कि हम इसे और बेहतर कैसे बना सकते हैं</string>
+    <string name="more_app_text">अन्य ऐप्स देखें</string>
+    <string name="share_text">एप्लिकेशन को अपने मित्रों और परिवार के साथ साझा करें</string>
+    <string name="developer">डेवलपर</string>
+    <string name="developer_name">कौशल वसावा</string>
+    <string name="about">के बारे में</string>
+    <string name="current_version">वर्तमान संस्करण</string>
+    <string name="more">अधिक</string>
+    <string name="contact_support">सहायता से संपर्क करें</string>
+    <string name="rating">एप्लिकेशन को रेट करें</string>
+    <string name="more_apps">और ऐप्स</string>
+    <string name="share_app">शेयर ऐप</string>
+    <string name="delete_completed_task">सभी पूर्ण किए गए कार्यों को हटाएं</string>
+    <string name="hide_completed_task">पूर्ण कार्यों को छुपाएं</string>
+    <string name="settings">सेटिंग्स</string>
+    <string name="sorting_option">सॉर्टिंग विकल्प</string>
+    <string name="sort_by_name">नाम के अनुसार क्रमित करें</string>
+    <string name="sort_by_creation_date">निर्माण तिथि के अनुसार क्रमित करें</string>
+    <string name="search">खोज</string>
+    <string name="select_all">सभी का चयन करें</string>
+    <string name="delete"> हटाएं</string>
+    <string name="add_date_time">तिथि/समय जोड़ें</string>
+    <string name="reminder">अनुस्मारक</string>
+    <string name="add_task_by_speak">बोलकर कार्य जोड़ें</string>
+    <string name="save">सहेजें</string>
+    <string name="cancel_timer">टाइमर रद्द करें</string>
+    <string name="overdue">अतिदेय</string>
+
+    <string name="mark_as_completed">पूर्ण के रूप में चिह्नित करें</string>
+    <string name="new_task">नया कार्य</string>
+    <string name="create_new_sub_task">नया उप-कार्य जोड़ने के लिए यहां क्लिक करें</string>
+    <string name="create_new_task">नया कार्य जोड़ने के लिए यहां क्लिक करें</string>
+    <string name="task_deleted">कार्य हटाया गया</string>
+    <string name="undo"> पूर्ववत करें</string>
+    <string name="cancel">रद्द करें</string>
+    <string name="confirm_deletion">हटाने की पुष्टि करें</string>
+    <string name="delete_all_task">क्या आप सभी कार्यों को हटाना चाहते हैं?</string>
+    <string name="notify_delete">कार्य सफलतापूर्वक हटा दिए गए हैं</string>
+    <string name="please_select_task">कृपया कोई कार्य चुनें</string>
+    <string name="search_task">कार्य खोजें</string>
+    <string name="speach_not_support">आपका उपकरण वाक् इनपुट के लिए समर्थित नहीं है</string>
+    <string name="search_subtask">उप-कार्य खोजें</string>
+    <string name="share">साझा करें</string>
+    <string name="delete_task">क्या आप हटाना चाहते हैं?</string>
+    <string name="empty_task">कार्य खाली है</string>
+    <string name="set_time"> समय निर्धारित करें </string>
+    <string name="cancel_reminder">रिमाइंडर रद्द कर दिया गया!</string>
+
+    <string name="progress_setting">व्यक्तिगत कार्य की कार्य प्रगति दिखाएं</string>
+    <string name="reminder_setting">व्यक्तिगत कार्य का रिमाइंडर दिखाएं</string>
+    <string name="font_size">फ़ॉन्ट आकार</string>
+    <string name="enable">सक्षम करें</string>
+    <string name="disable">अक्षम करें</string>
+
+    <string name="subtask_of_task">व्यक्तिगत कार्य के उप-कार्य दिखाएं</string>
+    <string name="grid_view">ग्रिड दृश्य</string>
+    <string name="list_view">सूची दृश्य</string>
+    <string name="theme">थीम</string>
+    <string name="pm_format">pm</string>
+
+</resources>

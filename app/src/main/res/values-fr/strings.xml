@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Mes tâches</string>
+    <string name="task_progress">%d/%d tâches terminées</string>
+    <string name="subtask_progress">%d/%d sous-tâches terminées</string>
+    <string name="task_completed">Tâche terminée</string>
+    <string name="add_task">Ajouter une tâche</string>
+    <string name="enter_title">Entrez le titre</string>
+    <string name="important_task">Tâche importante</string>
+    <string name="edit_delete_task">Modifier/Supprimer la tâche</string>
+    <string name="create_task">Créer une tâche</string>
+    <!-- Titres de préférence -->
+    <string name="messages_header">Messages</string>
+    <string name="sync_header">Synchroniser</string>
+
+    <!-- Préférences des messages -->
+    <string name="signature_title">Votre signature</string>
+    <string name="reply_title">Action de réponse par défaut</string>
+
+    <!-- Préférences de synchronisation -->
+    <string name="sync_title">Synchroniser périodiquement les e-mails</string>
+    <string name="attachment_title">Télécharger les pièces jointes entrantes</string>
+    <string name="attachment_summary_on">Télécharger automatiquement les pièces jointes des e-mails entrants
+    </string>
+    <string name="attachment_summary_off">Télécharger uniquement les pièces jointes sur demande manuelle</string>
+
+
+    <string name="feedback_text">Envoyer des commentaires, si l\'application continue de planter \'Effacer les données de l\'application\' ou envoyez-lui un e-mail</string>
+    <string name="rating_text">Vous aimez cette application ? Faites-nous savoir sur Google Play Store comment nous pouvons l\'améliorer</string>
+    <string name="more_app_text">Découvrez d\'autres applications</string>
+    <string name="share_text">Partagez l\'application avec vos amis et votre famille</string>
+    <string name="developer">Développeur</string>
+    <string name="developer_name">Kaushal Vasava</string>
+    <string name="about">À propos</string>
+    <string name="current_version">Version actuelle</string>
+    <string name="more">Plus</string>
+    <string name="contact_support">Contacter \'assistance</string>
+    <string name="rating">Notez l\'application</string>
+    <string name="more_apps">Plus l\'applications</string>
+    <string name="share_app">Partager l\'application</string>
+    <string name="delete_completed_task">Supprimer toutes les tâches terminées</string>
+    <string name="hide_completed_task">Masquer les tâches terminées</string>
+    <string name="settings">Paramètres</string>
+    <string name="sorting_option">Option de tri</string>
+    <string name="sort_by_name">Trier par nom</string>
+    <string name="sort_by_creation_date">Trier par date de création</string>
+    <string name="search">Rechercher</string>
+    <string name="select_all">Tout sélectionner</string>
+    <string name="delete">Supprimer</string>
+    <string name="add_date_time">Ajouter date/heure</string>
+    <string name="reminder">Rappel</string>
+    <string name="add_task_by_speak">Ajouter une tâche en parlant</string>
+    <string name="save">Enregistrer</string>
+    <string name="cancel_timer">Annuler le minuteur</string>
+    <string name="overdue">En retard</string>
+
+    <string name="mark_as_completed">Marquer comme terminé</string>
+    <string name="new_task">Nouvelle tâche</string>
+    <string name="create_new_sub_task">Cliquez ici pour ajouter une nouvelle sous-tâche</string>
+    <string name="create_new_task">Cliquez ici pour ajouter une nouvelle tâche</string>
+    <string name="task_deleted">Tâche supprimée</string>
+    <string name="undo">ANNULER</string>
+    <string name="cancel">Annuler</string>
+    <string name="confirm_deletion">Confirmer la suppression</string>
+    <string name="delete_all_task">Voulez-vous supprimer toutes les tâches ?</string>
+    <string name="notify_delete">Les tâches ont été supprimées avec succès</string>
+    <string name="please_select_task">Veuillez sélectionner une tâche</string>
+    <string name="search_task">Tâche de recherche</string>
+    <string name="speach_not_support">Votre appareil n\'est pas pris en charge pour la saisie vocale</string>
+    <string name="search_subtask">Rechercher une sous-tâche</string>
+    <string name="share">Partager</string>
+    <string name="delete_task">Voulez-vous supprimer ?</string>
+    <string name="empty_task">La tâche est vide</string>
+    <string name="set_time">RÉGLER L\'HEURE</string>
+    <string name="cancel_reminder">Rappel annulé !</string>
+
+    <string name="progress_setting">Afficher la progression d\'une tâche individuelle</string>
+    <string name="reminder_setting">Afficher le rappel d\'une tâche individuelle</string>
+    <string name="font_size">Taille de la police</string>
+    <string name="enable">Activer</string>
+    <string name="disable">Désactiver</string>
+
+    <string name="subtask_of_task">Afficher les sous-tâches d\'une tâche individuelle</string>
+    <string name="grid_view">Vue Grille</string>
+    <string name="list_view">Vue en liste</string>
+    <string name="theme">Thème</string>
+    <string name="pm_format">pm</string>
+</resources>

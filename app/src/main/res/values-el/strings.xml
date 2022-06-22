@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Minhas tarefas</string>
+    <string name="task_progress">%d/%d tarefas concluídas</string>
+    <string name="subtask_progress">%d/%d subtarefas concluídas</string>
+    <string name="task_completed">Tarefa concluída</string>
+    <string name="add_task">Adicionar tarefa</string>
+    <string name="enter_title">Digite o título</string>
+    <string name="important_task">Tarefa importante</string>
+    <string name="edit_delete_task">Editar/Excluir Tarefa</string>
+    <string name="create_task">Criar tarefa</string>
+    <!-- Títulos de preferência -->
+    <string name="messages_header">Mensagens</string>
+    <string name="sync_header">Sincronizar</string>
+
+    <!-- Preferências de mensagens -->
+    <string name="signature_title">Sua assinatura</string>
+    <string name="reply_title">Ação de resposta padrão</string>
+
+    <!-- Preferências de sincronização -->
+    <string name="sync_title">Sincronize e-mails periodicamente</string>
+    <string name="attachment_title">Baixar anexos recebidos</string>
+    <string name="attachment_summary_on">Baixar automaticamente anexos para e-mails recebidos
+    </string>
+    <string name="attachment_summary_off">Faça download de anexos apenas quando solicitado manualmente</string>
+
+
+    <string name="feedback_text">Envie feedback, se o aplicativo continuar travando \'Limpar dados do aplicativo\' ou envie um e-mail</string>
+    <string name="rating_text">Adora este aplicativo? Deixe-nos saber na Google Play Store como podemos torná-lo ainda melhor</string>
+    <string name="more_app_text">Confira outros aplicativos</string>
+    <string name="share_text">Compartilhe o aplicativo com seus amigos e familiares</string>
+    <string name="developer">Desenvolvedor</string>
+    <string name="developer_name">Kaushal Vasava</string>
+    <string name="about">Sobre</string>
+    <string name="current_version">Versão atual</string>
+    <string name="more">Mais</string>
+    <string name="market_string" translatable="false">market://search?q=pub:Kaushal Vasava</string>
+    <string name="market_developer_string" translatable="false">http://play.google.com/store/apps/developer?id=Kaushal Vasava</string>
+    <string name="play_store_share" translatable="false">https://play.google.com/store/apps/details?id=</string>
+    <string name="feedback_email" translatable="false">kaushalvasava.app.feedback@gmail.com</string>
+    <string name="contact_support">Entre em contato com o suporte</string>
+    <string name="rating">Avalie o aplicativo</string>
+    <string name="more_apps">Mais aplicativos</string>
+    <string name="share_app">Compartilhar aplicativo</string>
+    <string name="delete_completed_task">Excluir todas as tarefas concluídas</string>
+    <string name="hide_completed_task">Ocultar tarefas concluídas</string>
+    <string name="settings">Configurações</string>
+    <string name="sorting_option">Opção de classificação</string>
+    <string name="sort_by_name">Classificar por nome</string>
+    <string name="sort_by_creation_date">Classificar por data de criação</string>
+    <string name="search">Pesquisar</string>
+    <string name="select_all">Selecionar tudo</string>
+    <string name="delete">Excluir</string>
+    <string name="add_date_time">Adicionar data/hora</string>
+    <string name="reminder">Lembrete</string>
+    <string name="add_task_by_speak">Adicionar tarefa falando</string>
+    <string name="save">Salvar</string>
+    <string name="cancel_timer">Cancelar temporizador</string>
+    <string name="overdue">Atrasado</string>
+
+    <string name="mark_as_completed">Marcar como concluído</string>
+    <string name="new_task">Nova tarefa</string>
+    <string name="create_new_sub_task">Clique aqui para adicionar nova subtarefa</string>
+    <string name="create_new_task">Clique aqui para adicionar nova tarefa</string>
+    <string name="task_deleted">Tarefa excluída</string>
+    <string name="undo">UNDO</string>
+    <string name="cancel">Cancelar</string>
+    <string name="confirm_deletion">Confirmar exclusão</string>
+    <string name="delete_all_task">Deseja excluir todas as tarefas?</string>
+    <string name="notify_delete">As tarefas foram excluídas com sucesso</string>
+    <string name="please_select_task">Selecione uma tarefa</string>
+    <string name="search_task">Tarefa de pesquisa</string>
+    <string name="speach_not_support">Seu dispositivo não é compatível com entrada de fala</string>
+    <string name="search_subtask">Pesquisar subtarefa</string>
+    <string name="share">Compartilhar</string>
+    <string name="delete_task">Deseja excluir?</string>
+    <string name="empty_task">Tarefa está vazia</string>
+    <string name="set_time">DEFINIR HORA</string>
+    <string name="cancel_reminder">Lembrete cancelado!</string>
+    <string name="progress_setting">Mostrar o progresso da tarefa individual</string>
+    <string name="reminder_setting">Mostrar lembrete de tarefa individual</string>
+    <string name="font_size">Tamanho da fonte</string>
+    <string name="enable">Ativar</string>
+    <string name="disable">Desativar</string>
+
+    <string name="subtask_of_task">Mostrar subtarefas de tarefas individuais</string>
+    <string name="grid_view">Visualização em grade</string>
+    <string name="list_view">Visualização de lista</string>
+    <string name="theme">Θέμα</string>
+    <string name="pm_format">μ.μ.</string>
+</resources>

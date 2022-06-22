@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Mis tareas</string>
+    <string name="task_progress">%d/%d tareas completadas</string>
+    <string name="subtask_progress">%d/%d subtareas completadas</string>
+    <string name="task_completed">Tarea completada</string>
+    <string name="add_task">Agregar tarea</string>
+    <string name="enter_title">Ingrese el título</string>
+    <string name="important_task">Tarea importante</string>
+    <string name="edit_delete_task">Editar/Eliminar Tarea</string>
+    <string name="create_task">Crear tarea</string>
+    <!-- Títulos de preferencia -->
+    <string name="messages_header">Mensajes</string>
+    <string name="sync_header">Sincronizar</string>
+
+    <!-- Preferencias de mensajes -->
+    <string name="signature_title">Tu firma</string>
+    <string name="reply_title">Acción de respuesta predeterminada</string>
+
+    <!-- Preferencias de sincronización -->
+    <string name="sync_title">Sincronizar correo electrónico periódicamente</string>
+    <string name="attachment_title">Descargar adjuntos entrantes</string>
+    <string name="attachment_summary_on">Descargar automáticamente archivos adjuntos para correos electrónicos entrantes
+    </string>
+    <string name="attachment_summary_off">Descargar archivos adjuntos solo cuando se solicite manualmente</string>
+
+
+    <string name="feedback_text">Envíe comentarios, si la aplicación sigue fallando \'Borrar datos de la aplicación\' o envíe un correo electrónico</string>
+    <string name="rating_text">¿Te encanta esta aplicación? Háganos saber en Google Play Store cómo podemos hacerlo aún mejor</string>
+    <string name="more_app_text">Mira otras aplicaciones</string>
+    <string name="share_text">Comparte la aplicación con tus amigos y familiares</string>
+    <string name="developer">Desarrollador</string>
+    <string name="developer_name">Kaushal Vasava</string>
+    <string name="about">Acerca de</string>
+    <string name="current_version">Versión actual</string>
+    <string name="more">Más</string>
+    <string name="contact_support">Contactar con soporte</string>
+    <string name="rating">Califica la aplicación</string>
+    <string name="more_apps">Más aplicaciones</string>
+    <string name="share_app">Compartir aplicación</string>
+    <string name="delete_completed_task">Eliminar todas las tareas completadas</string>
+    <string name="hide_completed_task">Ocultar tareas completadas</string>
+    <string name="settings">Configuración</string>
+    <string name="sorting_option">Opción de clasificación</string>
+    <string name="sort_by_name">Ordenar por nombre</string>
+    <string name="sort_by_creation_date">Ordenar por fecha de creación</string>
+    <string name="search">Buscar</string>
+    <string name="select_all">Seleccionar todo</string>
+    <string name="delete">Eliminar</string>
+    <string name="add_date_time">Añadir fecha/hora</string>
+    <string name="reminder">Recordatorio</string>
+    <string name="add_task_by_speak">Añadir tarea hablando</string>
+    <string name="save">Guardar</string>
+    <string name="cancel_timer">Cancelar temporizador</string>
+    <string name="overdue">Retrasado</string>
+
+    <string name="mark_as_completed">Marcar como completado</string>
+    <string name="new_task">Nueva tarea</string>
+    <string name="create_new_sub_task">Haga clic aquí para agregar una nueva subtarea</string>
+    <string name="create_new_task">Haga clic aquí para agregar una nueva tarea</string>
+    <string name="task_deleted">Tarea eliminada</string>
+    <string name="undo">DESHACER</string>
+    <string name="cancel">Cancelar</string>
+    <string name="confirm_deletion">Confirmar eliminación</string>
+    <string name="delete_all_task">¿Desea eliminar todas las tareas?</string>
+    <string name="notify_delete">Las tareas se eliminaron con éxito</string>
+    <string name="please_select_task">Seleccione una tarea</string>
+    <string name="search_task">Tarea de búsqueda</string>
+    <string name="speach_not_support">Su dispositivo no es compatible con la entrada de voz</string>
+    <string name="search_subtask">Subtarea de búsqueda</string>
+    <string name="share">Compartir</string>
+    <string name="delete_task">¿Quieres eliminar?</string>
+    <string name="empty_task">La tarea está vacía</string>
+    <string name="set_time">FIJAR HORA</string>
+    <string name="cancel_reminder">¡Recordatorio cancelado!</string>
+
+    <string name="progress_setting">Mostrar el progreso de la tarea de una tarea individual</string>
+    <string name="reminder_setting">Mostrar recordatorio de tarea individual</string>
+    <string name="font_size">Tamaño de fuente</string>
+    <string name="enable">Habilitar</string>
+    <string name="disable">Deshabilitar</string>
+
+    <string name="subtask_of_task">Mostrar subtareas de tareas individuales</string>
+    <string name="grid_view">Vista de cuadrícula</string>
+    <string name="list_view">Vista de lista</string>
+    <string name="theme">Tema</string>
+    <string name="pm_format">p. m.</string>
+</resources>

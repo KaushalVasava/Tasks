@@ -1,0 +1,88 @@
+<resources>
+    <string name="app_name">Мои задачи</string>
+    <string name="task_progress">Выполнено %d/%d задач</string>
+    <string name="subtask_progress">Выполнено %d/%d подзадач</string>
+    <string name="task_completed">Задача выполнена</string>
+    <string name="add_task">Добавить задачу</string>
+    <string name="enter_title">Введите заголовок</string>
+    <string name="important_task">Важная задача</string>
+    <string name="edit_delete_task">Изменить/удалить задачу</string>
+    <string name="create_task">Создать задачу</string>
+    <!-- Предпочтительные заголовки -->
+    <string name="messages_header">Сообщения</string>
+    <string name="sync_header">Синхронизировать</string>
+
+    <!-- Настройки сообщений -->
+    <string name="signature_title">Ваша подпись</string>
+    <string name="reply_title">Действие ответа по умолчанию</string>
+
+    <!-- Синхронизировать настройки -->
+    <string name="sync_title">Периодически синхронизировать электронную почту</string>
+    <string name="attachment_title">Загружать входящие вложения</string>
+    <string name="attachment_summary_on">Автоматически загружать вложения для входящих сообщений электронной почты
+    </string>
+    <string name="attachment_summary_off">Загружать вложения только по запросу вручную</string>
+
+
+    <string name="feedback_text">Отправить отзыв. Если приложение продолжает давать сбой, \'Очистить данные приложения\' или отправить ему электронное письмо</string>
+    <string name="rating_text">Нравится это приложение? Сообщите нам в Google Play Store, как мы можем сделать его еще лучше</string>
+    <string name="more_app_text">Проверьте другие приложения</string>
+    <string name="share_text">Поделитесь приложением с друзьями и семьей</string>
+    <string name="developer">Разработчик</string>
+    <string name="developer_name">Каушал Васава</string>
+    <string name="about">О</string>
+    <string name="current_version">Текущая версия</string>
+    <string name="more">Еще</string>
+    <string name="contact_support">Обратиться в службу поддержки</string>
+    <string name="rating">Оцените приложение</string>
+    <string name="more_apps">Другие приложения</string>
+    <string name="share_app">Поделиться приложением</string>
+    <string name="delete_completed_task">Удалить все выполненные задачи</string>
+    <string name="hide_completed_task">Скрыть выполненные задачи</string>
+    <string name="settings">Настройки</string>
+    <string name="sorting_option">Параметры сортировки</string>
+    <string name="sort_by_name">Сортировать по имени</string>
+    <string name="sort_by_creation_date">Сортировать по дате создания</string>
+    <string name="search">Поиск</string>
+    <string name="select_all">Выбрать все</string>
+    <string name="delete">Удалить</string>
+    <string name="add_date_time">Добавить дату/время</string>
+    <string name="reminder">Напоминание</string>
+    <string name="add_task_by_speak">Добавить задачу, произнеся речь</string>
+    <string name="save">Сохранить</string>
+    <string name="cancel_timer">Отменить таймер</string>
+    <string name="overdue">Просрочено</string>
+
+    <string name="mark_as_completed">Отметить как выполненное</string>
+    <string name="new_task">Новая задача</string>
+    <string name="create_new_sub_task">Нажмите здесь, чтобы добавить новую подзадачу</string>
+    <string name="create_new_task">Нажмите здесь, чтобы добавить новую задачу</string>
+    <string name="task_deleted">Задача удалена</string>
+    <string name="undo">ОТМЕНИТЬ</string>
+    <string name="cancel">Отмена</string>
+    <string name="confirm_deletion">Подтвердить удаление</string>
+    <string name="delete_all_task">Удалить все задачи?</string>
+    <string name="notify_delete">Задачи успешно удалены</string>
+    <string name="please_select_task">Выберите задачу</string>
+    <string name="search_task">Задание поиска</string>
+    <string name="speach_not_support">Ваше устройство не поддерживает речевой ввод</string>
+    <string name="search_subtask">Подзадача поиска</string>
+    <string name="share">Поделиться</string>
+    <string name="delete_task">Удалить?</string>
+    <string name="empty_task">Задача пуста</string>
+    <string name="set_time">УСТАНОВИТЬ ВРЕМЯ</string>
+    <string name="cancel_reminder">Напоминание отменено!</string>
+
+    <string name="progress_setting">Показать ход выполнения отдельной задачи</string>
+    <string name="reminder_setting">Показать напоминание об отдельной задаче</string>
+    <string name="font_size">Размер шрифта</string>
+    <string name="enable">Включить</string>
+    <string name="disable">Отключить</string>
+
+    <string name="subtask_of_task">Показать подзадачи отдельной задачи</string>
+    <string name="grid_view">Сетка</string>
+    <string name="list_view">Список</string>
+    <string name="theme">Тема</string>
+    <string name="pm_format">пп</string>
+
+</resources>

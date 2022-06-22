@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">I miei compiti</string>
+    <string name="task_progress">%d/%d attività completate</string>
+    <string name="subtask_progress">%d/%d attività secondarie completate</string>
+    <string name="task_completed">Attività completata</string>
+    <string name="add_task">Aggiungi attività</string>
+    <string name="enter_title">Inserisci il titolo</string>
+    <string name="important_task">Attività importante</string>
+    <string name="edit_delete_task">Modifica/Elimina attività</string>
+    <string name="create_task">Crea attività</string>
+    <!-- Titoli di preferenza -->
+    <string name="messages_header">Messaggi</string>
+    <string name="sync_header">Sincronizza</string>
+
+    <!-- Preferenze messaggi -->
+    <string name="signature_title">La tua firma</string>
+    <string name="reply_title">Azione di risposta predefinita</string>
+
+    <!-- Preferenze di sincronizzazione -->
+    <string name="sync_title">Sincronizza periodicamente le email</string>
+    <string name="attachment_title">Scarica gli allegati in arrivo</string>
+    <string name="attachment_summary_on">Scarica automaticamente gli allegati per le email in arrivo
+    </string>
+    <string name="attachment_summary_off">Scarica gli allegati solo se richiesti manualmente</string>
+
+
+    <string name="feedback_text">Invia feedback, se l\'app continua a bloccarsi \'Cancella dati app\' o inviale un\'e-mail</string>
+    <string name="rating_text">Ti piace questa app? Facci sapere su Google Play Store come possiamo renderlo ancora migliore</string>
+    <string name="more_app_text">Scopri altre app</string>
+    <string name="share_text">Condividi l\'app con i tuoi amici e familiari</string>
+    <string name="developer">Sviluppatore</string>
+    <string name="developer_name">Kaushal Vasava</string>
+    <string name="about">Informazioni su</string>
+    <string name="current_version">Versione attuale</string>
+    <string name="more">Altro</string>
+    <string name="contact_support">Contatta l\'assistenza</string>
+    <string name="rating">Valuta l\'app</string>
+    <string name="more_apps">Più app</string>
+    <string name="share_app">Condividi app</string>
+    <string name="delete_completed_task">Elimina tutte le attività completate</string>
+    <string name="hide_completed_task">Nascondi attività completate</string>
+    <string name="settings">Impostazioni</string>
+    <string name="sorting_option">Opzione di ordinamento</string>
+    <string name="sort_by_name">Ordina per nome</string>
+    <string name="sort_by_creation_date">Ordina per data di creazione</string>
+    <string name="search">Cerca</string>
+    <string name="select_all">Seleziona tutto</string>
+    <string name="delete">Elimina</string>
+    <string name="add_date_time">Aggiungi data/ora</string>
+    <string name="reminder">Promemoria</string>
+    <string name="add_task_by_speak">Aggiungi attività parlando</string>
+    <string name="save">Salva</string>
+    <string name="cancel_timer">Annulla timer</string>
+    <string name="overdue">Scaduto</string>
+
+    <string name="mark_as_completed">Segna come completato</string>
+    <string name="new_task">Nuova attività</string>
+    <string name="create_new_sub_task">Fai clic qui per aggiungere una nuova sottoattività</string>
+    <string name="create_new_task">Fai clic qui per aggiungere una nuova attività</string>
+    <string name="task_deleted">Attività eliminata</string>
+    <string name="undo">ANNULLA</string>
+    <string name="cancel">Annulla</string>
+    <string name="confirm_deletion">Conferma eliminazione</string>
+    <string name="delete_all_task">Vuoi eliminare tutte le attività?</string>
+    <string name="notify_delete">Le attività sono state eliminate con successo</string>
+    <string name="please_select_task">Seleziona un\'attività</string>
+    <string name="search_task">Attività di ricerca</string>
+    <string name="speach_not_support">Il tuo dispositivo non supporta l\'input vocale</string>
+    <string name="search_subtask">Cerca sottoattività</string>
+    <string name="share">Condividi</string>
+    <string name="delete_task">Vuoi eliminare?</string>
+    <string name="empty_task">L\'attività è vuota</string>
+    <string name="set_time">IMPOSTA ORA</string>
+    <string name="cancel_reminder">Promemoria annullato!</string>
+
+    <string name="progress_setting">Mostra l\'avanzamento dell\'attività della singola attività</string>
+    <string name="reminder_setting">Mostra promemoria della singola attività</string>
+    <string name="font_size">Dimensione carattere</string>
+    <string name="enable">Abilita</string>
+    <string name="disable">Disabilita</string>
+
+    <string name="subtask_of_task">Mostra sottoattività di una singola attività</string>
+    <string name="grid_view">Vista griglia</string>
+    <string name="list_view">Vista elenco</string>
+    <string name="theme">Tema</string>
+    <string name="pm_format">pm</string>
+</resources>

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">私のタスク</string>
+    <string name="task_progress">%d /%dタスクが完了しました</string>
+    <string name="subtask_progress">%d /%dサブタスクが完了しました</string>
+    <string name="task_completed">タスクが完了しました</string>
+    <string name="add_task">タスクを追加</string>
+    <string name="enter_title">タイトルを入力</string>
+    <string name="important_task">重要なタスク</string>
+    <string name="edit_delete_task">タスクの編集/削除</string>
+    <string name="create_task">タスクの作成</string>
+    <string name="messages_header">メッセージ</string>
+    <string name="sync_header">同期</string>
+
+    <string name="signature_title">あなたの署名</string>
+    <string name="reply_title">デフォルトの返信アクション</string>
+
+    <string name="sync_title">定期的にメールを同期する</string>
+    <string name="attachment_title">受信添付ファイルをダウンロード</string>
+    <string name="attachment_summary_on">受信メールの添付ファイルを自動的にダウンロードします
+    </string>
+    <string name="attachment_summary_off">手動でリクエストされた場合にのみ添付ファイルをダウンロードする</string>
+
+
+    <string name="feedback_text">アプリがクラッシュし続ける場合は、フィードバックを送信する \'アプ リデータを消去する\'またはメールを送信する</string>
+    <string name="rating_text">このアプリが好きですか？ GooglePlayストアでさらに改善する方法を教えてください</string>
+    <string name="more_app_text">他のアプリをチェックする</string>
+    <string name="share_text">アプリを友達や家族と共有する</string>
+    <string name="developer">開発者</string>
+    <string name="developer_name"> Kaushal Vasava </string>
+    <string name="about">概要</string>
+    <string name="current_version">現在のバージョン</string>
+    <string name="more">その他</string>
+    <string name="contact_support">サポートに連絡する</string>
+    <string name="rating">アプリを評価する</string>
+    <string name="more_apps">その他のアプリ</string>
+    <string name="share_app">共有アプリ</string>
+    <string name="delete_completed_task">完了したすべてのタスクを削除する</string>
+    <string name="hide_completed_task">完了したタスクを非表示にする</string>
+    <string name="settings">設定</string>
+    <string name="sorting_option">並べ替えオプション</string>
+    <string name="sort_by_name">名前で並べ替え</string>
+    <string name="sort_by_creation_date">作成日で並べ替え</string>
+    <string name="search">検索</string>
+    <string name="select_all">すべて選択</string>
+    <string name="delete">削除</string>
+    <string name="add_date_time">日付/時刻を追加</string>
+    <string name="reminder">リマインダー</string>
+    <string name="add_task_by_speak">話すことでタスクを追加する</string>
+    <string name="save">保存</string>
+    <string name="cancel_timer">タイマーをキャンセル</string>
+    <string name="overdue">期限切れ</string>
+
+    <string name="mark_as_completed">完了としてマーク</string>
+    <string name="new_task">新しいタスク</string>
+    <string name="create_new_sub_task">新しいサブタスクを追加するにはここをクリック</string>
+    <string name="create_new_task">新しいタスクを追加するにはここをクリック</string>
+    <string name="task_deleted">タスクが削除されました</string>
+    <string name="undo">元に戻す</string>
+    <string name="cancel">キャンセル</string>
+    <string name="confirm_deletion">削除の確認</string>
+    <string name="delete_all_task">すべてのタスクを削除しますか？</string>
+    <string name="notify_delete">タスクは正常に削除されました</string>
+    <string name="please_select_task">タスクを選択してください</string>
+    <string name="search_task">検索タスク</string>
+    <string name="speach_not_support">お使いのデバイスは音声入力でサポートされていません</string>
+    <string name="search_subtask">サブタスクの検索</string>
+    <string name="share">共有</string>
+    <string name="delete_task">削除しますか？</string>
+    <string name="empty_task">タスクが空です</string>
+    <string name="set_time">設定時間</string>
+    <string name="cancel_reminder">リマインダーがキャンセルされました！</string>
+
+    <string name="progress_setting">個々のタスクのタスクの進行状況を表示する</string>
+    <string name="reminder_setting">個々のタスクのリマインダーを表示する</string>
+    <string name="font_size">フォントサイズ</string>
+    <string name="enable">有効にする</string>
+    <string name="disable">無効にする</string>
+
+    <string name="subtask_of_task">個々のタスクのサブタスクを表示する</string>
+    <string name="grid_view">グリッドビュー</string>
+    <string name="list_view">リストビュー</string>
+    <string name="theme">テーマ</string>
+    <string name="pm_format">午後</string>
+
+</resources>

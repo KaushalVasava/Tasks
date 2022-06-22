@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">مهامي</string>
+    <string name="task_progress"> تم إكمال% d /% d مهمة </string>
+    <string name="subtask_progress">تم إكمال% d /% d مهمة فرعية</string>
+    <string name="task_completed"> اكتملت المهمة </string>
+    <string name="add_task"> إضافة مهمة </string>
+    <string name="enter_title"> أدخل العنوان </string>
+    <string name="important_task"> مهمة مهمة </string>
+    <string name="edit_delete_task"> تحرير / حذف المهمة </string>
+    <string name="create_task"> إنشاء مهمة </string>
+    <string name="messages_header"> الرسائل </string>
+    <string name="sync_header"> مزامنة </string>
+
+    <string name="signature_title"> توقيعك </string>
+    <string name="reply_title"> إجراء الرد الافتراضي </string>
+
+    <string name="sync_title"> مزامنة البريد الإلكتروني بشكل دوري </string>
+    <string name="attachment_title"> تنزيل المرفقات الواردة </string>
+    <string name="attachment_summary_on"> قم بتنزيل المرفقات تلقائيًا لرسائل البريد الإلكتروني الواردة
+    </string>
+    <string name="attachment_summary_off"> قم بتنزيل المرفقات فقط عند الطلب يدويًا </string>
+
+
+    <string name="feedback_text"> إرسال تعليقات ، إذا استمر التطبيق في التعطل \ "مسح بيانات التطبيق \" أو إرسال بريد إلكتروني إليه </string>
+    <string name="rating_text"> هل تحب هذا التطبيق؟ أخبرنا في متجر Google Play كيف يمكننا تحسينه </string>
+    <string name="more_app_text"> تحقق من التطبيقات الأخرى </string>
+    <string name="share_text"> شارك التطبيق مع أصدقائك وعائلتك </string>
+    <string name="developer"> المطور </string>
+    <string name="developer_name"> Kaushal Vasava </string>
+    <string name="about"> حول </string>
+    <string name="current_version"> الإصدار الحالي </string>
+    <string name="more"> المزيد </string>
+    <string name="contact_support"> الاتصال بالدعم </string>
+    <string name="rating"> قيم التطبيق </string>
+    <string name="more_apps"> المزيد من التطبيقات </string>
+    <string name="share_app"> مشاركة التطبيق </string>
+    <string name="delete_completed_task"> احذف جميع المهام المكتملة </string>
+    <string name="hide_completed_task"> إخفاء المهام المكتملة </string>
+    <string name="settings"> الإعدادات </string>
+    <string name="sorting_option"> خيار الفرز </string>
+    <string name="sort_by_name"> فرز حسب الاسم </string>
+    <string name="sort_by_creation_date"> فرز حسب تاريخ الإنشاء </string>
+    <string name="search"> بحث </string>
+    <string name="select_all"> حدد الكل </string>
+    <string name="delete"> حذف </string>
+    <string name="add_date_time"> إضافة التاريخ / الوقت </string>
+    <string name="reminder"> تذكير </string>
+    <string name="add_task_by_speak"> أضف مهمة عن طريق التحدث </string>
+    <string name="save"> حفظ </string>
+    <string name="cancel_timer"> إلغاء المؤقت </string>
+    <string name="overdue"> متأخر </string>
+
+    <string name="mark_as_completed"> وضع علامة كمكتملة </string>
+    <string name="new_task"> مهمة جديدة </string>
+    <string name="create_new_sub_task"> انقر هنا لإضافة مهمة فرعية جديدة </string>
+    <string name="create_new_task"> انقر هنا لإضافة مهمة جديدة </string>
+    <string name="task_deleted"> تم حذف المهمة </string>
+    <string name="undo"> الغاء التحميل </string>
+    <string name="cancel"> إلغاء </string>
+    <string name="confirm_deletion"> تأكيد الحذف </string>
+    <string name="delete_all_task"> هل تريد حذف كافة المهام؟ </string>
+    <string name="notify_delete"> تم حذف المهام بنجاح </string>
+    <string name="please_select_task"> الرجاء تحديد مهمة </string>
+    <string name="search_task"> مهمة البحث </string>
+    <string name="speach_not_support"> جهازك غير مدعوم لإدخال الكلام </string>
+    <string name="search_subtask"> بحث في مهمة فرعية </string>
+    <string name="share"> مشاركة </string>
+    <string name="delete_task"> هل تريد الحذف؟ </string>
+    <string name="empty_task"> المهمة فارغة </string>
+    <string name="set_time"> ضبط الوقت </string>
+    <string name="cancel_reminder"> تم إلغاء التذكير! </string>
+
+    <string name="progress_setting"> إظهار تقدم المهمة لمهمة فردية </string>
+    <string name="reminder_setting"> إظهار تذكير بالمهمة الفردية </string>
+    <string name="font_size"> حجم الخط </string>
+    <string name="enable"> تمكين </string>
+    <string name="disable"> تعطيل </string>
+
+    <string name="subtask_of_task"> إظهار المهام الفرعية لمهمة فردية </string>
+    <string name="grid_view"> عرض الشبكة </string>
+    <string name="list_view"> عرض القائمة </string>
+    <string name="theme"> الموضوع </string>
+    <string name="pm_format">م</string>
+</resources>

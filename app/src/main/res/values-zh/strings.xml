@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">我的任務</string>
+    <string name="task_progress">%d/%d 個任務完成</string>
+    <string name="subtask_progress">%d/%d 個子任務已完成</string>
+    <string name="task_completed">任務完成</string>
+    <string name="add_task">添加任務</string>
+    <string name="enter_title">輸入標題</string>
+    <string name="important_task">重要任務</string>
+    <string name="edit_delete_task">編輯/刪除任務</string>
+    <string name="create_task">創建任務</string>
+    <!-- 偏好標題 -->
+    <string name="messages_header">消息</string>
+    <string name="sync_header">同步</string>
+
+    <!-- 消息首選項 -->
+    <string name="signature_title">你的簽名</string>
+    <string name="reply_title">默認回复操作</string>
+
+    <!-- 同步首選項 -->
+    <string name="sync_title">定期同步郵件</string>
+    <string name="attachment_title">下載傳入的附件</string>
+    <string name="attachment_summary_on">自動下載接收郵件的附件
+    </string>
+    <string name="attachment_summary_off">僅在手動請求時下載附件</string>
+
+
+    <string name="feedback_text">發送反饋，如果應用不斷崩潰\'Clear app data\'或發送電子郵件</string>
+    <string name="rating_text">喜歡這個應用嗎？在 Google Play 商店中告訴我們如何讓它變得更好</string>
+    <string name="more_app_text">查看其他應用</string>
+    <string name="share_text">與您的朋友和家人分享應用程序</string>
+    <string name="developer">開發者</string>
+    <string name="developer_name">Kaushal Vasava</string>
+    <string name="about">關於</string>
+    <string name="current_version">當前版本</string>
+    <string name="more">更多</string>
+    <string name="contact_support">聯繫支持</string>
+    <string name="rating">給應用評分</string>
+    <string name="more_apps">更多應用</string>
+    <string name="share_app">分享應用</string>
+    <string name="delete_completed_task">刪除所有已完成的任務</string>
+    <string name="hide_completed_task">隱藏已完成的任務</string>
+    <string name="settings">設置</string>
+    <string name="sorting_option">排序選項</string>
+    <string name="sort_by_name">按名稱排序</string>
+    <string name="sort_by_creation_date">按創建日期排序</string>
+    <string name="search">搜索</string>
+    <string name="select_all">全選</string>
+    <string name="delete">刪除</string>
+    <string name="add_date_time">添加日期/時間</string>
+    <string name="reminder">提醒</string>
+    <string name="add_task_by_speak">語音添加任務</string>
+    <string name="save">保存</string>
+    <string name="cancel_timer">取消定時器</string>
+    <string name="overdue">過期</string>
+
+    <string name="mark_as_completed">標記為已完成</string>
+    <string name="new_task">新任務</string>
+    <string name="create_new_sub_task">點擊此處添加新的子任務</string>
+    <string name="create_new_task">點擊此處添加新任務</string>
+    <string name="task_deleted">任務已刪除</string>
+    <string name="undo">撤消</string>
+    <string name="cancel">取消</string>
+    <string name="confirm_deletion">確認刪除</string>
+    <string name="delete_all_task">要刪除所有任務嗎？</string>
+    <string name="notify_delete">任務刪除成功</string>
+    <string name="please_select_task">請選擇一個任務</string>
+    <string name="search_task">搜索任務</string>
+    <string name="speach_not_support">您的設備不支持語音輸入</string>
+    <string name="search_subtask">搜索子任務</string>
+    <string name="share">分享</string>
+    <string name="delete_task">要刪除嗎？</string>
+    <string name="empty_task">任務為空</string>
+    <string name="set_time">設置時間</string>
+    <string name="cancel_reminder">提醒已取消！</string>
+
+    <string name="progress_setting">顯示單個任務的任務進度</string>
+    <string name="reminder_setting">顯示單個任務的提醒</string>
+    <string name="font_size">字體大小</string>
+    <string name="enable">啟用</string>
+    <string name="disable">禁用</string>
+
+    <string name="subtask_of_task">显示单个任务的子任务</string>
+    <string name="grid_view">网格视图</string>
+    <string name="list_view">列表视图</string>
+    <string name="theme">主题</string>
+    <string name="pm_format">下午</string>
+</resources>

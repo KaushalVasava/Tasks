@@ -1,0 +1,13 @@
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:shortcutId="newTask"
+        android:enabled="true"
+        android:icon="@drawable/ic_add_widget"
+        android:shortcutShortLabel="@string/new_task"
+        android:shortcutLongLabel="@string/new_task">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:data="myapp://kmv.com/shortcut"
+            />
+    </shortcut>
+</shortcuts>

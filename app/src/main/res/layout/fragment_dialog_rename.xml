@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".ui.fragments.RenameFragmentDialog">
+
+    <EditText
+        android:id="@+id/renameText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:inputType="textMultiLine"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/background_edittext"
+        android:hint="@string/enter_title"
+        android:padding="10dp"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:autofillHints="" />
+
+        <TextView
+            android:id="@+id/timer_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:paddingStart="2dp"
+            android:paddingEnd="2dp"
+            app:drawableLeftCompat="@drawable/ic_reminder"
+            android:text="@string/add_date_time"
+            app:layout_constraintStart_toStartOf="@id/impTask"
+            app:layout_constraintTop_toBottomOf="@id/impTask"
+            />
+    <TextView
+        android:id="@+id/txtImp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/renameText"
+        android:layout_alignBottom="@id/impTask"
+        android:layout_toEndOf="@id/impTask"
+        android:gravity="center_vertical"
+        android:text="@string/important_task"
+        app:layout_constraintTop_toTopOf="@id/impTask"
+        app:layout_constraintBottom_toBottomOf="@id/impTask"
+        app:layout_constraintStart_toEndOf="@id/impTask"
+        />
+
+    <CheckBox
+        android:id="@+id/impTask"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:minHeight="0dp"
+        android:minWidth="0dp"
+        android:layout_marginTop="5dp"
+        app:layout_constraintStart_toStartOf="@id/renameText"
+        app:layout_constraintTop_toBottomOf="@id/renameText"
+        />
+
+    <Button
+        android:id="@+id/saveBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/save"
+        android:textAllCaps="false"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/renameText"
+        app:layout_constraintTop_toBottomOf="@+id/impTask"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,94 @@
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+    <PreferenceCategory app:title="General"
+        app:iconSpaceReserved="false">
+        <ListPreference
+            app:iconSpaceReserved="false"
+            app:defaultValue="-1"
+            app:entries="@array/theme_entries"
+            app:entryValues="@array/theme_values"
+            app:key="theme_key"
+            app:title="@string/theme"
+            app:useSimpleSummaryProvider="true" />
+        <ListPreference app:title="@string/font_size"
+            app:iconSpaceReserved="false"
+            app:key="font_size"
+            app:defaultValue="18"
+            app:entries="@array/font_entries"
+            app:entryValues="@array/font_values"
+            app:summary="Medium"
+            />
+        <SwitchPreference
+            app:iconSpaceReserved="false"
+            app:title="@string/progress_setting"
+            app:key="task_progress"
+            app:defaultValue="false"
+            app:summaryOn="@string/enable"
+            app:summaryOff="@string/disable"
+            />
+        <SwitchPreference
+            app:iconSpaceReserved="false"
+            app:title="@string/reminder_setting"
+            app:key="show_reminder"
+            app:defaultValue="true"
+            app:summaryOn="@string/enable"
+            app:summaryOff="@string/disable"
+            />
+
+        <SwitchPreference
+            app:iconSpaceReserved="false"
+            app:title="@string/subtask_of_task"
+            app:key="show_subtask"
+            app:defaultValue="true"
+            app:summaryOn="@string/enable"
+            app:summaryOff="@string/disable"
+            />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:iconSpaceReserved="false"
+        app:title="@string/more">
+        <Preference
+            app:iconSpaceReserved="false"
+            app:key="share"
+            app:summary="@string/share_text"
+            app:title="@string/share_app"
+            app:useSimpleSummaryProvider="true" />
+        <Preference
+            app:iconSpaceReserved="false"
+            app:key="more_app"
+            app:summary="@string/more_app_text"
+            app:title="@string/more_apps"
+            app:useSimpleSummaryProvider="true" />
+        <Preference
+            app:iconSpaceReserved="false"
+            app:key="rating"
+            app:summary="@string/rating_text"
+            app:title="@string/rating"
+            app:useSimpleSummaryProvider="true" />
+        <Preference
+            app:iconSpaceReserved="false"
+            app:key="feedback"
+            app:summary="@string/feedback_text"
+            app:title="@string/contact_support"
+            app:useSimpleSummaryProvider="true" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:iconSpaceReserved="false"
+        app:title="@string/about">
+        <Preference
+            app:iconSpaceReserved="false"
+            app:key="developer"
+            app:summary="@string/developer_name"
+            app:title="@string/developer"
+            app:useSimpleSummaryProvider="true" />
+        <Preference
+            app:iconSpaceReserved="false"
+            app:key="app_version"
+            app:title="@string/current_version"
+            app:useSimpleSummaryProvider="true" />
+    </PreferenceCategory>
+
+
+</PreferenceScreen>

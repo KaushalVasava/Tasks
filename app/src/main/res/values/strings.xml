@@ -1,0 +1,95 @@
+<resources>
+    <string name="app_name">My Tasks</string>
+    <string name="task_progress">%d/%d  tasks completed</string>
+    <string name="subtask_progress">%d/%d  subtasks completed</string>
+    <string name="task_completed">Task completed</string>
+    <string name="add_task">Add task</string>
+    <string name="enter_title">Enter title</string>
+    <string name="important_task">Important task</string>
+    <string name="edit_delete_task">Edit/Delete Task</string>
+    <string name="create_task">Create Task</string>
+    <!-- Preference Titles -->
+    <string name="messages_header">Messages</string>
+    <string name="sync_header">Sync</string>
+
+    <!-- Messages Preferences -->
+    <string name="signature_title">Your signature</string>
+    <string name="reply_title">Default reply action</string>
+
+    <!-- Sync Preferences -->
+    <string name="sync_title">Sync email periodically</string>
+    <string name="attachment_title">Download incoming attachments</string>
+    <string name="attachment_summary_on">Automatically download attachments for incoming emails
+    </string>
+    <string name="attachment_summary_off">Only download attachments when manually requested</string>
+
+
+    <string name="feedback_text">Send feedback, If the app keeps crashing \'Clear app data\' or send it an Email</string>
+    <string name="rating_text">Love this app? Let us know in Google Play Store how we can make it even better</string>
+    <string name="more_app_text">Check out other apps</string>
+    <string name="share_text">Share the app with your friends and family</string>
+    <string name="developer">Developer</string>
+    <string name="developer_name">Kaushal Vasava</string>
+    <string name="about">About</string>
+    <string name="current_version">Current version</string>
+    <string name="more">More</string>
+    <string name="market_string" translatable="false">market://search?q=pub:Kaushal Vasava</string>
+    <string name="market_developer_string" translatable="false">http://play.google.com/store/apps/developer?id=Kaushal Vasava</string>
+    <string name="play_store_share" translatable="false">https://play.google.com/store/apps/details?id=</string>
+    <string name="feedback_email" translatable="false">kaushalvasava.app.feedback@gmail.com</string>
+    <string name="contact_support">Contact Support</string>
+    <string name="rating">Rate the app</string>
+    <string name="more_apps">More Apps</string>
+    <string name="share_app">Share App</string>
+    <string name="delete_completed_task">Delete all completed tasks</string>
+    <string name="hide_completed_task">Hide completed tasks</string>
+    <string name="settings">Settings</string>
+    <string name="sorting_option">Sorting Option</string>
+    <string name="sort_by_name">Sort by Name</string>
+    <string name="sort_by_creation_date">Sort by Creation date</string>
+    <string name="search">Search</string>
+    <string name="select_all">Select all</string>
+    <string name="delete">Delete</string>
+    <string name="add_date_time">Add date/time</string>
+    <string name="reminder">Reminder</string>
+    <string name="add_task_by_speak">Add task by speaking</string>
+    <string name="save">Save</string>
+    <string name="cancel_timer">Cancel timer</string>
+    <string name="overdue">Overdue</string>
+
+    <string name="mark_as_completed">Mark as completed</string>
+    <string name="new_task">New task</string>
+    <string name="create_new_sub_task">Click here to add new sub-task</string>
+    <string name="create_new_task">Click here to add new task</string>
+    <string name="task_deleted">Task deleted</string>
+    <string name="undo">UNDO</string>
+    <string name="cancel">Cancel</string>
+    <string name="confirm_deletion">Confirm deletion</string>
+    <string name="delete_all_task">Do you want to delete all the tasks?</string>
+    <string name="notify_delete">Tasks are deleted successfully</string>
+    <string name="please_select_task">Please select a task</string>
+    <string name="search_task">Search Task</string>
+    <string name="speach_not_support">Your device not supported for speech input</string>
+    <string name="search_subtask">Search sub-task</string>
+    <string name="share">Share</string>
+    <string name="delete_task">Do you want to delete?</string>
+    <string name="empty_task">Task is Empty</string>
+    <string name="set_time">SET TIME</string>
+    <string name="cancel_reminder">Reminder cancelled!</string>
+    <string name="progress_setting">Show task progress of individual task</string>
+    <string name="reminder_setting">Show reminder of individual task</string>
+    <string name="font_size">Font size</string>
+    <string name="enable">Enable</string>
+    <string name="disable">Disable</string>
+
+    <string name="subtask_of_task">Show subtasks of individual task</string>
+    <string name="grid_view">Grid View</string>
+    <string name="list_view">List View</string>
+    <string name="theme">Theme</string>
+
+    <string name="pm_format">pm</string>
+    <string name="profile">Profile</string>
+    <string name="note">Note</string>
+    <string name="task">Task</string>
+    <string name="logout">Logout</string>
+</resources>

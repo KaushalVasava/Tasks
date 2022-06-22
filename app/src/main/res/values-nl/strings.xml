@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Mijn taken</string>
+    <string name="task_progress">%d/%d taken voltooid</string>
+    <string name="subtask_progress">%d/%d subtaken voltooid</string>
+    <string name="task_completed">Taak voltooid</string>
+    <string name="add_task">Taak toevoegen</string>
+    <string name="enter_title">Voer titel in</string>
+    <string name="important_task">Belangrijke taak</string>
+    <string name="edit_delete_task">Taak bewerken/verwijderen</string>
+    <string name="create_task">Taak maken</string>
+    <!-- Voorkeurstitels -->
+    <string name="messages_header">Berichten</string>
+    <string name="sync_header">Synchroniseren</string>
+
+    <!-- Berichtenvoorkeuren -->
+    <string name="signature_title">Uw handtekening</string>
+    <string name="reply_title">Standaard antwoordactie</string>
+
+    <!-- Synchronisatievoorkeuren -->
+    <string name="sync_title">E-mail periodiek synchroniseren</string>
+    <string name="attachment_title">Inkomende bijlagen downloaden</string>
+    <string name="attachment_summary_on">Automatisch bijlagen downloaden voor inkomende e-mails
+    </string>
+    <string name="attachment_summary_off">Alleen bijlagen downloaden wanneer handmatig gevraagd</string>
+
+
+    <string name="feedback_text">Feedback sturen, Als de app blijft crashen \'Clear app data\' of stuur hem een ​​e-mail</string>
+    <string name="rating_text">Hou je van deze app? Laat ons in de Google Play Store weten hoe we het nog beter kunnen maken</string>
+    <string name="more_app_text">Bekijk andere apps</string>
+    <string name="share_text">Deel de app met je vrienden en familie</string>
+    <string name="developer">Ontwikkelaar</string>
+    <string name="developer_name">Kaushal Vasava</string>
+    <string name="about">Over</string>
+    <string name="current_version">Huidige versie</string>
+    <string name="more">Meer</string>
+    <string name="contact_support">Contact opnemen met ondersteuning</string>
+    <string name="rating">Beoordeel de app</string>
+    <string name="more_apps">Meer apps</string>
+    <string name="share_app">App delen</string>
+    <string name="delete_completed_task">Verwijder alle voltooide taken</string>
+    <string name="hide_completed_task">Verberg voltooide taken</string>
+    <string name="settings">Instellingen</string>
+    <string name="sorting_option">Sorteeroptie</string>
+    <string name="sort_by_name">Sorteren op naam</string>
+    <string name="sort_by_creation_date">Sorteren op aanmaakdatum</string>
+    <string name="search">Zoeken</string>
+    <string name="select_all">Alles selecteren</string>
+    <string name="delete">Verwijderen</string>
+    <string name="add_date_time">Datum/tijd toevoegen</string>
+    <string name="reminder">Herinnering</string>
+    <string name="add_task_by_speak">Taak toevoegen door te spreken</string>
+    <string name="save">Opslaan</string>
+    <string name="cancel_timer">Timer annuleren</string>
+    <string name="overdue">Te laat</string>
+
+    <string name="mark_as_completed">Markeer als voltooid</string>
+    <string name="new_task">Nieuwe taak</string>
+    <string name="create_new_sub_task">Klik hier om een ​​nieuwe subtaak toe te voegen</string>
+    <string name="create_new_task">Klik hier om een ​​nieuwe taak toe te voegen</string>
+    <string name="task_deleted">Taak verwijderd</string>
+    <string name="undo">UNDOEN</string>
+    <string name="cancel">Annuleren</string>
+    <string name="confirm_deletion">Verwijdering bevestigen</string>
+    <string name="delete_all_task">Wilt u alle taken verwijderen?</string>
+    <string name="notify_delete">Taken zijn succesvol verwijderd</string>
+    <string name="please_select_task">Selecteer een taak</string>
+    <string name="search_task">Zoektaak</string>
+    <string name="speach_not_support">Uw apparaat wordt niet ondersteund voor spraakinvoer</string>
+    <string name="search_subtask">Subtaak zoeken</string>
+    <string name="share">Delen</string>
+    <string name="delete_task">Wilt u verwijderen?</string>
+    <string name="empty_task">Taak is leeg</string>
+    <string name="set_time">STEL TIJD IN</string>
+    <string name="cancel_reminder">Herinnering geannuleerd!</string>
+    <string name="progress_setting">Toon taakvoortgang van individuele taak</string>
+    <string name="reminder_setting">Toon herinnering aan individuele taak</string>
+    <string name="font_size">Lettergrootte</string>
+    <string name="enable">Inschakelen</string>
+    <string name="disable">Uitschakelen</string>
+
+    <string name="subtask_of_task">Toon subtaken van individuele taken</string>
+    <string name="grid_view">Rasterweergave</string>
+    <string name="list_view">Lijstweergave</string>
+    <string name="theme">Thema</string>
+    <string name="pm_format">p.m.</string>
+
+</resources>

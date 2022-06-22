@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">내 작업</string>
+    <string name="task_progress">%d/%d개의 작업 완료</string>
+    <string name="subtask_progress">%d/%d 하위 작업 완료</string>
+    <string name="task_completed">작업 완료</string>
+    <string name="add_task">작업 추가</string>
+    <string name="enter_title">제목 입력</string>
+    <string name="important_task">중요 작업</string>
+    <string name="edit_delete_task">작업 편집/삭제</string>
+    <string name="create_task">작업 생성</string>
+    <!-- 기본 설정 제목 -->
+    <string name="messages_header">메시지</string>
+    <string name="sync_header">동기화</string>
+
+    <!-- 메시지 기본 설정 -->
+    <string name="signature_title">서명</string>
+    <string name="reply_title">기본 응답 작업</string>
+
+    <!-- 동기화 기본 설정 -->
+    <string name="sync_title">이메일을 주기적으로 동기화</string>
+    <string name="attachment_title">수신 첨부 파일 다운로드</string>
+    <string name="attachment_summary_on">수신 이메일의 첨부 파일을 자동으로 다운로드</string>
+    <string name="attachment_summary_off">수동으로 요청한 경우에만 첨부 파일 다운로드</string>
+
+
+    <string name="feedback_text">피드백 보내기, 앱이 계속 충돌하는 경우 \'앱 데이터 지우기\' 또는 이메일 보내기</string>
+    <string name="rating_text">이 앱이 마음에 드십니까? Google Play 스토어에서 어떻게 하면 더 개선할 수 있는지 알려주세요.</string>
+    <string name="more_app_text">다른 앱 확인</string>
+    <string name="share_text">친구 및 가족과 앱 공유</string>
+    <string name="developer">개발자</string>
+    <string name="developer_name">카우샬 바사바</string>
+    <string name="about">정보</string>
+    <string name="current_version">현재 버전</string>
+    <string name="more">더</string>
+    <string name="market_string" translatable="false">market://search?q=pub:카우샬 바사바</string>
+    <string name="market_developer_string" translatable="false">http://play.google.com/store/apps/developer?id=Kaushal Vasava</string>
+    <string name="play_store_share" translatable="false">https://play.google.com/store/apps/details?id=</string>
+    <string name="feedback_email" translatable="false">kaushalvasava.app.feedback@gmail.com</string>
+    <string name="contact_support">지원팀에 문의</string>
+    <string name="rating">앱 평가</string>
+    <string name="more_apps">더 많은 앱</string>
+    <string name="share_app">앱 공유</string>
+    <string name="delete_completed_task">완료된 모든 작업 삭제</string>
+    <string name="hide_completed_task">완료된 작업 숨기기</string>
+    <string name="settings">설정</string>
+    <string name="sorting_option">정렬 옵션</string>
+    <string name="sort_by_name">이름별 정렬</string>
+    <string name="sort_by_creation_date">생성 날짜순 정렬</string>
+    <string name="search">검색</string>
+    <string name="select_all">모두 선택</string>
+    <string name="delete">삭제</string>
+    <string name="add_date_time">날짜/시간 추가</string>
+    <string name="reminder">알림</string>
+    <string name="add_task_by_speak">말하여 작업 추가</string>
+    <string name="save">저장</string>
+    <string name="cancel_timer">타이머 취소</string>
+    <string name="overdue">연기</string>
+
+    <string name="mark_as_completed">완료로 표시</string>
+    <string name="new_task">새 작업</string>
+    <string name="create_new_sub_task">새 하위 작업을 추가하려면 여기를 클릭하십시오.</string>
+    <string name="create_new_task">새 작업을 추가하려면 여기를 클릭하십시오.</string>
+    <string name="task_deleted">삭제된 작업</string>
+    <string name="undo">실행 취소</string>
+    <string name="cancel">취소</string>
+    <string name="confirm_deletion">삭제 확인</string>
+    <string name="delete_all_task">모든 작업을 삭제하시겠습니까?</string>
+    <string name="notify_delete">작업이 성공적으로 삭제되었습니다.</string>
+    <string name="please_select_task">작업을 선택하십시오</string>
+    <string name="search_task">검색 작업</string>
+    <string name="speach_not_support">귀하의 기기는 음성 입력을 지원하지 않습니다.</string>
+    <string name="search_subtask">하위 작업 검색</string>
+    <string name="share">공유</string>
+    <string name="delete_task">삭제하시겠습니까?</string>
+    <string name="empty_task">작업이 비어 있음</string>
+    <string name="set_time">시간 설정</string>
+    <string name="cancel_reminder">알림 취소됨!</string>
+    <string name="progress_setting">개별 작업의 작업 진행률 표시</string>
+    <string name="reminder_setting">개별 작업 알림 표시</string>
+    <string name="font_size">글꼴 크기</string>
+    <string name="enable">활성화</string>
+    <string name="disable">비활성화</string>
+
+    <string name="subtask_of_task">개별 작업의 하위 작업 표시</string>
+    <string name="grid_view">그리드 보기</string>
+    <string name="list_view">목록 보기</string>
+    <string name="theme">테마</string>
+    <string name="pm_format">오후</string>
+</resources>

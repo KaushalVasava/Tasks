@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">My Take</string>
+    <string name="task_progress">%d/%d take voltooi</string>
+    <string name="subtask_progress">%d/%d subtake voltooi</string>
+    <string name="task_completed">Taak voltooi</string>
+    <string name="add_task">Voeg taak by</string>
+    <string name="enter_title">Voer titel in</string>
+    <string name="important_task">Belangrike taak</string>
+    <string name="edit_delete_task">Redigeer/vee taak uit</string>
+    <string name="create_task">Skep taak</string>
+    <!-- Voorkeurtitels -->
+    <string name="messages_header">Boodskappe</string>
+    <string name="sync_header">Sinkroniseer</string>
+
+    <!-- Boodskapvoorkeure -->
+    <string name="signature_title">Jou handtekening</string>
+    <string name="reply_title">Verstek antwoordaksie</string>
+
+    <!-- Sinkroniseringvoorkeure -->
+    <string name="sync_title">Sinkroniseer e-pos van tyd tot tyd</string>
+    <string name="attachment_title">Laai inkomende aanhegsels af</string>
+    <string name="attachment_summary_on">Laai aanhegsels outomaties af vir inkomende e-posse
+    </string>
+    <string name="attachment_summary_off">Laai slegs aanhegsels af wanneer dit met die hand versoek word</string>
+
+
+    <string name="feedback_text">Stuur terugvoer, as die program aanhou omval \'Vee programdata uit\' of stuur dit \'n e-pos</string>
+    <string name="rating_text">Hou jy van hierdie toepassing? Laat weet ons in Google Play Winkel hoe ons dit nog beter kan maak</string>
+    <string name="more_app_text">Kyk na ander programme</string>
+    <string name="share_text">Deel die toepassing met jou vriende en familie</string>
+    <string name="developer">Ontwikkelaar</string>
+    <string name="developer_name">Kaushal Vasava</string>
+    <string name="about">Meer oor</string>
+    <string name="current_version">Huidige weergawe</string>
+    <string name="more">Meer</string>
+    <string name="contact_support">Kontak ondersteuning</string>
+    <string name="rating">Beoordeel die toepassing</string>
+    <string name="more_apps">Meer toepassings</string>
+    <string name="share_app">Deel toepassing</string>
+    <string name="delete_completed_task">Vee alle voltooide take uit</string>
+    <string name="hide_completed_task">Versteek voltooide take</string>
+    <string name="settings">Instellings</string>
+    <string name="sorting_option">Sorteeropsie</string>
+    <string name="sort_by_name">Sorteer volgens naam</string>
+    <string name="sort_by_creation_date">Sorteer volgens skeppingsdatum</string>
+    <string name="search">Soek</string>
+    <string name="select_all">Kies alles</string>
+    <string name="delete">Vee uit</string>
+    <string name="add_date_time">Voeg datum/tyd by</string>
+    <string name="reminder">Herinnering</string>
+    <string name="add_task_by_speak">Voeg taak by deur te praat</string>
+    <string name="save">Stoor</string>
+    <string name="cancel_timer">Kanselleer afteller</string>
+    <string name="overdue">Aangestallig</string>
+
+    <string name="mark_as_completed">Merk as voltooi</string>
+    <string name="new_task">Nuwe taak</string>
+    <string name="create_new_sub_task">Klik hier om nuwe subtaak by te voeg</string>
+    <string name="create_new_task">Klik hier om nuwe taak by te voeg</string>
+    <string name="task_deleted">Taak verwyder</string>
+    <string name="undo">ONGEDIEN</string>
+    <string name="cancel">Kanselleer</string>
+    <string name="confirm_deletion">Bevestig verwydering</string>
+    <string name="delete_all_task">Wil jy al die take uitvee?</string>
+    <string name="notify_delete">Tae is suksesvol uitgevee</string>
+    <string name="please_select_task">Kies asseblief \'n taak</string>
+    <string name="search_task">Soektaak</string>
+    <string name="speach_not_support">Jou toestel word nie vir spraakinvoer ondersteun nie</string>
+    <string name="search_subtask">Soek subtaak</string>
+    <string name="share">Deel</string>
+    <string name="delete_task">Wil jy uitvee?</string>
+    <string name="empty_task">Taak is leeg</string>
+    <string name="set_time">STEL TYD</string>
+    <string name="cancel_reminder">Herinnering is gekanselleer!</string>
+
+    <string name="progress_setting">Wys taakvordering van individuele taak</string>
+    <string name="reminder_setting">Wys herinnering van individuele taak</string>
+    <string name="font_size">Lettergrootte</string>
+    <string name="enable">Aktiveer</string>
+    <string name="disable">Deaktiveer</string>
+
+    <string name="subtask_of_task">Wys subtake van individuele taak</string>
+    <string name="grid_view">Roosteraansig</string>
+    <string name="list_view">Lysaansig</string>
+    <string name="theme">Tema</string>
+    <string name="pm_format">nm</string>
+</resources>
