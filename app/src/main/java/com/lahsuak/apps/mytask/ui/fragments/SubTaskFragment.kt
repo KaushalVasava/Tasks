@@ -96,7 +96,7 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
                 binding.todoRecyclerView.layoutManager = LinearLayoutManager(requireContext())
             }
         }
-        subTaskAdapter = SubTaskAdapter(requireContext(), this)
+        subTaskAdapter = SubTaskAdapter(this)
         setHasOptionsMenu(true)
 
         createNotification(requireContext())

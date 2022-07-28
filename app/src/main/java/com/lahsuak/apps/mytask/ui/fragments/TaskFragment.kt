@@ -112,7 +112,7 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener 
         if (lastSignIN != null) {
             viewModel.userId = lastSignIN.id
         }
-        taskAdapter = TaskAdapter(requireContext(), this)
+        taskAdapter = TaskAdapter(this)
 
         setHasOptionsMenu(true)
         showRateDialog()
