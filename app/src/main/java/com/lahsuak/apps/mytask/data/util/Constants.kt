@@ -28,6 +28,9 @@ object Constants {
     const val REMINDER_KEY = "reminder_data"
     const val REM_KEY = "rem_key"
 
-    const val LOGIN_SHARED_PREF = "login_data"
-    const val LOGIN_STATUS_KEY = "login_status"
+    const val LANGUAGE_SHARED_PREFERENCE = "LANGUAGE"
+    const val LANGUAGE_SHARED_PREFERENCE_KEY = "selectedLang"
+    const val LANGUAGE_SHARED_PREFERENCE_LANGUAGE_KEY = "Language"
+
+    const val LANGUAGE_DEFAULT_VALUE = "-1"
 }

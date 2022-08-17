@@ -82,4 +82,5 @@
     <string name="list_view"> عرض القائمة </string>
     <string name="theme"> الموضوع </string>
     <string name="pm_format">م</string>
+    <string name="language">لغة</string>
 </resources>

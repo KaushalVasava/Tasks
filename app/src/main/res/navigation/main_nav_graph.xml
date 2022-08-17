@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_nav_graph"
-    app:startDestination="@id/loginFragment">
+    app:startDestination="@id/taskFragment">
 
     <fragment
         android:id="@+id/taskFragment"
@@ -110,15 +110,4 @@
     <action
         android:id="@+id/action_global_shortcutFragmentDialog"
         app:destination="@id/shortcutFragmentDialog" />
-    <fragment
-        android:id="@+id/loginFragment"
-        android:name="com.lahsuak.apps.mytask.ui.login.LoginFragment"
-        android:label="fragment_login"
-        tools:layout="@layout/fragment_login" >
-        <action
-            android:id="@+id/action_loginFragment_to_taskFragment"
-            app:destination="@id/taskFragment"
-            app:popUpTo="@id/main_nav_graph"
-            app:popUpToInclusive="true" />
-    </fragment>
 </navigation>

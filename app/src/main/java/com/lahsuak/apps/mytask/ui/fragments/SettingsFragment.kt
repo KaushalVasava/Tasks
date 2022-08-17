@@ -1,21 +1,33 @@
 package com.lahsuak.apps.mytask.ui.fragments
 
+import android.content.Context
+import android.content.res.Configuration
+import android.os.Build
 import android.os.Bundle
+import android.os.LocaleList
 import androidx.appcompat.app.AppCompatDelegate.*
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.preference.*
 import com.lahsuak.apps.mytask.BuildConfig
 import com.lahsuak.apps.mytask.R
+import com.lahsuak.apps.mytask.data.util.Constants.LANGUAGE_DEFAULT_VALUE
+import com.lahsuak.apps.mytask.data.util.Constants.LANGUAGE_SHARED_PREFERENCE
+import com.lahsuak.apps.mytask.data.util.Constants.LANGUAGE_SHARED_PREFERENCE_KEY
+import com.lahsuak.apps.mytask.data.util.Constants.LANGUAGE_SHARED_PREFERENCE_LANGUAGE_KEY
 import com.lahsuak.apps.mytask.data.util.Constants.THEME_DEFAULT
 import com.lahsuak.apps.mytask.data.util.Constants.THEME_KEY
 import com.lahsuak.apps.mytask.data.util.Util.appRating
+import com.lahsuak.apps.mytask.data.util.Util.getLanguage
 import com.lahsuak.apps.mytask.data.util.Util.moreApp
 import com.lahsuak.apps.mytask.data.util.Util.sendFeedbackMail
 import com.lahsuak.apps.mytask.data.util.Util.shareApp
+import com.lahsuak.apps.mytask.di.TodoApp.Companion.mylang
+import java.util.*
 
 class SettingsFragment : PreferenceFragmentCompat() {
     companion object {
         var selectedTheme = -1
+        var selectedLang = LANGUAGE_DEFAULT_VALUE
     }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
@@ -31,6 +43,14 @@ class SettingsFragment : PreferenceFragmentCompat() {
         val prefRating = findPreference<Preference>("rating")
         val prefFont = findPreference<ListPreference>("font_size")
         val prefTheme = findPreference<ListPreference>("theme_key")
+        val prefLanguage = findPreference<ListPreference>("language")
+
+        val pref = requireContext().getSharedPreferences(LANGUAGE_SHARED_PREFERENCE,
+            Context.MODE_PRIVATE
+        )
+        selectedLang =
+            pref.getString(LANGUAGE_SHARED_PREFERENCE_KEY, LANGUAGE_DEFAULT_VALUE)
+                ?: Locale.getDefault().language
 
         prefVersion!!.summary = BuildConfig.VERSION_NAME
         val prefManager = PreferenceManager.getDefaultSharedPreferences(requireContext())
@@ -49,6 +69,18 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 18 -> prefFont.summary = "Medium"
                 20 -> prefFont.summary = "Large"
                 22 -> prefFont.summary = "Huge"
+            }
+            true
+        }
+        prefLanguage?.setOnPreferenceChangeListener { _, newValue ->
+            selectedLang = newValue as String
+            when (selectedLang) {
+                LANGUAGE_DEFAULT_VALUE -> {
+                    setLocal(getLanguage())
+                }
+                else -> {
+                    setLocal(selectedLang)
+                }
             }
             true
         }
@@ -96,4 +128,31 @@ class SettingsFragment : PreferenceFragmentCompat() {
         }
     }
 
+    private fun setLocal(lang: String) {
+        val locale = Locale(lang)
+        Locale.setDefault(locale)
+        val config = Configuration()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            config.setLocales(LocaleList(locale))
+        } else {
+            config.setLocale(locale)
+        }
+
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N) {
+            requireActivity().applicationContext.createConfigurationContext(config)
+        } else {
+            @Suppress("deprecation")
+            resources.updateConfiguration(
+                config, resources.displayMetrics
+            )
+        }
+        val pref =
+            requireContext().getSharedPreferences(LANGUAGE_SHARED_PREFERENCE, Context.MODE_PRIVATE)
+                .edit()
+        pref.putString(LANGUAGE_SHARED_PREFERENCE_KEY, selectedLang)
+        pref.putString(LANGUAGE_SHARED_PREFERENCE_LANGUAGE_KEY, lang)
+        mylang = lang
+        pref.apply()
+        requireActivity().recreate()
+    }
 }

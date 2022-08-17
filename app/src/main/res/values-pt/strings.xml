@@ -88,5 +88,6 @@
     <string name="list_view">Visualização de lista</string>
     <string name="theme">Tema</string>
     <string name="pm_format">da tarde</string>
+    <string name="language">Linguagem</string>
 
 </resources>

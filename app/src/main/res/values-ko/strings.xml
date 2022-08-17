@@ -87,4 +87,5 @@
     <string name="list_view">목록 보기</string>
     <string name="theme">테마</string>
     <string name="pm_format">오후</string>
+    <string name="language">언어</string>
 </resources>

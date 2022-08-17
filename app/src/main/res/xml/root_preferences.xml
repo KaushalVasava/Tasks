@@ -1,47 +1,58 @@
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
-    <PreferenceCategory app:title="General"
-        app:iconSpaceReserved="false">
+    <PreferenceCategory
+        app:iconSpaceReserved="false"
+        app:title="General">
         <ListPreference
-            app:iconSpaceReserved="false"
             app:defaultValue="-1"
             app:entries="@array/theme_entries"
             app:entryValues="@array/theme_values"
+            app:iconSpaceReserved="false"
             app:key="theme_key"
             app:title="@string/theme"
             app:useSimpleSummaryProvider="true" />
-        <ListPreference app:title="@string/font_size"
-            app:iconSpaceReserved="false"
-            app:key="font_size"
+        <ListPreference
             app:defaultValue="18"
             app:entries="@array/font_entries"
             app:entryValues="@array/font_values"
+            app:iconSpaceReserved="false"
+            app:key="font_size"
             app:summary="Medium"
-            />
+            app:title="@string/font_size" />
         <SwitchPreference
-            app:iconSpaceReserved="false"
-            app:title="@string/progress_setting"
-            app:key="task_progress"
             app:defaultValue="false"
-            app:summaryOn="@string/enable"
-            app:summaryOff="@string/disable"
-            />
-        <SwitchPreference
             app:iconSpaceReserved="false"
-            app:title="@string/reminder_setting"
-            app:key="show_reminder"
-            app:defaultValue="true"
-            app:summaryOn="@string/enable"
+            app:key="task_progress"
             app:summaryOff="@string/disable"
-            />
+            app:summaryOn="@string/enable"
+            app:title="@string/progress_setting" />
+        <SwitchPreference
+            app:defaultValue="true"
+            app:iconSpaceReserved="false"
+            app:key="show_reminder"
+            app:summaryOff="@string/disable"
+            app:summaryOn="@string/enable"
+            app:title="@string/reminder_setting" />
 
         <SwitchPreference
-            app:iconSpaceReserved="false"
-            app:title="@string/subtask_of_task"
-            app:key="show_subtask"
             app:defaultValue="true"
-            app:summaryOn="@string/enable"
+            app:iconSpaceReserved="false"
+            app:key="show_subtask"
             app:summaryOff="@string/disable"
-            />
+            app:summaryOn="@string/enable"
+            app:title="@string/subtask_of_task" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:iconSpaceReserved="false"
+        app:title="@string/language">
+        <ListPreference
+            app:defaultValue="-1"
+            app:entries="@array/language_entries"
+            app:entryValues="@array/language_values"
+            app:iconSpaceReserved="false"
+            app:key="language"
+            app:title="@string/language"
+            app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
 
     <PreferenceCategory
@@ -89,6 +100,4 @@
             app:title="@string/current_version"
             app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
-
-
 </PreferenceScreen>

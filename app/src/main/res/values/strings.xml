@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">My Tasks</string>
-    <string name="task_progress">%d/%d  tasks completed</string>
-    <string name="subtask_progress">%d/%d  subtasks completed</string>
+    <string name="task_progress">%1$d/%2$d  tasks completed</string>
+    <string name="subtask_progress">%1$d/%2$d  subtasks completed</string>
     <string name="task_completed">Task completed</string>
     <string name="add_task">Add task</string>
     <string name="enter_title">Enter title</string>
@@ -86,10 +86,7 @@
     <string name="grid_view">Grid View</string>
     <string name="list_view">List View</string>
     <string name="theme">Theme</string>
-
     <string name="pm_format">pm</string>
-    <string name="profile">Profile</string>
-    <string name="note">Note</string>
-    <string name="task">Task</string>
-    <string name="logout">Logout</string>
+    <string name="language">Language</string>
+    <string name="copy_text" translatable="false">copy</string>
 </resources>

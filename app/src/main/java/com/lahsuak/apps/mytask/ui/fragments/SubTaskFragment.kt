@@ -1,21 +1,25 @@
 package com.lahsuak.apps.mytask.ui.fragments
 
 import android.annotation.SuppressLint
-import android.app.*
+import android.app.Activity
+import android.app.AlertDialog
 import android.graphics.Canvas
 import android.os.Build
 import android.os.Bundle
 import android.speech.RecognizerIntent
-import android.util.Log
-import android.view.*
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.fragment.app.Fragment
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ActionMode
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
+import androidx.core.os.bundleOf
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
@@ -34,13 +38,13 @@ import com.lahsuak.apps.mytask.data.util.Util
 import com.lahsuak.apps.mytask.data.util.Util.createNotification
 import com.lahsuak.apps.mytask.data.util.Util.getTimeDiff
 import com.lahsuak.apps.mytask.data.util.Util.notifyUser
+import com.lahsuak.apps.mytask.data.util.Util.unsafeLazy
+import com.lahsuak.apps.mytask.data.util.onQueryTextChanged
+import com.lahsuak.apps.mytask.databinding.FragmentSubtaskBinding
 import com.lahsuak.apps.mytask.ui.adapters.SubTaskAdapter
+import com.lahsuak.apps.mytask.ui.fragments.TaskFragment.Companion.viewType
 import com.lahsuak.apps.mytask.ui.viewmodel.SubTaskViewModel
 import com.lahsuak.apps.mytask.ui.viewmodel.TaskViewModel
-import com.lahsuak.apps.mytask.data.util.onQueryTextChanged
-import com.lahsuak.apps.mytask.data.util.viewBinding
-import com.lahsuak.apps.mytask.databinding.FragmentSubtaskBinding
-import com.lahsuak.apps.mytask.ui.fragments.TaskFragment.Companion.viewType
 import dagger.hilt.android.AndroidEntryPoint
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 import kotlinx.coroutines.flow.first
@@ -51,9 +55,8 @@ import java.util.*
 class SubTaskFragment : Fragment(R.layout.fragment_subtask),
     SubTaskAdapter.SubTaskListener {
 
-    private val binding: FragmentSubtaskBinding by viewBinding {
-        FragmentSubtaskBinding.bind(it)
-    }
+    private lateinit var binding: FragmentSubtaskBinding
+
     private val model: TaskViewModel by viewModels()
     private val subModel: SubTaskViewModel by viewModels()
     private val args: SubTaskFragmentArgs by navArgs()
@@ -87,6 +90,7 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding = FragmentSubtaskBinding.bind(view)
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewType = model.preferencesFlow.first().viewType
             if (viewType) {
@@ -596,11 +600,9 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
 
     override fun onDestroyView() {
         super.onDestroyView()
-        Log.d("TAG", "onDestroyView: ${binding.progressBar.progress}")
-        if(binding.progressBar.progress==100)
-        {
-            binding.isCompleted.isChecked=true
-            task.isDone=true
+        if (binding.progressBar.progress == 100) {
+            binding.isCompleted.isChecked = true
+            task.isDone = true
             model.update(task)
         }
         searchView.setOnQueryTextListener(null)

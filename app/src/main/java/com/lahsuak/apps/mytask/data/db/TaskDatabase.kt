@@ -4,11 +4,10 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import com.lahsuak.apps.mytask.data.model.SubTask
 import com.lahsuak.apps.mytask.data.model.Task
-import com.lahsuak.apps.mytask.data.model.User
 
 @Database(
-    entities = [User::class, Task::class, SubTask::class],
-    version = 3
+    entities = [Task::class, SubTask::class],
+    version = 2
 )
 abstract class TaskDatabase : RoomDatabase() {
     abstract val dao: TaskDao

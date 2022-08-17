@@ -11,14 +11,12 @@ import com.lahsuak.apps.mytask.data.model.Task
 import com.lahsuak.apps.mytask.databinding.FragmentDialogRenameBinding
 import com.lahsuak.apps.mytask.ui.viewmodel.TaskViewModel
 import dagger.hilt.android.AndroidEntryPoint
-
 import android.view.WindowManager
 import androidx.lifecycle.lifecycleScope
 import com.lahsuak.apps.mytask.R
 import com.lahsuak.apps.mytask.data.util.Util
 import com.lahsuak.apps.mytask.data.util.viewBinding
 import kotlinx.coroutines.launch
-
 
 @AndroidEntryPoint
 class ShortcutFragmentDialog : BottomSheetDialogFragment() {
@@ -64,8 +62,7 @@ class ShortcutFragmentDialog : BottomSheetDialogFragment() {
                     binding.impTask.isChecked,
                     null,
                     -1f,
-                    null,
-                    model.userId!!
+                    null
                 )
             }
             task = Util.showReminder(requireActivity(), binding.timerTxt, task)
@@ -81,8 +78,7 @@ class ShortcutFragmentDialog : BottomSheetDialogFragment() {
                             binding.impTask.isChecked,
                             null,
                             -1f,
-                            null,
-                            model.userId!!
+                            null
                         )
                     }
                     model.insert(task)

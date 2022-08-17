@@ -4,46 +4,28 @@ import androidx.room.*
 import com.lahsuak.apps.mytask.data.SortOrder
 import com.lahsuak.apps.mytask.data.model.SubTask
 import com.lahsuak.apps.mytask.data.model.Task
-import com.lahsuak.apps.mytask.data.model.User
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface TaskDao {
-
-    //user methods
-    @Query("SELECT * FROM USER_TABLE")
-    fun getAllUsers(): Flow<List<User>>
-
-    @Query("SELECT * FROM USER_TABLE WHERE userId=:userID")
-    suspend fun getUserById(userID: String): User
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(user: User)
-
-    @Delete
-    suspend fun delete(user: User)
-
     // task methods
     fun getAllTasks(
-        userId: String,
         query: String,
         sortOrder: SortOrder,
         hideCompleted: Boolean,
     ): Flow<List<Task>> =
         when (sortOrder) {
-            SortOrder.BY_DATE -> getAllTaskByDate(userId, query, hideCompleted)
-            SortOrder.BY_NAME -> getAllTaskByName(userId, query, hideCompleted)
+            SortOrder.BY_DATE -> getAllTaskByDate(query, hideCompleted)
+            SortOrder.BY_NAME -> getAllTaskByName(query, hideCompleted)
         }
 
-    @Query("SELECT * FROM task_table WHERE (userId = :userID) AND (status!= :hideCompleted OR status = 0) AND title LIKE '%' || :searchQuery || '%' ORDER BY importance DESC,title")
+    @Query("SELECT * FROM task_table WHERE (status!= :hideCompleted OR status = 0) AND title LIKE '%' || :searchQuery || '%' ORDER BY importance DESC,title")
     fun getAllTaskByName(
-        userID: String,
         searchQuery: String, hideCompleted: Boolean,
     ): Flow<List<Task>>
 
-    @Query("SELECT * FROM task_table WHERE (userId = :userID) AND (status!= :hideCompleted OR status = 0) AND title LIKE '%' || :searchQuery || '%' ORDER BY importance DESC,id DESC")
+    @Query("SELECT * FROM task_table WHERE (status!= :hideCompleted OR status = 0) AND title LIKE '%' || :searchQuery || '%' ORDER BY importance DESC,id DESC")
     fun getAllTaskByDate(
-        userID: String,
         searchQuery: String,
         hideCompleted: Boolean,
     ): Flow<List<Task>>

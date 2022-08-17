@@ -29,20 +29,12 @@ object AppModule {
                 database.execSQL("ALTER TABLE task_table ADD COLUMN subtask TEXT")
             }
         }
-        val migration_2_3 = object : Migration(2, 3) {
-            override fun migrate(database: SupportSQLiteDatabase) {
-                database.execSQL("CREATE TABLE IF NOT EXISTS user_table" +" (" + "userId" + " TEXT PRIMARY KEY, " +
-                        "userName" + " TEXT NOT NULL )")
-                database.execSQL("ALTER TABLE task_table ADD COLUMN userId NUMBER")
-            }
-        }
         return Room.databaseBuilder(
             app,
             TaskDatabase::class.java,
             DATABASE_NAME
         )
             .addMigrations(migration_1_2)
-            .addMigrations(migration_2_3)
             //.allowMainThreadQueries()
             .build()
     }

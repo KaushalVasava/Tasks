@@ -1,7 +1,6 @@
 package com.lahsuak.apps.mytask.ui.fragments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,10 +15,10 @@ import android.view.WindowManager
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.lahsuak.apps.mytask.R
 import com.lahsuak.apps.mytask.data.model.SubTask
 import com.lahsuak.apps.mytask.data.util.Constants.REM_KEY
+import com.lahsuak.apps.mytask.data.util.Util.setClipboard
 import com.lahsuak.apps.mytask.data.util.Util.showReminder
 import com.lahsuak.apps.mytask.ui.viewmodel.SubTaskViewModel
 import kotlinx.coroutines.launch
@@ -27,9 +26,6 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class RenameFragmentDialog : BottomSheetDialogFragment() {
 
-    //    private val binding: FragmentDialogRenameBinding by viewBinding {
-//        FragmentDialogRenameBinding.bind(it)
-//    }
     private lateinit var binding: FragmentDialogRenameBinding
     private val args: RenameFragmentDialogArgs by navArgs()
     private val model: TaskViewModel by viewModels()
@@ -42,11 +38,6 @@ class RenameFragmentDialog : BottomSheetDialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-
-        val lastSignIN = GoogleSignIn.getLastSignedInAccount(requireContext())
-        if(lastSignIN !=null){
-            model.userId = lastSignIN.id
-        }
         var isImp = false
         binding = FragmentDialogRenameBinding.inflate(layoutInflater)
         @Suppress("deprecation")
@@ -55,6 +46,12 @@ class RenameFragmentDialog : BottomSheetDialogFragment() {
         }
         if (args.source) {
             binding.timerTxt.visibility = View.GONE
+        }
+
+        binding.btnCopy.setOnClickListener {
+            if (binding.renameText.text.toString().isEmpty().not()) {
+                setClipboard(requireContext(), binding.renameText.text.toString())
+            }
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
@@ -103,7 +100,8 @@ class RenameFragmentDialog : BottomSheetDialogFragment() {
                     binding.impTask.isChecked,
                     null,
                     -1f,
-                    null, model.userId!!)
+                    null
+                )
             }
 
             task = showReminder(requireActivity(), binding.timerTxt, task)
@@ -120,8 +118,8 @@ class RenameFragmentDialog : BottomSheetDialogFragment() {
                             binding.impTask.isChecked,
                             null,
                             -1f,
-                            null,
-                            model.userId!!)
+                            null
+                        )
                     }//task = Task(0, binding.renameText.text.toString(), false, isImp, , -1f)
                     model.insert(task)
                 }

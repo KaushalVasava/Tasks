@@ -3,8 +3,10 @@ package com.lahsuak.apps.mytask.data.util
 import android.annotation.SuppressLint
 import android.app.*
 import android.content.ActivityNotFoundException
+import android.content.ClipData
 import android.content.Context
 import android.content.Intent
+import android.content.res.Resources
 import android.net.Uri
 import android.os.Build
 import android.speech.RecognizerIntent
@@ -14,27 +16,37 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.lahsuak.apps.mytask.BuildConfig
 import com.lahsuak.apps.mytask.R
 import com.lahsuak.apps.mytask.data.model.Task
 import com.lahsuak.apps.mytask.data.util.Constants.CHANNEL_ID
 import com.lahsuak.apps.mytask.data.util.Constants.DATE_FORMAT
-import com.lahsuak.apps.mytask.data.util.Constants.LOGIN_SHARED_PREF
-import com.lahsuak.apps.mytask.data.util.Constants.LOGIN_STATUS_KEY
 import com.lahsuak.apps.mytask.data.util.Constants.MAIL_TO
 import com.lahsuak.apps.mytask.data.util.Constants.MARKET_PLACE_HOLDER
 import com.lahsuak.apps.mytask.data.util.Constants.SHARE_FORMAT
 import com.lahsuak.apps.mytask.receiver.AlarmReceiver
+import com.lahsuak.apps.mytask.ui.MainActivity
 import java.text.DateFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 
 object Util {
+    private const val COPY_TAG = "Copied Text"
+
+    fun <T> unsafeLazy(initializer: () -> T): Lazy<T> {
+        return lazy(LazyThreadSafetyMode.NONE, initializer)
+    }
+
+    fun setClipboard(context: Context, text: String) {
+        val clipboard =
+            context.getSystemService(AppCompatActivity.CLIPBOARD_SERVICE) as android.content.ClipboardManager
+        val clip = ClipData.newPlainText(COPY_TAG, text)
+        clipboard.setPrimaryClip(clip)
+        notifyUser(context, "$text copied")
+    }
+
     fun createNotification(context: Context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 
@@ -241,24 +253,14 @@ object Util {
             )
         }
     }
-
-    fun setUserLoginStatus(context: Context, status: Boolean) {
-        context.getSharedPreferences(LOGIN_SHARED_PREF,
-            Context.MODE_PRIVATE).edit().apply {
-            putBoolean(LOGIN_STATUS_KEY, status)
-            apply()
+    fun getLanguage(): String {
+        val langCode: String
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            langCode = Resources.getSystem().configuration.locales[0].toString().substring(0, 2)
+        } else {
+            @Suppress("deprecation")
+            langCode = Resources.getSystem().configuration.locale.toString().substring(0, 2)
         }
-    }
-
-    fun getUserLoginStatus(context: Context): Boolean {
-        return context.getSharedPreferences(LOGIN_SHARED_PREF, Context.MODE_PRIVATE)
-            .getBoolean(LOGIN_STATUS_KEY, false)
-    }
-
-    fun signOut(context: Context) {
-        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .build()
-        val googleSignInClient = GoogleSignIn.getClient(context, gso)
-        googleSignInClient.signOut()
+        return langCode
     }
 }

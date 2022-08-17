@@ -31,7 +31,6 @@ class SubTaskAdapter(private val listener: SubTaskListener) :
         when (holder) {
             is SubTaskViewHolder1 -> holder.bind(currentItem)
             is SubTaskViewHolder2 -> holder.bind(currentItem)
-
         }
     }
 

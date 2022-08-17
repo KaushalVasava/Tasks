@@ -7,7 +7,6 @@ import com.lahsuak.apps.mytask.R
 import com.lahsuak.apps.mytask.data.PreferenceManager
 import com.lahsuak.apps.mytask.data.SortOrder
 import com.lahsuak.apps.mytask.data.model.Task
-import com.lahsuak.apps.mytask.data.model.User
 import com.lahsuak.apps.mytask.data.repository.TodoRepository
 import com.lahsuak.apps.mytask.data.util.Constants.SEARCH_INITIAL_VALUE
 import com.lahsuak.apps.mytask.data.util.Constants.SEARCH_QUERY
@@ -30,7 +29,6 @@ class TaskViewModel @Inject constructor(
         object NavigateToAllCompletedScreen : TaskEvent()
     }
 
-    var userId: String? = null
     val searchQuery = state.getLiveData(SEARCH_QUERY, SEARCH_INITIAL_VALUE)
     val preferencesFlow = preferenceManager.preferencesFlow
     private val taskEventChannel = Channel<TaskEvent>()
@@ -41,7 +39,7 @@ class TaskViewModel @Inject constructor(
     ) { query, filterPreferences ->
         Pair(query, filterPreferences)
     }.flatMapLatest { (query, filterPreferences) ->
-        repository.getAllTasks(userId!!,
+        repository.getAllTasks(
             query,
             filterPreferences.sortOrder,
             filterPreferences.hideCompleted)
@@ -52,7 +50,7 @@ class TaskViewModel @Inject constructor(
     ) { query, filterPreferences ->
         Pair(query, filterPreferences)
     }.flatMapLatest { (query, filterPreferences) ->
-        repository.getAllTasks(userId!!, query, filterPreferences.sortOrder, false)
+        repository.getAllTasks(query, filterPreferences.sortOrder, false)
     }
 
     val todos = tasksFlow.asLiveData() //all tasks
@@ -103,18 +101,6 @@ class TaskViewModel @Inject constructor(
 
     suspend fun getById(id: Int): Task {
         return repository.getById(id)
-    }
-
-    suspend fun getUserById(userId: String): User {
-        return repository.getUserById(userId)
-    }
-
-    fun insertUser(user: User) = viewModelScope.launch(Dispatchers.IO) {
-        repository.insertUser(user)
-    }
-
-    fun deleteUser(user: User) = viewModelScope.launch(Dispatchers.IO) {
-        repository.deleteUser(user)
     }
 
     suspend fun deleteAllTasks() = viewModelScope.launch(Dispatchers.IO) {

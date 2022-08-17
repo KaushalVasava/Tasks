@@ -22,7 +22,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.*
-import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.play.core.appupdate.AppUpdateManager
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
@@ -36,7 +35,6 @@ import com.lahsuak.apps.mytask.data.model.Task
 import com.lahsuak.apps.mytask.data.util.Constants.REM_KEY
 import com.lahsuak.apps.mytask.data.util.Constants.UPDATE_REQUEST_CODE
 import com.lahsuak.apps.mytask.data.util.Util.notifyUser
-import com.lahsuak.apps.mytask.data.util.Util.signOut
 import com.lahsuak.apps.mytask.data.util.Util.speakToAddTask
 import com.lahsuak.apps.mytask.data.util.onQueryTextChanged
 import com.lahsuak.apps.mytask.data.util.viewBinding
@@ -82,13 +80,14 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener 
             if (result.resultCode == Activity.RESULT_OK) {
                 val data = result.data
                 val result1 = data!!.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
-                val task = Task(0,
+                val task = Task(
+                    0,
                     result1!![0],
                     isDone = false,
                     false,
                     null,
-                    0f,
-                    userId = viewModel.userId!!)
+                    0f
+                )
                 viewModel.insert(task)
             }
         }
@@ -108,10 +107,6 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener 
             }
         }
 
-        val lastSignIN = GoogleSignIn.getLastSignedInAccount(requireContext())
-        if (lastSignIN != null) {
-            viewModel.userId = lastSignIN.id
-        }
         taskAdapter = TaskAdapter(this)
 
         setHasOptionsMenu(true)
@@ -232,16 +227,6 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener 
                 val action = TaskFragmentDirections.actionTaskFragmentToSettingsFragment()
                 navController.navigate(action)
                 true
-            }
-            R.id.logout -> {
-                val lastSignIN = GoogleSignIn.getLastSignedInAccount(requireContext())
-                if (lastSignIN != null) {
-                    signOut(requireContext())
-                    navController.popBackStack(R.id.main_nav_graph,true)
-                    navController.navigate(R.id.loginFragment)
-                    true
-                } else
-                    false
             }
             else -> super.onOptionsItemSelected(item)
         }

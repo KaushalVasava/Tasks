@@ -3,27 +3,13 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/Projects/Android Projects/MyTask/app/src/main/res/drawable/ic_filter.xml" value="0.17" />
-        <entry key="..\:/Projects/Android Projects/MyTask/app/src/main/res/drawable/splash_screen.xml" value="0.1" />
-        <entry key="..\:/Projects/Android Projects/MyTask/app/src/main/res/drawable/splash_screen_background.xml" value="0.1" />
-        <entry key="..\:/Projects/Android Projects/MyTask/app/src/main/res/layout/activity_main.xml" value="0.17864583333333334" />
-        <entry key="..\:/Projects/Android Projects/MyTask/app/src/main/res/layout/fragment_dialog_rename.xml" value="0.17864583333333334" />
-        <entry key="..\:/Projects/Android Projects/MyTask/app/src/main/res/layout/fragment_list.xml" value="0.17864583333333334" />
-        <entry key="..\:/Projects/Android Projects/MyTask/app/src/main/res/layout/fragment_login.xml" value="0.17864583333333334" />
-        <entry key="..\:/Projects/Android Projects/MyTask/app/src/main/res/layout/fragment_subtask.xml" value="0.17864583333333334" />
-        <entry key="..\:/Projects/Android Projects/MyTask/app/src/main/res/layout/speech_layout.xml" value="0.17864583333333334" />
-        <entry key="..\:/Projects/Android Projects/MyTask/app/src/main/res/layout/task_item.xml" value="0.17864583333333334" />
-        <entry key="..\:/Projects/Android Projects/MyTask/app/src/main/res/layout/task_item_grid.xml" value="0.22" />
-        <entry key="..\:/Projects/Android Projects/MyTask/app/src/main/res/menu/app_menu.xml" value="0.17864583333333334" />
-        <entry key="..\:/Projects/Android Projects/MyTask/app/src/main/res/menu/bottom_menu.xml" value="0.17864583333333334" />
+        <entry key="..\:/Projects/Android Projects/MyTask/app/src/main/res/layout/fragment_dialog_rename.xml" value="0.25" />
+        <entry key="..\:/Projects/Android Projects/MyTask/app/src/main/res/layout/fragment_task.xml" value="0.16354166666666667" />
+        <entry key="..\:/Projects/Android Projects/MyTask/app/src/main/res/menu/app_menu.xml" value="0.1" />
         <entry key="..\:/Projects/Android Projects/MyTask/app/src/main/res/xml/root_preferences.xml" value="0.17864583333333334" />
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
-    <output url="file://$PROJECT_DIR$/build/classes" />
-  </component>
-  <component name="ProjectType">
-    <option name="id" value="Android" />
-  </component>
+  <component name="ExternalStorageConfigurationManager" enabled="true" />
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK" />
 </project>

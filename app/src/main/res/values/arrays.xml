@@ -24,4 +24,50 @@
         <item>1</item>
         <item>2</item>
     </string-array>
+
+    <string-array name="language_entries">
+        <item>System Default</item>
+        <item>ˌafrəˈkänz (Afrikaans)</item>
+        <item>(Arabic) عربى</item>
+        <item>বাংলা (Bengali)</item>
+        <item>中国人 (Chinese)</item>
+        <item>dəCH (Dutch)</item>
+        <item>English</item>
+        <item>Français (French)</item>
+        <item>Deutsch (German)</item>
+        <item>Ελληνικά (Greek)</item>
+        <item>हिन्दी (Hindi)</item>
+        <item>bahasa Indonesia (Indonesian)</item>
+        <item>Italiano (Italian)</item>
+        <item>日本 (Japanese)</item>
+        <item>한국인 (Korean)</item>
+        <item>Português (Portuguese)</item>
+        <item>Русский (Russian)</item>
+        <item>Español (Spanish)</item>
+        <item>Türk (Turkish)</item>
+        <item>(Urdu) اردو</item>
+    </string-array>
+
+    <string-array name="language_values">
+        <item>-1</item>
+        <item>af</item>
+        <item>ar</item>
+        <item>bn</item>
+        <item>zh</item>
+        <item>nl</item>
+        <item>en</item>
+        <item>fr</item>
+        <item>de</item>
+        <item>el</item>
+        <item>hi</item>
+        <item>in</item>
+        <item>it</item>
+        <item>ja</item>
+        <item>ko</item>
+        <item>pt</item>
+        <item>ru</item>
+        <item>es</item>
+        <item>tr</item>
+        <item>ur</item>
+    </string-array>
 </resources>

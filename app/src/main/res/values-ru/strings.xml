@@ -84,5 +84,6 @@
     <string name="list_view">Список</string>
     <string name="theme">Тема</string>
     <string name="pm_format">пп</string>
+    <string name="language">Язык</string>
 
 </resources>

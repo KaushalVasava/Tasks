@@ -4,28 +4,11 @@ import com.lahsuak.apps.mytask.data.SortOrder
 import com.lahsuak.apps.mytask.data.db.TaskDao
 import com.lahsuak.apps.mytask.data.model.SubTask
 import com.lahsuak.apps.mytask.data.model.Task
-import com.lahsuak.apps.mytask.data.model.User
 import kotlinx.coroutines.flow.Flow
 
 class TodoRepositoryImpl(
     private val dao: TaskDao,
 ) : TodoRepository {
-
-    override suspend fun insertUser(user: User) {
-        dao.insert(user)
-    }
-
-    override suspend fun deleteUser(user: User) {
-        dao.delete(user)
-    }
-
-    override suspend fun getUsers(): Flow<List<User>> {
-        return dao.getAllUsers()
-    }
-
-    override suspend fun getUserById(userId: String): User {
-        return dao.getUserById(userId)
-    }
 
     override suspend fun insertTodo(todo: Task) {
         dao.insert(todo)
@@ -40,12 +23,11 @@ class TodoRepositoryImpl(
     }
 
     override fun getAllTasks(
-        userId: String,
         searchQuery: String,
         sortOrder: SortOrder,
         hideCompleted: Boolean,
     ): Flow<List<Task>> {
-        return dao.getAllTasks(userId, searchQuery, sortOrder, hideCompleted)
+        return dao.getAllTasks(searchQuery, sortOrder, hideCompleted)
     }
 
     override suspend fun getById(id: Int): Task {

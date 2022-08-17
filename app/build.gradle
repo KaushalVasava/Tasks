@@ -23,7 +23,11 @@ android {
     buildFeatures {
         viewBinding true
     }
-
+    bundle {
+        language {
+            enableSplit = false
+        }
+    }
     buildTypes {
         release {
             minifyEnabled true
@@ -91,5 +95,4 @@ dependencies {
     implementation 'com.github.hotchemi:android-rate:1.0.1'
 
     implementation 'com.google.android.gms:play-services-auth:20.2.0'
-
 }

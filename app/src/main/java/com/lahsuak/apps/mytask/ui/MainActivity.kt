@@ -1,23 +1,29 @@
 package com.lahsuak.apps.mytask.ui
 
+import android.content.ClipData
+import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
+import android.content.res.Configuration
 import android.os.Bundle
-import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.preference.PreferenceManager
-import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.lahsuak.apps.mytask.R
+import com.lahsuak.apps.mytask.data.util.Constants.LANGUAGE_SHARED_PREFERENCE
+import com.lahsuak.apps.mytask.data.util.Constants.LANGUAGE_SHARED_PREFERENCE_LANGUAGE_KEY
 import com.lahsuak.apps.mytask.data.util.Constants.SHARE_FORMAT
 import com.lahsuak.apps.mytask.data.util.Constants.THEME_DEFAULT
 import com.lahsuak.apps.mytask.data.util.Constants.THEME_KEY
-import com.lahsuak.apps.mytask.data.util.Util
-import com.lahsuak.apps.mytask.data.util.Util.getUserLoginStatus
+import com.lahsuak.apps.mytask.data.util.RuntimeLocaleChanger
+import com.lahsuak.apps.mytask.data.util.Util.getLanguage
+import com.lahsuak.apps.mytask.data.util.Util.notifyUser
+import com.lahsuak.apps.mytask.data.util.Util.setClipboard
 import com.lahsuak.apps.mytask.databinding.ActivityMainBinding
+import com.lahsuak.apps.mytask.di.TodoApp.Companion.mylang
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -28,7 +34,18 @@ class MainActivity : AppCompatActivity() {
     companion object {
         var shareTxt: String? = null
         var isWidgetClick = false
-        //var selectedTheme = 0
+    }
+
+
+    override fun attachBaseContext(base: Context) {
+        super.attachBaseContext(RuntimeLocaleChanger.wrapContext(base, mylang))
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        val pref = getSharedPreferences(LANGUAGE_SHARED_PREFERENCE, MODE_PRIVATE)
+        val lang = pref.getString(LANGUAGE_SHARED_PREFERENCE_LANGUAGE_KEY, getLanguage())!!
+        RuntimeLocaleChanger.overrideLocale(this, lang)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,32 +73,20 @@ class MainActivity : AppCompatActivity() {
             true
         setSupportActionBar(binding.toolbar)
 
-        binding.toolbar.setOnClickListener {
-            Toast.makeText(this, "Click toolbar", Toast.LENGTH_SHORT).show()
+        binding.toolbar.setOnLongClickListener {
+            if (navController.currentDestination?.id == R.id.subTaskFragment) {
+                setClipboard(this, binding.toolbar.title.toString())
+            }
+            true
         }
 
         val navHostFragment =
             (supportFragmentManager.findFragmentById(R.id.my_container) as NavHostFragment)
-        val inflater = navHostFragment.navController.navInflater
-        val graph = inflater.inflate(R.navigation.main_nav_graph)
-        val lastSignIN = GoogleSignIn.getLastSignedInAccount(this)
-        if (lastSignIN != null) {
-            graph.setStartDestination(R.id.taskFragment)
-        } else
-            graph.setStartDestination(R.id.loginFragment)
-        // if (getUserLoginStatus(this))
-        //   graph.setStartDestination(R.id.taskFragment)
-
-        navHostFragment.navController.graph = graph
         navController = navHostFragment.navController
-        setupActionBarWithNavController(navController)//,appBarConfiguration)
+        setupActionBarWithNavController(navController)
     }
 
     override fun onSupportNavigateUp(): Boolean {
-        //Pass argument appBarConfiguration in navigateUp() method
-        // for hamburger icon respond to click events
-        //navConfiguration
         return navController.navigateUp() || super.onSupportNavigateUp()
     }
-
 }

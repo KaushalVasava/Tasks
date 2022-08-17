@@ -3,18 +3,9 @@ package com.lahsuak.apps.mytask.data.repository
 import com.lahsuak.apps.mytask.data.SortOrder
 import com.lahsuak.apps.mytask.data.model.SubTask
 import com.lahsuak.apps.mytask.data.model.Task
-import com.lahsuak.apps.mytask.data.model.User
 import kotlinx.coroutines.flow.Flow
 
 interface TodoRepository {
-
-    suspend fun insertUser(user: User)
-
-    suspend fun deleteUser(user: User)
-
-    suspend fun getUsers(): Flow<List<User>>
-
-    suspend fun getUserById(userId: String): User
 
     suspend fun insertTodo(todo: Task)
 
@@ -23,7 +14,6 @@ interface TodoRepository {
     suspend fun updateTodo(todo: Task)
 
     fun getAllTasks(
-        userId: String,
         searchQuery: String,
         sortOrder: SortOrder,
         hideCompleted: Boolean,

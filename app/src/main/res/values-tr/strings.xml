@@ -85,5 +85,6 @@
     <string name="list_view">Список</string>
     <string name="theme">Tema</string>
     <string name="pm_format">ös</string>
+    <string name="language">Dil</string>
 
 </resources>

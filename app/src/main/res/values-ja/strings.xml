@@ -82,5 +82,6 @@
     <string name="list_view">リストビュー</string>
     <string name="theme">テーマ</string>
     <string name="pm_format">午後</string>
+    <string name="language">言語</string>
 
 </resources>
