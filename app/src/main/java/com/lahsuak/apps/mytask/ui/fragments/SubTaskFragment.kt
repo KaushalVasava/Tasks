@@ -18,7 +18,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ActionMode
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
-import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -34,12 +33,11 @@ import com.lahsuak.apps.mytask.R
 import com.lahsuak.apps.mytask.data.SortOrder
 import com.lahsuak.apps.mytask.data.model.SubTask
 import com.lahsuak.apps.mytask.data.model.Task
-import com.lahsuak.apps.mytask.data.util.Util
-import com.lahsuak.apps.mytask.data.util.Util.createNotification
-import com.lahsuak.apps.mytask.data.util.Util.getTimeDiff
-import com.lahsuak.apps.mytask.data.util.Util.notifyUser
-import com.lahsuak.apps.mytask.data.util.Util.unsafeLazy
-import com.lahsuak.apps.mytask.data.util.onQueryTextChanged
+import com.lahsuak.apps.mytask.util.Util
+import com.lahsuak.apps.mytask.util.Util.createNotification
+import com.lahsuak.apps.mytask.util.Util.getTimeDiff
+import com.lahsuak.apps.mytask.util.Util.notifyUser
+import com.lahsuak.apps.mytask.util.onQueryTextChanged
 import com.lahsuak.apps.mytask.databinding.FragmentSubtaskBinding
 import com.lahsuak.apps.mytask.ui.adapters.SubTaskAdapter
 import com.lahsuak.apps.mytask.ui.fragments.TaskFragment.Companion.viewType
@@ -128,11 +126,11 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
         binding.createNewTask.setOnClickListener {
             addNewTask()
         }
-        binding.addBtn.setOnClickListener {
+        binding.btnAddTask.setOnClickListener {
             addNewTask()
         }
 
-        binding.soundTask.setOnClickListener {
+        binding.btnVoiceTask.setOnClickListener {
             Util.speakToAddTask(requireActivity(), speakLauncher)
         }
 
@@ -202,7 +200,7 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
                 subModel.onSortOrderSelected(SortOrder.BY_NAME, requireContext())
                 true
             }
-            R.id.sortByOld -> {
+            R.id.sortByDate -> {
                 subModel.onSortOrderSelected(SortOrder.BY_DATE, requireContext())
                 true
             }
@@ -550,13 +548,13 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
         if (actionModeOn) {
             selectedItem2 = Array(subTaskAdapter.currentList.size) { false }
             is_in_action_mode2 = true
-            binding.soundTask.visibility = View.GONE
-            binding.addBtn.visibility = View.GONE
+            binding.btnVoiceTask.visibility = View.GONE
+            binding.btnAddTask.visibility = View.GONE
         } else {
             is_in_action_mode2 = false
             is_select_all2 = false
-            binding.addBtn.visibility = View.VISIBLE
-            binding.soundTask.visibility = View.VISIBLE
+            binding.btnAddTask.visibility = View.VISIBLE
+            binding.btnVoiceTask.visibility = View.VISIBLE
             subTaskAdapter.notifyDataSetChanged()
         }
     }

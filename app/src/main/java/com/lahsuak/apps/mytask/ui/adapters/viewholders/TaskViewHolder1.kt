@@ -2,6 +2,7 @@ package com.lahsuak.apps.mytask.ui.adapters.viewholders
 
 import android.annotation.SuppressLint
 import android.graphics.Paint
+import android.text.util.Linkify
 import android.util.TypedValue
 import android.view.View
 import androidx.appcompat.content.res.AppCompatResources
@@ -10,7 +11,7 @@ import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.RecyclerView
 import com.lahsuak.apps.mytask.R
 import com.lahsuak.apps.mytask.data.model.Task
-import com.lahsuak.apps.mytask.data.util.Util
+import com.lahsuak.apps.mytask.util.Util
 import com.lahsuak.apps.mytask.databinding.TaskItemBinding
 import com.lahsuak.apps.mytask.ui.adapters.TaskAdapter
 import com.lahsuak.apps.mytask.ui.fragments.TaskFragment
@@ -52,7 +53,7 @@ class TaskViewHolder1(
                 if (position != RecyclerView.NO_POSITION) {
                     val task = adapter.currentList[position]
                     if (!TaskFragment.is_in_action_mode) {
-                        listener.onDeleteClicked(task,position)
+                        listener.onDeleteClicked(task, position)
                     }
                 }
             }
@@ -84,6 +85,8 @@ class TaskViewHolder1(
             val showSubTask = prefManager.getBoolean("show_subtask", true)
 
             title.text = task.title
+            Linkify.addLinks(title, Linkify.ALL)
+
             val prefMgr = PreferenceManager.getDefaultSharedPreferences(context)
             val txtSize = prefMgr.getString("font_size", "18")!!.toFloat()
             title.setTextSize(TypedValue.COMPLEX_UNIT_SP, txtSize)
@@ -205,7 +208,6 @@ class TaskViewHolder1(
                 }
                 progressBar.background = null
             }
-
         }
     }
 }

@@ -32,12 +32,12 @@ import com.google.android.play.core.install.model.UpdateAvailability
 import com.lahsuak.apps.mytask.R
 import com.lahsuak.apps.mytask.data.SortOrder
 import com.lahsuak.apps.mytask.data.model.Task
-import com.lahsuak.apps.mytask.data.util.Constants.REM_KEY
-import com.lahsuak.apps.mytask.data.util.Constants.UPDATE_REQUEST_CODE
-import com.lahsuak.apps.mytask.data.util.Util.notifyUser
-import com.lahsuak.apps.mytask.data.util.Util.speakToAddTask
-import com.lahsuak.apps.mytask.data.util.onQueryTextChanged
-import com.lahsuak.apps.mytask.data.util.viewBinding
+import com.lahsuak.apps.mytask.util.Constants.REM_KEY
+import com.lahsuak.apps.mytask.util.Constants.UPDATE_REQUEST_CODE
+import com.lahsuak.apps.mytask.util.Util.notifyUser
+import com.lahsuak.apps.mytask.util.Util.speakToAddTask
+import com.lahsuak.apps.mytask.util.onQueryTextChanged
+import com.lahsuak.apps.mytask.util.viewBinding
 import com.lahsuak.apps.mytask.databinding.FragmentTaskBinding
 import com.lahsuak.apps.mytask.ui.MainActivity.Companion.isWidgetClick
 import com.lahsuak.apps.mytask.ui.MainActivity.Companion.shareTxt
@@ -86,7 +86,8 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener 
                     isDone = false,
                     false,
                     null,
-                    0f
+                    0f,
+                    date = System.currentTimeMillis()
                 )
                 viewModel.insert(task)
             }
@@ -141,7 +142,7 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener 
 
         taskEventCollector()
 
-        binding.fab.setOnClickListener {
+        binding.btnAddTask.setOnClickListener {
             addNewTask()
         }
 
@@ -149,7 +150,7 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener 
             addNewTask()
         }
 
-        binding.soundTask.setOnClickListener {
+        binding.btnVoiceTask.setOnClickListener {
             speakToAddTask(requireActivity(), speakLauncher)
         }
         navController.currentBackStackEntry?.savedStateHandle?.getLiveData<String>(REM_KEY)
@@ -196,7 +197,7 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener 
                 viewModel.onSortOrderSelected(SortOrder.BY_NAME, requireContext())
                 true
             }
-            R.id.sortByOld -> {
+            R.id.sortByDate -> {
                 viewModel.onSortOrderSelected(SortOrder.BY_DATE, requireContext())
                 true
             }
@@ -529,13 +530,13 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener 
         if (actionModeOn) {
             selectedItem = Array(taskAdapter.currentList.size) { false }
             is_in_action_mode = true
-            binding.soundTask.visibility = View.GONE
-            binding.fab.visibility = View.GONE
+            binding.btnVoiceTask.visibility = View.GONE
+            binding.btnAddTask.visibility = View.GONE
         } else {
             is_in_action_mode = false
             is_select_all = false
-            binding.fab.visibility = View.VISIBLE
-            binding.soundTask.visibility = View.VISIBLE
+            binding.btnAddTask.visibility = View.VISIBLE
+            binding.btnVoiceTask.visibility = View.VISIBLE
             taskAdapter.notifyDataSetChanged()
         }
     }

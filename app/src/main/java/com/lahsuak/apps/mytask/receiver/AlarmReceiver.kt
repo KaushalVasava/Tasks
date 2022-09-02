@@ -9,10 +9,10 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.navigation.NavDeepLinkBuilder
 import com.lahsuak.apps.mytask.R
-import com.lahsuak.apps.mytask.data.util.Constants.CHANNEL_ID
-import com.lahsuak.apps.mytask.data.util.Constants.SEPARATOR
-import com.lahsuak.apps.mytask.data.util.Constants.TASK_KEY
-import com.lahsuak.apps.mytask.data.util.Constants.TASK_TITLE
+import com.lahsuak.apps.mytask.util.Constants.CHANNEL_ID
+import com.lahsuak.apps.mytask.util.Constants.SEPARATOR
+import com.lahsuak.apps.mytask.util.Constants.TASK_KEY
+import com.lahsuak.apps.mytask.util.Constants.TASK_TITLE
 import com.lahsuak.apps.mytask.ui.fragments.SubTaskFragmentArgs
 
 
@@ -22,7 +22,7 @@ class AlarmReceiver : BroadcastReceiver() {
 
         var textId: String = intent!!.getStringExtra(TASK_KEY) ?: ""
         val textTitle: String = intent.getStringExtra(TASK_TITLE) ?: ""
-        if (textId != "") {
+        if (textId.isNotEmpty()) {
             textId = textId.substringBefore(SEPARATOR)
             val status = textId.substringAfter(SEPARATOR).toBoolean()
             val pendingIntent = NavDeepLinkBuilder(context)

@@ -7,6 +7,7 @@ import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.Intent
+import android.os.Build
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -23,18 +24,18 @@ import com.lahsuak.apps.mytask.data.SortOrder
 import com.lahsuak.apps.mytask.data.model.SubTask
 import com.lahsuak.apps.mytask.data.model.Task
 import com.lahsuak.apps.mytask.data.repository.TodoRepository
-import com.lahsuak.apps.mytask.data.util.Constants.DATE_FORMAT2
-import com.lahsuak.apps.mytask.data.util.Constants.REMINDER_DATA
-import com.lahsuak.apps.mytask.data.util.Constants.REMINDER_KEY
-import com.lahsuak.apps.mytask.data.util.Constants.SEARCH_INITIAL_VALUE
-import com.lahsuak.apps.mytask.data.util.Constants.SEARCH_QUERY
-import com.lahsuak.apps.mytask.data.util.Constants.SEPARATOR
-import com.lahsuak.apps.mytask.data.util.Constants.SHARE_FORMAT
-import com.lahsuak.apps.mytask.data.util.Constants.TASK_ID
-import com.lahsuak.apps.mytask.data.util.Constants.TASK_KEY
-import com.lahsuak.apps.mytask.data.util.Constants.TASK_TITLE
+import com.lahsuak.apps.mytask.util.Constants.DATE_FORMAT2
+import com.lahsuak.apps.mytask.util.Constants.REMINDER_DATA
+import com.lahsuak.apps.mytask.util.Constants.REMINDER_KEY
+import com.lahsuak.apps.mytask.util.Constants.SEARCH_INITIAL_VALUE
+import com.lahsuak.apps.mytask.util.Constants.SEARCH_QUERY
+import com.lahsuak.apps.mytask.util.Constants.SEPARATOR
+import com.lahsuak.apps.mytask.util.Constants.SHARE_FORMAT
+import com.lahsuak.apps.mytask.util.Constants.TASK_ID
+import com.lahsuak.apps.mytask.util.Constants.TASK_KEY
+import com.lahsuak.apps.mytask.util.Constants.TASK_TITLE
 import com.lahsuak.apps.mytask.receiver.AlarmReceiver
-import com.lahsuak.apps.mytask.data.util.Util
+import com.lahsuak.apps.mytask.util.Util
 import com.lahsuak.apps.mytask.receiver.BootReceiver.Companion.timeList
 import com.lahsuak.apps.mytask.receiver.Reminder
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -52,6 +53,10 @@ class SubTaskViewModel @Inject constructor(
     private val preferenceManager: PreferenceManager,
     private val state: SavedStateHandle
 ) : ViewModel() {
+
+    companion object {
+        private const val SEPARATOR_DASH = "-"
+    }
 
     sealed class SubTaskEvent {
         data class ShowUndoDeleteTaskMessage(val subTask: SubTask) : SubTaskEvent()
@@ -243,12 +248,21 @@ class SubTaskViewModel @Inject constructor(
                     }
 
                     val intent = Intent(activity.baseContext, AlarmReceiver::class.java)
-                    intent.putExtra(TASK_KEY, task.id.toString() + "-" + task.isDone.toString())
+                    intent.putExtra(TASK_KEY, "${task.id}$SEPARATOR_DASH${task.isDone}")
                     intent.putExtra(TASK_TITLE, task.title)
-                    //intent.putExtra(TASK_STATUS, task.isDone)
                     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    val pendingIntentFlag =
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            PendingIntent.FLAG_IMMUTABLE
+                        } else {
+                            0
+                        }
+
                     val pendingIntent = PendingIntent.getBroadcast(
-                        activity.baseContext, task.id, intent, 0
+                        activity.baseContext,
+                        task.id,
+                        intent,
+                        pendingIntentFlag
                     )
 
                     val alarmManager =
@@ -283,8 +297,15 @@ class SubTaskViewModel @Inject constructor(
         model: TaskViewModel
     ) {
         val intent = Intent(activity.baseContext, AlarmReceiver::class.java)
+        val pendingIntentFlag =
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                PendingIntent.FLAG_IMMUTABLE
+            } else {
+                0
+            }
         val pendingIntent = PendingIntent.getBroadcast(
-            activity.baseContext, taskID, intent, 0
+            activity.baseContext, taskID, intent,
+            pendingIntentFlag
         )
         val alarmManager =
             activity.getSystemService(AppCompatActivity.ALARM_SERVICE) as AlarmManager

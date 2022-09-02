@@ -12,5 +12,6 @@ data class Task(
     @ColumnInfo(name = "importance") var isImp: Boolean = false,
     @ColumnInfo(name = "reminder") var reminder: String? = null,
     @ColumnInfo(name = "progress") var progress: Float = -1f,
-    @ColumnInfo(name = "subtask") var subTaskList: String? = null
+    @ColumnInfo(name = "subtask") var subTaskList: String? = null,
+    @ColumnInfo(name = "date") var date: Long
 )

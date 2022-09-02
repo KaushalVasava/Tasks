@@ -24,7 +24,7 @@ interface TaskDao {
         searchQuery: String, hideCompleted: Boolean,
     ): Flow<List<Task>>
 
-    @Query("SELECT * FROM task_table WHERE (status!= :hideCompleted OR status = 0) AND title LIKE '%' || :searchQuery || '%' ORDER BY importance DESC,id DESC")
+    @Query("SELECT * FROM task_table WHERE (status!= :hideCompleted OR status = 0) AND title LIKE '%' || :searchQuery || '%' ORDER BY importance DESC, date DESC")
     fun getAllTaskByDate(
         searchQuery: String,
         hideCompleted: Boolean,

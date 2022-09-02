@@ -17,9 +17,9 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.lahsuak.apps.mytask.R
 import com.lahsuak.apps.mytask.data.model.SubTask
-import com.lahsuak.apps.mytask.data.util.Constants.REM_KEY
-import com.lahsuak.apps.mytask.data.util.Util.setClipboard
-import com.lahsuak.apps.mytask.data.util.Util.showReminder
+import com.lahsuak.apps.mytask.util.Constants.REM_KEY
+import com.lahsuak.apps.mytask.util.Util.setClipboard
+import com.lahsuak.apps.mytask.util.Util.showReminder
 import com.lahsuak.apps.mytask.ui.viewmodel.SubTaskViewModel
 import kotlinx.coroutines.launch
 
@@ -100,7 +100,8 @@ class RenameFragmentDialog : BottomSheetDialogFragment() {
                     binding.impTask.isChecked,
                     null,
                     -1f,
-                    null
+                    null,
+                    System.currentTimeMillis()
                 )
             }
 
@@ -118,7 +119,8 @@ class RenameFragmentDialog : BottomSheetDialogFragment() {
                             binding.impTask.isChecked,
                             null,
                             -1f,
-                            null
+                            null,
+                            System.currentTimeMillis()
                         )
                     }//task = Task(0, binding.renameText.text.toString(), false, isImp, , -1f)
                     model.insert(task)

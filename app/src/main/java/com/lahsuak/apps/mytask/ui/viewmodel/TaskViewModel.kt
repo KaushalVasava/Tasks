@@ -8,8 +8,8 @@ import com.lahsuak.apps.mytask.data.PreferenceManager
 import com.lahsuak.apps.mytask.data.SortOrder
 import com.lahsuak.apps.mytask.data.model.Task
 import com.lahsuak.apps.mytask.data.repository.TodoRepository
-import com.lahsuak.apps.mytask.data.util.Constants.SEARCH_INITIAL_VALUE
-import com.lahsuak.apps.mytask.data.util.Constants.SEARCH_QUERY
+import com.lahsuak.apps.mytask.util.Constants.SEARCH_INITIAL_VALUE
+import com.lahsuak.apps.mytask.util.Constants.SEARCH_QUERY
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel

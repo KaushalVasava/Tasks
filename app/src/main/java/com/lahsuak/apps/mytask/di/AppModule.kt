@@ -7,7 +7,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 import com.lahsuak.apps.mytask.data.db.TaskDatabase
 import com.lahsuak.apps.mytask.data.repository.TodoRepository
 import com.lahsuak.apps.mytask.data.repository.TodoRepositoryImpl
-import com.lahsuak.apps.mytask.data.util.Constants.DATABASE_NAME
+import com.lahsuak.apps.mytask.util.Constants.DATABASE_NAME
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -29,12 +29,18 @@ object AppModule {
                 database.execSQL("ALTER TABLE task_table ADD COLUMN subtask TEXT")
             }
         }
+        val migration_2_3 = object : Migration(2, 3) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL("ALTER TABLE task_table ADD COLUMN date NUMBER")
+            }
+        }
         return Room.databaseBuilder(
             app,
             TaskDatabase::class.java,
             DATABASE_NAME
         )
             .addMigrations(migration_1_2)
+            .addMigrations(migration_2_3)
             //.allowMainThreadQueries()
             .build()
     }

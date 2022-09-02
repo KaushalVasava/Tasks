@@ -14,16 +14,13 @@ import dagger.hilt.android.AndroidEntryPoint
 import android.view.WindowManager
 import androidx.lifecycle.lifecycleScope
 import com.lahsuak.apps.mytask.R
-import com.lahsuak.apps.mytask.data.util.Util
-import com.lahsuak.apps.mytask.data.util.viewBinding
+import com.lahsuak.apps.mytask.util.Util
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class ShortcutFragmentDialog : BottomSheetDialogFragment() {
 
-    private val binding: FragmentDialogRenameBinding by viewBinding {
-        FragmentDialogRenameBinding.bind(it)
-    }
+    private lateinit var binding: FragmentDialogRenameBinding
     private val args: ShortcutFragmentDialogArgs by navArgs()
     private val model: TaskViewModel by viewModels()
     private lateinit var task: Task
@@ -34,6 +31,7 @@ class ShortcutFragmentDialog : BottomSheetDialogFragment() {
         savedInstanceState: Bundle?,
     ): View {
 
+        binding = FragmentDialogRenameBinding.inflate(layoutInflater)
         @Suppress("deprecation")
         if (dialog!!.window != null) {
             dialog!!.window!!.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
@@ -63,6 +61,8 @@ class ShortcutFragmentDialog : BottomSheetDialogFragment() {
                     null,
                     -1f,
                     null
+                ,
+                    System.currentTimeMillis()
                 )
             }
             task = Util.showReminder(requireActivity(), binding.timerTxt, task)
@@ -78,7 +78,8 @@ class ShortcutFragmentDialog : BottomSheetDialogFragment() {
                             binding.impTask.isChecked,
                             null,
                             -1f,
-                            null
+                            null,
+                            System.currentTimeMillis()
                         )
                     }
                     model.insert(task)

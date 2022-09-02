@@ -3,12 +3,12 @@ package com.lahsuak.apps.mytask.di
 import android.app.Application
 import android.content.Context
 import android.content.res.Configuration
-import com.lahsuak.apps.mytask.data.util.Constants.LANGUAGE_DEFAULT_VALUE
-import com.lahsuak.apps.mytask.data.util.Constants.LANGUAGE_SHARED_PREFERENCE
-import com.lahsuak.apps.mytask.data.util.Constants.LANGUAGE_SHARED_PREFERENCE_KEY
-import com.lahsuak.apps.mytask.data.util.Constants.LANGUAGE_SHARED_PREFERENCE_LANGUAGE_KEY
-import com.lahsuak.apps.mytask.data.util.RuntimeLocaleChanger
-import com.lahsuak.apps.mytask.data.util.Util.getLanguage
+import com.lahsuak.apps.mytask.util.Constants.LANGUAGE_DEFAULT_VALUE
+import com.lahsuak.apps.mytask.util.Constants.LANGUAGE_SHARED_PREFERENCE
+import com.lahsuak.apps.mytask.util.Constants.LANGUAGE_SHARED_PREFERENCE_KEY
+import com.lahsuak.apps.mytask.util.Constants.LANGUAGE_SHARED_PREFERENCE_LANGUAGE_KEY
+import com.lahsuak.apps.mytask.util.RuntimeLocaleChanger
+import com.lahsuak.apps.mytask.util.Util.getLanguage
 import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp

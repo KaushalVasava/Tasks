@@ -127,20 +127,22 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/addBtn"
+        android:id="@+id/btn_add_task"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
+        app:tint="@color/white"
         android:contentDescription="@string/add_task"
         android:src="@drawable/ic_add" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/sound_task"
+        android:id="@+id/btn_voice_task"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|start"
         android:layout_margin="16dp"
+        app:tint="@color/white"
         android:contentDescription="@string/add_task"
         android:src="@drawable/ic_mic" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

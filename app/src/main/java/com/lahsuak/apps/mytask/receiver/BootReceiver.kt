@@ -11,9 +11,9 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
-import com.lahsuak.apps.mytask.data.util.Constants
-import com.lahsuak.apps.mytask.data.util.Constants.REMINDER_DATA
-import com.lahsuak.apps.mytask.data.util.Constants.REMINDER_KEY
+import com.lahsuak.apps.mytask.util.Constants
+import com.lahsuak.apps.mytask.util.Constants.REMINDER_DATA
+import com.lahsuak.apps.mytask.util.Constants.REMINDER_KEY
 
 class BootReceiver : BroadcastReceiver() {
     companion object {

@@ -1,6 +1,7 @@
 package com.lahsuak.apps.mytask.ui.adapters.viewholders
 
 import android.graphics.Paint
+import android.text.util.Linkify
 import android.util.TypedValue
 import android.view.View
 import androidx.appcompat.content.res.AppCompatResources
@@ -78,6 +79,8 @@ class SubTaskViewHolder1(
         binding.apply {
             val context = root.context
             title.text = subTask.subTitle
+            Linkify.addLinks(title, Linkify.ALL)
+
             val prefMgr = PreferenceManager.getDefaultSharedPreferences(context)
             val txtSize = prefMgr.getString("font_size", "18")!!.toFloat()
             title.setTextSize(TypedValue.COMPLEX_UNIT_SP, txtSize)

@@ -3,13 +3,25 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Projects/Android Projects/MyTask/app/src/main/res/drawable/ic_add.xml" value="0.137" />
+        <entry key="..\:/Projects/Android Projects/MyTask/app/src/main/res/drawable/ic_copy.xml" value="0.137" />
+        <entry key="..\:/Projects/Android Projects/MyTask/app/src/main/res/drawable/ic_mic.xml" value="0.137" />
         <entry key="..\:/Projects/Android Projects/MyTask/app/src/main/res/layout/fragment_dialog_rename.xml" value="0.25" />
-        <entry key="..\:/Projects/Android Projects/MyTask/app/src/main/res/layout/fragment_task.xml" value="0.16354166666666667" />
-        <entry key="..\:/Projects/Android Projects/MyTask/app/src/main/res/menu/app_menu.xml" value="0.1" />
+        <entry key="..\:/Projects/Android Projects/MyTask/app/src/main/res/layout/fragment_subtask.xml" value="0.17864583333333334" />
+        <entry key="..\:/Projects/Android Projects/MyTask/app/src/main/res/layout/fragment_task.xml" value="0.1" />
+        <entry key="..\:/Projects/Android Projects/MyTask/app/src/main/res/layout/task_item.xml" value="0.17864583333333334" />
+        <entry key="..\:/Projects/Android Projects/MyTask/app/src/main/res/menu/app_menu.xml" value="0.18" />
         <entry key="..\:/Projects/Android Projects/MyTask/app/src/main/res/xml/root_preferences.xml" value="0.17864583333333334" />
       </map>
     </option>
   </component>
   <component name="ExternalStorageConfigurationManager" enabled="true" />
   <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK" />
+  <component name="VisualizationToolProject">
+    <option name="state">
+      <ProjectState>
+        <option name="scale" value="0.1" />
+      </ProjectState>
+    </option>
+  </component>
 </project>

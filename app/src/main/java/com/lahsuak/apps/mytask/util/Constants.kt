@@ -1,4 +1,4 @@
-package com.lahsuak.apps.mytask.data.util
+package com.lahsuak.apps.mytask.util
 
 object Constants {
     const val CHANNEL_ID = "com.lahsuak.apps.mytask.notificationID"

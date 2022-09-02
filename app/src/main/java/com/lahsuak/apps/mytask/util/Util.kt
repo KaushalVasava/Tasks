@@ -1,4 +1,4 @@
-package com.lahsuak.apps.mytask.data.util
+package com.lahsuak.apps.mytask.util
 
 import android.annotation.SuppressLint
 import android.app.*
@@ -20,13 +20,12 @@ import com.google.android.material.timepicker.MaterialTimePicker
 import com.lahsuak.apps.mytask.BuildConfig
 import com.lahsuak.apps.mytask.R
 import com.lahsuak.apps.mytask.data.model.Task
-import com.lahsuak.apps.mytask.data.util.Constants.CHANNEL_ID
-import com.lahsuak.apps.mytask.data.util.Constants.DATE_FORMAT
-import com.lahsuak.apps.mytask.data.util.Constants.MAIL_TO
-import com.lahsuak.apps.mytask.data.util.Constants.MARKET_PLACE_HOLDER
-import com.lahsuak.apps.mytask.data.util.Constants.SHARE_FORMAT
+import com.lahsuak.apps.mytask.util.Constants.CHANNEL_ID
+import com.lahsuak.apps.mytask.util.Constants.DATE_FORMAT
+import com.lahsuak.apps.mytask.util.Constants.MAIL_TO
+import com.lahsuak.apps.mytask.util.Constants.MARKET_PLACE_HOLDER
+import com.lahsuak.apps.mytask.util.Constants.SHARE_FORMAT
 import com.lahsuak.apps.mytask.receiver.AlarmReceiver
-import com.lahsuak.apps.mytask.ui.MainActivity
 import java.text.DateFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -34,6 +33,7 @@ import java.util.*
 
 object Util {
     private const val COPY_TAG = "Copied Text"
+    private const val COMMA_SEPARATOR = ","
 
     fun <T> unsafeLazy(initializer: () -> T): Lazy<T> {
         return lazy(LazyThreadSafetyMode.NONE, initializer)
@@ -72,12 +72,20 @@ object Util {
                 )
             )
         } catch (e: ActivityNotFoundException) {
-            context.startActivity(
-                Intent(
-                    Intent.ACTION_VIEW,
-                    Uri.parse(context.getString(R.string.market_developer_string))
+            try {
+                context.startActivity(
+                    Intent(
+                        Intent.ACTION_VIEW,
+                        Uri.parse(context.getString(R.string.market_developer_string))
+                    )
                 )
-            )
+            } catch (e: Exception) {
+                e.logBoth()
+                notifyUser(context, "something went wrong!!")
+            }
+        } catch (e: Exception) {
+            e.logBoth()
+            notifyUser(context, "something went wrong!!")
         }
     }
 
@@ -91,6 +99,7 @@ object Util {
             intent.putExtra(Intent.EXTRA_TEXT, shareMsg)
             context.startActivity(Intent.createChooser(intent, "Share by"))
         } catch (e: Exception) {
+            e.logBoth()
             notifyUser(
                 context,
                 "Something went wrong!!"
@@ -103,14 +112,17 @@ object Util {
             val emailIntent = Intent(Intent.ACTION_SENDTO).apply {
                 data = Uri.parse(MAIL_TO) // only email apps should handle this
                 putExtra(Intent.EXTRA_EMAIL, arrayOf(context.getString(R.string.feedback_email)))
-                val info = Build.MODEL + "," + Build.MANUFACTURER
+                val info =
+                    Build.MODEL + COMMA_SEPARATOR + Build.MANUFACTURER + Build.VERSION.SDK_INT
                 putExtra(Intent.EXTRA_TEXT, "Please write your suggestions or issues")
-                putExtra(Intent.EXTRA_SUBJECT,
-                    "Feedback from ${context.getString(R.string.app_name)}, $info")
+                putExtra(
+                    Intent.EXTRA_SUBJECT,
+                    "Feedback from ${context.getString(R.string.app_name)}, $info"
+                )
             }
             context.startActivity(emailIntent)
         } catch (e: Exception) {
-            e.printStackTrace()
+            e.logBoth()
         }
     }
 
@@ -120,7 +132,10 @@ object Util {
         try {
             context.startActivity(goToMarket)
         } catch (e: ActivityNotFoundException) {
+            e.logBoth()
             notifyUser(context, "Sorry for inconvenience")
+        } catch (e: Exception) {
+            e.logBoth()
         }
     }
 
@@ -204,8 +219,14 @@ object Util {
                     intent.putExtra(Constants.TASK_STATUS, task.isDone)
                     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
 
+                    val pendingIntentFlag =
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            PendingIntent.FLAG_IMMUTABLE
+                        } else {
+                            0
+                        }
                     val pendingIntent = PendingIntent.getBroadcast(
-                        activity.baseContext, task.id, intent, 0
+                        activity.baseContext, task.id, intent, pendingIntentFlag
                     )
 
                     val alarmManager =
@@ -215,9 +236,6 @@ object Util {
                         mCalendar.timeInMillis,
                         pendingIntent
                     )
-
-                    // then update the task
-                    //task.reminder = time
                 }
             }
         val datePickerDialog = DatePickerDialog(
@@ -253,6 +271,7 @@ object Util {
             )
         }
     }
+
     fun getLanguage(): String {
         val langCode: String
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {

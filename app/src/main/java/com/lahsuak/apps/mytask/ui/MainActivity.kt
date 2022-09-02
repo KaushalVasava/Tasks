@@ -1,6 +1,5 @@
 package com.lahsuak.apps.mytask.ui
 
-import android.content.ClipData
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
@@ -13,15 +12,14 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.preference.PreferenceManager
 import com.lahsuak.apps.mytask.R
-import com.lahsuak.apps.mytask.data.util.Constants.LANGUAGE_SHARED_PREFERENCE
-import com.lahsuak.apps.mytask.data.util.Constants.LANGUAGE_SHARED_PREFERENCE_LANGUAGE_KEY
-import com.lahsuak.apps.mytask.data.util.Constants.SHARE_FORMAT
-import com.lahsuak.apps.mytask.data.util.Constants.THEME_DEFAULT
-import com.lahsuak.apps.mytask.data.util.Constants.THEME_KEY
-import com.lahsuak.apps.mytask.data.util.RuntimeLocaleChanger
-import com.lahsuak.apps.mytask.data.util.Util.getLanguage
-import com.lahsuak.apps.mytask.data.util.Util.notifyUser
-import com.lahsuak.apps.mytask.data.util.Util.setClipboard
+import com.lahsuak.apps.mytask.util.Constants.LANGUAGE_SHARED_PREFERENCE
+import com.lahsuak.apps.mytask.util.Constants.LANGUAGE_SHARED_PREFERENCE_LANGUAGE_KEY
+import com.lahsuak.apps.mytask.util.Constants.SHARE_FORMAT
+import com.lahsuak.apps.mytask.util.Constants.THEME_DEFAULT
+import com.lahsuak.apps.mytask.util.Constants.THEME_KEY
+import com.lahsuak.apps.mytask.util.RuntimeLocaleChanger
+import com.lahsuak.apps.mytask.util.Util.getLanguage
+import com.lahsuak.apps.mytask.util.Util.setClipboard
 import com.lahsuak.apps.mytask.databinding.ActivityMainBinding
 import com.lahsuak.apps.mytask.di.TodoApp.Companion.mylang
 import dagger.hilt.android.AndroidEntryPoint
