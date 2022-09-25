@@ -86,4 +86,19 @@
     <string name="theme">Tema</string>
     <string name="pm_format">p. m.</string>
     <string name="language">Idioma</string>
+    <string name="copy_text">Copiar</string>
+    <string name="something_went_wrong">¡algo salió mal!</string>
+    <string name="share_by">Compartir por</string>
+    <string name="text_copied">%s copiado</string>
+    <string name="write_suggestions">Escriba sus sugerencias o problemas</string>
+
+    <string name="very_small">Muy pequeño</string>
+    <string name="medium_small">Mediano Pequeño</string>
+    <string name="pequeño">Pequeño</string>
+    <string name="medio">Medio</string>
+    <string name="grande">Grande</string>
+    <string name="enorme">Enorme</string>
+    <string name="follow_system">Seguir sistema</string>
+    <string name="luz">Luz</string>
+    <string name="oscuro">Oscuro</string>
 </resources>

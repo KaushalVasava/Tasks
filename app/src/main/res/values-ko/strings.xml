@@ -33,10 +33,6 @@
     <string name="about">정보</string>
     <string name="current_version">현재 버전</string>
     <string name="more">더</string>
-    <string name="market_string" translatable="false">market://search?q=pub:카우샬 바사바</string>
-    <string name="market_developer_string" translatable="false">http://play.google.com/store/apps/developer?id=Kaushal Vasava</string>
-    <string name="play_store_share" translatable="false">https://play.google.com/store/apps/details?id=</string>
-    <string name="feedback_email" translatable="false">kaushalvasava.app.feedback@gmail.com</string>
     <string name="contact_support">지원팀에 문의</string>
     <string name="rating">앱 평가</string>
     <string name="more_apps">더 많은 앱</string>
@@ -88,4 +84,19 @@
     <string name="theme">테마</string>
     <string name="pm_format">오후</string>
     <string name="language">언어</string>
+    <string name="copy_text">복사</string>
+    <string name="something_went_wrong">문제가 발생했습니다!</string>
+    <string name="share_by">공유자</string>
+    <string name="text_copied">%s 복사됨</string>
+    <string name="write_suggestions">제안이나 문제를 적어주세요</string>
+
+    <string name="very_small">매우 작음</string>
+    <string name="medium_small">중소형</string>
+    <string name="small">작은</string>
+    <string name="medium">중간</string>
+    <string name="large">크게</string>
+    <string name="huge">거대한</string>
+    <string name="follow_system">시스템 팔로우</string>
+    <string name="light">조명</string>
+    <string name="dark">어두운</string>
 </resources>

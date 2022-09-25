@@ -83,5 +83,19 @@
     <string name="theme">テーマ</string>
     <string name="pm_format">午後</string>
     <string name="language">言語</string>
+    <string name="copy_text">コピー</string>
+    <string name="something_went_wrong">何か問題が発生しました!</string>
+    <string name="share_by">共有する</string>
+    <string name="text_copied">%s をコピーしました</string>
+    <string name="write_suggestions">提案や問題を書いてください</string>
 
+    <string name="very_small">非常に小さい</string>
+    <string name="medium_small">ミディアム スモール</string>
+    <string name="small">小</string>
+    <string name="medium">ミディアム</string>
+    <string name="large">大</string>
+    <string name="huge">巨大</string>
+    <string name="follow_system">フォローシステム</string>
+    <string name="light">ライト</string>
+    <string name="dark">ダーク</string>
 </resources>

@@ -86,4 +86,19 @@
     <string name="theme">Tema</string>
     <string name="pm_format">nm</string>
     <string name="language">Taal</string>
+    <string name="copy_text">kopieer</string>
+    <string name="something_went_wrong">iets het verkeerd geloop!</string>
+    <string name="share_by">Deel deur</string>
+    <string name="text_copied">%s gekopieer</string>
+    <string name="write_suggestions">Skryf asseblief jou voorstelle of kwessies</string>
+
+    <string name="very_small">Baie klein</string>
+    <string name="medium_small">Medium Klein</string>
+    <string name="small">Klein</string>
+    <string name="medium">Medium</string>
+    <string name="large">Groot</string>
+    <string name="huge">Groot</string>
+    <string name="follow_system">Volg stelsel</string>
+    <string name="light">Lig</string>
+    <string name="dark">Donker</string>
 </resources>

@@ -86,5 +86,19 @@
     <string name="theme">Tema</string>
     <string name="pm_format">ös</string>
     <string name="language">Dil</string>
+    <string name="copy_text">kopyalamak</string>
+    <string name="something_went_wrong">bir şeyler ters gitti!</string>
+    <string name="share_by">Paylaş:</string>
+    <string name="text_copied">%s kopyalandı</string>
+    <string name="write_suggestions">Lütfen önerilerinizi veya sorunlarınızı yazın</string>
 
+    <string name="very_small">Çok Küçük</string>
+    <string name="medium_small">Orta Küçük</string>
+    <string name="small">Küçük</string>
+    <string name="medium">Orta</string>
+    <string name="large">Büyük</string>
+    <string name="huge">Büyük</string>
+    <string name="follow_system">Sistemi Takip Et</string>
+    <string name="light">Işık</string>
+    <string name="dark">Koyu</string>
 </resources>

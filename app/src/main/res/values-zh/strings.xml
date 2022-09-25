@@ -86,4 +86,19 @@
     <string name="theme">主题</string>
     <string name="pm_format">下午</string>
     <string name="language">语</string>
+    <string name="copy_text">複製</string>
+    <string name="something_went_wrong">出了点问题！</string>
+    <string name="share_by">分享方式</string>
+    <string name="text_copied">%s 已复制</string>
+    <string name="write_suggestions">请写下您的建议或问题</string>
+
+    <string name="very_small">非常小</string>
+    <string name="medium_small">中小</string>
+    <string name="small">小</string>
+    <string name="medium">中</string>
+    <string name="large">大</string>
+    <string name="huge">巨大</string>
+    <string name="follow_system">关注系统</string>
+    <string name="light">灯光</string>
+    <string name="dark">深色</string>
 </resources>

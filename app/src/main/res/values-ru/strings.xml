@@ -85,5 +85,20 @@
     <string name="theme">Тема</string>
     <string name="pm_format">пп</string>
     <string name="language">Язык</string>
+    <string name="copy_text">копировать</string>
+    <string name="something_went_wrong">что-то пошло не так!</string>
+    <string name="share_by">Поделиться</string>
+    <string name="text_copied">%s скопировано</string>
+    <string name="write_suggestions">Напишите свои предложения или проблемы</string>
+
+    <string name="very_small">Очень маленький</string>
+    <string name="medium_small">Средний Маленький</string>
+    <string name="small">Маленький</string>
+    <string name="medium">Средний</string>
+    <string name="large">Большой</string>
+    <string name="huge">Огромный</string>
+    <string name="follow_system">Подписаться на систему</string>
+    <string name="light">Свет</string>
+    <string name="dark">Темный</string>
 
 </resources>

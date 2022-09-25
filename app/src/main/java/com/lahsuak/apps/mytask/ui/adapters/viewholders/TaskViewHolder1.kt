@@ -86,7 +86,6 @@ class TaskViewHolder1(
 
             title.text = task.title
             Linkify.addLinks(title, Linkify.ALL)
-
             val prefMgr = PreferenceManager.getDefaultSharedPreferences(context)
             val txtSize = prefMgr.getString("font_size", "18")!!.toFloat()
             title.setTextSize(TypedValue.COMPLEX_UNIT_SP, txtSize)

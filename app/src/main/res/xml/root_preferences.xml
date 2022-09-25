@@ -16,7 +16,7 @@
             app:entryValues="@array/font_values"
             app:iconSpaceReserved="false"
             app:key="font_size"
-            app:summary="Medium"
+            app:summary="@string/medium"
             app:title="@string/font_size" />
         <SwitchPreference
             app:defaultValue="false"

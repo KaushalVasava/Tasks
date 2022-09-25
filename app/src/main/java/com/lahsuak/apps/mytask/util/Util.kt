@@ -34,6 +34,8 @@ import java.util.*
 object Util {
     private const val COPY_TAG = "Copied Text"
     private const val COMMA_SEPARATOR = ","
+    private const val CHANNEL_NAME = "Reminder"
+    private const val DESCRIPTION = "Task Reminder"
 
     fun <T> unsafeLazy(initializer: () -> T): Lazy<T> {
         return lazy(LazyThreadSafetyMode.NONE, initializer)
@@ -44,18 +46,19 @@ object Util {
             context.getSystemService(AppCompatActivity.CLIPBOARD_SERVICE) as android.content.ClipboardManager
         val clip = ClipData.newPlainText(COPY_TAG, text)
         clipboard.setPrimaryClip(clip)
-        notifyUser(context, "$text copied")
+        notifyUser(context, context.getString(R.string.text_copied, text))
     }
 
     fun createNotification(context: Context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 
-            val name = "Reminder"
-            val desc = "Task Reminder"
-
             val channel =
-                NotificationChannel(CHANNEL_ID, name, NotificationManager.IMPORTANCE_DEFAULT)
-            channel.description = desc
+                NotificationChannel(
+                    CHANNEL_ID,
+                    CHANNEL_NAME,
+                    NotificationManager.IMPORTANCE_DEFAULT
+                )
+            channel.description = DESCRIPTION
 
             val notificationManager = context.getSystemService(NotificationManager::class.java)
             notificationManager.createNotificationChannel(channel)
@@ -81,11 +84,11 @@ object Util {
                 )
             } catch (e: Exception) {
                 e.logBoth()
-                notifyUser(context, "something went wrong!!")
+                notifyUser(context, context.getString(R.string.something_went_wrong))
             }
         } catch (e: Exception) {
             e.logBoth()
-            notifyUser(context, "something went wrong!!")
+            notifyUser(context, context.getString(R.string.something_went_wrong))
         }
     }
 
@@ -97,13 +100,15 @@ object Util {
             val shareMsg =
                 context.getString(R.string.play_store_share) + BuildConfig.APPLICATION_ID + "\n\n"
             intent.putExtra(Intent.EXTRA_TEXT, shareMsg)
-            context.startActivity(Intent.createChooser(intent, "Share by"))
+            context.startActivity(
+                Intent.createChooser(
+                    intent,
+                    context.getString(R.string.share_by)
+                )
+            )
         } catch (e: Exception) {
             e.logBoth()
-            notifyUser(
-                context,
-                "Something went wrong!!"
-            )
+            notifyUser(context, context.getString(R.string.something_went_wrong))
         }
     }
 
@@ -114,7 +119,7 @@ object Util {
                 putExtra(Intent.EXTRA_EMAIL, arrayOf(context.getString(R.string.feedback_email)))
                 val info =
                     Build.MODEL + COMMA_SEPARATOR + Build.MANUFACTURER + Build.VERSION.SDK_INT
-                putExtra(Intent.EXTRA_TEXT, "Please write your suggestions or issues")
+                putExtra(Intent.EXTRA_TEXT, context.getString(R.string.write_suggestions))
                 putExtra(
                     Intent.EXTRA_SUBJECT,
                     "Feedback from ${context.getString(R.string.app_name)}, $info"
@@ -133,7 +138,7 @@ object Util {
             context.startActivity(goToMarket)
         } catch (e: ActivityNotFoundException) {
             e.logBoth()
-            notifyUser(context, "Sorry for inconvenience")
+            notifyUser(context, context.getString(R.string.something_went_wrong))
         } catch (e: Exception) {
             e.logBoth()
         }

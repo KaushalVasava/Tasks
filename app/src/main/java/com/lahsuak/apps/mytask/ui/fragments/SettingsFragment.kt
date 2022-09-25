@@ -45,7 +45,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
         val prefTheme = findPreference<ListPreference>("theme_key")
         val prefLanguage = findPreference<ListPreference>("language")
 
-        val pref = requireContext().getSharedPreferences(LANGUAGE_SHARED_PREFERENCE,
+        val pref = requireContext().getSharedPreferences(
+            LANGUAGE_SHARED_PREFERENCE,
             Context.MODE_PRIVATE
         )
         selectedLang =
@@ -54,21 +55,23 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
         prefVersion!!.summary = BuildConfig.VERSION_NAME
         val prefManager = PreferenceManager.getDefaultSharedPreferences(requireContext())
-        val txtSize = prefManager.getString("font_size", "18").toString().toInt()
-        when (txtSize) {
-            16 -> prefFont?.summary = "Small"
-            18 -> prefFont?.summary = "Medium"
-            20 -> prefFont?.summary = "Large"
-            22 -> prefFont?.summary = "Huge"
-            //  else -> prefFont.summary = "Medium"
+        when (prefManager.getString("font_size", "18").toString().toInt()) {
+            12 -> prefFont?.summary = getString(R.string.very_small)
+            14 -> prefFont?.summary = getString(R.string.medium_small)
+            16 -> prefFont?.summary = getString(R.string.small)
+            18 -> prefFont?.summary = getString(R.string.medium)
+            20 -> prefFont?.summary = getString(R.string.large)
+            22 -> prefFont?.summary = getString(R.string.huge)
         }
 
         prefFont?.setOnPreferenceChangeListener { _, newValue ->
             when ((newValue as String).toInt()) {
-                16 -> prefFont.summary = "Small"
-                18 -> prefFont.summary = "Medium"
-                20 -> prefFont.summary = "Large"
-                22 -> prefFont.summary = "Huge"
+                12 -> prefFont.summary = getString(R.string.very_small)
+                14 -> prefFont.summary = getString(R.string.medium_small)
+                16 -> prefFont.summary = getString(R.string.small)
+                18 -> prefFont.summary = getString(R.string.medium)
+                20 -> prefFont.summary = getString(R.string.large)
+                22 -> prefFont.summary = getString(R.string.huge)
             }
             true
         }

@@ -12,6 +12,7 @@ import com.lahsuak.apps.mytask.databinding.FragmentDialogRenameBinding
 import com.lahsuak.apps.mytask.ui.viewmodel.TaskViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import android.view.WindowManager
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController

@@ -83,4 +83,19 @@
     <string name="theme"> الموضوع </string>
     <string name="pm_format">م</string>
     <string name="language">لغة</string>
+    <string name="copy_text">ينسخ</string>
+    <string name="something_went_wrong">iets het verkeerd geloop!</string>
+    <string name="share_by">Deel deur</string>
+    <string name="text_copied">%s gekopieer</string>
+    <string name="write_suggestions">Skryf asseblief jou voorstelle of kwessies</string>
+
+    <string name="very_small"> صغير جدًا </string>
+    <string name="medium_small"> متوسط صغير </string>
+    <string name="small"> صغير </string>
+    <string name="medium"> متوسط </string>
+    <string name="large"> كبير </string>
+    <string name="huge"> ضخم </string>
+    <string name="follow_system"> اتبع النظام </string>
+    <string name="light"> Light </string>
+    <string name="dark"> Dark </string>
 </resources>
