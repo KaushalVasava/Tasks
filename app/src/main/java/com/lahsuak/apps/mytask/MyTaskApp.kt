@@ -1,4 +1,4 @@
-package com.lahsuak.apps.mytask.di
+package com.lahsuak.apps.mytask
 
 import android.app.Application
 import android.content.Context
@@ -12,9 +12,10 @@ import com.lahsuak.apps.mytask.util.Util.getLanguage
 import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp
-class TodoApp : Application() {
+class MyTaskApp : Application() {
     companion object {
         var mylang = getLanguage()
+        lateinit var appContext: Context
     }
 
     override fun attachBaseContext(base: Context) {
@@ -23,6 +24,7 @@ class TodoApp : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        appContext = this
         languageChange()
     }
 
@@ -32,7 +34,7 @@ class TodoApp : Application() {
     }
 
     private fun languageChange() {
-        val pref = getSharedPreferences(LANGUAGE_SHARED_PREFERENCE, Application.MODE_PRIVATE)
+        val pref = getSharedPreferences(LANGUAGE_SHARED_PREFERENCE, MODE_PRIVATE)
         val langNo = pref.getString(LANGUAGE_SHARED_PREFERENCE_KEY, LANGUAGE_DEFAULT_VALUE)
         if (langNo == LANGUAGE_DEFAULT_VALUE) {
             if (mylang != getLanguage()) {

@@ -7,9 +7,9 @@ import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.Intent
+import android.graphics.Color
 import android.os.Build
 import android.view.View
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -24,7 +24,9 @@ import com.lahsuak.apps.mytask.data.SortOrder
 import com.lahsuak.apps.mytask.data.model.SubTask
 import com.lahsuak.apps.mytask.data.model.Task
 import com.lahsuak.apps.mytask.data.repository.TodoRepository
-import com.lahsuak.apps.mytask.util.Constants.DATE_FORMAT2
+import com.lahsuak.apps.mytask.databinding.FragmentSubtaskBinding
+import com.lahsuak.apps.mytask.model.SubTaskEvent
+import com.lahsuak.apps.mytask.util.Constants.TIME_FORMAT
 import com.lahsuak.apps.mytask.util.Constants.REMINDER_DATA
 import com.lahsuak.apps.mytask.util.Constants.REMINDER_KEY
 import com.lahsuak.apps.mytask.util.Constants.SEARCH_INITIAL_VALUE
@@ -35,11 +37,13 @@ import com.lahsuak.apps.mytask.util.Constants.TASK_ID
 import com.lahsuak.apps.mytask.util.Constants.TASK_KEY
 import com.lahsuak.apps.mytask.util.Constants.TASK_TITLE
 import com.lahsuak.apps.mytask.receiver.AlarmReceiver
-import com.lahsuak.apps.mytask.util.Util
 import com.lahsuak.apps.mytask.receiver.BootReceiver.Companion.timeList
 import com.lahsuak.apps.mytask.receiver.Reminder
+import com.lahsuak.apps.mytask.util.DateUtil
+import com.lahsuak.apps.mytask.util.toast
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -47,20 +51,16 @@ import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class SubTaskViewModel @Inject constructor(
     private val repository: TodoRepository,
     private val preferenceManager: PreferenceManager,
-    private val state: SavedStateHandle
+    state: SavedStateHandle
 ) : ViewModel() {
 
     companion object {
         private const val SEPARATOR_DASH = "-"
-    }
-
-    sealed class SubTaskEvent {
-        data class ShowUndoDeleteTaskMessage(val subTask: SubTask) : SubTaskEvent()
-        object NavigateToAllCompletedScreen : SubTaskEvent()
     }
 
     val searchQuery = state.getLiveData(SEARCH_QUERY, SEARCH_INITIAL_VALUE)
@@ -125,16 +125,16 @@ class SubTaskViewModel @Inject constructor(
         subTaskEventChannel.send(SubTaskEvent.NavigateToAllCompletedScreen)
     }
 
-    fun insertSubTask(todo: SubTask) = viewModelScope.launch(Dispatchers.IO) {
-        repository.insertSubTask(todo)
+    fun insertSubTask(subTask: SubTask) = viewModelScope.launch(Dispatchers.IO) {
+        repository.insertSubTask(subTask)
     }
 
-    fun updateSubTask(todo: SubTask) = viewModelScope.launch(Dispatchers.IO) {
-        repository.updateSubTask(todo)
+    fun updateSubTask(subTask: SubTask) = viewModelScope.launch(Dispatchers.IO) {
+        repository.updateSubTask(subTask)
     }
 
-    fun deleteSubTask(todo: SubTask) = viewModelScope.launch(Dispatchers.IO) {
-        repository.deleteSubTask(todo)
+    fun deleteSubTask(subTask: SubTask) = viewModelScope.launch(Dispatchers.IO) {
+        repository.deleteSubTask(subTask)
     }
 
     fun deleteAllSubTasks(id: Int) = viewModelScope.launch(Dispatchers.IO) {
@@ -174,22 +174,22 @@ class SubTaskViewModel @Inject constructor(
         try {
             context.startActivity(sendIntent)
         } catch (e: ActivityNotFoundException) {
-            Util.notifyUser(context, context.getString(R.string.empty_task))
+            context.toast {
+                context.getString(R.string.empty_task)
+            }
         }
     }
 
     fun showReminder(
+        binding: FragmentSubtaskBinding,
         activity: FragmentActivity,
         mCalendar: Calendar,
-        timerTxt: TextView,
-        cancelTimer: ImageView?,
         task: Task,
         model: TaskViewModel
     ) {
-        val formatter = SimpleDateFormat(DATE_FORMAT2, Locale.getDefault())
+        val formatter = SimpleDateFormat(TIME_FORMAT, Locale.getDefault())
         var hour = formatter.format(mCalendar.time).substring(0, 2).trim().toInt()
         val min = formatter.format(mCalendar.time).substring(3, 5).trim().toInt()
-
         val isAm = formatter.format(mCalendar.time).substring(6).trim().lowercase()
 
         /** PLEASE ADD TRANSLATION FOR ALL LANGUAGES*/
@@ -226,11 +226,8 @@ class SubTaskViewModel @Inject constructor(
                         java.text.DateFormat.SHORT
                     )
                         .format(mCalendar.time)
-                    timerTxt.text = time
-                    timerTxt.background =
-                        ContextCompat.getDrawable(activity, R.drawable.background_timer)
-
-                    cancelTimer?.visibility = View.VISIBLE
+                    binding.txtReminder.text = time
+                    binding.btnCancelReminder.visibility = View.VISIBLE
                     val sharedPref =
                         activity.getSharedPreferences(REMINDER_DATA, MODE_PRIVATE).edit()
                     timeList.add(
@@ -241,7 +238,6 @@ class SubTaskViewModel @Inject constructor(
                         )
                     )
                     val json = GsonBuilder().create().toJson(timeList)
-
                     sharedPref.apply {
                         putString(REMINDER_KEY, json)
                         apply()
@@ -272,21 +268,31 @@ class SubTaskViewModel @Inject constructor(
                         mCalendar.timeInMillis,
                         pendingIntent
                     )
-
+                    val diff = DateUtil.getTimeDiff(mCalendar.timeInMillis)
+                    if (diff < 0) {
+                        binding.txtReminder.setTextColor(
+                            ContextCompat.getColor(activity, R.color.red)
+                        )
+                    }
+                    binding.reminderLayout.background = ContextCompat.getDrawable(
+                        activity.baseContext,
+                        R.drawable.background_reminder
+                    )
+                    binding.txtReminder.isSelected = true
+                    binding.imgReminder.setColorFilter(Color.BLACK)
                     // then update the task
-                    task.reminder = time
+                    task.reminder = mCalendar.timeInMillis
                     model.update(task)
                 }
-
             }
-        val datePickerDialog = DatePickerDialog(
+
+        DatePickerDialog(
             activity,
             dateListener,
             mCalendar.get(Calendar.YEAR),
             mCalendar.get(Calendar.MONTH),
             mCalendar.get(Calendar.DAY_OF_MONTH)
-        )
-        datePickerDialog.show()
+        ).show()
     }
 
     fun cancelReminder(
@@ -313,6 +319,8 @@ class SubTaskViewModel @Inject constructor(
         timerTxt.text = activity.getString(R.string.add_date_time)
         task.reminder = null
         model.update(task)
-        Util.notifyUser(activity, activity.getString(R.string.cancel_reminder))
+        activity.baseContext.toast {
+            activity.getString(R.string.cancel_reminder)
+        }
     }
 }

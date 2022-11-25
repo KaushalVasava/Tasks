@@ -8,8 +8,9 @@
         <entry key="..\:/Projects/Android Projects/MyTask/app/src/main/res/drawable/ic_mic.xml" value="0.137" />
         <entry key="..\:/Projects/Android Projects/MyTask/app/src/main/res/layout/fragment_dialog_rename.xml" value="0.25" />
         <entry key="..\:/Projects/Android Projects/MyTask/app/src/main/res/layout/fragment_subtask.xml" value="0.17864583333333334" />
-        <entry key="..\:/Projects/Android Projects/MyTask/app/src/main/res/layout/fragment_task.xml" value="0.1" />
+        <entry key="..\:/Projects/Android Projects/MyTask/app/src/main/res/layout/fragment_task.xml" value="0.22" />
         <entry key="..\:/Projects/Android Projects/MyTask/app/src/main/res/layout/task_item.xml" value="0.17864583333333334" />
+        <entry key="..\:/Projects/Android Projects/MyTask/app/src/main/res/layout/task_item_grid.xml" value="0.17864583333333334" />
         <entry key="..\:/Projects/Android Projects/MyTask/app/src/main/res/menu/app_menu.xml" value="0.18" />
         <entry key="..\:/Projects/Android Projects/MyTask/app/src/main/res/xml/root_preferences.xml" value="0.17864583333333334" />
       </map>

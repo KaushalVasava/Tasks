@@ -7,16 +7,8 @@ import com.lahsuak.apps.mytask.data.model.Task
 
 @Database(
     entities = [Task::class, SubTask::class],
-    version = 3
+    version = 5
 )
 abstract class TaskDatabase : RoomDatabase() {
     abstract val dao: TaskDao
-//    companion object{
-//        val migration_1_2 = object : Migration(1, 2) {
-//            override fun migrate(database: SupportSQLiteDatabase) {
-//                   database.execSQL("ALTER TABLE task_table ADD COLUMN subtask STRING NULL")
-//            }
-//        }
-//
-//    }
 }

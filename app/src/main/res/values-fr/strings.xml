@@ -101,4 +101,13 @@
     <string name="follow_system">Suivre le système</string>
     <string name="light">Lumière</string>
     <string name="dark">Sombre</string>
+    <string name="permission_denied">Autorisation refusée</string>
+    <string name="open_settings">Ouvrir les paramètres</string>
+    <string name="no_application_found">Application introuvable</string>
+    <string name="user_cancelled_the_operation">L\'utilisateur a annulé l\'opération</string>
+    <string name="downloading_start">Démarrage du téléchargement</string>
+    <string name="update_failed">Échec de la mise à jour</string>
+    <string name="restart">Redémarrer</string>
+    <string name="new_app_ready">La nouvelle application est prête</string>
+    <string name="task_selected" formatted="false">%d/%d sélectionné</string>
 </resources>

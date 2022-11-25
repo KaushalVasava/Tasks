@@ -8,6 +8,7 @@ import com.lahsuak.apps.mytask.data.PreferenceManager
 import com.lahsuak.apps.mytask.data.SortOrder
 import com.lahsuak.apps.mytask.data.model.Task
 import com.lahsuak.apps.mytask.data.repository.TodoRepository
+import com.lahsuak.apps.mytask.model.TaskEvent
 import com.lahsuak.apps.mytask.util.Constants.SEARCH_INITIAL_VALUE
 import com.lahsuak.apps.mytask.util.Constants.SEARCH_QUERY
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -21,20 +22,14 @@ import javax.inject.Inject
 class TaskViewModel @Inject constructor(
     private val repository: TodoRepository,
     private val preferenceManager: PreferenceManager,
-    private val state: SavedStateHandle,
+    state: SavedStateHandle,
 ) : ViewModel() {
-
-    sealed class TaskEvent {
-        data class ShowUndoDeleteTaskMessage(val task: Task) : TaskEvent()
-        object NavigateToAllCompletedScreen : TaskEvent()
-    }
-
     val searchQuery = state.getLiveData(SEARCH_QUERY, SEARCH_INITIAL_VALUE)
     val preferencesFlow = preferenceManager.preferencesFlow
     private val taskEventChannel = Channel<TaskEvent>()
     val tasksEvent = taskEventChannel.receiveAsFlow()
 
-    private val tasksFlow = combine(
+    val tasksFlow = combine(
         searchQuery.asFlow(), preferencesFlow
     ) { query, filterPreferences ->
         Pair(query, filterPreferences)
@@ -42,20 +37,17 @@ class TaskViewModel @Inject constructor(
         repository.getAllTasks(
             query,
             filterPreferences.sortOrder,
-            filterPreferences.hideCompleted)
+            filterPreferences.hideCompleted
+        )
     }
 
-    private val tasksFlow2 = combine(
+    val tasksFlow2 = combine(
         searchQuery.asFlow(), preferencesFlow
     ) { query, filterPreferences ->
         Pair(query, filterPreferences)
     }.flatMapLatest { (query, filterPreferences) ->
         repository.getAllTasks(query, filterPreferences.sortOrder, false)
     }
-
-    val todos = tasksFlow.asLiveData() //all tasks
-
-    val todos2 = tasksFlow2.asLiveData() //completed tasks details
 
     fun onSortOrderSelected(sortOrder: SortOrder, context: Context) = viewModelScope.launch {
         preferenceManager.updateSortOrder(sortOrder, context)

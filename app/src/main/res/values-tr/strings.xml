@@ -101,4 +101,13 @@
     <string name="follow_system">Sistemi Takip Et</string>
     <string name="light">Işık</string>
     <string name="dark">Koyu</string>
+    <string name="permission_denied">İzin reddedildi</string>
+    <string name="open_settings">Ayarları aç</string>
+    <string name="no_application_found">Uygulama bulunamadı</string>
+    <string name="user_cancelled_the_operation">Kullanıcı işlemi iptal etti</string>
+    <string name="downloading_start">İndirme başlangıcı</string>
+    <string name="update_failed">Güncelleme başarısız oldu</string>
+    <string name="restart">Yeniden Başlat</string>
+    <string name="new_app_ready">Yeni uygulama hazır</string>
+    <string name="task_selected" formatted="false">%d/%d seçildi</string>
 </resources>

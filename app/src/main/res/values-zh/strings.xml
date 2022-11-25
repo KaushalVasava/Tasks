@@ -101,4 +101,13 @@
     <string name="follow_system">关注系统</string>
     <string name="light">灯光</string>
     <string name="dark">深色</string>
+    <string name="permission_denied">权限被拒绝</string>
+    <string name="open_settings">打开设置</string>
+    <string name="no_application_found">未找到应用</string>
+    <string name="user_cancelled_the_operation">用户取消了操作</string>
+    <string name="downloading_start">开始下载</string>
+    <string name="update_failed">更新失败</string>
+    <string name="restart">重启</string>
+    <string name="new_app_ready">新应用准备就绪</string>
+    <string name="task_selected" formatted="false">已选择%d/%d</string>
 </resources>

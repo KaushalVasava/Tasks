@@ -15,7 +15,7 @@
             style="@style/Widget.AppCompat.ProgressBar.Horizontal"
             android:layout_width="0dp"
             android:layout_height="20dp"
-            android:layout_margin="12dp"
+            android:layout_margin="16dp"
             android:layout_marginTop="5dp"
             android:progressDrawable="@drawable/background_progress"
             app:layout_constraintEnd_toEndOf="parent"
@@ -23,87 +23,89 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/task_progress"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:id="@+id/txt_task_progress"
+            style="@style/SubTitle"
             android:background="@android:color/transparent"
             android:gravity="center"
             android:textColor="@color/black"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="@id/progress_bar"
             app:layout_constraintEnd_toEndOf="@id/progress_bar"
             app:layout_constraintStart_toStartOf="@id/progress_bar"
             app:layout_constraintTop_toTopOf="@id/progress_bar"
-            app:layout_constraintBottom_toBottomOf="@id/progress_bar"
             tools:text="0/0 subtasks completed" />
 
         <TextView
             android:id="@+id/txt_done"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/SubTitle"
             android:layout_marginStart="2dp"
+            android:gravity="center"
             android:text="@string/mark_as_completed"
-            app:layout_constraintBottom_toBottomOf="@id/is_completed"
-            app:layout_constraintStart_toEndOf="@id/is_completed"
-            app:layout_constraintTop_toTopOf="@id/is_completed" />
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="@id/cb_task_completed"
+            app:layout_constraintStart_toEndOf="@id/cb_task_completed"
+            app:layout_constraintTop_toTopOf="@id/cb_task_completed" />
 
         <CheckBox
-            android:id="@+id/is_completed"
+            android:id="@+id/cb_task_completed"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="-3dp"
-            android:minWidth="0dp"
-            android:minHeight="0dp"
-            app:layout_constraintStart_toStartOf="@id/timer_layout"
-            app:layout_constraintTop_toBottomOf="@id/timer_layout" />
+            android:minWidth="48dp"
+            android:minHeight="48dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/reminder_layout" />
 
         <LinearLayout
-            android:id="@+id/timer_layout"
+            android:id="@+id/reminder_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:layout_marginStart="12dp"
-            android:background="?attr/selectableItemBackground"
+            android:layout_marginVertical="10dp"
+            android:layout_marginStart="16dp"
             android:orientation="horizontal"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp"
+            android:paddingVertical="5dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/progress_bar">
 
             <ImageView
-                android:id="@+id/timer_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:id="@+id/img_reminder"
+                style="@style/IconButton"
                 android:layout_gravity="center_vertical"
-                android:layout_marginEnd="5dp"
+                android:layout_marginEnd="2dp"
                 android:contentDescription="@string/reminder"
+                android:padding="0dp"
                 android:src="@drawable/ic_reminder" />
 
             <TextView
-                android:id="@+id/timer_txt"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:paddingStart="2dp"
-                android:paddingEnd="2dp"
-                android:text="@string/add_date_time" />
+                android:id="@+id/txt_reminder"
+                style="@style/SubTitle"
+                android:layout_width="0dp"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:paddingHorizontal="2dp"
+                android:text="@string/add_date_time"
+                android:textColor="@color/reminder_selector"
+                android:textSize="12sp" />
 
             <ImageView
-                android:id="@+id/cancel_timer"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:contentDescription="@string/cancel_timer"
+                android:id="@+id/btn_cancel_reminder"
+                style="@style/IconButton"
+                android:contentDescription="@string/cancel_reminder"
+                android:padding="0dp"
                 android:src="@drawable/ic_cancel"
-                android:visibility="gone" />
+                android:visibility="gone"
+                app:tint="@color/black"
+                tools:visibility="visible" />
         </LinearLayout>
 
         <TextView
-            android:id="@+id/create_new_task"
+            android:id="@+id/btn_create_new_task"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:gravity="center"
             android:padding="5dp"
-            android:visibility="gone"
             android:text="@string/create_new_sub_task"
+            android:visibility="gone"
             app:drawableTopCompat="@drawable/ic_add_task"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -111,38 +113,33 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/todoRecyclerView"
+            android:id="@+id/sub_task_recycler_view"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_margin="10dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
+            android:layout_marginVertical="5dp"
             android:visibility="gone"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/is_completed"
-            tools:listitem="@layout/task_item" />
+            app:layout_constraintEnd_toEndOf="@id/progress_bar"
+            app:layout_constraintStart_toStartOf="@id/reminder_layout"
+            app:layout_constraintTop_toBottomOf="@id/cb_task_completed"
+            tools:listitem="@layout/task_item"
+            tools:visibility="visible" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/btn_add_task"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/FloatingActionButton"
         android:layout_gravity="bottom|end"
-        android:layout_margin="16dp"
-        app:tint="@color/white"
         android:contentDescription="@string/add_task"
-        android:src="@drawable/ic_add" />
+        android:src="@drawable/ic_add"
+        app:tint="?attr/colorOnPrimary" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/btn_voice_task"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/FloatingActionButton"
         android:layout_gravity="bottom|start"
-        android:layout_margin="16dp"
-        app:tint="@color/white"
         android:contentDescription="@string/add_task"
-        android:src="@drawable/ic_mic" />
+        android:src="@drawable/ic_mic"
+        app:tint="?attr/colorOnPrimary" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

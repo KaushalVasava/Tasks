@@ -2,32 +2,32 @@ package com.lahsuak.apps.mytask.util
 
 import android.annotation.SuppressLint
 import android.app.*
-import android.content.ActivityNotFoundException
-import android.content.ClipData
-import android.content.Context
-import android.content.Intent
+import android.content.*
+import android.content.res.ColorStateList
 import android.content.res.Resources
 import android.net.Uri
 import android.os.Build
+import android.provider.Settings
 import android.speech.RecognizerIntent
+import android.util.TypedValue
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.widget.TextViewCompat
 import androidx.fragment.app.FragmentActivity
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.lahsuak.apps.mytask.BuildConfig
+import com.lahsuak.apps.mytask.MyTaskApp
 import com.lahsuak.apps.mytask.R
 import com.lahsuak.apps.mytask.data.model.Task
 import com.lahsuak.apps.mytask.util.Constants.CHANNEL_ID
-import com.lahsuak.apps.mytask.util.Constants.DATE_FORMAT
 import com.lahsuak.apps.mytask.util.Constants.MAIL_TO
 import com.lahsuak.apps.mytask.util.Constants.MARKET_PLACE_HOLDER
 import com.lahsuak.apps.mytask.util.Constants.SHARE_FORMAT
 import com.lahsuak.apps.mytask.receiver.AlarmReceiver
 import java.text.DateFormat
-import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -46,7 +46,17 @@ object Util {
             context.getSystemService(AppCompatActivity.CLIPBOARD_SERVICE) as android.content.ClipboardManager
         val clip = ClipData.newPlainText(COPY_TAG, text)
         clipboard.setPrimaryClip(clip)
-        notifyUser(context, context.getString(R.string.text_copied, text))
+        context.toast {
+            context.getString(R.string.text_copied, text)
+        }
+    }
+
+    fun pasteText(context: Context): String {
+        val myClipboard =
+            context.getSystemService(AppCompatActivity.CLIPBOARD_SERVICE) as ClipboardManager
+        val abc = myClipboard.primaryClip
+        val item = abc?.getItemAt(0)
+        return item?.text.toString()
     }
 
     fun createNotification(context: Context) {
@@ -83,12 +93,16 @@ object Util {
                     )
                 )
             } catch (e: Exception) {
-                e.logBoth()
-                notifyUser(context, context.getString(R.string.something_went_wrong))
+                e.logError()
+                context.toast {
+                    context.getString(R.string.something_went_wrong)
+                }
             }
         } catch (e: Exception) {
-            e.logBoth()
-            notifyUser(context, context.getString(R.string.something_went_wrong))
+            e.logError()
+            context.toast {
+                context.getString(R.string.something_went_wrong)
+            }
         }
     }
 
@@ -107,8 +121,10 @@ object Util {
                 )
             )
         } catch (e: Exception) {
-            e.logBoth()
-            notifyUser(context, context.getString(R.string.something_went_wrong))
+            e.logError()
+            context.toast {
+                context.getString(R.string.something_went_wrong)
+            }
         }
     }
 
@@ -127,7 +143,7 @@ object Util {
             }
             context.startActivity(emailIntent)
         } catch (e: Exception) {
-            e.logBoth()
+            e.logError()
         }
     }
 
@@ -137,43 +153,19 @@ object Util {
         try {
             context.startActivity(goToMarket)
         } catch (e: ActivityNotFoundException) {
-            e.logBoth()
-            notifyUser(context, context.getString(R.string.something_went_wrong))
-        } catch (e: Exception) {
-            e.logBoth()
-        }
-    }
-
-    fun getTimeDiff(task: Task): Int {
-        val sdf = SimpleDateFormat(DATE_FORMAT, Locale.getDefault())
-        var min = 0
-        try {
-            if (task.reminder != null) {
-
-                val date2 = sdf.parse(task.reminder!!)
-                val c = Calendar.getInstance()
-                val time = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT)
-                    .format(c.timeInMillis)
-                val date1 = sdf.parse(time)
-
-                val difference: Long = date2!!.time - date1!!.time
-                val days = (difference / (1000 * 60 * 60 * 24)).toInt()
-                val hours =
-                    ((difference - 1000 * 60 * 60 * 24 * days) / (1000 * 60 * 60)).toInt()
-                min =
-                    (difference - 1000 * 60 * 60 * 24 * days - 1000 * 60 * 60 * hours).toInt() / (1000 * 60)
+            e.logError()
+            context.toast {
+                context.getString(R.string.something_went_wrong)
             }
-        } catch (e: ParseException) {
-            e.printStackTrace()
-            min = Int.MAX_VALUE
+        } catch (e: Exception) {
+            e.logError()
         }
-        return min
     }
 
     fun showReminder(activity: FragmentActivity, timerTxt: TextView, task: Task): Task {
 
         val mCalendar = Calendar.getInstance()
-        val formatter = SimpleDateFormat(Constants.DATE_FORMAT2, Locale.getDefault())
+        val formatter = SimpleDateFormat(Constants.TIME_FORMAT, Locale.getDefault())
         var hour = formatter.format(mCalendar.time).substring(0, 2).trim().toInt()
         val min = formatter.format(mCalendar.time).substring(3, 5).trim().toInt()
 
@@ -214,16 +206,20 @@ object Util {
                         DateFormat.SHORT
                     ).format(mCalendar.time)
 
-                    timerTxt.text = time
-                    timerTxt.background =
-                        ContextCompat.getDrawable(activity, R.drawable.background_timer)
+                    timerTxt.apply {
+                        setTextDrawableColor(activity.baseContext, R.color.black)
+                        text = time
+                        background =
+                            ContextCompat.getDrawable(activity, R.drawable.background_reminder)
+                        isSelected = true
+                    }
 
-                    val intent = Intent(activity.baseContext, AlarmReceiver::class.java)
-                    intent.putExtra(Constants.TASK_KEY, task.id)
-                    intent.putExtra(Constants.TASK_TITLE, task.title)
-                    intent.putExtra(Constants.TASK_STATUS, task.isDone)
-                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-
+                    val intent = Intent(activity.baseContext, AlarmReceiver::class.java).apply {
+                        putExtra(Constants.TASK_KEY, task.id)
+                        putExtra(Constants.TASK_TITLE, task.title)
+                        putExtra(Constants.TASK_STATUS, task.isDone)
+                        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    }
                     val pendingIntentFlag =
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                             PendingIntent.FLAG_IMMUTABLE
@@ -241,6 +237,7 @@ object Util {
                         mCalendar.timeInMillis,
                         pendingIntent
                     )
+                    task.reminder = mCalendar.timeInMillis
                 }
             }
         val datePickerDialog = DatePickerDialog(
@@ -254,26 +251,21 @@ object Util {
         return task
     }
 
-    fun notifyUser(context: Context, message: String) {
-        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-    }
-
     @SuppressLint("QueryPermissionsNeeded")
-    fun speakToAddTask(context: FragmentActivity, speakLauncher: ActivityResultLauncher<Intent>) {
+    fun speakToAddTask(activity: FragmentActivity, speakLauncher: ActivityResultLauncher<Intent>) {
         val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
         intent.putExtra(
             RecognizerIntent.EXTRA_LANGUAGE_MODEL,
             RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
         )
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
-        if (intent.resolveActivity(context.packageManager) != null) {
+        if (intent.resolveActivity(activity.packageManager) != null) {
             //startActivityForResult(intent, 1)
             speakLauncher.launch(intent)
         } else {
-            notifyUser(
-                context.baseContext,
-                context.getString(R.string.speach_not_support)
-            )
+            activity.baseContext.toast {
+                activity.baseContext.getString(R.string.speach_not_support)
+            }
         }
     }
 
@@ -287,4 +279,43 @@ object Util {
         }
         return langCode
     }
+
+    fun openSettingsPage(activity: Activity?) {
+        activity ?: return
+        activity.runActivityCatching {
+            val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+            val uri: Uri = Uri.fromParts("package", MyTaskApp.appContext.packageName, null)
+            intent.data = uri
+            activity.startActivity(intent)
+        }
+    }
+}
+
+fun TextView.setTextDrawableColor(context: Context, colorId: Int) {
+    val color = ContextCompat.getColor(context, colorId)
+    val colorList = ColorStateList.valueOf(color)
+    TextViewCompat.setCompoundDrawableTintList(this, colorList)
+}
+
+fun TextView.toTrimString() = this.text.toString().trim()
+
+fun BottomSheetBehavior<*>.applyCommonBottomSheetBehaviour() {
+    skipCollapsed = true
+    state = BottomSheetBehavior.STATE_EXPANDED
+}
+
+inline fun Context?.runActivityCatching(block: () -> Unit) {
+    this ?: return
+    try {
+        block()
+    } catch (e: ActivityNotFoundException) {
+        e.logError()
+        this.toast { this.getString(R.string.no_application_found) }
+    }
+}
+
+fun Context.getAttribute(resId: Int): Int {
+    val value = TypedValue()
+    this.theme.resolveAttribute(resId, value, true);
+    return value.data
 }

@@ -9,7 +9,9 @@ import androidx.appcompat.app.AppCompatDelegate.*
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.preference.*
 import com.lahsuak.apps.mytask.BuildConfig
+import com.lahsuak.apps.mytask.MyTaskApp.Companion.mylang
 import com.lahsuak.apps.mytask.R
+import com.lahsuak.apps.mytask.util.Constants
 import com.lahsuak.apps.mytask.util.Constants.LANGUAGE_DEFAULT_VALUE
 import com.lahsuak.apps.mytask.util.Constants.LANGUAGE_SHARED_PREFERENCE
 import com.lahsuak.apps.mytask.util.Constants.LANGUAGE_SHARED_PREFERENCE_KEY
@@ -21,7 +23,6 @@ import com.lahsuak.apps.mytask.util.Util.getLanguage
 import com.lahsuak.apps.mytask.util.Util.moreApp
 import com.lahsuak.apps.mytask.util.Util.sendFeedbackMail
 import com.lahsuak.apps.mytask.util.Util.shareApp
-import com.lahsuak.apps.mytask.di.TodoApp.Companion.mylang
 import java.util.*
 
 class SettingsFragment : PreferenceFragmentCompat() {
@@ -32,7 +33,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.root_preferences, rootKey)
-
         val sp = PreferenceManager.getDefaultSharedPreferences(requireContext())
         selectedTheme = sp.getString(THEME_KEY, THEME_DEFAULT)!!.toInt()
 
@@ -55,7 +55,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
         prefVersion!!.summary = BuildConfig.VERSION_NAME
         val prefManager = PreferenceManager.getDefaultSharedPreferences(requireContext())
-        when (prefManager.getString("font_size", "18").toString().toInt()) {
+        when (prefManager.getString(Constants.FONT_SIZE_KEY, "18").toString().toInt()) {
             12 -> prefFont?.summary = getString(R.string.very_small)
             14 -> prefFont?.summary = getString(R.string.medium_small)
             16 -> prefFont?.summary = getString(R.string.small)

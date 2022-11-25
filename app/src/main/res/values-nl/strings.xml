@@ -100,4 +100,13 @@
     <string name="follow_system">Systeem volgen</string>
     <string name="light">Licht</string>
     <string name="dark">Donker</string>
+    <string name="permission_denied">Toestemming geweigerd</string>
+    <string name="open_settings">Instellingen openen</string>
+    <string name="no_application_found">Applicatie niet gevonden</string>
+    <string name="user_cancelled_the_operation">Gebruiker heeft de bewerking geannuleerd</string>
+    <string name="downloading_start">Downloaden start</string>
+    <string name="update_failed">Update mislukt</string>
+    <string name="restart">Herstart</string>
+    <string name="new_app_ready">Nieuwe app is klaar</string>
+    <string name="task_selected" formatted="false">%d/%d geselecteerd</string>
 </resources>

@@ -8,8 +8,7 @@ import android.widget.RemoteViews
 import androidx.navigation.NavDeepLinkBuilder
 import com.lahsuak.apps.mytask.R
 import com.lahsuak.apps.mytask.ui.MainActivity
-import com.lahsuak.apps.mytask.ui.fragments.RenameFragmentDialogArgs
-
+import com.lahsuak.apps.mytask.ui.fragments.AddUpdateTaskFragmentDialogArgs
 
 class TaskWidget : AppWidgetProvider() {
 
@@ -27,8 +26,13 @@ class TaskWidget : AppWidgetProvider() {
                 .setGraph(R.navigation.main_nav_graph)
                 .setDestination(R.id.renameFragmentDialog)
                 .setArguments(
-                    RenameFragmentDialogArgs.Builder(false,-1,null,-1
-                    ).build().toBundle())
+                    AddUpdateTaskFragmentDialogArgs.Builder(
+                        false,
+                        -1,
+                        null,
+                        -1
+                    ).build().toBundle()
+                )
                 .createPendingIntent()
 
             val views = RemoteViews(context.packageName, R.layout.example_widget)

@@ -100,4 +100,13 @@
     <string name="follow_system">Ακολουθήστε το σύστημα</string>
     <string name="light">Φως</string>
     <string name="dark">Σκούρο</string>
+    <string name="permission_denied">Απορρίφθηκε η άδεια</string>
+    <string name="open_settings">Άνοιγμα ρυθμίσεων</string>
+    <string name="no_application_found">Η εφαρμογή δεν βρέθηκε</string>
+    <string name="user_cancelled_the_operation">Ο χρήστης ακύρωσε τη λειτουργία</string>
+    <string name="downloading_start">Έναρξη λήψης</string>
+    <string name="update_failed">Η ενημέρωση απέτυχε</string>
+    <string name="restart">Επανεκκίνηση</string>
+    <string name="new_app_ready">Η νέα εφαρμογή είναι έτοιμη</string>
+    <string name="task_selected" formatted="false">Επιλέχτηκε %d/%d</string>
 </resources>
