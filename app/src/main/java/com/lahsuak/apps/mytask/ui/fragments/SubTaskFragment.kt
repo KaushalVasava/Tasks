@@ -4,13 +4,10 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
 import android.graphics.Canvas
-import android.os.Build
+import android.graphics.Color
 import android.os.Bundle
 import android.speech.RecognizerIntent
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.view.View
+import android.view.*
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -18,13 +15,17 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ActionMode
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
-import androidx.core.os.bundleOf
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -34,17 +35,15 @@ import com.lahsuak.apps.mytask.R
 import com.lahsuak.apps.mytask.data.SortOrder
 import com.lahsuak.apps.mytask.data.model.SubTask
 import com.lahsuak.apps.mytask.data.model.Task
-import com.lahsuak.apps.mytask.data.util.Util
-import com.lahsuak.apps.mytask.data.util.Util.createNotification
-import com.lahsuak.apps.mytask.data.util.Util.getTimeDiff
-import com.lahsuak.apps.mytask.data.util.Util.notifyUser
-import com.lahsuak.apps.mytask.data.util.Util.unsafeLazy
-import com.lahsuak.apps.mytask.data.util.onQueryTextChanged
+import com.lahsuak.apps.mytask.util.Util.createNotification
 import com.lahsuak.apps.mytask.databinding.FragmentSubtaskBinding
+import com.lahsuak.apps.mytask.model.SubTaskEvent
 import com.lahsuak.apps.mytask.ui.adapters.SubTaskAdapter
 import com.lahsuak.apps.mytask.ui.fragments.TaskFragment.Companion.viewType
 import com.lahsuak.apps.mytask.ui.viewmodel.SubTaskViewModel
 import com.lahsuak.apps.mytask.ui.viewmodel.TaskViewModel
+import com.lahsuak.apps.mytask.util.*
+import com.lahsuak.apps.mytask.util.Util.unsafeLazy
 import dagger.hilt.android.AndroidEntryPoint
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 import kotlinx.coroutines.flow.first
@@ -59,20 +58,29 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
 
     private val model: TaskViewModel by viewModels()
     private val subModel: SubTaskViewModel by viewModels()
-    private val args: SubTaskFragmentArgs by navArgs()
 
-    private lateinit var navController: NavController
+    //    private val args: SubTaskFragmentArgs by navArgs()
+    private val navController: NavController by unsafeLazy {
+        findNavController()
+    }
     private lateinit var subTaskAdapter: SubTaskAdapter
-    private lateinit var task: Task
-    private lateinit var searchView: SearchView
+    private var task: Task = Task(id = -1, title = "")
+    private var searchView: SearchView? = null
     private var actionMode: ActionMode? = null
     private val mCalendar = Calendar.getInstance()
+
+    private var taskId: Int = -1
+    private var taskTitle: String? = null
+    private var taskStatus: Boolean = false
 
     companion object {
         var selectedItem2: Array<Boolean>? = null
         var counter2 = 0
         var is_in_action_mode2 = false
         var is_select_all2 = false
+        const val ID_ARG = "id"
+        const val TITLE_ARG = "task_title"
+        const val STATUS_ARG = "status"
     }
 
     private val speakLauncher =
@@ -81,177 +89,187 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
             if (result.resultCode == Activity.RESULT_OK) {
                 val data = result.data
                 val result1 = data!!.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
-                val subTask = SubTask(args.id, result1!![0], isDone = false, false, 0)
+                val subTask = SubTask(
+                    id = taskId,
+                    subTitle = result1!![0],
+                    sId = 0
+                )
                 subModel.insertSubTask(subTask)
             }
         }
 
-    @SuppressLint("QueryPermissionsNeeded")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         binding = FragmentSubtaskBinding.bind(view)
+
+        val args = arguments
+        if (args != null) {
+            taskTitle = args.getString(TITLE_ARG, null)
+            taskId = args.getInt(ID_ARG, -1)
+            subModel.taskId.value = taskId
+            taskStatus = args.getBoolean(STATUS_ARG)
+        }
+
+
+        val prefManager = PreferenceManager.getDefaultSharedPreferences(requireContext())
+        binding.btnVoiceTask.isVisible =
+            prefManager.getBoolean(Constants.SHOW_VOICE_TASK_KEY, true)
+        setOptionMenu()
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewType = model.preferencesFlow.first().viewType
-            if (viewType) {
-                binding.todoRecyclerView.layoutManager =
+            binding.subTaskRecyclerView.layoutManager =
+                if (viewType) {
                     StaggeredGridLayoutManager(2, RecyclerView.VERTICAL)
-            } else {
-                binding.todoRecyclerView.layoutManager = LinearLayoutManager(requireContext())
-            }
+                } else {
+                    LinearLayoutManager(requireContext())
+                }
         }
+//        subModel.taskId.value = args.id
         subTaskAdapter = SubTaskAdapter(this)
-        setHasOptionsMenu(true)
-
         createNotification(requireContext())
-
-        subModel.taskId.value = args.id
-        navController = findNavController()
-
-        reminderHandling()
-
-        binding.todoRecyclerView.apply {
+        if (taskId != -1) {
+            reminderHandling()
+        }
+        binding.subTaskRecyclerView.apply {
             adapter = subTaskAdapter
             setHasFixedSize(true)
         }
 
         swipeGesturesHandler() //swipe to delete and mark as imp functionality
-
         completedSubTaskObserver() //completed and uncompleted task observer
-
         subModel.subTasks.observe(viewLifecycleOwner) { //this is for adapter
             subTaskAdapter.submitList(it)
         }
-
         subTaskEventCollector() //subtask event handler
+        addClickListeners()
+    }
 
-        binding.createNewTask.setOnClickListener {
+    private fun setOptionMenu() {
+        val menuHost: MenuHost = requireActivity()
+        menuHost.addMenuProvider(object : MenuProvider {
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                menuInflater.inflate(R.menu.app_menu, menu)
+                val searchItem = menu.findItem(R.id.action_search)
+                searchView = searchItem.actionView as SearchView
+
+                val pendingQuery = subModel.searchQuery.value
+                if (pendingQuery != null && pendingQuery.isNotEmpty()) {
+                    searchItem.expandActionView()
+                    searchView?.setQuery(pendingQuery, false)
+                }
+
+                searchView?.onQueryTextChanged {
+                    subModel.searchQuery.value = it
+                }
+                searchView?.queryHint = getString(R.string.search_subtask)
+
+                menu.findItem(R.id.itemView).isVisible = false
+                menu.findItem(R.id.setting).title = getString(R.string.share)
+                viewLifecycleOwner.lifecycleScope.launch {
+                    menu.findItem(R.id.showTask).isChecked =
+                        subModel.preferencesFlow.first().hideCompleted
+                }
+
+            }
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                // Handle the menu selection
+                return when (menuItem.itemId) {
+                    R.id.sortByName -> {
+                        subModel.onSortOrderSelected(SortOrder.BY_NAME, requireContext())
+                        true
+                    }
+                    R.id.sortByDate -> {
+                        subModel.onSortOrderSelected(SortOrder.BY_DATE, requireContext())
+                        true
+                    }
+                    R.id.showTask -> {
+                        menuItem.isChecked = !menuItem.isChecked
+                        subModel.onHideCompleted(menuItem.isChecked, requireContext())
+                        true
+                    }
+                    R.id.delete_all_completed_task -> {
+                        subModel.onDeleteAllCompletedClick()
+                        true
+                    }
+                    R.id.setting -> {
+                        subModel.shareTask(requireContext(), getAllText())
+                        true
+                    }
+                    else -> false
+                }
+            }
+        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+    }
+
+    private fun addClickListeners() {
+        binding.btnCreateNewTask.setOnClickListener {
             addNewTask()
         }
-        binding.addBtn.setOnClickListener {
+        binding.btnAddTask.setOnClickListener {
             addNewTask()
         }
 
-        binding.soundTask.setOnClickListener {
+        binding.btnVoiceTask.setOnClickListener {
             Util.speakToAddTask(requireActivity(), speakLauncher)
         }
 
-        binding.timerLayout.setOnClickListener {
+        binding.reminderLayout.setOnClickListener {
             subModel.showReminder(
+                binding,
                 requireActivity(),
                 mCalendar,
-                binding.timerTxt,
-                binding.cancelTimer,
                 task,
                 model
             )
         }
 
-        binding.cancelTimer.setOnClickListener {
-            subModel.cancelReminder(requireActivity(), args.id, task, binding.timerTxt, model)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                binding.timerTxt.setTextColor(
-                    ContextCompat.getColor(
-                        requireContext(),
-                        android.R.color.darker_gray
-                    )
+        binding.btnCancelReminder.setOnClickListener {
+            subModel.cancelReminder(requireActivity(), taskId, task, binding.txtReminder, model)
+            binding.btnCancelReminder.isVisible = false
+            binding.reminderLayout.background = null
+            binding.txtReminder.isEnabled = false
+            binding.txtReminder.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey))
+            binding.imgReminder.setColorFilter(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.grey
                 )
-            } else {
-                @Suppress("deprecation")
-                binding.timerTxt.setTextColor(resources.getColor(android.R.color.darker_gray))
-            }
-            binding.timerTxt.background = null
-            binding.cancelTimer.visibility = View.GONE
+            )
         }
 
-        binding.isCompleted.setOnCheckedChangeListener { _, isChecked ->
-            binding.isCompleted.isChecked = isChecked
-
+        binding.cbTaskCompleted.setOnCheckedChangeListener { _, isChecked ->
+            binding.cbTaskCompleted.isChecked = isChecked
             task.isDone = isChecked
             model.update(task)
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.app_menu, menu)
-        val searchItem = menu.findItem(R.id.action_search)
-        searchView = searchItem.actionView as SearchView
-
-        val pendingQuery = subModel.searchQuery.value
-        if (pendingQuery != null && pendingQuery.isNotEmpty()) {
-            searchItem.expandActionView()
-            searchView.setQuery(pendingQuery, false)
-        }
-
-        searchView.onQueryTextChanged {
-            subModel.searchQuery.value = it
-        }
-        searchView.queryHint = getString(R.string.search_subtask)
-
-        menu.findItem(R.id.itemView).isVisible = false
-        menu.findItem(R.id.setting).title = getString(R.string.share)
-        viewLifecycleOwner.lifecycleScope.launch {
-            menu.findItem(R.id.showTask).isChecked = subModel.preferencesFlow.first().hideCompleted
-        }
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.sortByName -> {
-                subModel.onSortOrderSelected(SortOrder.BY_NAME, requireContext())
-                true
-            }
-            R.id.sortByOld -> {
-                subModel.onSortOrderSelected(SortOrder.BY_DATE, requireContext())
-                true
-            }
-            R.id.showTask -> {
-                item.isChecked = !item.isChecked
-                subModel.onHideCompleted(item.isChecked, requireContext())
-                true
-            }
-            R.id.delete_all_completed_task -> {
-                subModel.onDeleteAllCompletedClick()
-                true
-            }
-            R.id.setting -> {
-                subModel.shareTask(requireContext(), getAllText())
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
-
     private fun reminderHandling() {
         viewLifecycleOwner.lifecycleScope.launch {
-            task = model.getById(args.id)
-            val diff = getTimeDiff(task)
-            if (diff < 0) {
-                binding.timerTxt.text = task.reminder
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    binding.timerTxt.setTextColor(
-                        ContextCompat.getColor(
-                            requireContext(),
-                            R.color.red
-                        )
+            task = model.getById(taskId)
+            val taskReminder = task.reminder
+            binding.cbTaskCompleted.isChecked = taskStatus
+            binding.btnCancelReminder.isVisible =
+                if (taskReminder != null) {
+                    val diff = DateUtil.getTimeDiff(taskReminder)
+                    binding.txtReminder.text = DateUtil.getReminderDateTime(taskReminder)
+                    binding.txtReminder.isSelected = true
+                    binding.imgReminder.setColorFilter(Color.BLACK)
+                    binding.reminderLayout.background = ContextCompat.getDrawable(
+                        requireContext(),
+                        R.drawable.background_reminder
                     )
+                    if (diff < 0) {
+                        binding.txtReminder.setTextColor(
+                            ContextCompat.getColor(requireContext(), R.color.red)
+                        )
+                    }
+                    true
                 } else {
-                    @Suppress("deprecation")
-                    binding.timerTxt.setTextColor(resources.getColor(R.color.red))
+                    binding.reminderLayout.background = null
+                    false
                 }
-            }
-            if (args.completed) {
-                binding.isCompleted.isChecked = true
-            }
-            if (task.reminder != null) {
-                binding.timerTxt.text = task.reminder
-                binding.timerTxt.background =
-                    ContextCompat.getDrawable(requireContext(), R.drawable.background_timer)
-                binding.cancelTimer.visibility = View.VISIBLE
-            } else {
-                binding.timerTxt.background = null
-            }
         }
     }
 
@@ -279,7 +297,6 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
                     subModel.updateSubTask(subTask)
                     subTaskAdapter.notifyDataSetChanged()
                 }
-                //   notifyUser(requireContext(), "Already pinned!")
             }
 
             override fun onChildDraw(
@@ -323,7 +340,7 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
                     isCurrentlyActive
                 )
             }
-        }).attachToRecyclerView(binding.todoRecyclerView)
+        }).attachToRecyclerView(binding.subTaskRecyclerView)
     }
 
     private fun completedSubTaskObserver() {
@@ -333,20 +350,15 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
                 if (element.isDone)
                     count++
             }
-            if (it.isEmpty()) {
-                binding.createNewTask.visibility = View.VISIBLE
-                binding.todoRecyclerView.visibility = View.GONE
-                binding.progressBar.visibility = View.GONE
-                binding.taskProgress.visibility = View.GONE
-            } else {
-                binding.progressBar.visibility = View.VISIBLE
-                binding.taskProgress.visibility = View.VISIBLE
-                binding.createNewTask.visibility = View.GONE
-                binding.todoRecyclerView.visibility = View.VISIBLE
-                val value = (count.toFloat() / it.size.toFloat()) * 100
-                binding.progressBar.progress = value.toInt()
-                binding.taskProgress.text = getString(R.string.subtask_progress, count, it.size)
-            }
+            val hasTasks = it.isNotEmpty()
+            binding.btnCreateNewTask.isVisible = !hasTasks
+            binding.subTaskRecyclerView.isVisible = hasTasks
+            binding.txtTaskProgress.isVisible = hasTasks
+            binding.progressBar.isVisible = hasTasks
+
+            val value = (count.toFloat() / it.size.toFloat()) * 100
+            binding.progressBar.progress = value.toInt()
+            binding.txtTaskProgress.text = getString(R.string.subtask_progress, count, it.size)
         }
     }
 
@@ -354,7 +366,7 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             subModel.subTasksEvent.collect { event ->
                 when (event) {
-                    is SubTaskViewModel.SubTaskEvent.ShowUndoDeleteTaskMessage -> {
+                    is SubTaskEvent.ShowUndoDeleteTaskMessage -> {
                         Snackbar.make(
                             requireView(),
                             getString(R.string.task_deleted),
@@ -364,10 +376,10 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
                                 subModel.onUndoDeleteClick(event.subTask)
                             }.show()
                     }
-                    SubTaskViewModel.SubTaskEvent.NavigateToAllCompletedScreen -> {
+                    SubTaskEvent.NavigateToAllCompletedScreen -> {
                         val action =
                             SubTaskFragmentDirections.actionGlobalDeleteAllCompletedDialogFragment2(
-                                args.id
+                                taskId
                             )//actionGlobalDeleteAllCompletedDialogFragment()
                         navController.navigate(action)
                     }
@@ -379,7 +391,7 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
     private fun addNewTask() {
         val action = SubTaskFragmentDirections.actionSubTaskFragmentToRenameFragmentDialog(
             true,
-            args.id,
+            taskId,
             null, -1
         )
         navController.navigate(action)
@@ -397,11 +409,9 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
         var sendtxt: String?
         sendtxt = "1. "
         if (subTaskAdapter.currentList.size != 0) {
-
             sendtxt += subTaskAdapter.currentList[0].subTitle//subTaskAdapter.currentList[0].subTitle
         }
         for (i in 1 until subTaskAdapter.currentList.size) {//subTaskAdapter.currentList.size) {
-
             sendtxt += "\n${i + 1}. " + subTaskAdapter.currentList[i].subTitle//subTaskAdapter.currentList[i].subTitle
         }
         if (sendtxt == "1. ") {
@@ -412,19 +422,20 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
 
     override fun onItemClicked(subTask: SubTask, position: Int) {
         if (is_in_action_mode2) {
-            if (selectedItem2!![position]) {
-                selectedItem2!![position] = false
-                counter2--
-                actionMode!!.title = "${counter2}/${subTaskAdapter.currentList.size} Selected"
-            } else {
-                selectedItem2!![position] = true
-                counter2++
-                actionMode!!.title = "${counter2}/${subTaskAdapter.currentList.size} Selected"
-            }
+            selectedItem2!![position] =
+                if (selectedItem2!![position]) {
+                    counter2--
+                    false
+                } else {
+                    counter2++
+                    true
+                }
+            actionMode!!.title =
+                getString(R.string.task_selected, counter2, subTaskAdapter.itemCount)
         } else {
             val action = SubTaskFragmentDirections.actionSubTaskFragmentToRenameFragmentDialog(
                 true,
-                args.id,
+                taskId,
                 subTask.subTitle,
                 subTask.sId
             )
@@ -438,7 +449,7 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
         } else {
             val action = SubTaskFragmentDirections.actionSubTaskFragmentToRenameFragmentDialog(
                 true,
-                args.id,
+                taskId,
                 subTask.subTitle,
                 subTask.sId
             )
@@ -481,36 +492,27 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
                             Toast.LENGTH_SHORT
                         ).show()
                     } else if (selectedItem2!!.isNotEmpty()) {
-                        if (counter2 == subTaskAdapter.currentList.size) {
-                            //delete all tasks
-                            showDialog(true)
-                        } else {
-                            //delete one by one
-                            showDialog(false)
-                        }
+                        showDialog(counter2 == subTaskAdapter.currentList.size)
                     }
                     true
                 }
                 R.id.action_selectAll -> {
-                    if (!is_select_all2) {
-                        item.setIcon(R.drawable.ic_select_all_on)
-                        for (i in 0 until subTaskAdapter.currentList.size)
-                            selectedItem2!![i] == true
-
-                        counter2 = subTaskAdapter.currentList.size
-                        actionMode!!.title =
-                            "${counter2}/${subTaskAdapter.currentList.size} Selected"
-                        is_select_all2 = true
-                    } else {
-                        item.setIcon(R.drawable.ic_select_all)
-                        for (i in 0 until subTaskAdapter.currentList.size)
-                            selectedItem2!![i] == false
-
-                        counter2 = 0
-                        is_select_all2 = false
-                        actionMode!!.title =
-                            "${counter2}/${subTaskAdapter.currentList.size} Selected"
-                    }
+                    is_select_all2 =
+                        if (!is_select_all2) {
+                            item.setIcon(R.drawable.ic_select_all_on)
+                            for (i in 0 until subTaskAdapter.currentList.size)
+                                selectedItem2!![i] == true
+                            counter2 = subTaskAdapter.currentList.size
+                            true
+                        } else {
+                            item.setIcon(R.drawable.ic_select_all)
+                            for (i in 0 until subTaskAdapter.currentList.size)
+                                selectedItem2!![i] == false
+                            counter2 = 0
+                            false
+                        }
+                    actionMode!!.title =
+                        getString(R.string.task_selected, counter2, subTaskAdapter.itemCount)
                     subTaskAdapter.notifyDataSetChanged()
                     true
                 }
@@ -527,36 +529,37 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
     override fun onAnyItemLongClicked(position: Int) {
         if (!is_in_action_mode2) {
             onActionMode(true)
-            counter2 = 1
             selectedItem2!![position] = true
+            counter2 = 1
         } else {
-            if (selectedItem2!![position]) {
-                selectedItem2!![position] = false
-                counter2--
-            } else {
-                selectedItem2!![position] = true
-                counter2++
-            }
+            selectedItem2!![position] =
+                if (selectedItem2!![position]) {
+                    counter2--
+                    false
+                } else {
+                    counter2++
+                    true
+                }
         }
         if (actionMode == null) {
             actionMode =
                 (activity as AppCompatActivity).startSupportActionMode(callback)!!
         }
-        actionMode!!.title = "${counter2}/${subTaskAdapter.currentList.size} Selected"
+        actionMode!!.title = getString(R.string.task_selected, counter2, subTaskAdapter.itemCount)
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    private fun onActionMode(actionModeOn: Boolean) {
-        if (actionModeOn) {
+    private fun onActionMode(isActionModeOn: Boolean) {
+        val prefManager = PreferenceManager.getDefaultSharedPreferences(requireContext())
+        binding.btnVoiceTask.isVisible = !isActionModeOn &&
+                prefManager.getBoolean(Constants.SHOW_VOICE_TASK_KEY, true)
+        binding.btnAddTask.isVisible = !isActionModeOn
+        is_in_action_mode2 = isActionModeOn
+
+        if (isActionModeOn) {
             selectedItem2 = Array(subTaskAdapter.currentList.size) { false }
-            is_in_action_mode2 = true
-            binding.soundTask.visibility = View.GONE
-            binding.addBtn.visibility = View.GONE
         } else {
-            is_in_action_mode2 = false
             is_select_all2 = false
-            binding.addBtn.visibility = View.VISIBLE
-            binding.soundTask.visibility = View.VISIBLE
             subTaskAdapter.notifyDataSetChanged()
         }
     }
@@ -569,7 +572,7 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
             .setPositiveButton(getString(R.string.delete)) { dialog, _ ->
                 if (isAllDeleted) {
                     viewLifecycleOwner.lifecycleScope.launch {
-                        subModel.deleteAllSubTasks(args.id)
+                        subModel.deleteAllSubTasks(taskId)
                     }
                 } else {
                     for (i in selectedItem2!!.indices) {
@@ -581,7 +584,9 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
                 counter2 = 0
                 actionMode!!.finish()
                 onActionMode(false)
-                notifyUser(requireContext(), getString(R.string.notify_delete))
+                context.toast {
+                    getString(R.string.notify_delete)
+                }
                 dialog.dismiss()
             }.show()
     }
@@ -601,10 +606,10 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
     override fun onDestroyView() {
         super.onDestroyView()
         if (binding.progressBar.progress == 100) {
-            binding.isCompleted.isChecked = true
+            binding.cbTaskCompleted.isChecked = true
             task.isDone = true
             model.update(task)
         }
-        searchView.setOnQueryTextListener(null)
+        searchView?.setOnQueryTextListener(null)
     }
 }

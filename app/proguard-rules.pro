@@ -25,5 +25,5 @@
 -keepnames class androidx.navigation.fragment.NavHostFragment
 -keep class * extends androidx.fragment.app.Fragment{}
 -keep class com.lahsuak.apps.mytask.data.model.** { *; }
--keep class com.lahsuak.apps.mytask.data.util.Constants
+-keep class com.lahsuak.apps.mytask.util.Constants
 -keep class com.lahsuak.apps.mytask.ui.fragments.SettingsFragment

@@ -86,5 +86,28 @@
     <string name="theme">تھیم</string>
     <string name="pm_format">بعد دوپہر</string>
     <string name="language">زبان</string>
+    <string name="copy_text">کاپی</string>
+    <string name="something_went_wrong">کچھ غلط ہو گیا!</string>
+    <string name="share_by">شیئر بذریعہ</string>
+    <string name="text_copied">%s کاپی کیا گیا</string>
+    <string name="write_suggestions">براہ کرم اپنی تجاویز یا مسائل لکھیں</string>
 
+    <string name = "very_small">بہت چھوٹا</string>
+    <string name = "medium_small"> درمیانہ چھوٹا</string>
+    <string name="small">چھوٹا</string>
+    <string name="medium">میڈیم</string>
+    <string name="large">بڑا</string>
+    <string name="huge">بہت بڑا</string>
+    <string name="follow_system">سسٹم کی پیروی کریں</string>
+    <string name="light">روشنی</string>
+    <string name="dark">گہرا</string>
+    <string name = "permission_denied"> اجازت نامنظور</string>
+    <string name = "open_settings"> ترتیبات کھولیں</string>
+    <string name="no_application_found">درخواست نہیں ملی</string>
+    <string name="user_cancelled_the_operation">صارف نے آپریشن منسوخ کر دیا</string>
+    <string name="downloading_start">ڈاؤن لوڈنگ شروع</string>
+    <string name="update_failed">اپ ڈیٹ ناکام ہو گیا</string>
+    <string name="restart">دوبارہ شروع کریں</string>
+    <string name="new_app_ready">نئی ایپ تیار ہے</string>
+    <string name="task_selected" formatted="false">%d/%d منتخب کیا گیا</string>
 </resources>

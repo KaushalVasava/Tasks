@@ -86,4 +86,28 @@
     <string name="theme">Thème</string>
     <string name="pm_format">pm</string>
     <string name="language">Langue</string>
+    <string name="copy_text">copie</string>
+    <string name="something_went_wrong">quelque chose s\'est mal passé !</string>
+    <string name="share_by">Partager par</string>
+    <string name="text_copied">%s copié</string>
+    <string name="write_suggestions">Veuillez écrire vos suggestions ou problèmes</string>
+
+    <string name="very_small">Très petit</string>
+    <string name="medium_small">Moyen petit</string>
+    <string name="small">Petit</string>
+    <string name="medium">Moyen</string>
+    <string name="large">Grand</string>
+    <string name="huge">Énorme</string>
+    <string name="follow_system">Suivre le système</string>
+    <string name="light">Lumière</string>
+    <string name="dark">Sombre</string>
+    <string name="permission_denied">Autorisation refusée</string>
+    <string name="open_settings">Ouvrir les paramètres</string>
+    <string name="no_application_found">Application introuvable</string>
+    <string name="user_cancelled_the_operation">L\'utilisateur a annulé l\'opération</string>
+    <string name="downloading_start">Démarrage du téléchargement</string>
+    <string name="update_failed">Échec de la mise à jour</string>
+    <string name="restart">Redémarrer</string>
+    <string name="new_app_ready">La nouvelle application est prête</string>
+    <string name="task_selected" formatted="false">%d/%d sélectionné</string>
 </resources>

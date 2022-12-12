@@ -86,4 +86,28 @@
     <string name="theme">Tema</string>
     <string name="pm_format">nm</string>
     <string name="language">Taal</string>
+    <string name="copy_text">kopieer</string>
+    <string name="something_went_wrong">iets het verkeerd geloop!</string>
+    <string name="share_by">Deel deur</string>
+    <string name="text_copied">%s gekopieer</string>
+    <string name="write_suggestions">Skryf asseblief jou voorstelle of kwessies</string>
+
+    <string name="very_small">Baie klein</string>
+    <string name="medium_small">Medium Klein</string>
+    <string name="small">Klein</string>
+    <string name="medium">Medium</string>
+    <string name="large">Groot</string>
+    <string name="huge">Groot</string>
+    <string name="follow_system">Volg stelsel</string>
+    <string name="light">Lig</string>
+    <string name="dark">Donker</string>
+    <string name="permission_denied">Toestemming geweier</string>
+    <string name="open_settings">Maak instellings oop</string>
+    <string name="no_application_found">Aansoek nie gevind nie</string>
+    <string name="user_cancelled_the_operation">Gebruiker het die bewerking gekanselleer</string>
+    <string name="downloading_start">Aflaai begin</string>
+    <string name="update_failed">Opdatering het misluk</string>
+    <string name="restart">Herbegin</string>
+    <string name="new_app_ready">Nuwe toepassing is gereed</string>
+    <string name="task_selected" formatted="false">%d/%d gekies</string>
 </resources>

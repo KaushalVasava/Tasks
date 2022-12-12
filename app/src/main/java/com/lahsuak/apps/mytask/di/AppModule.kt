@@ -7,7 +7,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 import com.lahsuak.apps.mytask.data.db.TaskDatabase
 import com.lahsuak.apps.mytask.data.repository.TodoRepository
 import com.lahsuak.apps.mytask.data.repository.TodoRepositoryImpl
-import com.lahsuak.apps.mytask.data.util.Constants.DATABASE_NAME
+import com.lahsuak.apps.mytask.util.Constants.DATABASE_NAME
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -29,13 +29,41 @@ object AppModule {
                 database.execSQL("ALTER TABLE task_table ADD COLUMN subtask TEXT")
             }
         }
+        val migration_2_3 = object : Migration(2, 3) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL("ALTER TABLE task_table ADD COLUMN date INTEGER")
+            }
+        }
+        val migration_3_4 = object : Migration(3, 4) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL("ALTER TABLE sub_task_table ADD COLUMN dateTime INTEGER")
+            }
+        }
+        val migration_4_5 = object : Migration(4, 5) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL(
+                    "CREATE TABLE IF NOT EXISTS `task_temporary` (" +
+                            "`id` INTEGER NOT NULL, `title` TEXT NOT NULL, `status` INTEGER NOT NULL, `importance` INTEGER NOT NULL," +
+                            "`reminder` INTEGER,`progress` REAL NOT NULL, `subtask` TEXT,`date` INTEGER, PRIMARY KEY(`id`))"
+                )
+                database.execSQL(
+                    "INSERT INTO task_temporary(id, title, status, importance, reminder, progress, subtask ,date)" +
+                            " SELECT id, title, status, importance, reminder, progress, subtask ,date FROM task_table"
+                )
+                database.execSQL("DROP TABLE task_table")
+                database.execSQL("ALTER TABLE task_temporary RENAME TO task_table")
+            }
+        }
         return Room.databaseBuilder(
             app,
             TaskDatabase::class.java,
             DATABASE_NAME
         )
             .addMigrations(migration_1_2)
-            //.allowMainThreadQueries()
+            .addMigrations(migration_2_3)
+            .addMigrations(migration_3_4)
+            .addMigrations(migration_4_5)
+            .fallbackToDestructiveMigration()
             .build()
     }
 

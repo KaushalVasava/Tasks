@@ -9,19 +9,20 @@ import androidx.appcompat.app.AppCompatDelegate.*
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.preference.*
 import com.lahsuak.apps.mytask.BuildConfig
+import com.lahsuak.apps.mytask.MyTaskApp.Companion.mylang
 import com.lahsuak.apps.mytask.R
-import com.lahsuak.apps.mytask.data.util.Constants.LANGUAGE_DEFAULT_VALUE
-import com.lahsuak.apps.mytask.data.util.Constants.LANGUAGE_SHARED_PREFERENCE
-import com.lahsuak.apps.mytask.data.util.Constants.LANGUAGE_SHARED_PREFERENCE_KEY
-import com.lahsuak.apps.mytask.data.util.Constants.LANGUAGE_SHARED_PREFERENCE_LANGUAGE_KEY
-import com.lahsuak.apps.mytask.data.util.Constants.THEME_DEFAULT
-import com.lahsuak.apps.mytask.data.util.Constants.THEME_KEY
-import com.lahsuak.apps.mytask.data.util.Util.appRating
-import com.lahsuak.apps.mytask.data.util.Util.getLanguage
-import com.lahsuak.apps.mytask.data.util.Util.moreApp
-import com.lahsuak.apps.mytask.data.util.Util.sendFeedbackMail
-import com.lahsuak.apps.mytask.data.util.Util.shareApp
-import com.lahsuak.apps.mytask.di.TodoApp.Companion.mylang
+import com.lahsuak.apps.mytask.util.Constants
+import com.lahsuak.apps.mytask.util.Constants.LANGUAGE_DEFAULT_VALUE
+import com.lahsuak.apps.mytask.util.Constants.LANGUAGE_SHARED_PREFERENCE
+import com.lahsuak.apps.mytask.util.Constants.LANGUAGE_SHARED_PREFERENCE_KEY
+import com.lahsuak.apps.mytask.util.Constants.LANGUAGE_SHARED_PREFERENCE_LANGUAGE_KEY
+import com.lahsuak.apps.mytask.util.Constants.THEME_DEFAULT
+import com.lahsuak.apps.mytask.util.Constants.THEME_KEY
+import com.lahsuak.apps.mytask.util.Util.appRating
+import com.lahsuak.apps.mytask.util.Util.getLanguage
+import com.lahsuak.apps.mytask.util.Util.moreApp
+import com.lahsuak.apps.mytask.util.Util.sendFeedbackMail
+import com.lahsuak.apps.mytask.util.Util.shareApp
 import java.util.*
 
 class SettingsFragment : PreferenceFragmentCompat() {
@@ -32,7 +33,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.root_preferences, rootKey)
-
         val sp = PreferenceManager.getDefaultSharedPreferences(requireContext())
         selectedTheme = sp.getString(THEME_KEY, THEME_DEFAULT)!!.toInt()
 
@@ -45,7 +45,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
         val prefTheme = findPreference<ListPreference>("theme_key")
         val prefLanguage = findPreference<ListPreference>("language")
 
-        val pref = requireContext().getSharedPreferences(LANGUAGE_SHARED_PREFERENCE,
+        val pref = requireContext().getSharedPreferences(
+            LANGUAGE_SHARED_PREFERENCE,
             Context.MODE_PRIVATE
         )
         selectedLang =
@@ -54,21 +55,23 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
         prefVersion!!.summary = BuildConfig.VERSION_NAME
         val prefManager = PreferenceManager.getDefaultSharedPreferences(requireContext())
-        val txtSize = prefManager.getString("font_size", "18").toString().toInt()
-        when (txtSize) {
-            16 -> prefFont?.summary = "Small"
-            18 -> prefFont?.summary = "Medium"
-            20 -> prefFont?.summary = "Large"
-            22 -> prefFont?.summary = "Huge"
-            //  else -> prefFont.summary = "Medium"
+        when (prefManager.getString(Constants.FONT_SIZE_KEY, "18").toString().toInt()) {
+            12 -> prefFont?.summary = getString(R.string.very_small)
+            14 -> prefFont?.summary = getString(R.string.medium_small)
+            16 -> prefFont?.summary = getString(R.string.small)
+            18 -> prefFont?.summary = getString(R.string.medium)
+            20 -> prefFont?.summary = getString(R.string.large)
+            22 -> prefFont?.summary = getString(R.string.huge)
         }
 
         prefFont?.setOnPreferenceChangeListener { _, newValue ->
             when ((newValue as String).toInt()) {
-                16 -> prefFont.summary = "Small"
-                18 -> prefFont.summary = "Medium"
-                20 -> prefFont.summary = "Large"
-                22 -> prefFont.summary = "Huge"
+                12 -> prefFont.summary = getString(R.string.very_small)
+                14 -> prefFont.summary = getString(R.string.medium_small)
+                16 -> prefFont.summary = getString(R.string.small)
+                18 -> prefFont.summary = getString(R.string.medium)
+                20 -> prefFont.summary = getString(R.string.large)
+                22 -> prefFont.summary = getString(R.string.huge)
             }
             true
         }

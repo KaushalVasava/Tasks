@@ -86,4 +86,28 @@
     <string name="theme">থিম</string>
     <string name="pm_format">pm</string>
     <string name="language">ভাষা</string>
+    <string name="copy_text">অনুলিপি</string>
+    <string name = "something_went_wrong">কিছু ভুল হয়েছে!</string>
+    <string name="share_by">এর দ্বারা ভাগ করুন</string>৷
+    <string name="text_copied">%s কপি করা হয়েছে</string>
+    <string name="write_suggestions">অনুগ্রহ করে আপনার পরামর্শ বা সমস্যা লিখুন</string>
+
+    <string name="very_small">খুব ছোট</string>
+    <string name = "medium_small">মাঝারি ছোট</string>
+    <string name="small">ছোট</string>
+    <string name="medium">মাঝারি</string>
+    <string name="large">বড়</string>
+    <string name="huge">বিশাল</string>
+    <string name = "follow_system"> সিস্টেম অনুসরণ করুন</string>
+    <string name = "light">আলো</string>
+    <string name="dark">অন্ধকার</string>
+    <string name="permission_denied">অনুমতি অস্বীকার করা হয়েছে</string>
+    <string name="open_settings">সেটিংস খুলুন</string>৷
+    <string name="no_application_found">অ্যাপ্লিকেশন পাওয়া যায়নি</string>
+    <string name="user_cancelled_the_operation">ব্যবহারকারী অপারেশন বাতিল করেছে</string>
+    <string name="downloading_start">ডাউনলোড শুরু</string>
+    <string name="update_failed">আপডেট ব্যর্থ হয়েছে</string>
+    <string name="restart">পুনরায় চালু করুন</string>
+    <string name="new_app_ready">নতুন অ্যাপ প্রস্তুত</string>
+    <string name="task_selected" formatted="false">%d/%dটি নির্বাচিত</string>৷
 </resources>

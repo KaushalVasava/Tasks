@@ -88,5 +88,28 @@
     <string name="theme">Theme</string>
     <string name="pm_format">pm</string>
     <string name="language">Language</string>
-    <string name="copy_text" translatable="false">copy</string>
+    <string name="copy_text">copy</string>
+    <string name="something_went_wrong">something went wrong!</string>
+    <string name="share_by">Share by</string>
+    <string name="text_copied">%s copied</string>
+    <string name="write_suggestions">Please write your suggestions or issues</string>
+    <!-- Font size -->
+    <string name="very_small">Very Small</string>
+    <string name="medium_small">Medium Small</string>
+    <string name="small">Small</string>
+    <string name="medium">Medium</string>
+    <string name="large">Large</string>
+    <string name="huge">Huge</string>
+    <string name="follow_system">Follow System</string>
+    <string name="light">Light</string>
+    <string name="dark">Dark</string>
+    <string name="permission_denied">Permission denied</string>
+    <string name="open_settings">Open settings</string>
+    <string name="no_application_found">Application not found</string>
+    <string name="user_cancelled_the_operation">User cancelled the operation</string>
+    <string name="downloading_start">Downloading start</string>
+    <string name="update_failed">Update failed</string>
+    <string name="restart">Restart</string>
+    <string name="new_app_ready">New app is ready</string>
+    <string name="task_selected" formatted="false">%d/%d selected</string>
 </resources>

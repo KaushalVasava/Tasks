@@ -4,14 +4,15 @@
 
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <application
-        android:name="com.lahsuak.apps.mytask.di.TodoApp"
+        android:name="com.lahsuak.apps.mytask.MyTaskApp"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.MyTask">
+        android:theme="@style/SplashScreen">
         <activity
             android:name="com.lahsuak.apps.mytask.ui.MainActivity"
             android:exported="true"

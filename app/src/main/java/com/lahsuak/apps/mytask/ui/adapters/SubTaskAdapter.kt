@@ -17,12 +17,12 @@ class SubTaskAdapter(private val listener: SubTaskListener) :
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
-        if (!TaskFragment.viewType) {
+        return if (!TaskFragment.viewType) {
             val binding = TaskItemBinding.inflate(layoutInflater, parent, false)
-            return SubTaskViewHolder1(this, binding, listener)
+            SubTaskViewHolder1(this, binding, listener)
         } else {
             val binding = TaskItemGridBinding.inflate(layoutInflater, parent, false)
-            return SubTaskViewHolder2(this, binding, listener)
+            SubTaskViewHolder2(this, binding, listener)
         }
     }
 

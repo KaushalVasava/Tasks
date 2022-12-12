@@ -86,4 +86,28 @@
     <string name="theme">Design</string>
     <string name="pm_format">na</string>
     <string name="language">Sprache</string>
+    <string name="copy_text">Kopieren</string>
+    <string name="something_went_wrong">etwas ist schief gelaufen!</string>
+    <string name="share_by">Teilen durch</string>
+    <string name="text_copied">%s kopiert</string>
+    <string name="write_suggestions">Bitte schreiben Sie Ihre Vorschläge oder Probleme</string>
+
+    <string name="very_small">Sehr klein</string>
+    <string name="medium_small">Mittelklein</string>
+    <string name="small">Klein</string>
+    <string name="medium">Mittel</string>
+    <string name="large">Groß</string>
+    <string name="huge">Riesig</string>
+    <string name="follow_system">System folgen</string>
+    <string name="light">Licht</string>
+    <string name="dark">Dunkel</string>
+    <string name="permission_denied">Berechtigung verweigert</string>
+    <string name="open_settings">Einstellungen öffnen</string>
+    <string name="no_application_found">Anwendung nicht gefunden</string>
+    <string name="user_cancelled_the_operation">Benutzer hat den Vorgang abgebrochen</string>
+    <string name="downloading_start">Start des Downloads</string>
+    <string name="update_failed">Aktualisierung fehlgeschlagen</string>
+    <string name="restart">Neu starten</string>
+    <string name="new_app_ready">Neue App ist fertig</string>
+    <string name="task_selected" formatted="false">%d/%d ausgewählt</string>
 </resources>

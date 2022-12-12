@@ -1,8 +1,12 @@
-package com.lahsuak.apps.mytask.data.util
+package com.lahsuak.apps.mytask.util
 
 object Constants {
     const val CHANNEL_ID = "com.lahsuak.apps.mytask.notificationID"
-    const val DATE_FORMAT = "DD-MMM-yyyy hh:mm a"
+    const val DATE_FORMAT = "dd MMM, yyyy"
+    const val DATE_FORMAT_VERTICAL = "dd\nMMM\nyyyy"
+    const val TIME_FORMAT = "hh:mm a"
+    const val REMINDER_DATE_TIME_FORMAT = "dd MMM, yyyy hh:mm a"
+    const val TOOLBAR_DATE_TIME_FORMAT = "E, dd LLLL"
     const val MAIL_TO = "mailto:"
     const val MARKET_PLACE_HOLDER = "market://details?id="
     const val SHARE_FORMAT = "text/plain"
@@ -16,7 +20,6 @@ object Constants {
     const val TASK_TITLE = "TASK_TITLE"
     const val TASK_STATUS = "TASK_STATUS"
     const val VIEW_TYPE = "VIEW_TYPE"
-    const val DATE_FORMAT2 = "hh:mm a"
     const val SEARCH_QUERY = "searchQuery"
     const val SEARCH_INITIAL_VALUE = ""
     const val TASK_ID = "taskId"
@@ -31,6 +34,12 @@ object Constants {
     const val LANGUAGE_SHARED_PREFERENCE = "LANGUAGE"
     const val LANGUAGE_SHARED_PREFERENCE_KEY = "selectedLang"
     const val LANGUAGE_SHARED_PREFERENCE_LANGUAGE_KEY = "Language"
-
     const val LANGUAGE_DEFAULT_VALUE = "-1"
+
+    // Preferences key
+    const val FONT_SIZE_KEY = "font_size"
+    const val TASK_PROGRESS_KEY = "task_progress"
+    const val SHOW_SUBTASK_KEY = "show_subtask"
+    const val SHOW_REMINDER_KEY = "show_reminder"
+    const val SHOW_VOICE_TASK_KEY = "show_voice_task_button"
 }

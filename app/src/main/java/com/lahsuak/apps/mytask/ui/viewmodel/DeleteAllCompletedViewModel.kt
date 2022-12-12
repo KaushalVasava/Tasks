@@ -25,5 +25,4 @@ class DeleteAllCompletedViewModel @Inject constructor(
     fun deleteAllTasks() = applicationScope.launch {
         repository.deleteAllTasks()
     }
-
 }

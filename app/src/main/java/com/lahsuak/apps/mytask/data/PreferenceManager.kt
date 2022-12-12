@@ -4,8 +4,8 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.*
 import androidx.datastore.preferences.preferencesDataStore
-import com.lahsuak.apps.mytask.data.util.Constants
-import com.lahsuak.apps.mytask.data.util.Constants.SETTING
+import com.lahsuak.apps.mytask.util.Constants
+import com.lahsuak.apps.mytask.util.Constants.SETTING
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map

@@ -1,4 +1,4 @@
-package com.lahsuak.apps.mytask.data.util
+package com.lahsuak.apps.mytask.util
 
 import android.view.View
 import androidx.fragment.app.Fragment

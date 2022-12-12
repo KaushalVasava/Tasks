@@ -1,39 +1,44 @@
-package com.lahsuak.apps.mytask.data.util
+package com.lahsuak.apps.mytask.util
 
 import android.annotation.SuppressLint
 import android.app.*
-import android.content.ActivityNotFoundException
-import android.content.ClipData
-import android.content.Context
-import android.content.Intent
+import android.content.*
+import android.content.res.ColorStateList
 import android.content.res.Resources
 import android.net.Uri
 import android.os.Build
+import android.provider.Settings
 import android.speech.RecognizerIntent
+import android.util.TypedValue
+import android.view.View
 import android.widget.TextView
-import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.widget.TextViewCompat
 import androidx.fragment.app.FragmentActivity
+import androidx.slidingpanelayout.widget.SlidingPaneLayout
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.lahsuak.apps.mytask.BuildConfig
+import com.lahsuak.apps.mytask.MyTaskApp
 import com.lahsuak.apps.mytask.R
 import com.lahsuak.apps.mytask.data.model.Task
-import com.lahsuak.apps.mytask.data.util.Constants.CHANNEL_ID
-import com.lahsuak.apps.mytask.data.util.Constants.DATE_FORMAT
-import com.lahsuak.apps.mytask.data.util.Constants.MAIL_TO
-import com.lahsuak.apps.mytask.data.util.Constants.MARKET_PLACE_HOLDER
-import com.lahsuak.apps.mytask.data.util.Constants.SHARE_FORMAT
+import com.lahsuak.apps.mytask.util.Constants.CHANNEL_ID
+import com.lahsuak.apps.mytask.util.Constants.MAIL_TO
+import com.lahsuak.apps.mytask.util.Constants.MARKET_PLACE_HOLDER
+import com.lahsuak.apps.mytask.util.Constants.SHARE_FORMAT
 import com.lahsuak.apps.mytask.receiver.AlarmReceiver
-import com.lahsuak.apps.mytask.ui.MainActivity
 import java.text.DateFormat
-import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 
 object Util {
     private const val COPY_TAG = "Copied Text"
+    private const val COMMA_SEPARATOR = ","
+    private const val CHANNEL_NAME = "Reminder"
+    private const val DESCRIPTION = "Task Reminder"
 
     fun <T> unsafeLazy(initializer: () -> T): Lazy<T> {
         return lazy(LazyThreadSafetyMode.NONE, initializer)
@@ -44,18 +49,29 @@ object Util {
             context.getSystemService(AppCompatActivity.CLIPBOARD_SERVICE) as android.content.ClipboardManager
         val clip = ClipData.newPlainText(COPY_TAG, text)
         clipboard.setPrimaryClip(clip)
-        notifyUser(context, "$text copied")
+        context.toast {
+            context.getString(R.string.text_copied, text)
+        }
+    }
+
+    fun pasteText(context: Context): String {
+        val myClipboard =
+            context.getSystemService(AppCompatActivity.CLIPBOARD_SERVICE) as ClipboardManager
+        val abc = myClipboard.primaryClip
+        val item = abc?.getItemAt(0)
+        return item?.text.toString()
     }
 
     fun createNotification(context: Context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 
-            val name = "Reminder"
-            val desc = "Task Reminder"
-
             val channel =
-                NotificationChannel(CHANNEL_ID, name, NotificationManager.IMPORTANCE_DEFAULT)
-            channel.description = desc
+                NotificationChannel(
+                    CHANNEL_ID,
+                    CHANNEL_NAME,
+                    NotificationManager.IMPORTANCE_DEFAULT
+                )
+            channel.description = DESCRIPTION
 
             val notificationManager = context.getSystemService(NotificationManager::class.java)
             notificationManager.createNotificationChannel(channel)
@@ -72,12 +88,24 @@ object Util {
                 )
             )
         } catch (e: ActivityNotFoundException) {
-            context.startActivity(
-                Intent(
-                    Intent.ACTION_VIEW,
-                    Uri.parse(context.getString(R.string.market_developer_string))
+            try {
+                context.startActivity(
+                    Intent(
+                        Intent.ACTION_VIEW,
+                        Uri.parse(context.getString(R.string.market_developer_string))
+                    )
                 )
-            )
+            } catch (e: Exception) {
+                e.logError()
+                context.toast {
+                    context.getString(R.string.something_went_wrong)
+                }
+            }
+        } catch (e: Exception) {
+            e.logError()
+            context.toast {
+                context.getString(R.string.something_went_wrong)
+            }
         }
     }
 
@@ -89,12 +117,17 @@ object Util {
             val shareMsg =
                 context.getString(R.string.play_store_share) + BuildConfig.APPLICATION_ID + "\n\n"
             intent.putExtra(Intent.EXTRA_TEXT, shareMsg)
-            context.startActivity(Intent.createChooser(intent, "Share by"))
-        } catch (e: Exception) {
-            notifyUser(
-                context,
-                "Something went wrong!!"
+            context.startActivity(
+                Intent.createChooser(
+                    intent,
+                    context.getString(R.string.share_by)
+                )
             )
+        } catch (e: Exception) {
+            e.logError()
+            context.toast {
+                context.getString(R.string.something_went_wrong)
+            }
         }
     }
 
@@ -103,14 +136,17 @@ object Util {
             val emailIntent = Intent(Intent.ACTION_SENDTO).apply {
                 data = Uri.parse(MAIL_TO) // only email apps should handle this
                 putExtra(Intent.EXTRA_EMAIL, arrayOf(context.getString(R.string.feedback_email)))
-                val info = Build.MODEL + "," + Build.MANUFACTURER
-                putExtra(Intent.EXTRA_TEXT, "Please write your suggestions or issues")
-                putExtra(Intent.EXTRA_SUBJECT,
-                    "Feedback from ${context.getString(R.string.app_name)}, $info")
+                val info =
+                    Build.MODEL + COMMA_SEPARATOR + Build.MANUFACTURER + Build.VERSION.SDK_INT
+                putExtra(Intent.EXTRA_TEXT, context.getString(R.string.write_suggestions))
+                putExtra(
+                    Intent.EXTRA_SUBJECT,
+                    "Feedback from ${context.getString(R.string.app_name)}, $info"
+                )
             }
             context.startActivity(emailIntent)
         } catch (e: Exception) {
-            e.printStackTrace()
+            e.logError()
         }
     }
 
@@ -120,40 +156,19 @@ object Util {
         try {
             context.startActivity(goToMarket)
         } catch (e: ActivityNotFoundException) {
-            notifyUser(context, "Sorry for inconvenience")
-        }
-    }
-
-    fun getTimeDiff(task: Task): Int {
-        val sdf = SimpleDateFormat(DATE_FORMAT, Locale.getDefault())
-        var min = 0
-        try {
-            if (task.reminder != null) {
-
-                val date2 = sdf.parse(task.reminder!!)
-                val c = Calendar.getInstance()
-                val time = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT)
-                    .format(c.timeInMillis)
-                val date1 = sdf.parse(time)
-
-                val difference: Long = date2!!.time - date1!!.time
-                val days = (difference / (1000 * 60 * 60 * 24)).toInt()
-                val hours =
-                    ((difference - 1000 * 60 * 60 * 24 * days) / (1000 * 60 * 60)).toInt()
-                min =
-                    (difference - 1000 * 60 * 60 * 24 * days - 1000 * 60 * 60 * hours).toInt() / (1000 * 60)
+            e.logError()
+            context.toast {
+                context.getString(R.string.something_went_wrong)
             }
-        } catch (e: ParseException) {
-            e.printStackTrace()
-            min = Int.MAX_VALUE
+        } catch (e: Exception) {
+            e.logError()
         }
-        return min
     }
 
     fun showReminder(activity: FragmentActivity, timerTxt: TextView, task: Task): Task {
 
         val mCalendar = Calendar.getInstance()
-        val formatter = SimpleDateFormat(Constants.DATE_FORMAT2, Locale.getDefault())
+        val formatter = SimpleDateFormat(Constants.TIME_FORMAT, Locale.getDefault())
         var hour = formatter.format(mCalendar.time).substring(0, 2).trim().toInt()
         val min = formatter.format(mCalendar.time).substring(3, 5).trim().toInt()
 
@@ -194,18 +209,28 @@ object Util {
                         DateFormat.SHORT
                     ).format(mCalendar.time)
 
-                    timerTxt.text = time
-                    timerTxt.background =
-                        ContextCompat.getDrawable(activity, R.drawable.background_timer)
+                    timerTxt.apply {
+                        setTextDrawableColor(activity.baseContext, R.color.black)
+                        text = time
+                        background =
+                            ContextCompat.getDrawable(activity, R.drawable.background_reminder)
+                        isSelected = true
+                    }
 
-                    val intent = Intent(activity.baseContext, AlarmReceiver::class.java)
-                    intent.putExtra(Constants.TASK_KEY, task.id)
-                    intent.putExtra(Constants.TASK_TITLE, task.title)
-                    intent.putExtra(Constants.TASK_STATUS, task.isDone)
-                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-
+                    val intent = Intent(activity.baseContext, AlarmReceiver::class.java).apply {
+                        putExtra(Constants.TASK_KEY, task.id)
+                        putExtra(Constants.TASK_TITLE, task.title)
+                        putExtra(Constants.TASK_STATUS, task.isDone)
+                        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    }
+                    val pendingIntentFlag =
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            PendingIntent.FLAG_IMMUTABLE
+                        } else {
+                            0
+                        }
                     val pendingIntent = PendingIntent.getBroadcast(
-                        activity.baseContext, task.id, intent, 0
+                        activity.baseContext, task.id, intent, pendingIntentFlag
                     )
 
                     val alarmManager =
@@ -215,9 +240,7 @@ object Util {
                         mCalendar.timeInMillis,
                         pendingIntent
                     )
-
-                    // then update the task
-                    //task.reminder = time
+                    task.reminder = mCalendar.timeInMillis
                 }
             }
         val datePickerDialog = DatePickerDialog(
@@ -231,28 +254,24 @@ object Util {
         return task
     }
 
-    fun notifyUser(context: Context, message: String) {
-        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-    }
-
     @SuppressLint("QueryPermissionsNeeded")
-    fun speakToAddTask(context: FragmentActivity, speakLauncher: ActivityResultLauncher<Intent>) {
+    fun speakToAddTask(activity: FragmentActivity, speakLauncher: ActivityResultLauncher<Intent>) {
         val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
         intent.putExtra(
             RecognizerIntent.EXTRA_LANGUAGE_MODEL,
             RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
         )
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
-        if (intent.resolveActivity(context.packageManager) != null) {
+        if (intent.resolveActivity(activity.packageManager) != null) {
             //startActivityForResult(intent, 1)
             speakLauncher.launch(intent)
         } else {
-            notifyUser(
-                context.baseContext,
-                context.getString(R.string.speach_not_support)
-            )
+            activity.baseContext.toast {
+                activity.baseContext.getString(R.string.speach_not_support)
+            }
         }
     }
+
     fun getLanguage(): String {
         val langCode: String
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -262,5 +281,69 @@ object Util {
             langCode = Resources.getSystem().configuration.locale.toString().substring(0, 2)
         }
         return langCode
+    }
+
+    fun openSettingsPage(activity: Activity?) {
+        activity ?: return
+        activity.runActivityCatching {
+            val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+            val uri: Uri = Uri.fromParts("package", MyTaskApp.appContext.packageName, null)
+            intent.data = uri
+            activity.startActivity(intent)
+        }
+    }
+}
+
+fun TextView.setTextDrawableColor(context: Context, colorId: Int) {
+    val color = ContextCompat.getColor(context, colorId)
+    val colorList = ColorStateList.valueOf(color)
+    TextViewCompat.setCompoundDrawableTintList(this, colorList)
+}
+
+fun TextView.toTrimString() = this.text.toString().trim()
+
+fun BottomSheetBehavior<*>.applyCommonBottomSheetBehaviour() {
+    skipCollapsed = true
+    state = BottomSheetBehavior.STATE_EXPANDED
+}
+
+inline fun Context?.runActivityCatching(block: () -> Unit) {
+    this ?: return
+    try {
+        block()
+    } catch (e: ActivityNotFoundException) {
+        e.logError()
+        this.toast { this.getString(R.string.no_application_found) }
+    }
+}
+
+fun Context.getAttribute(resId: Int): Int {
+    val value = TypedValue()
+    this.theme.resolveAttribute(resId, value, true);
+    return value.data
+}
+
+class SportsListOnBackPressedCallback(
+    private val slidingPaneLayout: SlidingPaneLayout
+): OnBackPressedCallback(slidingPaneLayout.isSlideable && slidingPaneLayout.isOpen),
+    SlidingPaneLayout.PanelSlideListener{
+
+    init {
+        slidingPaneLayout.addPanelSlideListener(this)
+    }
+
+    override fun handleOnBackPressed() {
+        slidingPaneLayout.closePane()
+    }
+
+    override fun onPanelSlide(panel: View, slideOffset: Float) {
+    }
+
+    override fun onPanelOpened(panel: View) {
+        isEnabled = true
+    }
+
+    override fun onPanelClosed(panel: View) {
+        isEnabled = false
     }
 }
