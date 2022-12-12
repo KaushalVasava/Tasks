@@ -103,4 +103,13 @@
     <string name="follow_system">Follow System</string>
     <string name="light">Light</string>
     <string name="dark">Dark</string>
+    <string name="permission_denied">Permission denied</string>
+    <string name="open_settings">Open settings</string>
+    <string name="no_application_found">Application not found</string>
+    <string name="user_cancelled_the_operation">User cancelled the operation</string>
+    <string name="downloading_start">Downloading start</string>
+    <string name="update_failed">Update failed</string>
+    <string name="restart">Restart</string>
+    <string name="new_app_ready">New app is ready</string>
+    <string name="task_selected" formatted="false">%d/%d selected</string>
 </resources>

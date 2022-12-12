@@ -97,8 +97,17 @@
     <string name="small">Piccolo</string>
     <string name="medium">Medio</string>
     <string name="large">Grande</string>
-    <string name="enorme">Enorme</string>
+    <string name="huge">Enorme</string>
     <string name="follow_system">Segui sistema</string>
     <string name="light">Luce</string>
     <string name="dark">Scuro</string>
+    <string name="permission_denied">Autorizzazione negata</string>
+    <string name="open_settings">Apri impostazioni</string>
+    <string name="no_application_found">Applicazione non trovata</string>
+    <string name="user_cancelled_the_operation">L\'utente ha annullato l\'operazione</string>
+    <string name="downloading_start">Avvio del download</string>
+    <string name="update_failed">Aggiornamento fallito</string>
+    <string name="restart">Riavvia</string>
+    <string name="new_app_ready">La nuova app è pronta</string>
+    <string name="task_selected" formatted="false">%d/%d selezionati</string>
 </resources>

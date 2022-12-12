@@ -101,4 +101,13 @@
     <string name="follow_system">System folgen</string>
     <string name="light">Licht</string>
     <string name="dark">Dunkel</string>
+    <string name="permission_denied">Berechtigung verweigert</string>
+    <string name="open_settings">Einstellungen öffnen</string>
+    <string name="no_application_found">Anwendung nicht gefunden</string>
+    <string name="user_cancelled_the_operation">Benutzer hat den Vorgang abgebrochen</string>
+    <string name="downloading_start">Start des Downloads</string>
+    <string name="update_failed">Aktualisierung fehlgeschlagen</string>
+    <string name="restart">Neu starten</string>
+    <string name="new_app_ready">Neue App ist fertig</string>
+    <string name="task_selected" formatted="false">%d/%d ausgewählt</string>
 </resources>

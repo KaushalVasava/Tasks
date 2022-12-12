@@ -98,4 +98,13 @@
     <string name="follow_system">フォローシステム</string>
     <string name="light">ライト</string>
     <string name="dark">ダーク</string>
+    <string name="permission_denied">許可が拒否されました</string>
+    <string name="open_settings">設定を開く</string>
+    <string name="no_application_found">アプリケーションが見つかりません</string>
+    <string name="user_cancelled_the_operation">ユーザーが操作をキャンセルしました</string>
+    <string name="downloading_start">ダウンロード開始</string>
+    <string name="update_failed">更新に失敗しました</string>
+    <string name="restart">再起動</string>
+    <string name="new_app_ready">新しいアプリの準備ができました</string>
+    <string name="task_selected" formatted="false">%d/%d 選択済み</string>
 </resources>

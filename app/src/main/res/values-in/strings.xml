@@ -100,4 +100,13 @@
     <string name="follow_system">Ikuti Sistem</string>
     <string name="light">Cahaya</string>
     <string name="dark">Gelap</string>
+    <string name="permission_denied">Izin ditolak</string>
+    <string name="open_settings">Buka setelan</string>
+    <string name="no_application_found">Aplikasi tidak ditemukan</string>
+    <string name="user_cancelled_the_operation">Pengguna membatalkan operasi</string>
+    <string name="downloading_start">Pengunduhan dimulai</string>
+    <string name="update_failed">Pembaruan gagal</string>
+    <string name="restart">Mulai ulang</string>
+    <string name="new_app_ready">Aplikasi baru sudah siap</string>
+    <string name="task_selected" formatted="false">%d/%d dipilih</string>
 </resources>

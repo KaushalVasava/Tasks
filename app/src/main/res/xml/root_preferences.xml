@@ -19,6 +19,13 @@
             app:summary="@string/medium"
             app:title="@string/font_size" />
         <SwitchPreference
+            app:defaultValue="true"
+            app:iconSpaceReserved="false"
+            app:key="show_voice_task_button"
+            app:summaryOff="@string/disable"
+            app:summaryOn="@string/enable"
+            app:title="Show voice to add task option" />
+        <SwitchPreference
             app:defaultValue="false"
             app:iconSpaceReserved="false"
             app:key="task_progress"

@@ -98,4 +98,13 @@
     <string name="follow_system"> اتبع النظام </string>
     <string name="light"> Light </string>
     <string name="dark"> Dark </string>
+    <string name="permission_denied"> تم رفض الإذن </string>
+    <string name="open_settings"> فتح الإعدادات </string>
+    <string name="no_application_found"> التطبيق غير موجود </string>
+    <string name="user_cancelled_the_operation"> ألغى المستخدم العملية </string>
+    <string name="downloading_start"> بدء التنزيل </string>
+    <string name="update_failed"> فشل التحديث </string>
+    <string name="restart"> إعادة التشغيل </string>
+    <string name="new_app_ready"> تطبيق جديد جاهز </string>
+    <string name="task_selected" formatted="false"> تم تحديد٪ d /٪ d </string>
 </resources>

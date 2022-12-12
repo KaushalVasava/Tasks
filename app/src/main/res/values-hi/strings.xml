@@ -100,4 +100,13 @@
     <string name="follow_system">सिस्टम का पालन करें</string>
     <string name="light">लाइट</string>
     <string name="dark">डार्क</string>
+    <string name="permission_denied">अनुमति अस्वीकृत</string>
+    <string name="open_settings">सेटिंग खोलें</string>
+    <string name="no_application_found">आवेदन नहीं मिला</string>
+    <string name="user_cancelled_the_operation">उपयोगकर्ता ने कार्रवाई रद्द कर दी</string>
+    <string name="downloading_start">डाउनलोडिंग शुरू हो रही है</string>
+    <string name="update_failed">अपडेट विफल</string>
+    <string name="restart">पुनरारंभ करें</string>
+    <string name="new_app_ready">नया ऐप तैयार है</string>
+    <string name="task_selected" formatted="false">%d/%d चयनित</string>
 </resources>

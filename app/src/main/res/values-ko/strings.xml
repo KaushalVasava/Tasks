@@ -99,4 +99,13 @@
     <string name="follow_system">시스템 팔로우</string>
     <string name="light">조명</string>
     <string name="dark">어두운</string>
+    <string name="permission_denied">권한이 거부되었습니다</string>
+    <string name="open_settings">설정 열기</string>
+    <string name="no_application_found">애플리케이션을 찾을 수 없습니다</string>
+    <string name="user_cancelled_the_operation">사용자가 작업을 취소했습니다</string>
+    <string name="downloading_start">다운로드 시작</string>
+    <string name="update_failed">업데이트 실패</string>
+    <string name="restart">재시작</string>
+    <string name="new_app_ready">새로운 앱이 준비되었습니다</string>
+    <string name="task_selected" formatted="false">%d/%d 선택됨</string>
 </resources>

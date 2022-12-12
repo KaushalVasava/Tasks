@@ -19,44 +19,52 @@ interface TaskDao {
             SortOrder.BY_NAME -> getAllTaskByName(query, hideCompleted)
         }
 
-    @Query("SELECT * FROM task_table WHERE (status!= :hideCompleted OR status = 0) AND title LIKE '%' || :searchQuery || '%' ORDER BY importance DESC,title")
+    @Query(
+        "SELECT * FROM task_table WHERE (status!= :hideCompleted OR status = 0) " +
+                "AND title LIKE '%' || :searchQuery || '%' ORDER BY importance DESC,title"
+    )
     fun getAllTaskByName(
         searchQuery: String, hideCompleted: Boolean,
     ): Flow<List<Task>>
 
-    @Query("SELECT * FROM task_table WHERE (status!= :hideCompleted OR status = 0) AND title LIKE '%' || :searchQuery || '%' ORDER BY importance DESC, date DESC")
+    //date DESC
+    @Query(
+        "SELECT * FROM task_table WHERE (status!= :hideCompleted OR status = 0) " +
+                "AND title LIKE '%' || :searchQuery || '%' ORDER BY importance DESC"
+    )
     fun getAllTaskByDate(
         searchQuery: String,
         hideCompleted: Boolean,
     ): Flow<List<Task>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(note: Task)
+    suspend fun insert(task: Task)
 
     @Delete
-    suspend fun delete(note: Task)
+    suspend fun delete(task: Task)
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
     suspend fun update(note: Task)
 
-    @Query("SELECT * FROM TASK_TABLE WHERE id=:todoID")
-    suspend fun getById(todoID: Int): Task
+    @Query("SELECT * FROM TASK_TABLE WHERE id=:taskId")
+    suspend fun getById(taskId: Int): Task
 
     @Query("DELETE FROM TASK_TABLE WHERE status = 1")
     suspend fun deleteAllCompletedTask()
 
     @Query("DELETE FROM TASK_TABLE")
     suspend fun deleteAllTask()
+
     //subtask methods
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertSubTask(task: SubTask)
+    suspend fun insertSubTask(subTask: SubTask)
 
     @Delete
-    suspend fun deleteSubTask(task: SubTask)
+    suspend fun deleteSubTask(subTask: SubTask)
 
     @Update(onConflict = OnConflictStrategy.ABORT)
-    suspend fun updateSubTask(task: SubTask)
+    suspend fun updateSubTask(subTask: SubTask)
 
     fun getAllSubTasks(
         id: Int,
