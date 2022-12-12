@@ -6,11 +6,11 @@ import android.content.res.Configuration
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.appcompat.widget.Toolbar
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.navigation.NavController
-import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.preference.PreferenceManager
+import com.lahsuak.apps.mytask.MyTaskApp
 import com.lahsuak.apps.mytask.MyTaskApp.Companion.mylang
 import com.lahsuak.apps.mytask.R
 import com.lahsuak.apps.mytask.util.Constants.LANGUAGE_SHARED_PREFERENCE
@@ -69,22 +69,6 @@ class MainActivity : AppCompatActivity() {
             true
         WindowInsetsControllerCompat(window, window.decorView).isAppearanceLightNavigationBars =
             true
-        setSupportActionBar(binding.toolbar)
 
-        binding.toolbar.setOnLongClickListener {
-            if (navController.currentDestination?.id == R.id.subTaskFragment) {
-                setClipboard(this, binding.toolbar.title.toString())
-            }
-            true
-        }
-
-        val navHostFragment =
-            (supportFragmentManager.findFragmentById(R.id.my_container) as NavHostFragment)
-        navController = navHostFragment.navController
-        setupActionBarWithNavController(navController)
-    }
-
-    override fun onSupportNavigateUp(): Boolean {
-        return navController.navigateUp() || super.onSupportNavigateUp()
     }
 }

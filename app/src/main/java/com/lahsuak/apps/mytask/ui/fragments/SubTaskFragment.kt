@@ -58,21 +58,29 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
 
     private val model: TaskViewModel by viewModels()
     private val subModel: SubTaskViewModel by viewModels()
-    private val args: SubTaskFragmentArgs by navArgs()
+
+    //    private val args: SubTaskFragmentArgs by navArgs()
     private val navController: NavController by unsafeLazy {
         findNavController()
     }
     private lateinit var subTaskAdapter: SubTaskAdapter
-    private lateinit var task: Task
+    private var task: Task = Task(id = -1, title = "")
     private var searchView: SearchView? = null
     private var actionMode: ActionMode? = null
     private val mCalendar = Calendar.getInstance()
+
+    private var taskId: Int = -1
+    private var taskTitle: String? = null
+    private var taskStatus: Boolean = false
 
     companion object {
         var selectedItem2: Array<Boolean>? = null
         var counter2 = 0
         var is_in_action_mode2 = false
         var is_select_all2 = false
+        const val ID_ARG = "id"
+        const val TITLE_ARG = "task_title"
+        const val STATUS_ARG = "status"
     }
 
     private val speakLauncher =
@@ -82,7 +90,7 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
                 val data = result.data
                 val result1 = data!!.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
                 val subTask = SubTask(
-                    id = args.id,
+                    id = taskId,
                     subTitle = result1!![0],
                     sId = 0
                 )
@@ -93,6 +101,16 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentSubtaskBinding.bind(view)
+
+        val args = arguments
+        if (args != null) {
+            taskTitle = args.getString(TITLE_ARG, null)
+            taskId = args.getInt(ID_ARG, -1)
+            subModel.taskId.value = taskId
+            taskStatus = args.getBoolean(STATUS_ARG)
+        }
+
+
         val prefManager = PreferenceManager.getDefaultSharedPreferences(requireContext())
         binding.btnVoiceTask.isVisible =
             prefManager.getBoolean(Constants.SHOW_VOICE_TASK_KEY, true)
@@ -106,11 +124,12 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
                     LinearLayoutManager(requireContext())
                 }
         }
-        subModel.taskId.value = args.id
+//        subModel.taskId.value = args.id
         subTaskAdapter = SubTaskAdapter(this)
         createNotification(requireContext())
-        reminderHandling()
-
+        if (taskId != -1) {
+            reminderHandling()
+        }
         binding.subTaskRecyclerView.apply {
             adapter = subTaskAdapter
             setHasFixedSize(true)
@@ -206,7 +225,7 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
         }
 
         binding.btnCancelReminder.setOnClickListener {
-            subModel.cancelReminder(requireActivity(), args.id, task, binding.txtReminder, model)
+            subModel.cancelReminder(requireActivity(), taskId, task, binding.txtReminder, model)
             binding.btnCancelReminder.isVisible = false
             binding.reminderLayout.background = null
             binding.txtReminder.isEnabled = false
@@ -228,9 +247,9 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
 
     private fun reminderHandling() {
         viewLifecycleOwner.lifecycleScope.launch {
-            task = model.getById(args.id)
+            task = model.getById(taskId)
             val taskReminder = task.reminder
-            binding.cbTaskCompleted.isChecked = args.completed
+            binding.cbTaskCompleted.isChecked = taskStatus
             binding.btnCancelReminder.isVisible =
                 if (taskReminder != null) {
                     val diff = DateUtil.getTimeDiff(taskReminder)
@@ -360,7 +379,7 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
                     SubTaskEvent.NavigateToAllCompletedScreen -> {
                         val action =
                             SubTaskFragmentDirections.actionGlobalDeleteAllCompletedDialogFragment2(
-                                args.id
+                                taskId
                             )//actionGlobalDeleteAllCompletedDialogFragment()
                         navController.navigate(action)
                     }
@@ -372,7 +391,7 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
     private fun addNewTask() {
         val action = SubTaskFragmentDirections.actionSubTaskFragmentToRenameFragmentDialog(
             true,
-            args.id,
+            taskId,
             null, -1
         )
         navController.navigate(action)
@@ -416,7 +435,7 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
         } else {
             val action = SubTaskFragmentDirections.actionSubTaskFragmentToRenameFragmentDialog(
                 true,
-                args.id,
+                taskId,
                 subTask.subTitle,
                 subTask.sId
             )
@@ -430,7 +449,7 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
         } else {
             val action = SubTaskFragmentDirections.actionSubTaskFragmentToRenameFragmentDialog(
                 true,
-                args.id,
+                taskId,
                 subTask.subTitle,
                 subTask.sId
             )
@@ -553,7 +572,7 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
             .setPositiveButton(getString(R.string.delete)) { dialog, _ ->
                 if (isAllDeleted) {
                     viewLifecycleOwner.lifecycleScope.launch {
-                        subModel.deleteAllSubTasks(args.id)
+                        subModel.deleteAllSubTasks(taskId)
                     }
                 } else {
                     for (i in selectedItem2!!.indices) {

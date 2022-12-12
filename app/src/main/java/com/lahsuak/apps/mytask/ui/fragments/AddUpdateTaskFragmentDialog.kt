@@ -29,8 +29,20 @@ class AddUpdateTaskFragmentDialog : BottomSheetDialogFragment() {
     private val args: AddUpdateTaskFragmentDialogArgs by navArgs()
     private val model: TaskViewModel by viewModels()
     private val subModel: SubTaskViewModel by viewModels()
-    private lateinit var task: Task
-    private lateinit var subTask: SubTask
+    private var task: Task = Task(id = -1, title = "")
+    private var subTask: SubTask = SubTask(id = -1, sId = -1, subTitle = "")
+
+    private var taskId = -1
+    private var taskTitle: String? = null
+    private var source = false
+    private var subtaskId = -1
+
+    companion object {
+        const val SOURCE_ARG = "source"
+        const val TASK_ID_ARG = "task_id"
+        const val TASK_TITLE_ARG = "task_title"
+        const val SUBTASK_ID_ARG = "subTaskId"
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -41,15 +53,22 @@ class AddUpdateTaskFragmentDialog : BottomSheetDialogFragment() {
         @Suppress("DEPRECATION")
         requireDialog().window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
 
-        if (args.source) {
+        val args = arguments
+        if (args != null) {
+            taskId = args.getInt(TASK_ID_ARG, -1)
+            taskTitle = args.getString(TASK_TITLE_ARG, null)
+            subtaskId = args.getInt(SUBTASK_ID_ARG, -1)
+            source = args.getBoolean(SOURCE_ARG)
+        }
+        if (source) {
             binding.txtReminder.visibility = View.GONE
         }
         (dialog as? BottomSheetDialog)?.run {
             behavior.applyCommonBottomSheetBehaviour()
             behavior.isDraggable = false // for make it's scrollable
         }
-        if (!args.takTitle.isNullOrEmpty()) {
-            binding.txtRename.setText(args.takTitle)
+        if (!taskTitle.isNullOrEmpty()) {
+            binding.txtRename.setText(taskTitle)
         }
         binding.txtRename.requestFocus()
         binding.txtRename.post {
@@ -62,7 +81,7 @@ class AddUpdateTaskFragmentDialog : BottomSheetDialogFragment() {
 
     private fun setPrefetchData() {
         viewLifecycleOwner.lifecycleScope.launch {
-            if (!args.source) {
+            if (!source) {
                 if (args.taskId != -1) {
                     task = model.getById(args.taskId)
                     binding.cbImpTask.isChecked = task.isImp
@@ -134,7 +153,7 @@ class AddUpdateTaskFragmentDialog : BottomSheetDialogFragment() {
     }
 
     private fun saveData() {
-        if (args.taskId == -1 && !args.source) {
+        if (args.taskId == -1 && !source) {
             //new task
             if (!binding.txtRename.text.isNullOrEmpty()) {
                 if (binding.txtReminder.text == getString(R.string.add_date_time)) {
@@ -147,7 +166,7 @@ class AddUpdateTaskFragmentDialog : BottomSheetDialogFragment() {
                 }
                 model.insert(task)
             }
-        } else if (args.taskId != -1 && args.subTaskId == -1 && args.source) {
+        } else if (args.taskId != -1 && args.subTaskId == -1 && source) {
             //new subtask
             subTask = SubTask(
                 id = args.taskId,
@@ -160,7 +179,7 @@ class AddUpdateTaskFragmentDialog : BottomSheetDialogFragment() {
             subModel.insertSubTask(subTask)
         } else {
             if (!binding.txtRename.text.isNullOrEmpty()) {
-                if (!args.source) {
+                if (!source) {
                     //update task
                     task.apply {
                         title = binding.txtRename.toTrimString()

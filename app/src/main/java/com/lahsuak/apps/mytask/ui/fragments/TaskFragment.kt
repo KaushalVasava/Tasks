@@ -12,13 +12,16 @@ import android.os.Bundle
 import android.speech.RecognizerIntent
 import android.view.*
 import android.widget.Toast
+import androidx.activity.addCallback
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ActionMode
 import androidx.appcompat.widget.SearchView
+import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
+import androidx.core.os.bundleOf
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
@@ -28,9 +31,10 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
-import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.NavHostFragment
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.*
+import androidx.slidingpanelayout.widget.SlidingPaneLayout
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.play.core.appupdate.AppUpdateManager
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
@@ -65,9 +69,8 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener 
     private val binding: FragmentTaskBinding by viewBinding {
         FragmentTaskBinding.bind(it)
     }
-    private val navController: NavController by unsafeLazy {
-        findNavController()
-    }
+    private lateinit var navController: NavController
+
     private val viewModel: TaskViewModel by viewModels()
 
     private lateinit var taskAdapter: TaskAdapter
@@ -115,7 +118,25 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener 
     @SuppressLint("QueryPermissionsNeeded")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
+        (activity as AppCompatActivity).setSupportActionBar(binding.toolbar)
+        binding.toolbar.setOnLongClickListener {
+            if (navController.currentDestination?.id == R.id.subTaskFragment) {
+                Util.setClipboard(MyTaskApp.appContext, binding.toolbar.title.toString())
+            }
+            true
+        }
+
+        val navHostFragment =
+            childFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        navController = navHostFragment.navController
+//        setupActionBarWithNavController((activity as AppCompatActivity), navController)
+
+        val slidingPaneLayout = binding.slidingPaneLayout
+        slidingPaneLayout.lockMode = SlidingPaneLayout.LOCK_MODE_LOCKED
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            SportsListOnBackPressedCallback(slidingPaneLayout)
+        )
 
         val prefManager = PreferenceManager.getDefaultSharedPreferences(requireContext())
         binding.btnVoiceTask.isVisible =
@@ -143,12 +164,22 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener 
         appUpdateManager!!.registerListener(appUpdateListener)
 
         if (shareTxt != null) {
-            val action = TaskFragmentDirections.actionTaskFragmentToRenameFragmentDialog(
-                false,
-                -1,
-                shareTxt!!
+            navController.navigate(
+                R.id.renameFragmentDialog,
+                bundleOf(
+                    AddUpdateTaskFragmentDialog.TASK_ID_ARG to -1,
+                    AddUpdateTaskFragmentDialog.TASK_TITLE_ARG to shareTxt,
+                    AddUpdateTaskFragmentDialog.SOURCE_ARG to false,
+                    AddUpdateTaskFragmentDialog.SUBTASK_ID_ARG to -1
+                )
             )
-            navController.navigate(action)
+            binding.slidingPaneLayout.open()
+//            val action = TaskFragmentDirections.actionTaskFragmentToRenameFragmentDialog(
+//                false,
+//                -1,
+//                shareTxt!!
+//            )
+//            navController.navigate(action)
         }
         swipeGesturesHandler() //swipe to delete and mark as imp functionality
         taskObserver() //observer for tasks and layout changes
@@ -221,8 +252,8 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener 
                         true
                     }
                     R.id.setting -> {
-                        val action = TaskFragmentDirections.actionTaskFragmentToSettingsFragment()
-                        navController.navigate(action)
+//                        val action = TaskFragmentDirections.actionTaskFragmentToSettingsFragment()
+                        navController.navigate(R.id.settingsFragment)
                         true
                     }
                     else -> {
@@ -380,9 +411,9 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener 
                             }.show()
                     }
                     TaskEvent.NavigateToAllCompletedScreen -> {
-                        val action =
-                            TaskFragmentDirections.actionGlobalDeleteAllCompletedDialogFragment()
-                        navController.navigate(action)
+//                        val action =
+//                            TaskFragmentDirections.actionGlobalDeleteAllCompletedDialogFragment()
+                        navController.navigate(R.id.deleteAllCompletedDialogFragment)
                     }
                 }
             }
@@ -425,13 +456,27 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener 
     }
 
     private fun addNewTask() {
-        val action =
-            TaskFragmentDirections.actionTaskFragmentToRenameFragmentDialog(
-                false,
-                -1,
-                null
+//        val action =
+//            TaskFragmentDirections.actionTaskFragmentToRenameFragmentDialog(
+//                false,
+//                -1,
+//                null
+//            )
+        try {
+            val bundle = bundleOf(
+                AddUpdateTaskFragmentDialog.TASK_ID_ARG to -1,
+                AddUpdateTaskFragmentDialog.TASK_TITLE_ARG to "",
+                AddUpdateTaskFragmentDialog.SOURCE_ARG to false,
+                AddUpdateTaskFragmentDialog.SUBTASK_ID_ARG to -1
             )
-        navController.navigate(action)
+            navController.navigate(
+                R.id.renameFragmentDialog,
+                bundle
+            )
+        } catch (e: Throwable) {
+            e.logError()
+        }
+        binding.slidingPaneLayout.open()
     }
 
     override fun onItemClicked(task: Task, position: Int) {
@@ -447,12 +492,21 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener 
             actionMode!!.title =
                 getString(R.string.task_selected, counter, taskAdapter.itemCount)
         } else {
-            val action =
-                TaskFragmentDirections.actionTaskFragmentToSubTaskFragment(
-                    task.id,
-                    task.title, task.isDone
+//            val action =
+//                TaskFragmentDirections.actionTaskFragmentToSubTaskFragment(
+//                    task.id,
+//                    task.title, task.isDone
+//                )
+//            navController.navigate(action)
+            navController.navigate(
+                R.id.subTaskFragment,
+                bundleOf(
+                    SubTaskFragment.ID_ARG to task.id,
+                    SubTaskFragment.TITLE_ARG to task.title,
+                    SubTaskFragment.STATUS_ARG to task.isDone,
                 )
-            navController.navigate(action)
+            )
+            binding.slidingPaneLayout.open()
         }
     }
 
@@ -468,12 +522,22 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener 
             viewModel.showDeleteDialog(requireContext(), task)
         } else {
             taskPosition = position
-            val action = TaskFragmentDirections.actionTaskFragmentToRenameFragmentDialog(
-                false,
-                task.id,
-                task.title
+//            val action = TaskFragmentDirections.actionTaskFragmentToRenameFragmentDialog(
+//                false,
+//                task.id,
+//                task.title
+//            )
+//            navController.navigate(action)
+            navController.navigate(
+                R.id.renameFragmentDialog,
+                bundleOf(
+                    AddUpdateTaskFragmentDialog.TASK_ID_ARG to task.id,
+                    AddUpdateTaskFragmentDialog.TASK_TITLE_ARG to task.title,
+                    AddUpdateTaskFragmentDialog.SOURCE_ARG to false,
+                    AddUpdateTaskFragmentDialog.SUBTASK_ID_ARG to -1
+                )
             )
-            navController.navigate(action)
+            binding.slidingPaneLayout.open()
         }
     }
 

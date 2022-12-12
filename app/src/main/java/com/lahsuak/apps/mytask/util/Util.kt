@@ -10,12 +10,15 @@ import android.os.Build
 import android.provider.Settings
 import android.speech.RecognizerIntent
 import android.util.TypedValue
+import android.view.View
 import android.widget.TextView
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.widget.TextViewCompat
 import androidx.fragment.app.FragmentActivity
+import androidx.slidingpanelayout.widget.SlidingPaneLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.lahsuak.apps.mytask.BuildConfig
@@ -318,4 +321,29 @@ fun Context.getAttribute(resId: Int): Int {
     val value = TypedValue()
     this.theme.resolveAttribute(resId, value, true);
     return value.data
+}
+
+class SportsListOnBackPressedCallback(
+    private val slidingPaneLayout: SlidingPaneLayout
+): OnBackPressedCallback(slidingPaneLayout.isSlideable && slidingPaneLayout.isOpen),
+    SlidingPaneLayout.PanelSlideListener{
+
+    init {
+        slidingPaneLayout.addPanelSlideListener(this)
+    }
+
+    override fun handleOnBackPressed() {
+        slidingPaneLayout.closePane()
+    }
+
+    override fun onPanelSlide(panel: View, slideOffset: Float) {
+    }
+
+    override fun onPanelOpened(panel: View) {
+        isEnabled = true
+    }
+
+    override fun onPanelClosed(panel: View) {
+        isEnabled = false
+    }
 }

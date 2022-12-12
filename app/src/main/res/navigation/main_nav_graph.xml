@@ -3,32 +3,31 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_nav_graph"
-    app:startDestination="@id/taskFragment">
+    app:startDestination="@id/subTaskFragment">
 
-    <fragment
-        android:id="@+id/taskFragment"
-        android:name="com.lahsuak.apps.mytask.ui.fragments.TaskFragment"
-        android:label="@string/app_name"
-        tools:layout="@layout/fragment_task">
-        <action
-            android:id="@+id/action_taskFragment_to_subTaskFragment"
-            app:destination="@id/subTaskFragment" />
-        <action
-            android:id="@+id/action_taskFragment_to_settingsFragment"
-            app:destination="@id/settingsFragment" />
-        <action
-            android:id="@+id/action_taskFragment_to_renameFragmentDialog"
-            app:destination="@id/renameFragmentDialog">
-            <argument
-                android:name="subTaskId"
-                android:defaultValue="-1" />
-        </action>
+    <!--    <fragment-->
+    <!--        android:id="@+id/taskFragment"-->
+    <!--        android:name="com.lahsuak.apps.mytask.ui.fragments.TaskFragment"-->
+    <!--        android:label="@string/app_name"-->
+    <!--        tools:layout="@layout/fragment_task">-->
+    <!--        <action-->
+    <!--            android:id="@+id/action_taskFragment_to_subTaskFragment"-->
+    <!--            app:destination="@id/subTaskFragment" />-->
+    <!--        <action-->
+    <!--            android:id="@+id/action_taskFragment_to_settingsFragment"-->
+    <!--            app:destination="@id/settingsFragment" />-->
+    <!--        <action-->
+    <!--            android:id="@+id/action_taskFragment_to_renameFragmentDialog"-->
+    <!--            app:destination="@id/renameFragmentDialog">-->
+    <!--            <argument-->
+    <!--                android:name="subTaskId"-->
+    <!--                android:defaultValue="-1" />-->
+    <!--        </action>-->
 
-    </fragment>
+    <!--    </fragment>-->
     <fragment
         android:id="@+id/subTaskFragment"
         android:name="com.lahsuak.apps.mytask.ui.fragments.SubTaskFragment"
-        android:label="{task_title}"
         tools:layout="@layout/fragment_subtask">
         <argument
             android:name="id"
@@ -36,8 +35,9 @@
         <argument
             android:name="task_title"
             app:argType="string" />
-        <argument android:name="completed"
-            app:argType="boolean"/>
+        <argument
+            android:name="completed"
+            app:argType="boolean" />
         <deepLink
             android:id="@+id/deepLink"
             app:uri="myapp://kmv.com/editFragment/{id}{task_title}{completed}" />
@@ -56,9 +56,10 @@
     <dialog
         android:id="@+id/deleteAllCompletedDialogFragment2"
         android:name="com.lahsuak.apps.mytask.ui.fragments.DeleteAllCompletedDialogFragment2"
-        android:label="DeleteAllCompletedDialogFragment2" >
-        <argument android:name="taskID"
-            app:argType="integer"/>
+        android:label="DeleteAllCompletedDialogFragment2">
+        <argument
+            android:name="taskID"
+            app:argType="integer" />
     </dialog>
     <action
         android:id="@+id/action_global_deleteAllCompletedDialogFragment2"
@@ -79,7 +80,7 @@
             android:name="task_id"
             app:argType="integer" />
         <argument
-            android:name="tak_title"
+            android:name="task_title"
             app:argType="string"
             app:nullable="true" />
         <argument

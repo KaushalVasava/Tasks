@@ -96,4 +96,5 @@ dependencies {
 
     implementation 'com.google.android.gms:play-services-auth:20.2.0'
     implementation 'com.michalsvec:single-row-calednar:1.0.0'
+    implementation "androidx.slidingpanelayout:slidingpanelayout:1.2.0"
 }
