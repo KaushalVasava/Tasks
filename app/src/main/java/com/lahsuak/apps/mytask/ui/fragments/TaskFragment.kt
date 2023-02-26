@@ -56,7 +56,6 @@ import com.lahsuak.apps.mytask.util.Util.unsafeLazy
 import dagger.hilt.android.AndroidEntryPoint
 import hotchemi.android.rate.AppRate
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
