@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Görevlerim</string>
+    <string name="app_name">Görevler</string>
     <string name="task_progress">%d/%d görev tamamlandı</string>
     <string name="subtask_progress">%d/%d alt görev tamamlandı</string>
     <string name="task_completed">Görev tamamlandı</string>
@@ -110,4 +110,15 @@
     <string name="restart">Yeniden Başlat</string>
     <string name="new_app_ready">Yeni uygulama hazır</string>
     <string name="task_selected" formatted="false">%d/%d seçildi</string>
+    <string name="or">VEYA</string>
+    <string name="select_task">Görevi seçin</string>
+    <string name="active">Aktif</string>
+    <string name="done">Bitti</string>
+    <string name="home">Ana Sayfa</string>
+    <string name="personal">Kişisel</string>
+    <string name="school">Okul</string>
+    <string name="work">İş</string>
+    <string name="other">Diğer</string>
+    <string name="back">Geri</string>
+    <string name="feedback_from_app">%s, %s\'den geri bildirim</string>
 </resources>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">مهامي</string>
+    <string name="app_name">مهام</string>
     <string name="task_progress"> تم إكمال% d /% d مهمة </string>
     <string name="subtask_progress">تم إكمال% d /% d مهمة فرعية</string>
     <string name="task_completed"> اكتملت المهمة </string>

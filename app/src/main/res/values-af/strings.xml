@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">My Take</string>
+    <string name="app_name">Take</string>
     <string name="task_progress">%d/%d take voltooi</string>
     <string name="subtask_progress">%d/%d subtake voltooi</string>
     <string name="task_completed">Taak voltooi</string>

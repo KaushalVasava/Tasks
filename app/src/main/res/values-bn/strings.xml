@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">আমার কাজ</string>
+    <string name="app_name">কাজ</string>
     <string name="task_progress">%d/%dটি কাজ সম্পন্ন হয়েছে</string>
     <string name="subtask_progress">%d/%dটি সাবটাস্ক সম্পন্ন হয়েছে</string>
     <string name="task_completed">কাজ সম্পন্ন হয়েছে</string>

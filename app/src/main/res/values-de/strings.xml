@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Meine Aufgaben</string>
+    <string name="app_name">Aufgaben</string>
     <string name="task_progress">%d/%d Aufgaben abgeschlossen</string>
     <string name="subtask_progress">%d/%d Unteraufgaben abgeschlossen</string>
     <string name="task_completed">Aufgabe abgeschlossen</string>

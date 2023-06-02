@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">我的任務</string>
+    <string name="app_name">任务</string>
     <string name="task_progress">%d/%d 個任務完成</string>
     <string name="subtask_progress">%d/%d 個子任務已完成</string>
     <string name="task_completed">任務完成</string>
@@ -110,4 +110,15 @@
     <string name="restart">重启</string>
     <string name="new_app_ready">新应用准备就绪</string>
     <string name="task_selected" formatted="false">已选择%d/%d</string>
+    <string name="or">OR</string>
+    <string name="select_task">选择任务</string>
+    <string name="active">活跃</string>
+    <string name="done">完成</string>
+    <string name="home">主页</string>
+    <string name="personal">个人</string>
+    <string name="school">学校</string>
+    <string name="work">工作</string>
+    <string name="other">其他</string>
+    <string name="back">返回</string>
+    <string name="feedback_from_app">来自 %s，%s 的反馈</string>
 </resources>

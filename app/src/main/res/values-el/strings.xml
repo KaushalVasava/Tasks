@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Minhas tarefas</string>
+    <string name="app_name">Καθήκοντα</string>
     <string name="task_progress">%d/%d tarefas concluídas</string>
     <string name="subtask_progress">%d/%d subtarefas concluídas</string>
     <string name="task_completed">Tarefa concluída</string>
@@ -109,4 +109,15 @@
     <string name="restart">Επανεκκίνηση</string>
     <string name="new_app_ready">Η νέα εφαρμογή είναι έτοιμη</string>
     <string name="task_selected" formatted="false">Επιλέχτηκε %d/%d</string>
+    <string name="or">Ή</string>
+    <string name="select_task">Επιλογή εργασίας</string>
+    <string name="active">Ενεργό</string>
+    <string name="done">Τέλος</string>
+    <string name="home">Αρχική σελίδα</string>
+    <string name="personal">Προσωπικό</string>
+    <string name="school">Σχολείο</string>
+    <string name="work">Εργασία</string>
+    <string name="other">Άλλο</string>
+    <string name="back">Πίσω</string>
+    <string name="feedback_from_app">Σχόλια από %s, %s</string>
 </resources>

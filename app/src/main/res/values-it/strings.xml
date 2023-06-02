@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">I miei compiti</string>
+    <string name="app_name">Compiti</string>
     <string name="task_progress">%d/%d attività completate</string>
     <string name="subtask_progress">%d/%d attività secondarie completate</string>
     <string name="task_completed">Attività completata</string>
@@ -110,4 +110,15 @@
     <string name="restart">Riavvia</string>
     <string name="new_app_ready">La nuova app è pronta</string>
     <string name="task_selected" formatted="false">%d/%d selezionati</string>
+    <string name="or">O</string>
+    <string name="select_task">Seleziona attività</string>
+    <string name="active">Attivo</string>
+    <string name="done">Fatto</string>
+    <string name="home">Casa</string>
+    <string name="personal">Personale</string>
+    <string name="school">Scuola</string>
+    <string name="work">Lavoro</string>
+    <string name="other">Altro</string>
+    <string name="back">Indietro</string>
+    <string name="feedback_from_app">Feedback da %s, %s</string>
 </resources>

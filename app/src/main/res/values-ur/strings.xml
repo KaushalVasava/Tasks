@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">میرے کام</string>
+    <string name="app_name">کام</string>
     <string name="task_progress">%d/%d کام مکمل ہو گئے</string>
     <string name="subtask_progress">%d/%d ذیلی کام مکمل ہو گئے</string>
     <string name="task_completed">ٹاسک مکمل ہوگیا</string>
@@ -110,4 +110,15 @@
     <string name="restart">دوبارہ شروع کریں</string>
     <string name="new_app_ready">نئی ایپ تیار ہے</string>
     <string name="task_selected" formatted="false">%d/%d منتخب کیا گیا</string>
+    <string name="or">یا</string>
+    <string name="select_task">کام منتخب کریں</string>
+    <string name = "active"> فعال</string>
+    <string name = "done"> ہو گیا</string>
+    <string name="home">ہوم</string>
+    <string name = "personal">ذاتی</string>
+    <string name="school">اسکول</string>
+    <string name="work">کام</string>
+    <string name = "other"> دیگر</string>
+    <string name = "back"> پیچھے</string>
+    <string name="feedback_from_app">%s، %s کی طرف سے تاثرات</string>
 </resources>

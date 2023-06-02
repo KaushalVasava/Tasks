@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Mijn taken</string>
+    <string name="app_name">Taken</string>
     <string name="task_progress">%d/%d taken voltooid</string>
     <string name="subtask_progress">%d/%d subtaken voltooid</string>
     <string name="task_completed">Taak voltooid</string>
@@ -109,4 +109,15 @@
     <string name="restart">Herstart</string>
     <string name="new_app_ready">Nieuwe app is klaar</string>
     <string name="task_selected" formatted="false">%d/%d geselecteerd</string>
+    <string name="or">OF</string>
+    <string name="select_task">Selecteer taak</string>
+    <string name="active">Actief</string>
+    <string name="done">Klaar</string>
+    <string name="home">Thuis</string>
+    <string name="personal">Persoonlijk</string>
+    <string name="school">School</string>
+    <string name="work">Werk</string>
+    <string name="other">Andere</string>
+    <string name="back">Terug</string>
+    <string name="feedback_from_app">Feedback van %s, %s</string>
 </resources>

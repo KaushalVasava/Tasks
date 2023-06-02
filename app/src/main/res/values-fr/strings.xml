@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Mes tâches</string>
+    <string name="app_name">Tâches</string>
     <string name="task_progress">%d/%d tâches terminées</string>
     <string name="subtask_progress">%d/%d sous-tâches terminées</string>
     <string name="task_completed">Tâche terminée</string>
@@ -110,4 +110,15 @@
     <string name="restart">Redémarrer</string>
     <string name="new_app_ready">La nouvelle application est prête</string>
     <string name="task_selected" formatted="false">%d/%d sélectionné</string>
+    <string name="ou">OU</string>
+    <string name="select_task">Sélectionner une tâche</string>
+    <string name="active">Actif</string>
+    <string name="done">Terminé</string>
+    <string name="home">Accueil</string>
+    <string name="personal">Personnel</string>
+    <string name="school">École</string>
+    <string name="work">Travailler</string>
+    <string name="autre">Autre</string>
+    <string name="retour">Retour</string>
+    <string name="feedback_from_app">Commentaires de %s, %s</string>
 </resources>

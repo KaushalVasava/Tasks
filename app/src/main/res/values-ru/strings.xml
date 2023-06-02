@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Мои задачи</string>
+    <string name="app_name">Задания</string>
     <string name="task_progress">Выполнено %d/%d задач</string>
     <string name="subtask_progress">Выполнено %d/%d подзадач</string>
     <string name="task_completed">Задача выполнена</string>
@@ -109,4 +109,15 @@
     <string name="restart">Перезапустить</string>
     <string name="new_app_ready">Новое приложение готово</string>
     <string name="task_selected" formatted="false">Выбрано %d/%d</string>
+    <string name="or">ИЛИ</string>
+    <string name="select_task">Выберите задачу</string>
+    <string name="active">Активный</string>
+    <string name="done">Готово</string>
+    <string name="home">Главная</string>
+    <string name="personal">Личное</string>
+    <string name="school">Школа</string>
+    <string name="work">Работа</string>
+    <string name="other">Другое</string>
+    <string name="back">Назад</string>
+    <string name="feedback_from_app">Отзыв от %s, %s</string>
 </resources>

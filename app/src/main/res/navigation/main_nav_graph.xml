@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/taskFragment"
-        android:name="com.lahsuak.apps.mytask.ui.fragments.TaskFragment"
+        android:name="com.lahsuak.apps.tasks.ui.fragments.TaskFragment"
         android:label="@string/app_name"
         tools:layout="@layout/fragment_task">
         <action
@@ -26,12 +26,12 @@
     </fragment>
     <fragment
         android:id="@+id/subTaskFragment"
-        android:name="com.lahsuak.apps.mytask.ui.fragments.SubTaskFragment"
+        android:name="com.lahsuak.apps.tasks.ui.fragments.SubTaskFragment"
         android:label=""
         tools:layout="@layout/fragment_subtask">
         <argument
             android:name="task"
-            app:argType="com.lahsuak.apps.mytask.data.model.Task" />
+            app:argType="com.lahsuak.apps.tasks.data.model.Task" />
         <argument
             android:name="isSharedSubtask"
             app:argType="boolean" />
@@ -51,14 +51,14 @@
     </fragment>
     <dialog
         android:id="@+id/deleteAllCompletedDialogFragment"
-        android:name="com.lahsuak.apps.mytask.ui.fragments.DeleteAllCompletedDialogFragment"
+        android:name="com.lahsuak.apps.tasks.ui.fragments.DeleteAllCompletedDialogFragment"
         android:label="DeleteAllCompletedDialogFragment" />
     <action
         android:id="@+id/action_global_deleteAllCompletedDialogFragment"
         app:destination="@id/deleteAllCompletedDialogFragment" />
     <dialog
         android:id="@+id/deleteAllCompletedDialogFragment2"
-        android:name="com.lahsuak.apps.mytask.ui.fragments.DeleteAllCompletedDialogFragment2"
+        android:name="com.lahsuak.apps.tasks.ui.fragments.DeleteAllCompletedDialogFragment2"
         android:label="DeleteAllCompletedDialogFragment2">
         <argument
             android:name="taskID"
@@ -69,11 +69,11 @@
         app:destination="@id/deleteAllCompletedDialogFragment2" />
     <fragment
         android:id="@+id/settingsFragment"
-        android:name="com.lahsuak.apps.mytask.ui.fragments.SettingsFragment"
+        android:name="com.lahsuak.apps.tasks.ui.fragments.SettingsFragment"
         android:label="@string/settings" />
     <dialog
         android:id="@+id/renameFragmentDialog"
-        android:name="com.lahsuak.apps.mytask.ui.fragments.AddUpdateTaskFragmentDialog"
+        android:name="com.lahsuak.apps.tasks.ui.fragments.AddUpdateTaskFragmentDialog"
         android:label="RenameFragmentDialog"
         tools:layout="@layout/dialog_add_update_task">
         <argument
@@ -95,7 +95,7 @@
     </dialog>
     <dialog
         android:id="@+id/shortcutFragmentDialog"
-        android:name="com.lahsuak.apps.mytask.ui.fragments.ShortcutFragmentDialog"
+        android:name="com.lahsuak.apps.tasks.ui.fragments.ShortcutFragmentDialog"
         android:label="ShortcutFragmentDialog"
         tools:layout="@layout/dialog_add_update_task">
         <argument

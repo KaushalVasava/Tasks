@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">मेरे कार्य</string>
+    <string name="app_name">कार्य</string>
     <string name="task_progress">%d/%d कार्य पूर्ण</string>
     <string name="subtask_progress">%d/%d सबटास्क पूरे हो गए हैं</string>
     <string name="task_completed">कार्य पूरा हुआ</string>
@@ -109,4 +109,15 @@
     <string name="restart">पुनरारंभ करें</string>
     <string name="new_app_ready">नया ऐप तैयार है</string>
     <string name="task_selected" formatted="false">%d/%d चयनित</string>
+    <string name="or">या</string>
+    <string name="select_task">कार्य चुनें</string>
+    <string name="active">सक्रिय</string>
+    <string name="done"> हो गया</string>
+    <string name="home">होम</string>
+    <string name="personal"> व्यक्तिगत </string>
+    <string name="school"> स्कूल </string>
+    <string name="work">वर्क</string>
+    <string name="other">अन्य</string>
+    <string name="back">वापस</string>
+    <string name="feedback_from_app">%s, %s से प्रतिक्रिया</string>
 </resources>

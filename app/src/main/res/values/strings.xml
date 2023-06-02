@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">My Tasks</string>
+    <string name="app_name">Tasks</string>
     <string name="task_progress">%1$d/%2$d  tasks completed</string>
     <string name="subtask_progress">%1$d/%2$d  subtasks completed</string>
     <string name="task_completed">Task completed</string>
@@ -122,6 +122,6 @@
     <string name="work">Work</string>
     <string name="other">Other</string>
     <string name="back">Back</string>
-    <string name="made_in_india" translatable="false">Made with ❤️ in India \uD83C\uDDEE\uD83C\uDDF3</string>
     <string name="feedback_from_app">Feedback from %s, %s</string>
+    <string name="made_in_india" translatable="false">Made with ❤️ in India \uD83C\uDDEE\uD83C\uDDF3</string>
 </resources>
