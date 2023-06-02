@@ -39,8 +39,8 @@ import com.lahsuak.apps.tasks.ui.adapters.SubTaskAdapter
 import com.lahsuak.apps.tasks.ui.fragments.TaskFragment.Companion.TOTAL_PROGRESS_VALUE
 import com.lahsuak.apps.tasks.ui.viewmodel.SubTaskViewModel
 import com.lahsuak.apps.tasks.util.*
-import com.lahsuak.apps.tasks.util.Util.createNotification
-import com.lahsuak.apps.tasks.util.Util.unsafeLazy
+import com.lahsuak.apps.tasks.util.AppUtil.createNotification
+import com.lahsuak.apps.tasks.util.AppUtil.unsafeLazy
 import dagger.hilt.android.AndroidEntryPoint
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 import kotlinx.coroutines.flow.first
@@ -151,7 +151,7 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
     }
 
     private fun initView() {
-        binding.root.setBackgroundColor(Util.getTransparentColor(task.color))
+        binding.root.setBackgroundColor(AppUtil.getTransparentColor(task.color))
         binding.txtTitle.text = task.title
         setColors(TaskApp.categoryTypes[task.color].color)
         val prefManager = PreferenceManager.getDefaultSharedPreferences(requireContext())
@@ -208,7 +208,7 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
             addNewTask()
         }
         binding.btnVoiceTask.setOnClickListener {
-            Util.speakToAddTask(requireActivity(), speakLauncher)
+            AppUtil.speakToAddTask(requireActivity(), speakLauncher)
         }
         binding.reminderLayout.setOnClickListener {
             subTaskViewModel.showReminder(

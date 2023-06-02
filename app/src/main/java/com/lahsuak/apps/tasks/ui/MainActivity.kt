@@ -19,8 +19,8 @@ import com.lahsuak.apps.tasks.util.AppConstants.SHARE_FORMAT
 import com.lahsuak.apps.tasks.util.AppConstants.THEME_DEFAULT
 import com.lahsuak.apps.tasks.util.AppConstants.THEME_KEY
 import com.lahsuak.apps.tasks.util.RuntimeLocaleChanger
-import com.lahsuak.apps.tasks.util.Util.getLanguage
-import com.lahsuak.apps.tasks.util.Util.setClipboard
+import com.lahsuak.apps.tasks.util.AppUtil.getLanguage
+import com.lahsuak.apps.tasks.util.AppUtil.setClipboard
 import com.lahsuak.apps.tasks.databinding.ActivityMainBinding
 import dagger.hilt.android.AndroidEntryPoint
 

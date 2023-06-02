@@ -53,8 +53,8 @@ import com.lahsuak.apps.tasks.ui.viewmodel.TaskViewModel
 import com.lahsuak.apps.tasks.util.*
 import com.lahsuak.apps.tasks.util.AppConstants.REM_KEY
 import com.lahsuak.apps.tasks.util.AppConstants.UPDATE_REQUEST_CODE
-import com.lahsuak.apps.tasks.util.Util.speakToAddTask
-import com.lahsuak.apps.tasks.util.Util.unsafeLazy
+import com.lahsuak.apps.tasks.util.AppUtil.speakToAddTask
+import com.lahsuak.apps.tasks.util.AppUtil.unsafeLazy
 import dagger.hilt.android.AndroidEntryPoint
 import hotchemi.android.rate.AppRate
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
@@ -64,7 +64,9 @@ import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener, SelectionListener {
-    private lateinit var binding: FragmentTaskBinding
+    private var _binding: FragmentTaskBinding? = null
+    private val binding: FragmentTaskBinding
+        get() = _binding!!
     private val navController: NavController by unsafeLazy {
         findNavController()
     }
@@ -113,11 +115,20 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
             }
         }
 
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        super.onCreateView(inflater, container, savedInstanceState)
+        _binding = FragmentTaskBinding.inflate(inflater)
+        return _binding?.root
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         (activity as AppCompatActivity).supportActionBar?.hide()
 
-        binding = FragmentTaskBinding.bind(view)
         binding.txtTitle.text = DateUtil.getToolbarDateTime(System.currentTimeMillis())
         val prefManager = PreferenceManager.getDefaultSharedPreferences(requireContext())
         binding.btnVoiceTask.isVisible =
@@ -757,6 +768,7 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
             searchView!!.setOnQueryTextListener(null)
         shareTxt = null
         isWidgetClick = false
+        _binding = null
     }
 
     override fun getActionModeStatus(): Boolean {
@@ -796,7 +808,7 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
             putBoolean(IS_SELECT_ALL_BUNDLE_KEY, isSelectAll)
             putBooleanArray(SELECTED_ITEMS_BUNDLE_KEY, selectedItem?.toBooleanArray())
             putBooleanArray(OPEN_TASK_ITEMS_BUNDLE_KEY, openTaskItems.toBooleanArray())
-            putBoolean(TASKS_STATUS_BUNDLE_KEY, binding.chipActive.isChecked)
+            putBoolean(TASKS_STATUS_BUNDLE_KEY, _binding?.chipActive?.isChecked ?: false)
         }
     }
 

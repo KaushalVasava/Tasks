@@ -56,7 +56,7 @@ object PermissionUtil {
             view.context.getString(R.string.permission_denied),
             Snackbar.LENGTH_LONG
         ).setAction(R.string.open_settings) {
-            Util.openSettingsPage(activity)
+            AppUtil.openSettingsPage(activity)
         }
         snackBar.show()
     }

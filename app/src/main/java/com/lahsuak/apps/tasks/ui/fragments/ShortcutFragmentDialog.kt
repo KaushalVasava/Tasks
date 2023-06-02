@@ -15,7 +15,7 @@ import androidx.lifecycle.lifecycleScope
 import com.lahsuak.apps.tasks.R
 import com.lahsuak.apps.tasks.databinding.DialogAddUpdateTaskBinding
 import com.lahsuak.apps.tasks.util.AppConstants
-import com.lahsuak.apps.tasks.util.Util
+import com.lahsuak.apps.tasks.util.AppUtil
 import com.lahsuak.apps.tasks.util.toTrimString
 import kotlinx.coroutines.launch
 
@@ -64,7 +64,7 @@ class ShortcutFragmentDialog : BottomSheetDialogFragment() {
                     date = System.currentTimeMillis()
                 )
             }
-            task = Util.showReminder(requireActivity(), binding.txtReminder, task)
+            task = AppUtil.showReminder(requireActivity(), binding.txtReminder, task)
         }
         binding.btnSave.setOnClickListener {
             if (args.taskId == -1) {

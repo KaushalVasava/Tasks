@@ -3,14 +3,13 @@ package com.lahsuak.apps.tasks
 import android.app.Application
 import android.content.Context
 import android.content.res.Configuration
-import com.lahsuak.apps.tasks.R
 import com.lahsuak.apps.tasks.model.Category
 import com.lahsuak.apps.tasks.util.AppConstants.LANGUAGE_DEFAULT_VALUE
 import com.lahsuak.apps.tasks.util.AppConstants.LANGUAGE_SHARED_PREFERENCE
 import com.lahsuak.apps.tasks.util.AppConstants.LANGUAGE_SHARED_PREFERENCE_KEY
 import com.lahsuak.apps.tasks.util.AppConstants.LANGUAGE_SHARED_PREFERENCE_LANGUAGE_KEY
 import com.lahsuak.apps.tasks.util.RuntimeLocaleChanger
-import com.lahsuak.apps.tasks.util.Util.getLanguage
+import com.lahsuak.apps.tasks.util.AppUtil.getLanguage
 import com.lahsuak.apps.tasks.util.getColorCode
 import dagger.hilt.android.HiltAndroidApp
 

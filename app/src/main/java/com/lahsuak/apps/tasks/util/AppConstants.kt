@@ -1,6 +1,7 @@
 package com.lahsuak.apps.tasks.util
 
 object AppConstants {
+    const val WEBSITE = "https://zaap.bio/KaushalVasava"
     const val NOTIFICATION_CHANNEL_ID = "com.lahsuak.apps.mytask.notificationID"
     const val DATE_FORMAT = "dd MMM, yyyy"
     const val TIME_FORMAT = "hh:mm a"

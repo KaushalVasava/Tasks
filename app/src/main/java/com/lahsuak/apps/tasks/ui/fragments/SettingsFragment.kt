@@ -22,12 +22,14 @@ import com.lahsuak.apps.tasks.util.AppConstants.LANGUAGE_SHARED_PREFERENCE_KEY
 import com.lahsuak.apps.tasks.util.AppConstants.LANGUAGE_SHARED_PREFERENCE_LANGUAGE_KEY
 import com.lahsuak.apps.tasks.util.AppConstants.THEME_DEFAULT
 import com.lahsuak.apps.tasks.util.AppConstants.THEME_KEY
-import com.lahsuak.apps.tasks.util.Util.appRating
-import com.lahsuak.apps.tasks.util.Util.getLanguage
-import com.lahsuak.apps.tasks.util.Util.moreApp
-import com.lahsuak.apps.tasks.util.Util.sendFeedbackMail
-import com.lahsuak.apps.tasks.util.Util.shareApp
+import com.lahsuak.apps.tasks.util.AppUtil
+import com.lahsuak.apps.tasks.util.AppUtil.appRating
+import com.lahsuak.apps.tasks.util.AppUtil.getLanguage
+import com.lahsuak.apps.tasks.util.AppUtil.moreApp
+import com.lahsuak.apps.tasks.util.AppUtil.sendFeedbackMail
+import com.lahsuak.apps.tasks.util.AppUtil.shareApp
 import java.util.*
+
 
 class SettingsFragment : PreferenceFragmentCompat() {
     companion object {
@@ -57,6 +59,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         val prefFont = findPreference<ListPreference>("font_size")
         val prefTheme = findPreference<ListPreference>("theme_key")
         val prefLanguage = findPreference<ListPreference>("language")
+        val prefDeveloper = findPreference<Preference>("developer")
 
         val pref = requireContext().getSharedPreferences(
             LANGUAGE_SHARED_PREFERENCE,
@@ -121,6 +124,10 @@ class SettingsFragment : PreferenceFragmentCompat() {
         prefTheme?.setOnPreferenceChangeListener { _, newValue ->
             selectedTheme = (newValue as String).toInt()
             setTheme()
+            true
+        }
+        prefDeveloper?.setOnPreferenceClickListener {
+            AppUtil.openWebsite(context, AppConstants.WEBSITE)
             true
         }
     }

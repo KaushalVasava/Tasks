@@ -24,21 +24,22 @@ import androidx.fragment.app.FragmentActivity
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.lahsuak.apps.tasks.BuildConfig
-import com.lahsuak.apps.tasks.TaskApp
 import com.lahsuak.apps.tasks.R
+import com.lahsuak.apps.tasks.TaskApp
 import com.lahsuak.apps.tasks.data.model.SubTask
 import com.lahsuak.apps.tasks.data.model.Task
 import com.lahsuak.apps.tasks.receiver.AlarmReceiver
-import com.lahsuak.apps.tasks.util.AppConstants.NOTIFICATION_CHANNEL_ID
 import com.lahsuak.apps.tasks.util.AppConstants.MAIL_TO
 import com.lahsuak.apps.tasks.util.AppConstants.MARKET_PLACE_HOLDER
+import com.lahsuak.apps.tasks.util.AppConstants.NOTIFICATION_CHANNEL_ID
 import com.lahsuak.apps.tasks.util.AppConstants.SHARE_FORMAT
-import com.lahsuak.apps.tasks.util.Util.UNDERSCORE
+import com.lahsuak.apps.tasks.util.AppUtil.UNDERSCORE
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
 
-object Util {
+
+object AppUtil {
     private const val COPY_TAG = "Copied Text"
     private const val COMMA_SEPARATOR = ","
     private const val NOTIFICATION_CHANNEL_NAME = "Reminder"
@@ -172,6 +173,20 @@ object Util {
             context.toast { context.getString(R.string.something_went_wrong) }
         } catch (e: Throwable) {
             e.logError()
+        }
+    }
+
+    fun openWebsite(context: Context?, url: String) {
+        context ?: return
+        try {
+            val intent = Intent(Intent.ACTION_VIEW)
+            intent.data = Uri.parse(url)
+            context.startActivity(intent)
+        } catch (e: Throwable) {
+            e.logError()
+            context.toast {
+                context.getString(R.string.no_application_found)
+            }
         }
     }
 

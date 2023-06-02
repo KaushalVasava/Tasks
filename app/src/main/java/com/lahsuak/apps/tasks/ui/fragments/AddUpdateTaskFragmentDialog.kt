@@ -22,9 +22,9 @@ import com.lahsuak.apps.tasks.ui.viewmodel.SubTaskViewModel
 import com.lahsuak.apps.tasks.ui.viewmodel.TaskViewModel
 import com.lahsuak.apps.tasks.util.*
 import com.lahsuak.apps.tasks.util.AppConstants.REM_KEY
-import com.lahsuak.apps.tasks.util.Util.setClipboard
-import com.lahsuak.apps.tasks.util.Util.showReminder
-import com.lahsuak.apps.tasks.util.Util.showSubTaskReminder
+import com.lahsuak.apps.tasks.util.AppUtil.setClipboard
+import com.lahsuak.apps.tasks.util.AppUtil.showReminder
+import com.lahsuak.apps.tasks.util.AppUtil.showSubTaskReminder
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -167,7 +167,7 @@ class AddUpdateTaskFragmentDialog : BottomSheetDialogFragment() {
             }
         }
         binding.btnPaste.setOnClickListener {
-            val text = Util.pasteText(requireContext())
+            val text = AppUtil.pasteText(requireContext())
             binding.txtRename.setText(text)
         }
         binding.btnSave.setOnClickListener {
