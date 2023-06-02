@@ -45,12 +45,12 @@ object PermissionUtil {
         }
     }
 
-    fun showSettingsSnackbar(
+    fun showSettingsSnackBar(
         activity: Activity?,
         view: View,
     ) {
         activity ?: return
-        val snackbar = Snackbar.make(
+        val snackBar = Snackbar.make(
             view.context,
             view,
             view.context.getString(R.string.permission_denied),
@@ -58,7 +58,7 @@ object PermissionUtil {
         ).setAction(R.string.open_settings) {
             Util.openSettingsPage(activity)
         }
-        snackbar.show()
+        snackBar.show()
     }
 
 }

@@ -1,7 +1,7 @@
 package com.lahsuak.apps.mytask.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
-import com.lahsuak.apps.mytask.data.repository.TodoRepository
+import com.lahsuak.apps.mytask.data.repository.TaskRepository
 import com.lahsuak.apps.mytask.di.ApplicationScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -10,7 +10,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class DeleteAllCompletedViewModel @Inject constructor(
-    private val repository: TodoRepository,
+    private val repository: TaskRepository,
     @ApplicationScope private val applicationScope: CoroutineScope
 ) : ViewModel() {
 

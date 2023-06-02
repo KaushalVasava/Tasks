@@ -63,7 +63,7 @@
     <string name="notify_delete"> تم حذف المهام بنجاح </string>
     <string name="please_select_task"> الرجاء تحديد مهمة </string>
     <string name="search_task"> مهمة البحث </string>
-    <string name="speach_not_support"> جهازك غير مدعوم لإدخال الكلام </string>
+    <string name="speech_not_support"> جهازك غير مدعوم لإدخال الكلام </string>
     <string name="search_subtask"> بحث في مهمة فرعية </string>
     <string name="share"> مشاركة </string>
     <string name="delete_task"> هل تريد الحذف؟ </string>

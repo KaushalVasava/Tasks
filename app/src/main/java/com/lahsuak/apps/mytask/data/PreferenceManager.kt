@@ -4,8 +4,8 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.*
 import androidx.datastore.preferences.preferencesDataStore
-import com.lahsuak.apps.mytask.util.Constants
-import com.lahsuak.apps.mytask.util.Constants.SETTING
+import com.lahsuak.apps.mytask.util.AppConstants
+import com.lahsuak.apps.mytask.util.AppConstants.SETTING
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
@@ -93,10 +93,10 @@ class PreferenceManager @Inject constructor(@ApplicationContext context: Context
     }
 
     private object PreferencesKeys {
-        val SORT_ORDER = stringPreferencesKey(Constants.SORT_ORDER)
-        val HIDE_COMPLETED = booleanPreferencesKey(Constants.HIDE_COMPLETED)
-        val SORT_ORDER2 = stringPreferencesKey(Constants.SORT_ORDER2)
-        val HIDE_COMPLETED2 = booleanPreferencesKey(Constants.HIDE_COMPLETED2)
-        val VIEW_TYPE = booleanPreferencesKey(Constants.VIEW_TYPE)
+        val SORT_ORDER = stringPreferencesKey(AppConstants.SORT_ORDER)
+        val HIDE_COMPLETED = booleanPreferencesKey(AppConstants.HIDE_COMPLETED)
+        val SORT_ORDER2 = stringPreferencesKey(AppConstants.SORT_ORDER2)
+        val HIDE_COMPLETED2 = booleanPreferencesKey(AppConstants.HIDE_COMPLETED2)
+        val VIEW_TYPE = booleanPreferencesKey(AppConstants.VIEW_TYPE)
     }
 }

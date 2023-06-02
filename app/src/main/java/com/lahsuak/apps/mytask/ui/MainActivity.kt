@@ -13,11 +13,11 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.preference.PreferenceManager
 import com.lahsuak.apps.mytask.MyTaskApp.Companion.mylang
 import com.lahsuak.apps.mytask.R
-import com.lahsuak.apps.mytask.util.Constants.LANGUAGE_SHARED_PREFERENCE
-import com.lahsuak.apps.mytask.util.Constants.LANGUAGE_SHARED_PREFERENCE_LANGUAGE_KEY
-import com.lahsuak.apps.mytask.util.Constants.SHARE_FORMAT
-import com.lahsuak.apps.mytask.util.Constants.THEME_DEFAULT
-import com.lahsuak.apps.mytask.util.Constants.THEME_KEY
+import com.lahsuak.apps.mytask.util.AppConstants.LANGUAGE_SHARED_PREFERENCE
+import com.lahsuak.apps.mytask.util.AppConstants.LANGUAGE_SHARED_PREFERENCE_LANGUAGE_KEY
+import com.lahsuak.apps.mytask.util.AppConstants.SHARE_FORMAT
+import com.lahsuak.apps.mytask.util.AppConstants.THEME_DEFAULT
+import com.lahsuak.apps.mytask.util.AppConstants.THEME_KEY
 import com.lahsuak.apps.mytask.util.RuntimeLocaleChanger
 import com.lahsuak.apps.mytask.util.Util.getLanguage
 import com.lahsuak.apps.mytask.util.Util.setClipboard
@@ -33,7 +33,6 @@ class MainActivity : AppCompatActivity() {
         var shareTxt: String? = null
         var isWidgetClick = false
     }
-
 
     override fun attachBaseContext(base: Context) {
         super.attachBaseContext(RuntimeLocaleChanger.wrapContext(base, mylang))
@@ -82,6 +81,12 @@ class MainActivity : AppCompatActivity() {
             (supportFragmentManager.findFragmentById(R.id.my_container) as NavHostFragment)
         navController = navHostFragment.navController
         setupActionBarWithNavController(navController)
+        val listener = NavController.OnDestinationChangedListener { _, destination, _ ->
+            if (destination.id != R.id.taskFragment) {
+                binding.toolbar.setNavigationIcon(R.drawable.ic_back)
+            }
+        }
+        navController.addOnDestinationChangedListener(listener)
     }
 
     override fun onSupportNavigateUp(): Boolean {

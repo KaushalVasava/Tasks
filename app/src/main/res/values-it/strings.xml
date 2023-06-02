@@ -66,7 +66,7 @@
     <string name="notify_delete">Le attività sono state eliminate con successo</string>
     <string name="please_select_task">Seleziona un\'attività</string>
     <string name="search_task">Attività di ricerca</string>
-    <string name="speach_not_support">Il tuo dispositivo non supporta l\'input vocale</string>
+    <string name="speech_not_support">Il tuo dispositivo non supporta l\'input vocale</string>
     <string name="search_subtask">Cerca sottoattività</string>
     <string name="share">Condividi</string>
     <string name="delete_task">Vuoi eliminare?</string>

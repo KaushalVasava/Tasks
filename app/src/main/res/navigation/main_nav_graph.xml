@@ -23,28 +23,31 @@
                 android:name="subTaskId"
                 android:defaultValue="-1" />
         </action>
-
     </fragment>
     <fragment
         android:id="@+id/subTaskFragment"
         android:name="com.lahsuak.apps.mytask.ui.fragments.SubTaskFragment"
-        android:label="{task_title}"
+        android:label=""
         tools:layout="@layout/fragment_subtask">
         <argument
-            android:name="id"
-            app:argType="integer" />
+            android:name="task"
+            app:argType="com.lahsuak.apps.mytask.data.model.Task" />
         <argument
-            android:name="task_title"
-            app:argType="string" />
-        <argument android:name="completed"
-            app:argType="boolean"/>
+            android:name="isSharedSubtask"
+            app:argType="boolean" />
+        <argument
+            android:name="sharedText"
+            app:argType="string"
+            app:nullable="true" />
         <deepLink
             android:id="@+id/deepLink"
-            app:uri="myapp://kmv.com/editFragment/{id}{task_title}{completed}" />
+            app:uri="myapp://kmv.com/editFragment/{task}{isSharedSubtask}{sharedText}" />
         <action
             android:id="@+id/action_subTaskFragment_to_renameFragmentDialog"
             app:destination="@id/renameFragmentDialog" />
-
+        <action
+            android:id="@+id/action_subTaskFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
     </fragment>
     <dialog
         android:id="@+id/deleteAllCompletedDialogFragment"
@@ -56,9 +59,10 @@
     <dialog
         android:id="@+id/deleteAllCompletedDialogFragment2"
         android:name="com.lahsuak.apps.mytask.ui.fragments.DeleteAllCompletedDialogFragment2"
-        android:label="DeleteAllCompletedDialogFragment2" >
-        <argument android:name="taskID"
-            app:argType="integer"/>
+        android:label="DeleteAllCompletedDialogFragment2">
+        <argument
+            android:name="taskID"
+            app:argType="integer" />
     </dialog>
     <action
         android:id="@+id/action_global_deleteAllCompletedDialogFragment2"
@@ -73,7 +77,7 @@
         android:label="RenameFragmentDialog"
         tools:layout="@layout/dialog_add_update_task">
         <argument
-            android:name="source"
+            android:name="navigate_from_subtask"
             app:argType="boolean" />
         <argument
             android:name="task_id"
@@ -87,7 +91,7 @@
             app:argType="integer" />
         <deepLink
             android:id="@+id/deepLink"
-            app:uri="myapp://kmv.com/rename/{source}{task_id}{tak_title}{subTaskId}" />
+            app:uri="myapp://kmv.com/rename/{navigate_from_subtask}{task_id}{tak_title}{subTaskId}" />
     </dialog>
     <dialog
         android:id="@+id/shortcutFragmentDialog"

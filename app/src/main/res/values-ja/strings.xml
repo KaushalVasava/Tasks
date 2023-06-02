@@ -63,7 +63,7 @@
     <string name="notify_delete">タスクは正常に削除されました</string>
     <string name="please_select_task">タスクを選択してください</string>
     <string name="search_task">検索タスク</string>
-    <string name="speach_not_support">お使いのデバイスは音声入力でサポートされていません</string>
+    <string name="speech_not_support">お使いのデバイスは音声入力でサポートされていません</string>
     <string name="search_subtask">サブタスクの検索</string>
     <string name="share">共有</string>
     <string name="delete_task">削除しますか？</string>

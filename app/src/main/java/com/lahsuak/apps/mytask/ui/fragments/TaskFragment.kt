@@ -4,13 +4,17 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
+import android.app.Dialog
 import android.content.Intent
 import android.content.IntentSender
 import android.graphics.Canvas
 import android.os.Build
 import android.os.Bundle
 import android.speech.RecognizerIntent
+import android.util.Log
 import android.view.*
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
@@ -19,12 +23,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ActionMode
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
-import androidx.core.view.MenuHost
-import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
@@ -43,46 +44,47 @@ import com.lahsuak.apps.mytask.R
 import com.lahsuak.apps.mytask.data.SortOrder
 import com.lahsuak.apps.mytask.data.model.Task
 import com.lahsuak.apps.mytask.databinding.FragmentTaskBinding
+import com.lahsuak.apps.mytask.databinding.TaskSelectionDialogBinding
 import com.lahsuak.apps.mytask.model.TaskEvent
 import com.lahsuak.apps.mytask.ui.MainActivity.Companion.isWidgetClick
 import com.lahsuak.apps.mytask.ui.MainActivity.Companion.shareTxt
 import com.lahsuak.apps.mytask.ui.adapters.TaskAdapter
 import com.lahsuak.apps.mytask.ui.viewmodel.TaskViewModel
 import com.lahsuak.apps.mytask.util.*
-import com.lahsuak.apps.mytask.util.Constants.REM_KEY
-import com.lahsuak.apps.mytask.util.Constants.UPDATE_REQUEST_CODE
+import com.lahsuak.apps.mytask.util.AppConstants.REM_KEY
+import com.lahsuak.apps.mytask.util.AppConstants.UPDATE_REQUEST_CODE
 import com.lahsuak.apps.mytask.util.Util.speakToAddTask
 import com.lahsuak.apps.mytask.util.Util.unsafeLazy
 import dagger.hilt.android.AndroidEntryPoint
 import hotchemi.android.rate.AppRate
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener {
-    private val binding: FragmentTaskBinding by viewBinding {
-        FragmentTaskBinding.bind(it)
-    }
+class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener, SelectionListener {
+    private lateinit var binding: FragmentTaskBinding
     private val navController: NavController by unsafeLazy {
         findNavController()
     }
     private val viewModel: TaskViewModel by viewModels()
-
-    private lateinit var taskAdapter: TaskAdapter
+    private val taskAdapter: TaskAdapter by lazy {
+        TaskAdapter(this, this)
+    }
     private var searchView: SearchView? = null
     private var actionMode: ActionMode? = null
     private var appUpdateManager: AppUpdateManager? = null
     private var isLayoutChange = false
     private var taskPosition: Int = -1
+    private var selectedSortPosition = 0
 
-    companion object {
-        var viewType = false // listview = false, gridView = true
-        var selectedItem: Array<Boolean>? = null
-        var counter = 0
-        var is_in_action_mode = false
-        var is_select_all = false
-    }
+    private var selectedItem: Array<Boolean>? = null
+    private var viewType = false // listview = false, gridView = true
+    private var counter = 0
+    private var actionModeEnable = false
+    private var isSelectAll = false
+    private var openTaskItems = mutableListOf<Boolean>()
 
     private val speakLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult())
@@ -111,137 +113,115 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener 
             }
         }
 
-    @SuppressLint("QueryPermissionsNeeded")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
+        (activity as AppCompatActivity).supportActionBar?.hide()
 
+        binding = FragmentTaskBinding.bind(view)
+        binding.txtTitle.text = DateUtil.getToolbarDateTime(System.currentTimeMillis())
         val prefManager = PreferenceManager.getDefaultSharedPreferences(requireContext())
         binding.btnVoiceTask.isVisible =
-            prefManager.getBoolean(Constants.SHOW_VOICE_TASK_KEY, true)
-        setOptionMenu()
+            prefManager.getBoolean(AppConstants.SHOW_VOICE_TASK_KEY, true)
         checkPermission()
-        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            viewType = viewModel.preferencesFlow.first().viewType
-            if (viewType) {
-                binding.taskRecyclerView.layoutManager =
-                    StaggeredGridLayoutManager(2, RecyclerView.VERTICAL)
-            } else {
-                binding.taskRecyclerView.layoutManager = LinearLayoutManager(requireContext())
-            }
-        }
-        taskAdapter = TaskAdapter(this)
-        binding.taskRecyclerView.apply {
-            adapter = taskAdapter
-            setHasFixedSize(true)
-        }
+        initView()
         showRateDialog()
         // checking update of application
         appUpdateManager = AppUpdateManagerFactory.create(requireContext())
         checkUpdate()
         appUpdateManager!!.registerListener(appUpdateListener)
-
         if (shareTxt != null) {
-            val action = TaskFragmentDirections.actionTaskFragmentToRenameFragmentDialog(
-                false,
-                -1,
-                shareTxt!!
-            )
-            navController.navigate(action)
+            showTitleSelectionDialog()
         }
-        swipeGesturesHandler() //swipe to delete and mark as imp functionality
-        taskObserver() //observer for tasks and layout changes
-        completedTaskObserver() //observer for completed and uncompleted tasks
-        taskEventCollector()
+        addSwipeGesturesHandler() //swipe to delete and mark as imp functionality
+        setTaskObserver() //observer for tasks and layout changes
+        setCompletedTaskObserver() //observer for completed and uncompleted tasks
+        setTaskEventCollector()
         addClickListeners()
         savedStateHandleValueObserver()
     }
 
-    private fun setOptionMenu() {
-        val menuHost: MenuHost = requireActivity()
-        menuHost.addMenuProvider(object : MenuProvider {
-            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                menuInflater.inflate(R.menu.app_menu, menu)
-                val searchItem = menu.findItem(R.id.action_search)
-                searchView = searchItem.actionView as SearchView
+    private fun initView() {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewType = viewModel.preferencesFlow.first().viewType
+            binding.taskRecyclerView.layoutManager = if (viewType) {
+                binding.btnView.setImageResource(R.drawable.ic_list_view)
+                StaggeredGridLayoutManager(2, RecyclerView.VERTICAL)
+            } else {
+                binding.btnView.setImageResource(R.drawable.ic_grid_view)
+                LinearLayoutManager(requireContext())
+            }
+        }
+        binding.taskRecyclerView.apply {
+            setHasFixedSize(true)
+            adapter = taskAdapter
+        }
+    }
 
-                val pendingQuery = viewModel.searchQuery.value
-                if (pendingQuery != null && pendingQuery.isNotEmpty()) {
-                    searchItem.expandActionView()
-                    searchView!!.setQuery(pendingQuery, false)
-                }
-                searchView!!.onQueryTextChanged {
-                    viewModel.searchQuery.value = it
-                }
-                searchView!!.queryHint = getString(R.string.search_task)
-                viewLifecycleOwner.lifecycleScope.launch {
-                    menu.findItem(R.id.itemView).title =
-                        if (viewType) {
-                            getString(R.string.list_view)
-                        } else {
-                            getString(R.string.grid_view)
+    private fun showTitleSelectionDialog() {
+        val dialog = Dialog(requireContext())
+        val taskSelectionBinding =
+            TaskSelectionDialogBinding.inflate(LayoutInflater.from(requireContext()))
+        dialog.setContentView(taskSelectionBinding.root)
+        dialog.window?.setLayout(
+            ViewGroup.LayoutParams.WRAP_CONTENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
+        dialog.setCancelable(false)
+        taskSelectionBinding.btnNewTask.setOnClickListener {
+            addNewTask(shareTxt)
+            dialog.dismiss()
+            shareTxt = null
+        }
+        viewModel.tasksFlow.asLiveData().observe(viewLifecycleOwner) { list ->
+            if (shareTxt != null) {
+                val adapter: ArrayAdapter<*> = ArrayAdapter<Any?>(
+                    requireContext(),
+                    android.R.layout.simple_spinner_dropdown_item, list.map { it.title }
+                )
+                adapter.setDropDownViewResource(
+                    android.R.layout.simple_spinner_dropdown_item
+                )
+                taskSelectionBinding.taskPicker.adapter = adapter
+                var selectedPosition = -1
+                taskSelectionBinding.taskPicker.onItemSelectedListener =
+                    object : AdapterView.OnItemSelectedListener {
+                        override fun onItemSelected(
+                            parent: AdapterView<*>?,
+                            view: View?,
+                            position: Int,
+                            id: Long
+                        ) {
+                            selectedPosition = position
                         }
-                    menu.findItem(R.id.showTask).isChecked =
-                        viewModel.preferencesFlow.first().hideCompleted
+
+                        override fun onNothingSelected(adapterView: AdapterView<*>?) {}
+                    }
+                dialog.show()
+                taskSelectionBinding.btnSet.setOnClickListener {
+                    val action = TaskFragmentDirections.actionTaskFragmentToSubTaskFragment(
+                        list[selectedPosition].copy(isDone = false),
+                        true,
+                        shareTxt!!
+                    )
+                    navController.navigate(action)
+                    shareTxt = null
+                    dialog.dismiss()
+                }
+                taskSelectionBinding.btnCancel.setOnClickListener {
+                    dialog.dismiss()
                 }
             }
-
-            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                return when (menuItem.itemId) {
-                    R.id.sortByName -> {
-                        viewModel.onSortOrderSelected(SortOrder.BY_NAME, requireContext())
-                        true
-                    }
-                    R.id.sortByDate -> {
-                        viewModel.onSortOrderSelected(SortOrder.BY_DATE, requireContext())
-                        true
-                    }
-                    R.id.itemView -> {
-                        if (!viewType) {
-                            menuItem.title = getString(R.string.list_view)
-                            binding.taskRecyclerView.adapter = taskAdapter
-                            viewType = true
-                        } else {
-                            menuItem.title = getString(R.string.grid_view)
-                            binding.taskRecyclerView.adapter = taskAdapter
-                            viewType = false
-                        }
-                        isLayoutChange = true
-                        viewModel.onViewTypeChanged(viewType, requireContext())
-                        true
-                    }
-                    R.id.showTask -> {
-                        menuItem.isChecked = !menuItem.isChecked
-                        viewModel.onHideCompleted(menuItem.isChecked, requireContext())
-                        true
-                    }
-                    R.id.delete_all_completed_task -> {
-                        viewModel.onDeleteAllCompletedClick()
-                        true
-                    }
-                    R.id.setting -> {
-                        val action = TaskFragmentDirections.actionTaskFragmentToSettingsFragment()
-                        navController.navigate(action)
-                        true
-                    }
-                    else -> {
-                        false
-                    }
-                }
-            }
-        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+        }
     }
 
     private fun checkPermission() {
         if (Build.VERSION_CODES.TIRAMISU <= Build.VERSION.SDK_INT) {
             PermissionUtil.checkAndLaunchPermission(
                 fragment = this,
-                permissions = arrayOf(
-                    Manifest.permission.POST_NOTIFICATIONS
-                ),
+                permissions = arrayOf(Manifest.permission.POST_NOTIFICATIONS),
                 permissionLauncher = permissionResultLauncher,
                 showRationaleUi = {
-                    PermissionUtil.showSettingsSnackbar(
+                    PermissionUtil.showSettingsSnackBar(
                         requireActivity(),
                         requireView(),
                     )
@@ -252,16 +232,111 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener 
     }
 
     private fun addClickListeners() {
+        searchView = binding.searchView
+        val pendingQuery = viewModel.searchQuery.value
+        if (!pendingQuery.isNullOrEmpty()) {
+            searchView?.setQuery(pendingQuery, false)
+        }
+        searchView?.onQueryTextChanged {
+            viewModel.searchQuery.value = it
+        }
+        searchView?.queryHint = getString(R.string.search_task)
+
         binding.btnAddTask.setOnClickListener {
-            addNewTask()
+            addNewTask(null)
         }
-
         binding.btnCreateNewTask.setOnClickListener {
-            addNewTask()
+            addNewTask(null)
         }
-
         binding.btnVoiceTask.setOnClickListener {
             speakToAddTask(requireActivity(), speakLauncher)
+        }
+        binding.btnView.setOnClickListener {
+            setView()
+        }
+        binding.btnDeleteAll.setOnClickListener {
+            viewModel.onDeleteAllCompletedClick()
+        }
+        binding.btnSettings.setOnClickListener {
+            val action =
+                TaskFragmentDirections.actionTaskFragmentToSettingsFragment()
+            navController.navigate(action)
+        }
+        setSortMenu()
+        setVisibilityOfTasks()
+    }
+
+    private fun setView() {
+        viewType = if (!viewType) {
+            binding.btnView.setImageResource(R.drawable.ic_list_view)
+            true
+        } else {
+            binding.btnView.setImageResource(R.drawable.ic_grid_view)
+            false
+        }
+        binding.taskRecyclerView.adapter = taskAdapter
+        isLayoutChange = true
+        viewModel.onViewTypeChanged(viewType, requireContext())
+    }
+
+    private fun setSortMenu() {
+        val sortTypes = listOf(
+            SortOrder.BY_NAME.name.toSortForm(),
+            SortOrder.BY_DATE.name.toSortForm()
+        )
+        val adapter = ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_spinner_dropdown_item,
+            sortTypes
+        )
+        binding.sortMenu.adapter = adapter
+        binding.sortMenu.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View?,
+                    pos: Int,
+                    id: Long
+                ) {
+                    if (selectedSortPosition != pos) {
+                        selectedSortPosition = pos
+                        val sortType = if (sortTypes[pos] != SortOrder.BY_NAME.name.toSortForm()) {
+                            SortOrder.BY_NAME
+                        } else {
+                            SortOrder.BY_DATE
+                        }
+                        viewModel.onSortOrderSelected(sortType, requireContext())
+                    }
+                }
+
+                override fun onNothingSelected(parent: AdapterView<*>?) {
+                    /* no-op */
+                }
+            }
+    }
+
+    private fun setButtonVisibility(isVisible: Boolean) {
+        binding.btnAddTask.isVisible = isVisible
+        binding.btnVoiceTask.isVisible = isVisible
+        binding.btnDeleteAll.isVisible = !isVisible
+    }
+
+    private fun setVisibilityOfTasks() {
+        binding.chipActive.setOnClickListener {
+            if (binding.chipActive.isChecked) {
+                setButtonVisibility(true)
+                viewModel.onHideCompleted(true, requireContext())
+            } else {
+                binding.chipActive.isChecked = true
+            }
+        }
+        binding.chipDone.setOnClickListener {
+            if (binding.chipDone.isChecked) {
+                setButtonVisibility(false)
+                viewModel.onHideCompleted(false, requireContext())
+            } else {
+                binding.chipDone.isChecked = true
+            }
         }
     }
 
@@ -286,19 +361,15 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener 
             .setRemindInterval(2) // default 1
             .setShowLaterButton(true) // default true
             .setDebug(false) // default false
-            .setOnClickButtonListener {
-                //    Log.d(MainActivity::class.java.name, Integer.toString(which))
-            }
+            .setOnClickButtonListener { /* no-op */ }
             .monitor()
-
         // Show a dialog if meets conditions
         AppRate.showRateDialogIfMeetsConditions(requireActivity())
     }
 
-    private fun swipeGesturesHandler() {
+    private fun addSwipeGesturesHandler() {
         ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(
-            0,
-            ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
+            0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
         ) {
             override fun onMove(
                 recyclerView: RecyclerView,
@@ -316,7 +387,7 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener 
                     val task = taskAdapter.currentList[viewHolder.adapterPosition]
                     task.isImp = !task.isImp
                     viewModel.update(task)
-                    taskAdapter.notifyItemChanged(viewHolder.adapterPosition) //changed from notify-all to change-one
+                    taskAdapter.notifyItemChanged(viewHolder.adapterPosition)
                 }
             }
 
@@ -336,19 +407,15 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener 
                     isCurrentlyActive
                 )
                     .addSwipeLeftBackgroundColor(
-                        ContextCompat.getColor(
-                            requireContext(),
-                            R.color.red
-                        )
+                        ContextCompat.getColor(requireContext(), R.color.red)
+                    )
+                    .addSwipeRightBackgroundColor(
+                        requireContext().getAttribute(R.attr.colorPrimary)
                     )
                     .addSwipeLeftActionIcon(R.drawable.ic_delete)
-                    .addSwipeRightBackgroundColor(
-                        ContextCompat.getColor(
-                            requireContext(),
-                            R.color.blue_500
-                        )
-                    )
                     .addSwipeRightActionIcon(R.drawable.ic_pin)
+                    .addSwipeRightLabel(getString(R.string.important_task))
+                    .addSwipeLeftLabel(getString(R.string.delete))
                     .create()
                     .decorate()
                 super.onChildDraw(
@@ -364,7 +431,7 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener 
         }).attachToRecyclerView(binding.taskRecyclerView)
     }
 
-    private fun taskEventCollector() {
+    private fun setTaskEventCollector() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.tasksEvent.collect { event ->
                 when (event) {
@@ -378,6 +445,7 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener 
                                 viewModel.onUndoDeleteClick(event.task)
                             }.show()
                     }
+
                     TaskEvent.NavigateToAllCompletedScreen -> {
                         val action =
                             TaskFragmentDirections.actionGlobalDeleteAllCompletedDialogFragment()
@@ -388,53 +456,65 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener 
         }
     }
 
-    private fun taskObserver() {
-        viewModel.tasksFlow.asLiveData().observe(viewLifecycleOwner) {
-            if (isLayoutChange) {
-                if (viewType) {
+    private fun setTaskObserver() {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.tasksFlow.collectLatest {
+                if (isLayoutChange) {
                     binding.taskRecyclerView.layoutManager =
-                        StaggeredGridLayoutManager(2, RecyclerView.VERTICAL)
-                } else {
-                    binding.taskRecyclerView.layoutManager =
-                        LinearLayoutManager(requireContext())
+                        if (viewType) {
+                            StaggeredGridLayoutManager(2, RecyclerView.VERTICAL)
+                        } else {
+                            LinearLayoutManager(requireContext())
+                        }
+                    isLayoutChange = false
                 }
-                isLayoutChange = false
+                val data = if (binding.chipActive.isChecked) {
+                    it.filter { task ->
+                        !task.isDone
+                    }
+                } else {
+                    it.filter { task ->
+                        task.isDone
+                    }
+                }
+                Log.d("TAG", "TASK : # ${data.map { it.title to it.date }}")
+                taskAdapter.submitList(data)
+                if (openTaskItems.isEmpty()) {
+                    data.forEachIndexed { index, _ ->
+                        openTaskItems.add(index, true)
+                    }
+                }
             }
-            taskAdapter.submitList(it)
         }
     }
 
-    private fun completedTaskObserver() {
+    private fun setCompletedTaskObserver() {
         viewModel.tasksFlow2.asLiveData().observe(viewLifecycleOwner) {
-            var count = 0
-            for (element in it) {
-                if (element.isDone)
-                    count++
-            }
+            val count = it.count { task -> task.isDone }
             val hasTasks = it.isNotEmpty()
-
             binding.btnCreateNewTask.isVisible = !hasTasks
             binding.taskRecyclerView.isVisible = hasTasks
             binding.txtTaskProgress.isVisible = hasTasks
             binding.progressBar.isVisible = hasTasks
-            val value = (count.toFloat() / it.size.toFloat()) * 100
+            binding.chipGroup.isVisible = hasTasks
+            val value = (count.toFloat() / it.size.toFloat()) * TOTAL_PROGRESS_VALUE
             binding.progressBar.progress = value.toInt()
             binding.txtTaskProgress.text = getString(R.string.task_progress, count, it.size)
         }
     }
 
-    private fun addNewTask() {
+    private fun addNewTask(shareText: String?) {
         val action =
             TaskFragmentDirections.actionTaskFragmentToRenameFragmentDialog(
                 false,
                 -1,
-                null
+                shareText
             )
         navController.navigate(action)
     }
 
     override fun onItemClicked(task: Task, position: Int) {
-        if (is_in_action_mode) {
+        if (actionModeEnable) {
             selectedItem!![position] =
                 if (selectedItem!![position]) {
                     counter--
@@ -444,12 +524,13 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener 
                     true
                 }
             actionMode!!.title =
-                getString(R.string.task_selected, counter, taskAdapter.itemCount)
+                String.format(getString(R.string.task_selected), counter, taskAdapter.itemCount)
         } else {
             val action =
                 TaskFragmentDirections.actionTaskFragmentToSubTaskFragment(
-                    task.id,
-                    task.title, task.isDone
+                    task,
+                    false,
+                    null
                 )
             navController.navigate(action)
         }
@@ -511,25 +592,31 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener 
                     }
                     true
                 }
+
                 R.id.action_selectAll -> {
-                    is_select_all = if (!is_select_all) {
+                    isSelectAll = if (!isSelectAll) {
                         item.setIcon(R.drawable.ic_select_all_on)
                         for (i in 0 until taskAdapter.currentList.size)
-                            selectedItem!![i] == true
+                            selectedItem!![i]
                         counter = taskAdapter.currentList.size
                         true
                     } else {
                         item.setIcon(R.drawable.ic_select_all)
                         for (i in 0 until taskAdapter.currentList.size)
-                            selectedItem!![i] == false
+                            !selectedItem!![i]
                         counter = 0
                         false
                     }
                     actionMode!!.title =
-                        getString(R.string.task_selected, counter, taskAdapter.itemCount)
+                        String.format(
+                            getString(R.string.task_selected),
+                            counter,
+                            taskAdapter.itemCount
+                        )
                     taskAdapter.notifyDataSetChanged()
                     true
                 }
+
                 else -> false
             }
         }
@@ -541,7 +628,7 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener 
     }
 
     override fun onAnyItemLongClicked(position: Int) {
-        if (!is_in_action_mode) {
+        if (!actionModeEnable) {
             onActionMode(true)
             selectedItem!![position] = true
             counter = 1
@@ -559,21 +646,37 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener 
                 (activity as AppCompatActivity).startSupportActionMode(callback)!!
         }
         actionMode!!.title =
-            getString(R.string.task_selected, counter, taskAdapter.itemCount)
+            String.format(getString(R.string.task_selected), counter, taskAdapter.itemCount)
+    }
+
+    override fun getExpandCollapseState(position: Int): Boolean {
+        return openTaskItems[position]
+    }
+
+    override fun setExpandCollapseState(position: Int, isExpanded: Boolean) {
+        openTaskItems[position] = isExpanded
+    }
+
+    private fun setViewVisibility(isVisible: Boolean) {
+        val prefManager = PreferenceManager.getDefaultSharedPreferences(requireContext())
+        binding.btnVoiceTask.isVisible = !isVisible &&
+                prefManager.getBoolean(AppConstants.SHOW_VOICE_TASK_KEY, true)
+        binding.btnAddTask.isVisible = !isVisible
+        binding.sortMenu.isVisible = !isVisible
+        binding.chipGroup.isVisible = !isVisible
+        binding.btnView.isVisible = !isVisible
+        binding.searchView.isVisible = !isVisible
+        binding.txtSort.isVisible = !isVisible
     }
 
     private fun onActionMode(isActionModeOn: Boolean) {
-        val prefManager = PreferenceManager.getDefaultSharedPreferences(requireContext())
-        binding.btnVoiceTask.isVisible = !isActionModeOn &&
-                prefManager.getBoolean(Constants.SHOW_VOICE_TASK_KEY, true)
-        binding.btnAddTask.isVisible = !isActionModeOn
-
-        is_in_action_mode = isActionModeOn
+        setViewVisibility(isActionModeOn)
+        actionModeEnable = isActionModeOn
         if (isActionModeOn) {
             selectedItem = Array(taskAdapter.currentList.size) { false }
         } else {
-            is_select_all = false
-            taskAdapter.notifyDataSetChanged()
+            isSelectAll = false
+            taskAdapter.notifyItemRangeChanged(0, taskAdapter.currentList.size)
         }
     }
 
@@ -605,21 +708,19 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener 
     }
 
     private fun checkUpdate() {
-        val appUpdateInfoTask = appUpdateManager!!.appUpdateInfo
+        val appUpdateInfoTask = appUpdateManager?.appUpdateInfo
 
-        appUpdateInfoTask.addOnSuccessListener { appUpdateInfo ->
+        appUpdateInfoTask?.addOnSuccessListener { appUpdateInfo ->
             if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
                 && appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE)
             ) {
                 try {
-                    appUpdateManager!!.startUpdateFlowForResult(
+                    appUpdateManager?.startUpdateFlowForResult(
                         appUpdateInfo, AppUpdateType.FLEXIBLE,
                         requireActivity(), UPDATE_REQUEST_CODE
                     )
                 } catch (exception: IntentSender.SendIntentException) {
-                    context.toast {
-                        exception.message.toString()
-                    }
+                    context.toast { exception.message.toString() }
                 }
             }
         }
@@ -639,17 +740,13 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener 
 
     @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        @Suppress("deprecation")
+        @Suppress(AppConstants.DEPRECATION)
         super.onActivityResult(requestCode, resultCode, data)
         if (data == null) return
         if (requestCode == UPDATE_REQUEST_CODE) {
-            context.toast {
-                getString(R.string.downloading_start)
-            }
+            context.toast { getString(R.string.downloading_start) }
             if (resultCode != Activity.RESULT_OK) {
-                MyTaskApp.appContext.toast {
-                    getString(R.string.update_failed)
-                }
+                MyTaskApp.appContext.toast { getString(R.string.update_failed) }
             }
         }
     }
@@ -660,5 +757,81 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener 
             searchView!!.setOnQueryTextListener(null)
         shareTxt = null
         isWidgetClick = false
+    }
+
+    override fun getActionModeStatus(): Boolean {
+        return actionModeEnable
+    }
+
+    override fun getCounter(): Int {
+        return counter
+    }
+
+    override fun getViewType(): Boolean {
+        return viewType
+    }
+
+    override fun isAllSelected(): Boolean {
+        return isSelectAll
+    }
+
+    override fun setItemStatus(status: Boolean, position: Int) {
+        selectedItem?.set(position, status)
+    }
+
+    override fun getItemStatus(position: Int): Boolean {
+        return selectedItem?.get(position) ?: false
+    }
+
+    override fun getSelectedItemEmpty(): Boolean {
+        return selectedItem.isNullOrEmpty()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.apply {
+            putBoolean(VIEW_TYPE_BUNDLE_KEY, viewType)
+            putInt(COUNTER_BUNDLE_KEY, counter)
+            putBoolean(IS_IN_ACTION_MODE_BUNDLE_KEY, actionModeEnable)
+            putBoolean(IS_SELECT_ALL_BUNDLE_KEY, isSelectAll)
+            putBooleanArray(SELECTED_ITEMS_BUNDLE_KEY, selectedItem?.toBooleanArray())
+            putBooleanArray(OPEN_TASK_ITEMS_BUNDLE_KEY, openTaskItems.toBooleanArray())
+            putBoolean(TASKS_STATUS_BUNDLE_KEY, binding.chipActive.isChecked)
+        }
+    }
+
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        super.onViewStateRestored(savedInstanceState)
+        savedInstanceState?.let {
+            viewType = it.getBoolean(VIEW_TYPE_BUNDLE_KEY)
+            counter = it.getInt(COUNTER_BUNDLE_KEY, counter)
+            actionModeEnable = it.getBoolean(IS_IN_ACTION_MODE_BUNDLE_KEY)
+            isSelectAll = it.getBoolean(IS_SELECT_ALL_BUNDLE_KEY)
+            selectedItem = it.getBooleanArray(SELECTED_ITEMS_BUNDLE_KEY)?.toTypedArray()
+            openTaskItems =
+                (it.getBooleanArray(OPEN_TASK_ITEMS_BUNDLE_KEY)?.toTypedArray()?.toMutableList()
+                    ?: emptyList()) as MutableList<Boolean>
+            val isTaskDone = it.getBoolean(TASKS_STATUS_BUNDLE_KEY)
+            setButtonVisibility(isTaskDone)
+            if (actionModeEnable) {
+                if (actionMode == null) {
+                    actionMode = (activity as AppCompatActivity).startSupportActionMode(callback)
+                    setViewVisibility(true)
+                }
+                actionMode?.title =
+                    String.format(getString(R.string.task_selected), counter, selectedItem?.size)
+            }
+        }
+    }
+
+    companion object {
+        const val VIEW_TYPE_BUNDLE_KEY = "view_type_bundle_key"
+        const val COUNTER_BUNDLE_KEY = "counter_bundle_key"
+        const val IS_IN_ACTION_MODE_BUNDLE_KEY = "is_in_action_mode_bundle_key"
+        const val IS_SELECT_ALL_BUNDLE_KEY = "is_select_all_bundle_key"
+        const val SELECTED_ITEMS_BUNDLE_KEY = "selected_items_bundle_key"
+        const val OPEN_TASK_ITEMS_BUNDLE_KEY = "selected_items_bundle_key"
+        const val TASKS_STATUS_BUNDLE_KEY = "tasks_status_bundle_key"
+        const val TOTAL_PROGRESS_VALUE = 100
     }
 }

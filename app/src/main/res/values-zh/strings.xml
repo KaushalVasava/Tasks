@@ -66,7 +66,7 @@
     <string name="notify_delete">任務刪除成功</string>
     <string name="please_select_task">請選擇一個任務</string>
     <string name="search_task">搜索任務</string>
-    <string name="speach_not_support">您的設備不支持語音輸入</string>
+    <string name="speech_not_support">您的設備不支持語音輸入</string>
     <string name="search_subtask">搜索子任務</string>
     <string name="share">分享</string>
     <string name="delete_task">要刪除嗎？</string>

@@ -44,7 +44,7 @@
     <string name="delete_completed_task">Delete all completed tasks</string>
     <string name="hide_completed_task">Hide completed tasks</string>
     <string name="settings">Settings</string>
-    <string name="sorting_option">Sorting Option</string>
+    <string name="sorting_option">Sort by </string>
     <string name="sort_by_name">Sort by Name</string>
     <string name="sort_by_creation_date">Sort by Creation date</string>
     <string name="search">Search</string>
@@ -59,7 +59,7 @@
 
     <string name="mark_as_completed">Mark as completed</string>
     <string name="new_task">New task</string>
-    <string name="create_new_sub_task">Click here to add new sub-task</string>
+    <string name="create_new_sub_task">Click here to add new sub task</string>
     <string name="create_new_task">Click here to add new task</string>
     <string name="task_deleted">Task deleted</string>
     <string name="undo">UNDO</string>
@@ -69,8 +69,8 @@
     <string name="notify_delete">Tasks are deleted successfully</string>
     <string name="please_select_task">Please select a task</string>
     <string name="search_task">Search Task</string>
-    <string name="speach_not_support">Your device not supported for speech input</string>
-    <string name="search_subtask">Search sub-task</string>
+    <string name="speech_not_support">Your device not supported for speech input</string>
+    <string name="search_subtask">Search subtask</string>
     <string name="share">Share</string>
     <string name="delete_task">Do you want to delete?</string>
     <string name="empty_task">Task is Empty</string>
@@ -88,7 +88,7 @@
     <string name="theme">Theme</string>
     <string name="pm_format">pm</string>
     <string name="language">Language</string>
-    <string name="copy_text">copy</string>
+    <string name="copy_text">Copy</string>
     <string name="something_went_wrong">something went wrong!</string>
     <string name="share_by">Share by</string>
     <string name="text_copied">%s copied</string>
@@ -107,9 +107,21 @@
     <string name="open_settings">Open settings</string>
     <string name="no_application_found">Application not found</string>
     <string name="user_cancelled_the_operation">User cancelled the operation</string>
-    <string name="downloading_start">Downloading start</string>
+    <string name="downloading_start">Downloading started</string>
     <string name="update_failed">Update failed</string>
     <string name="restart">Restart</string>
     <string name="new_app_ready">New app is ready</string>
     <string name="task_selected" formatted="false">%d/%d selected</string>
+    <string name="or">OR</string>
+    <string name="select_task">Select task</string>
+    <string name="active">Active</string>
+    <string name="done">Done</string>
+    <string name="home">Home</string>
+    <string name="personal">Personal</string>
+    <string name="school">School</string>
+    <string name="work">Work</string>
+    <string name="other">Other</string>
+    <string name="back">Back</string>
+    <string name="made_in_india" translatable="false">Made with ❤️ in India \uD83C\uDDEE\uD83C\uDDF3</string>
+    <string name="feedback_from_app">Feedback from %s, %s</string>
 </resources>

@@ -2,27 +2,30 @@ package com.lahsuak.apps.mytask.ui.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.lahsuak.apps.mytask.data.model.SubTask
-import com.lahsuak.apps.mytask.databinding.TaskItemBinding
-import com.lahsuak.apps.mytask.databinding.TaskItemGridBinding
+import com.lahsuak.apps.mytask.databinding.SubTaskItemBinding
+import com.lahsuak.apps.mytask.databinding.SubTaskItemGridBinding
 import com.lahsuak.apps.mytask.ui.adapters.viewholders.SubTaskViewHolder1
 import com.lahsuak.apps.mytask.ui.adapters.viewholders.SubTaskViewHolder2
-import com.lahsuak.apps.mytask.ui.fragments.TaskFragment
+import com.lahsuak.apps.mytask.util.SelectionListener
 
-class SubTaskAdapter(private val listener: SubTaskListener) :
-    ListAdapter<SubTask, RecyclerView.ViewHolder>(DiffCallback()) {
+class SubTaskAdapter(
+    private val listener: SubTaskListener,
+    private val selectionListener: SelectionListener
+) : ListAdapter<SubTask, RecyclerView.ViewHolder>(DiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
-        return if (!TaskFragment.viewType) {
-            val binding = TaskItemBinding.inflate(layoutInflater, parent, false)
-            SubTaskViewHolder1(this, binding, listener)
+        return if (!selectionListener.getViewType()) {
+            val binding = SubTaskItemBinding.inflate(layoutInflater, parent, false)
+            SubTaskViewHolder1(this, binding, listener, selectionListener)
         } else {
-            val binding = TaskItemGridBinding.inflate(layoutInflater, parent, false)
-            SubTaskViewHolder2(this, binding, listener)
+            val binding = SubTaskItemGridBinding.inflate(layoutInflater, parent, false)
+            SubTaskViewHolder2(this, binding, listener, selectionListener)
         }
     }
 
@@ -39,6 +42,9 @@ class SubTaskAdapter(private val listener: SubTaskListener) :
         fun onDeleteClicked(subTask: SubTask)
         fun onCheckBoxClicked(subTask: SubTask, taskCompleted: Boolean)
         fun onAnyItemLongClicked(position: Int)
+        fun getColor(): Int
+
+        fun cancelReminderClicked(subTask: SubTask, timerTxt: TextView)
     }
 
     class DiffCallback : DiffUtil.ItemCallback<SubTask>() {

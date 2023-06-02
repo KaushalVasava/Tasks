@@ -30,7 +30,7 @@ interface TaskDao {
     //date DESC
     @Query(
         "SELECT * FROM task_table WHERE (status!= :hideCompleted OR status = 0) " +
-                "AND title LIKE '%' || :searchQuery || '%' ORDER BY importance DESC"
+                "AND title LIKE '%' || :searchQuery || '%' ORDER BY importance DESC "
     )
     fun getAllTaskByDate(
         searchQuery: String,
@@ -44,7 +44,7 @@ interface TaskDao {
     suspend fun delete(task: Task)
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun update(note: Task)
+    suspend fun update(task: Task)
 
     @Query("SELECT * FROM TASK_TABLE WHERE id=:taskId")
     suspend fun getById(taskId: Int): Task
@@ -63,7 +63,7 @@ interface TaskDao {
     @Delete
     suspend fun deleteSubTask(subTask: SubTask)
 
-    @Update(onConflict = OnConflictStrategy.ABORT)
+    @Update(onConflict = OnConflictStrategy.REPLACE)
     suspend fun updateSubTask(subTask: SubTask)
 
     fun getAllSubTasks(

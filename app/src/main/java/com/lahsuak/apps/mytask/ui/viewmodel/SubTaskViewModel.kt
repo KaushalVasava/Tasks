@@ -7,7 +7,6 @@ import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.Intent
-import android.graphics.Color
 import android.os.Build
 import android.view.View
 import android.widget.TextView
@@ -23,23 +22,24 @@ import com.lahsuak.apps.mytask.data.PreferenceManager
 import com.lahsuak.apps.mytask.data.SortOrder
 import com.lahsuak.apps.mytask.data.model.SubTask
 import com.lahsuak.apps.mytask.data.model.Task
-import com.lahsuak.apps.mytask.data.repository.TodoRepository
+import com.lahsuak.apps.mytask.data.repository.TaskRepository
 import com.lahsuak.apps.mytask.databinding.FragmentSubtaskBinding
 import com.lahsuak.apps.mytask.model.SubTaskEvent
-import com.lahsuak.apps.mytask.util.Constants.TIME_FORMAT
-import com.lahsuak.apps.mytask.util.Constants.REMINDER_DATA
-import com.lahsuak.apps.mytask.util.Constants.REMINDER_KEY
-import com.lahsuak.apps.mytask.util.Constants.SEARCH_INITIAL_VALUE
-import com.lahsuak.apps.mytask.util.Constants.SEARCH_QUERY
-import com.lahsuak.apps.mytask.util.Constants.SEPARATOR
-import com.lahsuak.apps.mytask.util.Constants.SHARE_FORMAT
-import com.lahsuak.apps.mytask.util.Constants.TASK_ID
-import com.lahsuak.apps.mytask.util.Constants.TASK_KEY
-import com.lahsuak.apps.mytask.util.Constants.TASK_TITLE
+import com.lahsuak.apps.mytask.util.AppConstants.TIME_FORMAT
+import com.lahsuak.apps.mytask.util.AppConstants.REMINDER_DATA
+import com.lahsuak.apps.mytask.util.AppConstants.REMINDER_KEY
+import com.lahsuak.apps.mytask.util.AppConstants.SEARCH_INITIAL_VALUE
+import com.lahsuak.apps.mytask.util.AppConstants.SEARCH_QUERY
+import com.lahsuak.apps.mytask.util.AppConstants.SEPARATOR
+import com.lahsuak.apps.mytask.util.AppConstants.SHARE_FORMAT
+import com.lahsuak.apps.mytask.util.AppConstants.TASK_ID
+import com.lahsuak.apps.mytask.util.AppConstants.TASK_KEY
+import com.lahsuak.apps.mytask.util.AppConstants.TASK_TITLE
 import com.lahsuak.apps.mytask.receiver.AlarmReceiver
 import com.lahsuak.apps.mytask.receiver.BootReceiver.Companion.timeList
 import com.lahsuak.apps.mytask.receiver.Reminder
 import com.lahsuak.apps.mytask.util.DateUtil
+import com.lahsuak.apps.mytask.util.getAttribute
 import com.lahsuak.apps.mytask.util.toast
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -54,15 +54,10 @@ import javax.inject.Inject
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class SubTaskViewModel @Inject constructor(
-    private val repository: TodoRepository,
+    private val repository: TaskRepository,
     private val preferenceManager: PreferenceManager,
     state: SavedStateHandle
 ) : ViewModel() {
-
-    companion object {
-        private const val SEPARATOR_DASH = "-"
-    }
-
     val searchQuery = state.getLiveData(SEARCH_QUERY, SEARCH_INITIAL_VALUE)
     val taskId = state.getLiveData(TASK_ID, 0)
 
@@ -80,7 +75,7 @@ class SubTaskViewModel @Inject constructor(
             query,
             filterPreferences.sortOrder,
             filterPreferences.hideCompleted
-        )
+        ).distinctUntilChanged()
     }
     private val subTasksFlow2 = combine(
         taskId.asFlow(), searchQuery.asFlow(), preferencesFlow
@@ -92,13 +87,21 @@ class SubTaskViewModel @Inject constructor(
             query,
             filterPreferences.sortOrder,
             false
-        )
+        ).distinctUntilChanged()
     }
 
     val subTasks = subTasksFlow.asLiveData()
 
     val subTasks2 = subTasksFlow2.asLiveData()
 
+    fun getSubTask(taskId: Int): LiveData<List<SubTask>> {
+        return repository.getAllSubTasks(
+            taskId,
+            SEARCH_INITIAL_VALUE,
+            SortOrder.BY_NAME,
+            false
+        ).distinctUntilChanged().asLiveData()
+    }
 
     fun onSortOrderSelected(sortOrder: SortOrder, context: Context) = viewModelScope.launch {
         preferenceManager.updateSortOrder2(sortOrder, context)
@@ -184,8 +187,7 @@ class SubTaskViewModel @Inject constructor(
         binding: FragmentSubtaskBinding,
         activity: FragmentActivity,
         mCalendar: Calendar,
-        task: Task,
-        model: TaskViewModel
+        task: Task
     ) {
         val formatter = SimpleDateFormat(TIME_FORMAT, Locale.getDefault())
         var hour = formatter.format(mCalendar.time).substring(0, 2).trim().toInt()
@@ -244,7 +246,7 @@ class SubTaskViewModel @Inject constructor(
                     }
 
                     val intent = Intent(activity.baseContext, AlarmReceiver::class.java)
-                    intent.putExtra(TASK_KEY, "${task.id}$SEPARATOR_DASH${task.isDone}")
+                    intent.putExtra(TASK_KEY, "${task.id}$SEPARATOR${task.isDone}")
                     intent.putExtra(TASK_TITLE, task.title)
                     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     val pendingIntentFlag =
@@ -270,19 +272,17 @@ class SubTaskViewModel @Inject constructor(
                     )
                     val diff = DateUtil.getTimeDiff(mCalendar.timeInMillis)
                     if (diff < 0) {
-                        binding.txtReminder.setTextColor(
-                            ContextCompat.getColor(activity, R.color.red)
-                        )
+                        binding.txtReminder.setTextColor(activity.getAttribute(R.attr.colorError))
                     }
                     binding.reminderLayout.background = ContextCompat.getDrawable(
                         activity.baseContext,
-                        R.drawable.background_reminder
+                        R.drawable.background_progress
                     )
                     binding.txtReminder.isSelected = true
-                    binding.imgReminder.setColorFilter(Color.BLACK)
+                    binding.imgReminder.setColorFilter(activity.getAttribute(R.attr.colorOnSurface))
                     // then update the task
                     task.reminder = mCalendar.timeInMillis
-                    model.update(task)
+                    update(task)
                 }
             }
 
@@ -297,10 +297,8 @@ class SubTaskViewModel @Inject constructor(
 
     fun cancelReminder(
         activity: FragmentActivity,
-        taskID: Int,
         task: Task,
-        timerTxt: TextView,
-        model: TaskViewModel
+        timerTxt: TextView
     ) {
         val intent = Intent(activity.baseContext, AlarmReceiver::class.java)
         val pendingIntentFlag =
@@ -310,7 +308,7 @@ class SubTaskViewModel @Inject constructor(
                 0
             }
         val pendingIntent = PendingIntent.getBroadcast(
-            activity.baseContext, taskID, intent,
+            activity.baseContext, task.id, intent,
             pendingIntentFlag
         )
         val alarmManager =
@@ -318,9 +316,43 @@ class SubTaskViewModel @Inject constructor(
         alarmManager.cancel(pendingIntent)
         timerTxt.text = activity.getString(R.string.add_date_time)
         task.reminder = null
-        model.update(task)
+        update(task)
         activity.baseContext.toast {
             activity.getString(R.string.cancel_reminder)
+        }
+    }
+    fun cancelSubTaskReminder(
+        activity: FragmentActivity,
+        subTask: SubTask,
+        timerTxt: TextView,
+        task: Task
+    ) {
+        val intent = Intent(activity.baseContext, AlarmReceiver::class.java)
+        val pendingIntentFlag =
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                PendingIntent.FLAG_IMMUTABLE
+            } else {
+                0
+            }
+        val pendingIntent = PendingIntent.getBroadcast(
+            activity.baseContext, subTask.id, intent,
+            pendingIntentFlag
+        )
+        val alarmManager =
+            activity.getSystemService(AppCompatActivity.ALARM_SERVICE) as AlarmManager
+        alarmManager.cancel(pendingIntent)
+        timerTxt.text = activity.getString(R.string.add_date_time)
+        subTask.reminder = null
+        updateSubTask(subTask)
+        update(task.copy(date = System.currentTimeMillis()))
+        activity.baseContext.toast {
+            activity.getString(R.string.cancel_reminder)
+        }
+    }
+
+    fun update(task: Task) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.updateTask(task)
         }
     }
 }

@@ -66,7 +66,7 @@
     <string name="notify_delete">কাজগুলি সফলভাবে মুছে ফেলা হয়েছে</string>
     <string name="please_select_task">অনুগ্রহ করে একটি টাস্ক নির্বাচন করুন</string>
     <string name="search_task">অনুসন্ধান কার্য</string>
-    <string name="speach_not_support">আপনার ডিভাইসটি স্পিচ ইনপুটের জন্য সমর্থিত নয়</string>
+    <string name="speech_not_support">আপনার ডিভাইসটি স্পিচ ইনপুটের জন্য সমর্থিত নয়</string>
     <string name="search_subtask">সাব-টাস্ক অনুসন্ধান করুন</string>
     <string name="share">শেয়ার করুন</string>
     <string name="delete_task">আপনি কি মুছতে চান?</string>

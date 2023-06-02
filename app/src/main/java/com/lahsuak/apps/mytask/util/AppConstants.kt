@@ -1,9 +1,8 @@
 package com.lahsuak.apps.mytask.util
 
-object Constants {
-    const val CHANNEL_ID = "com.lahsuak.apps.mytask.notificationID"
+object AppConstants {
+    const val NOTIFICATION_CHANNEL_ID = "com.lahsuak.apps.mytask.notificationID"
     const val DATE_FORMAT = "dd MMM, yyyy"
-    const val DATE_FORMAT_VERTICAL = "dd\nMMM\nyyyy"
     const val TIME_FORMAT = "hh:mm a"
     const val REMINDER_DATE_TIME_FORMAT = "dd MMM, yyyy hh:mm a"
     const val TOOLBAR_DATE_TIME_FORMAT = "E, dd LLLL"
@@ -42,4 +41,9 @@ object Constants {
     const val SHOW_SUBTASK_KEY = "show_subtask"
     const val SHOW_REMINDER_KEY = "show_reminder"
     const val SHOW_VOICE_TASK_KEY = "show_voice_task_button"
+
+    const val INITIAL_FONT_SIZE = "18"
+
+    const val PACKAGE = "package"
+    const val DEPRECATION = "deprecation"
 }

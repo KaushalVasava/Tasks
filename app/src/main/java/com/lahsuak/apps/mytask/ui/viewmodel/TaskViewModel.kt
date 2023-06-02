@@ -2,25 +2,31 @@ package com.lahsuak.apps.mytask.ui.viewmodel
 
 import android.content.Context
 import androidx.appcompat.app.AlertDialog
-import androidx.lifecycle.*
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asFlow
+import androidx.lifecycle.viewModelScope
 import com.lahsuak.apps.mytask.R
 import com.lahsuak.apps.mytask.data.PreferenceManager
 import com.lahsuak.apps.mytask.data.SortOrder
 import com.lahsuak.apps.mytask.data.model.Task
-import com.lahsuak.apps.mytask.data.repository.TodoRepository
+import com.lahsuak.apps.mytask.data.repository.TaskRepository
 import com.lahsuak.apps.mytask.model.TaskEvent
-import com.lahsuak.apps.mytask.util.Constants.SEARCH_INITIAL_VALUE
-import com.lahsuak.apps.mytask.util.Constants.SEARCH_QUERY
+import com.lahsuak.apps.mytask.util.AppConstants.SEARCH_INITIAL_VALUE
+import com.lahsuak.apps.mytask.util.AppConstants.SEARCH_QUERY
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class TaskViewModel @Inject constructor(
-    private val repository: TodoRepository,
+    private val repository: TaskRepository,
     private val preferenceManager: PreferenceManager,
     state: SavedStateHandle,
 ) : ViewModel() {
@@ -46,7 +52,7 @@ class TaskViewModel @Inject constructor(
     ) { query, filterPreferences ->
         Pair(query, filterPreferences)
     }.flatMapLatest { (query, filterPreferences) ->
-        repository.getAllTasks(query, filterPreferences.sortOrder, false)
+        repository.getAllTasks(query, filterPreferences.sortOrder, false).distinctUntilChanged()
     }
 
     fun onSortOrderSelected(sortOrder: SortOrder, context: Context) = viewModelScope.launch {
@@ -63,32 +69,34 @@ class TaskViewModel @Inject constructor(
     }
 
     fun onTaskSwiped(task: Task) = viewModelScope.launch {
-        repository.deleteTodo(task)
+        repository.deleteTask(task)
         taskEventChannel.send(TaskEvent.ShowUndoDeleteTaskMessage(task))
     }
 
     fun onTaskCheckedChanged(task: Task, isChecked: Boolean) = viewModelScope.launch {
-        repository.updateTodo(task.copy(isDone = isChecked))
+        repository.updateTask(task.copy(isDone = isChecked))
     }
 
     fun onUndoDeleteClick(task: Task) = viewModelScope.launch {
-        repository.insertTodo(task)
+        repository.insertTask(task)
     }
 
     fun onDeleteAllCompletedClick() = viewModelScope.launch {
         taskEventChannel.send(TaskEvent.NavigateToAllCompletedScreen)
     }
 
-    fun insert(todo: Task) = viewModelScope.launch(Dispatchers.IO) {
-        repository.insertTodo(todo)
+    fun insert(task: Task) = viewModelScope.launch(Dispatchers.IO) {
+        repository.insertTask(task)
     }
 
-    fun update(todo: Task) = viewModelScope.launch(Dispatchers.IO) {
-        repository.updateTodo(todo)
+    fun update(task: Task) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.updateTask(task)
+        }
     }
 
-    fun delete(todo: Task) = viewModelScope.launch(Dispatchers.IO) {
-        repository.deleteTodo(todo)
+    fun delete(task: Task) = viewModelScope.launch(Dispatchers.IO) {
+        repository.deleteTask(task)
     }
 
     suspend fun getById(id: Int): Task {

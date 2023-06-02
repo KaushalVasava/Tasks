@@ -1,42 +1,43 @@
 package com.lahsuak.apps.mytask.ui.adapters.viewholders
 
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.graphics.Paint
 import android.text.util.Linkify
 import android.util.TypedValue
 import android.view.View
 import androidx.appcompat.content.res.AppCompatResources
-import androidx.core.view.isGone
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.RecyclerView
 import com.lahsuak.apps.mytask.R
 import com.lahsuak.apps.mytask.data.model.SubTask
-import com.lahsuak.apps.mytask.databinding.TaskItemGridBinding
+import com.lahsuak.apps.mytask.databinding.SubTaskItemGridBinding
 import com.lahsuak.apps.mytask.ui.adapters.SubTaskAdapter
-import com.lahsuak.apps.mytask.ui.fragments.SubTaskFragment
-import com.lahsuak.apps.mytask.util.Constants
+import com.lahsuak.apps.mytask.util.AppConstants
 import com.lahsuak.apps.mytask.util.DateUtil
+import com.lahsuak.apps.mytask.util.SelectionListener
+import com.lahsuak.apps.mytask.util.setDrawableColor
 
 class SubTaskViewHolder2(
     private val adapter: SubTaskAdapter,
-    private val binding: TaskItemGridBinding,
-    listener: SubTaskAdapter.SubTaskListener
+    private val binding: SubTaskItemGridBinding,
+    private val listener: SubTaskAdapter.SubTaskListener,
+    private val selectionListener: SelectionListener
 ) :
     RecyclerView.ViewHolder(binding.root) {
     init {
         binding.apply {
-            txtSubtask.visibility = View.GONE
-            txtReminder.visibility = View.GONE
-
             root.setOnClickListener {
                 val position = adapterPosition
                 if (position != RecyclerView.NO_POSITION) {
                     val task = adapter.currentList[position]
-                    if (SubTaskFragment.is_in_action_mode2) {
-                        if (!SubTaskFragment.selectedItem2!![position]) {
-                            root.strokeWidth = 5
+                    if (selectionListener.getActionModeStatus()) {
+                        root.strokeWidth = if (!selectionListener.getItemStatus(position)) {
+                            5
                         } else {
-                            root.strokeWidth = 0
+                            0
                         }
                     }
                     listener.onItemClicked(task, position)
@@ -46,7 +47,7 @@ class SubTaskViewHolder2(
                 val position = adapterPosition
                 if (position != RecyclerView.NO_POSITION) {
                     val task = adapter.currentList[position]
-                    if (!SubTaskFragment.is_in_action_mode2) {
+                    if (!selectionListener.getActionModeStatus()) {
                         listener.onCheckBoxClicked(task, checkbox.isChecked)
                     }
                 }
@@ -55,7 +56,7 @@ class SubTaskViewHolder2(
                 val position = adapterPosition
                 if (position != RecyclerView.NO_POSITION) {
                     val subTask = adapter.currentList[position]
-                    if (!SubTaskFragment.is_in_action_mode2)
+                    if (!selectionListener.getActionModeStatus())
                         listener.onDeleteClicked(subTask)
                 }
             }
@@ -64,15 +65,26 @@ class SubTaskViewHolder2(
                 val position = adapterPosition
                 if (position != RecyclerView.NO_POSITION) {
                     listener.onAnyItemLongClicked(position)
-                    if (SubTaskFragment.selectedItem2 != null) {
-                        if (SubTaskFragment.selectedItem2!![position]) {
-                            root.strokeWidth = 5
-                        } else {
-                            root.strokeWidth = 0
-                        }
+                    if (!selectionListener.getSelectedItemEmpty()) {
+                        root.strokeWidth =
+                            if (selectionListener.getItemStatus(position)) {
+                                5
+                            } else {
+                                0
+                            }
                     }
                 }
                 return@setOnLongClickListener true
+            }
+            btnCancel.setOnClickListener {
+                val position = adapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    val subTask = adapter.currentList[position]
+                    listener.cancelReminderClicked(subTask, binding.txtReminder)
+                    txtReminder.background = null
+                    txtReminder.isVisible = false
+                    btnCancel.isVisible = false
+                }
             }
         }
     }
@@ -81,54 +93,71 @@ class SubTaskViewHolder2(
         binding.apply {
             val context = root.context
             val prefMgr = PreferenceManager.getDefaultSharedPreferences(context)
-            val txtSize = prefMgr.getString(Constants.FONT_SIZE_KEY, "18")!!.toFloat()
+            val txtSize =
+                prefMgr.getString(AppConstants.FONT_SIZE_KEY, AppConstants.INITIAL_FONT_SIZE)!!
+                    .toFloat()
+            val showReminder = prefMgr.getBoolean(AppConstants.SHOW_REMINDER_KEY, true)
 
             txtTitle.text = subTask.subTitle
             Linkify.addLinks(txtTitle, Linkify.ALL)
             txtTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, txtSize)
+            txtDate.backgroundTintList = ColorStateList.valueOf(listener.getColor())
+            txtReminder.backgroundTintList = ColorStateList.valueOf(listener.getColor())
+            txtReminder.setTextColor(Color.BLACK)
+            txtReminder.setDrawableColor(Color.BLACK)
             txtDate.text =
                 DateUtil.getTaskDateTime(
                     subTask.dateTime ?: System.currentTimeMillis(),
                     true
                 )
-
-            if (!SubTaskFragment.is_in_action_mode2) {
-                root.strokeWidth = 0
+            root.strokeWidth = if (!selectionListener.getActionModeStatus()) {
+                0
             } else {
-                if (SubTaskFragment.is_select_all2) {
-                    root.strokeWidth = 5
-                    if (SubTaskFragment.selectedItem2 != null) {
-                        SubTaskFragment.selectedItem2!![adapterPosition] = true
+                if (selectionListener.isAllSelected()) {
+                    if (!selectionListener.getSelectedItemEmpty()) {
+                        selectionListener.setItemStatus(true, adapterPosition)
                     }
+                    5
                 } else {
-                    root.strokeWidth = 0
-                    if (SubTaskFragment.selectedItem2 != null) {
-                        SubTaskFragment.selectedItem2!![adapterPosition] = false
+                    if (!selectionListener.getSelectedItemEmpty()) {
+                        selectionListener.setItemStatus(false, adapterPosition)
                     }
+                    0
                 }
             }
             checkbox.isChecked = subTask.isDone
-            if (subTask.isDone) {
-                txtTitle.paintFlags = txtTitle.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+            txtTitle.paintFlags = if (subTask.isDone) {
                 btnDelete.setImageResource(R.drawable.ic_delete)
+                txtTitle.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
             } else {
-                txtTitle.paintFlags = txtTitle.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
                 btnDelete.setImageResource(R.drawable.ic_edit)
+                txtTitle.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
             }
 
             imgImp.isVisible = subTask.isImportant
-            if (subTask.isImportant) {
+            imgImp2.visibility = if (subTask.isImportant) {
                 imgImp.background = AppCompatResources.getDrawable(
                     context,
                     R.drawable.ic_pin
                 )
-                imgImp2.visibility = View.INVISIBLE
+                View.INVISIBLE
             } else {
                 imgImp.background = null
-                imgImp2.visibility = View.GONE
+                View.GONE
             }
-            progressBar.isGone = true
-            taskProgress.isGone = true
+            val taskReminder = subTask.reminder
+            txtReminder.isVisible = taskReminder != null
+            btnCancel.isVisible = taskReminder != null
+            if (taskReminder != null && showReminder) {
+                val min = DateUtil.getTimeDiff(taskReminder)
+                txtReminder.isSelected = min > 0
+                txtReminder.text = if (min < 0) {
+                    txtReminder.setTextColor(ContextCompat.getColor(context, R.color.red))
+                    context.getString(R.string.overdue)
+                } else {
+                    DateUtil.getReminderDateTime(taskReminder)
+                }
+            }
         }
     }
 }

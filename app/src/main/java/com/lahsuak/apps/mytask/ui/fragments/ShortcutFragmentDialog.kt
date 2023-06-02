@@ -14,6 +14,7 @@ import android.view.WindowManager
 import androidx.lifecycle.lifecycleScope
 import com.lahsuak.apps.mytask.R
 import com.lahsuak.apps.mytask.databinding.DialogAddUpdateTaskBinding
+import com.lahsuak.apps.mytask.util.AppConstants
 import com.lahsuak.apps.mytask.util.Util
 import com.lahsuak.apps.mytask.util.toTrimString
 import kotlinx.coroutines.launch
@@ -33,7 +34,7 @@ class ShortcutFragmentDialog : BottomSheetDialogFragment() {
     ): View {
 
         binding = DialogAddUpdateTaskBinding.inflate(layoutInflater)
-        @Suppress("deprecation")
+        @Suppress(AppConstants.DEPRECATION)
         if (dialog!!.window != null) {
             dialog!!.window!!.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
         }

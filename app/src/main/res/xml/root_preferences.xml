@@ -106,5 +106,10 @@
             app:key="app_version"
             app:title="@string/current_version"
             app:useSimpleSummaryProvider="true" />
+        <Preference
+            app:iconSpaceReserved="false"
+            app:key="app_version"
+            app:title="@string/made_in_india"
+            app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
 </PreferenceScreen>

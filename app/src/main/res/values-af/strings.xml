@@ -66,7 +66,7 @@
     <string name="notify_delete">Tae is suksesvol uitgevee</string>
     <string name="please_select_task">Kies asseblief \'n taak</string>
     <string name="search_task">Soektaak</string>
-    <string name="speach_not_support">Jou toestel word nie vir spraakinvoer ondersteun nie</string>
+    <string name="speech_not_support">Jou toestel word nie vir spraakinvoer ondersteun nie</string>
     <string name="search_subtask">Soek subtaak</string>
     <string name="share">Deel</string>
     <string name="delete_task">Wil jy uitvee?</string>

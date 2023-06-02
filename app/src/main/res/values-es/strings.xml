@@ -66,7 +66,7 @@
     <string name="notify_delete">Las tareas se eliminaron con éxito</string>
     <string name="please_select_task">Seleccione una tarea</string>
     <string name="search_task">Tarea de búsqueda</string>
-    <string name="speach_not_support">Su dispositivo no es compatible con la entrada de voz</string>
+    <string name="speech_not_support">Su dispositivo no es compatible con la entrada de voz</string>
     <string name="search_subtask">Subtarea de búsqueda</string>
     <string name="share">Compartir</string>
     <string name="delete_task">¿Quieres eliminar?</string>

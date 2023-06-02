@@ -5,9 +5,9 @@ import androidx.room.Room
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.lahsuak.apps.mytask.data.db.TaskDatabase
-import com.lahsuak.apps.mytask.data.repository.TodoRepository
-import com.lahsuak.apps.mytask.data.repository.TodoRepositoryImpl
-import com.lahsuak.apps.mytask.util.Constants.DATABASE_NAME
+import com.lahsuak.apps.mytask.data.repository.TaskRepository
+import com.lahsuak.apps.mytask.data.repository.TaskRepositoryImpl
+import com.lahsuak.apps.mytask.util.AppConstants.DATABASE_NAME
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -54,6 +54,16 @@ object AppModule {
                 database.execSQL("ALTER TABLE task_temporary RENAME TO task_table")
             }
         }
+        val migration_5_6 = object : Migration(5, 6) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL("ALTER TABLE task_table ADD COLUMN color INTEGER NOT NULL DEFAULT 0")
+            }
+        }
+        val migration_6_7 = object : Migration(6, 7) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL("ALTER TABLE sub_task_table ADD COLUMN reminder INTEGER")
+            }
+        }
         return Room.databaseBuilder(
             app,
             TaskDatabase::class.java,
@@ -63,14 +73,16 @@ object AppModule {
             .addMigrations(migration_2_3)
             .addMigrations(migration_3_4)
             .addMigrations(migration_4_5)
+            .addMigrations(migration_5_6)
+            .addMigrations(migration_6_7)
             .fallbackToDestructiveMigration()
             .build()
     }
 
     @Provides
     @Singleton
-    fun provideTodoRepository(db: TaskDatabase): TodoRepository {
-        return TodoRepositoryImpl(db.dao)
+    fun provideTodoRepository(db: TaskDatabase): TaskRepository {
+        return TaskRepositoryImpl(db.dao)
     }
 
     @ApplicationScope

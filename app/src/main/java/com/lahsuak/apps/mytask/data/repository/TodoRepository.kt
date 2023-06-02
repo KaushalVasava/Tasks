@@ -4,15 +4,14 @@ import com.lahsuak.apps.mytask.data.SortOrder
 import com.lahsuak.apps.mytask.data.model.SubTask
 import com.lahsuak.apps.mytask.data.model.Task
 import kotlinx.coroutines.flow.Flow
-import java.util.Date
 
-interface TodoRepository {
+interface TaskRepository {
 
-    suspend fun insertTodo(task: Task)
+    suspend fun insertTask(task: Task)
 
-    suspend fun deleteTodo(task: Task)
+    suspend fun deleteTask(task: Task)
 
-    suspend fun updateTodo(task: Task)
+    suspend fun updateTask(task: Task)
 
     fun getAllTasks(
         searchQuery: String,

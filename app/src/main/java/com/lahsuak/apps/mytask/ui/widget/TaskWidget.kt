@@ -37,8 +37,6 @@ class TaskWidget : AppWidgetProvider() {
 
             val views = RemoteViews(context.packageName, R.layout.example_widget)
             views.setOnClickPendingIntent(R.id.example_widget_button, pendingIntent)
-
-
             appWidgetManager!!.updateAppWidget(appWidgetId, views)
         }
     }

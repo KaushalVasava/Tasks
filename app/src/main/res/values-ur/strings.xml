@@ -66,7 +66,7 @@
     <string name="notify_delete">کاموں کو کامیابی سے حذف کر دیا گیا ہے</string>
     <string name="please_select_task">براہ کرم ایک کام منتخب کریں</string>
     <string name="search_task"> تلاش کا کام</string>
-    <string name="speach_not_support">آپ کا آلہ اسپیچ ان پٹ کے لیے تعاون یافتہ نہیں ہے</string>
+    <string name="speech_not_support">آپ کا آلہ اسپیچ ان پٹ کے لیے تعاون یافتہ نہیں ہے</string>
     <string name="search_subtask"> ذیلی کام تلاش کریں</string>
     <string name="share">شیئر کریں</string>
     <string name="delete_task">کیا آپ حذف کرنا چاہتے ہیں؟</string>

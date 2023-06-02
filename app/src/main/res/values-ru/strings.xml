@@ -65,7 +65,7 @@
     <string name="notify_delete">Задачи успешно удалены</string>
     <string name="please_select_task">Выберите задачу</string>
     <string name="search_task">Задание поиска</string>
-    <string name="speach_not_support">Ваше устройство не поддерживает речевой ввод</string>
+    <string name="speech_not_support">Ваше устройство не поддерживает речевой ввод</string>
     <string name="search_subtask">Подзадача поиска</string>
     <string name="share">Поделиться</string>
     <string name="delete_task">Удалить?</string>

@@ -65,7 +65,7 @@
     <string name="notify_delete">작업이 성공적으로 삭제되었습니다.</string>
     <string name="please_select_task">작업을 선택하십시오</string>
     <string name="search_task">검색 작업</string>
-    <string name="speach_not_support">귀하의 기기는 음성 입력을 지원하지 않습니다.</string>
+    <string name="speech_not_support">귀하의 기기는 음성 입력을 지원하지 않습니다.</string>
     <string name="search_subtask">하위 작업 검색</string>
     <string name="share">공유</string>
     <string name="delete_task">삭제하시겠습니까?</string>

@@ -66,7 +66,7 @@
     <string name="notify_delete">Aufgaben wurden erfolgreich gelöscht</string>
     <string name="please_select_task">Bitte wähle eine Aufgabe aus</string>
     <string name="search_task">Suchaufgabe</string>
-    <string name="speach_not_support">Ihr Gerät unterstützt die Spracheingabe nicht</string>
+    <string name="speech_not_support">Ihr Gerät unterstützt die Spracheingabe nicht</string>
     <string name="search_subtask">Unteraufgabe suchen</string>
     <string name="share">Teilen</string>
     <string name="delete_task">Wollen Sie löschen?</string>

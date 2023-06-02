@@ -11,9 +11,9 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
-import com.lahsuak.apps.mytask.util.Constants
-import com.lahsuak.apps.mytask.util.Constants.REMINDER_DATA
-import com.lahsuak.apps.mytask.util.Constants.REMINDER_KEY
+import com.lahsuak.apps.mytask.util.AppConstants
+import com.lahsuak.apps.mytask.util.AppConstants.REMINDER_DATA
+import com.lahsuak.apps.mytask.util.AppConstants.REMINDER_KEY
 
 class BootReceiver : BroadcastReceiver() {
     companion object {
@@ -21,6 +21,11 @@ class BootReceiver : BroadcastReceiver() {
     }
 
     override fun onReceive(context: Context?, intent: Intent?) {
+        Log.d("TAG", "onReceive:OUTSIDE")
+
+        if(Intent.ACTION_BOOT_COMPLETED == intent?.action){
+            Log.d("TAG", "onReceive: REBOOT ")
+        }
         try {
             val sharedPref = context!!.getSharedPreferences(REMINDER_DATA, MODE_PRIVATE)
             val jsonString = sharedPref.getString(REMINDER_KEY, null)
@@ -33,14 +38,21 @@ class BootReceiver : BroadcastReceiver() {
             }
             for (item in timeList) {
                 val intent1 = Intent(context, AlarmReceiver::class.java)
-                intent1.putExtra(Constants.TASK_KEY, item.taskId)
-                intent1.putExtra(Constants.TASK_TITLE, item.taskTitle)
+                intent1.putExtra(AppConstants.TASK_KEY, item.taskId)
+                intent1.putExtra(AppConstants.TASK_TITLE, item.taskTitle)
 
                 //intent.putExtra(TASK_STATUS, task.isDone)
                 intent1.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                val taskId = item.taskId.substringBefore(Constants.SEPARATOR).toInt()
+                val taskId = item.taskId.substringBefore(AppConstants.SEPARATOR).toInt()
+
+                val pendingIntentFlag =
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        PendingIntent.FLAG_IMMUTABLE
+                    } else {
+                        0
+                    }
                 val pendingIntent = PendingIntent.getBroadcast(
-                    context, taskId, intent1, 0
+                    context, taskId, intent1, pendingIntentFlag
                 )
                 val alarmManager =
                     context.getSystemService(AppCompatActivity.ALARM_SERVICE) as AlarmManager

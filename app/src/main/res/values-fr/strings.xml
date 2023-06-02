@@ -66,7 +66,7 @@
     <string name="notify_delete">Les tâches ont été supprimées avec succès</string>
     <string name="please_select_task">Veuillez sélectionner une tâche</string>
     <string name="search_task">Tâche de recherche</string>
-    <string name="speach_not_support">Votre appareil n\'est pas pris en charge pour la saisie vocale</string>
+    <string name="speech_not_support">Votre appareil n\'est pas pris en charge pour la saisie vocale</string>
     <string name="search_subtask">Rechercher une sous-tâche</string>
     <string name="share">Partager</string>
     <string name="delete_task">Voulez-vous supprimer ?</string>

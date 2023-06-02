@@ -5,21 +5,18 @@ import com.lahsuak.apps.mytask.data.db.TaskDao
 import com.lahsuak.apps.mytask.data.model.SubTask
 import com.lahsuak.apps.mytask.data.model.Task
 import kotlinx.coroutines.flow.Flow
-import java.util.*
 
-class TodoRepositoryImpl(
-    private val dao: TaskDao,
-) : TodoRepository {
+class TaskRepositoryImpl(private val dao: TaskDao) : TaskRepository {
 
-    override suspend fun insertTodo(task: Task) {
+    override suspend fun insertTask(task: Task) {
         dao.insert(task)
     }
 
-    override suspend fun deleteTodo(task: Task) {
+    override suspend fun deleteTask(task: Task) {
         dao.delete(task)
     }
 
-    override suspend fun updateTodo(task: Task) {
+    override suspend fun updateTask(task: Task) {
         dao.update(task)
     }
 

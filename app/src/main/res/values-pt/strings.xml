@@ -66,7 +66,7 @@
     <string name="notify_delete">As tarefas foram excluídas com sucesso</string>
     <string name="please_select_task">Selecione uma tarefa</string>
     <string name="search_task">Tarefa de pesquisa</string>
-    <string name="speach_not_support">Seu dispositivo não é compatível com entrada de fala</string>
+    <string name="speech_not_support">Seu dispositivo não é compatível com entrada de fala</string>
     <string name="search_subtask">Pesquisar subtarefa</string>
     <string name="share">Compartilhar</string>
     <string name="delete_task">Deseja excluir?</string>

@@ -5,19 +5,23 @@ import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
 import android.os.LocaleList
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate.*
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.preference.*
 import com.lahsuak.apps.mytask.BuildConfig
 import com.lahsuak.apps.mytask.MyTaskApp.Companion.mylang
 import com.lahsuak.apps.mytask.R
-import com.lahsuak.apps.mytask.util.Constants
-import com.lahsuak.apps.mytask.util.Constants.LANGUAGE_DEFAULT_VALUE
-import com.lahsuak.apps.mytask.util.Constants.LANGUAGE_SHARED_PREFERENCE
-import com.lahsuak.apps.mytask.util.Constants.LANGUAGE_SHARED_PREFERENCE_KEY
-import com.lahsuak.apps.mytask.util.Constants.LANGUAGE_SHARED_PREFERENCE_LANGUAGE_KEY
-import com.lahsuak.apps.mytask.util.Constants.THEME_DEFAULT
-import com.lahsuak.apps.mytask.util.Constants.THEME_KEY
+import com.lahsuak.apps.mytask.util.AppConstants
+import com.lahsuak.apps.mytask.util.AppConstants.LANGUAGE_DEFAULT_VALUE
+import com.lahsuak.apps.mytask.util.AppConstants.LANGUAGE_SHARED_PREFERENCE
+import com.lahsuak.apps.mytask.util.AppConstants.LANGUAGE_SHARED_PREFERENCE_KEY
+import com.lahsuak.apps.mytask.util.AppConstants.LANGUAGE_SHARED_PREFERENCE_LANGUAGE_KEY
+import com.lahsuak.apps.mytask.util.AppConstants.THEME_DEFAULT
+import com.lahsuak.apps.mytask.util.AppConstants.THEME_KEY
 import com.lahsuak.apps.mytask.util.Util.appRating
 import com.lahsuak.apps.mytask.util.Util.getLanguage
 import com.lahsuak.apps.mytask.util.Util.moreApp
@@ -29,6 +33,15 @@ class SettingsFragment : PreferenceFragmentCompat() {
     companion object {
         var selectedTheme = -1
         var selectedLang = LANGUAGE_DEFAULT_VALUE
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        (activity as AppCompatActivity).supportActionBar?.show()
+        return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
@@ -55,7 +68,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
         prefVersion!!.summary = BuildConfig.VERSION_NAME
         val prefManager = PreferenceManager.getDefaultSharedPreferences(requireContext())
-        when (prefManager.getString(Constants.FONT_SIZE_KEY, "18").toString().toInt()) {
+        when (prefManager.getString(AppConstants.FONT_SIZE_KEY, AppConstants.INITIAL_FONT_SIZE)
+            .toString().toInt()) {
             12 -> prefFont?.summary = getString(R.string.very_small)
             14 -> prefFont?.summary = getString(R.string.medium_small)
             16 -> prefFont?.summary = getString(R.string.small)
@@ -81,6 +95,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 LANGUAGE_DEFAULT_VALUE -> {
                     setLocal(getLanguage())
                 }
+
                 else -> {
                     setLocal(selectedLang)
                 }
@@ -144,18 +159,16 @@ class SettingsFragment : PreferenceFragmentCompat() {
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N) {
             requireActivity().applicationContext.createConfigurationContext(config)
         } else {
-            @Suppress("deprecation")
-            resources.updateConfiguration(
-                config, resources.displayMetrics
-            )
+            @Suppress(AppConstants.DEPRECATION)
+            resources.updateConfiguration(config, resources.displayMetrics)
         }
-        val pref =
-            requireContext().getSharedPreferences(LANGUAGE_SHARED_PREFERENCE, Context.MODE_PRIVATE)
-                .edit()
-        pref.putString(LANGUAGE_SHARED_PREFERENCE_KEY, selectedLang)
-        pref.putString(LANGUAGE_SHARED_PREFERENCE_LANGUAGE_KEY, lang)
-        mylang = lang
-        pref.apply()
+        requireContext().getSharedPreferences(LANGUAGE_SHARED_PREFERENCE, Context.MODE_PRIVATE)
+            .edit().apply {
+                putString(LANGUAGE_SHARED_PREFERENCE_KEY, selectedLang)
+                putString(LANGUAGE_SHARED_PREFERENCE_LANGUAGE_KEY, lang)
+                mylang = lang
+                apply()
+            }
         requireActivity().recreate()
     }
 }

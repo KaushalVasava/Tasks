@@ -65,7 +65,7 @@
     <string name="notify_delete">कार्य सफलतापूर्वक हटा दिए गए हैं</string>
     <string name="please_select_task">कृपया कोई कार्य चुनें</string>
     <string name="search_task">कार्य खोजें</string>
-    <string name="speach_not_support">आपका उपकरण वाक् इनपुट के लिए समर्थित नहीं है</string>
+    <string name="speech_not_support">आपका उपकरण वाक् इनपुट के लिए समर्थित नहीं है</string>
     <string name="search_subtask">उप-कार्य खोजें</string>
     <string name="share">साझा करें</string>
     <string name="delete_task">क्या आप हटाना चाहते हैं?</string>
