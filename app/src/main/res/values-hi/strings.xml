@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">मेरे कार्य</string>
+    <string name="app_name">कार्य</string>
     <string name="task_progress">%d/%d कार्य पूर्ण</string>
     <string name="subtask_progress">%d/%d सबटास्क पूरे हो गए हैं</string>
     <string name="task_completed">कार्य पूरा हुआ</string>
@@ -65,7 +65,7 @@
     <string name="notify_delete">कार्य सफलतापूर्वक हटा दिए गए हैं</string>
     <string name="please_select_task">कृपया कोई कार्य चुनें</string>
     <string name="search_task">कार्य खोजें</string>
-    <string name="speach_not_support">आपका उपकरण वाक् इनपुट के लिए समर्थित नहीं है</string>
+    <string name="speech_not_support">आपका उपकरण वाक् इनपुट के लिए समर्थित नहीं है</string>
     <string name="search_subtask">उप-कार्य खोजें</string>
     <string name="share">साझा करें</string>
     <string name="delete_task">क्या आप हटाना चाहते हैं?</string>
@@ -85,5 +85,40 @@
     <string name="theme">थीम</string>
     <string name="pm_format">pm</string>
     <string name="language">भाषा</string>
+    <string name="copy_text">प्रतिलिपि</string>
+    <string name="something_went_wrong">कुछ गलत हो गया!</string>
+    <string name="share_by">साझा करें</string>
+    <string name="text_copied">%s कॉपी किया गया</string>
+    <string name="write_suggestions">कृपया अपने सुझाव या मुद्दे लिखें</string>
 
+    <string name="very_small">बहुत छोटा</string>
+    <string name="medium_small">मध्यम छोटा</string>
+    <string name="small">छोटा</string>
+    <string name="medium">मध्यम</string>
+    <string name="large">बड़ा</string>
+    <string name="huge">विशाल</string>
+    <string name="follow_system">सिस्टम का पालन करें</string>
+    <string name="light">लाइट</string>
+    <string name="dark">डार्क</string>
+    <string name="permission_denied">अनुमति अस्वीकृत</string>
+    <string name="open_settings">सेटिंग खोलें</string>
+    <string name="no_application_found">आवेदन नहीं मिला</string>
+    <string name="user_cancelled_the_operation">उपयोगकर्ता ने कार्रवाई रद्द कर दी</string>
+    <string name="downloading_start">डाउनलोडिंग शुरू हो रही है</string>
+    <string name="update_failed">अपडेट विफल</string>
+    <string name="restart">पुनरारंभ करें</string>
+    <string name="new_app_ready">नया ऐप तैयार है</string>
+    <string name="task_selected" formatted="false">%d/%d चयनित</string>
+    <string name="or">या</string>
+    <string name="select_task">कार्य चुनें</string>
+    <string name="active">सक्रिय</string>
+    <string name="done"> हो गया</string>
+    <string name="home">होम</string>
+    <string name="personal"> व्यक्तिगत </string>
+    <string name="school"> स्कूल </string>
+    <string name="work">वर्क</string>
+    <string name="other">अन्य</string>
+    <string name="back">वापस</string>
+    <string name="feedback_from_app">%s, %s से प्रतिक्रिया</string>
+    <string name="add_task_or_subtask">नया कार्य या उपकार्य जोड़ें</string>
 </resources>

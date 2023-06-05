@@ -1,27 +1,46 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="SplashScreen" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="SplashScreen" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="android:windowBackground">@drawable/splash_screen</item>
         <item name="colorPrimary">@color/blue_500</item>
         <item name="background">@color/blue_500</item>
     </style>
 
-    <style name="Theme.MyTask" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="Theme.Tasks" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/blue_500</item>
-        <item name="colorPrimaryVariant">@color/blue_700</item>
-        <item name="colorOnPrimary">@color/white</item>
-        <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/blue_500</item>
-        <item name="colorSecondaryVariant">@color/blue_700</item>
-        <item name="colorOnSecondary">@color/black</item>
-        <item name="colorOnBackground">#10000000</item>
-        <!-- Status bar color. -->
-        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorOnPrimary</item>
+        <item name="colorPrimary">@color/light_primary</item>
+        <item name="colorOnPrimary">@color/light_onPrimary</item>
+        <item name="colorPrimaryContainer">@color/light_primaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/light_onPrimaryContainer</item>
+        <item name="colorSecondary">@color/light_secondary</item>
+        <item name="colorOnSecondary">@color/light_onSecondary</item>
+        <item name="colorSecondaryContainer">@color/light_secondaryContainer</item>
+        <item name="colorOnSecondaryContainer">@color/light_onSecondaryContainer</item>
+        <item name="colorTertiary">@color/light_tertiary</item>
+        <item name="colorOnTertiary">@color/light_onTertiary</item>
+        <item name="colorTertiaryContainer">@color/light_tertiaryContainer</item>
+        <item name="colorOnTertiaryContainer">@color/light_onTertiaryContainer</item>
+        <item name="colorError">@color/light_error</item>
+        <item name="colorErrorContainer">@color/light_errorContainer</item>
+        <item name="colorOnError">@color/light_onError</item>
+        <item name="colorOnErrorContainer">@color/light_onErrorContainer</item>
+        <item name="android:colorBackground">@color/light_background</item>
+        <item name="colorOnBackground">@color/light_onBackground</item>
+        <item name="colorSurface">@color/light_surface</item>
+        <item name="colorOnSurface">@color/light_onSurface</item>
+        <item name="colorSurfaceVariant">@color/light_surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/light_onSurfaceVariant</item>
+        <item name="colorOutline">@color/light_outline</item>
+        <item name="colorOnSurfaceInverse">@color/light_inverseOnSurface</item>
+        <item name="colorSurfaceInverse">@color/light_inverseSurface</item>
+        <item name="colorPrimaryInverse">@color/light_inversePrimary</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
         <!-- Contextual ActionMode Style-->
-<!--        <item name="android:actionMenuTextColor">@color/white</item>-->
+        <!--        <item name="android:actionMenuTextColor">@color/white</item>-->
         <item name="windowActionModeOverlay">true</item>
         <item name="actionModeStyle">@style/Widget.App.ActionMode</item>
+        <item name="floatingActionButtonStyle">@style/FloatingActionButtonStyle</item>
     </style>
 
     <style name="Widget.App.ActionMode" parent="Widget.AppCompat.ActionMode">
@@ -30,8 +49,68 @@
         <item name="background">@color/white</item>
     </style>
 
-    <style name="CustomCheckbox02" parent="@style/Widget.AppCompat.CompoundButton.CheckBox">
+    <style name="CustomCheckbox" parent="@style/Widget.AppCompat.CompoundButton.CheckBox">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
         <item name="android:button">@drawable/checkbox_selector</item>
         <item name="android:background">@android:color/transparent</item>
+    </style>
+
+    <style name="FloatingActionButtonStyle" parent="Widget.Design.FloatingActionButton">
+        <item name="shapeAppearanceOverlay">@style/FabShapeStyle</item>
+    </style>
+
+    <style name="FabShapeStyle" parent="ShapeAppearance.MaterialComponents.SmallComponent">
+        <item name="cornerSize">20%</item>
+        <item name="cornerFamily">rounded</item>
+    </style>
+
+    <style name="Title">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">?attr/colorOnSurface</item>
+    </style>
+
+    <style name="Title.BOLD" parent="Title">
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="SubTitle" parent="Title">
+        <item name="android:textSize">11sp</item>
+    </style>
+
+    <style name="SubTitle.Bold" parent="SubTitle">
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="IconButton">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:padding">4dp</item>
+    </style>
+
+    <style name="FloatingActionButton">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_margin">16dp</item>
+<!--        <item name="tint">?attr/colorOnPrimary</item>-->
+    </style>
+
+    <style name="CircularCardView">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="cardCornerRadius">8dp</item>
+        <item name="cardElevation">4dp</item>
+        <item name="strokeColor">@android:color/transparent</item>
+    </style>
+
+    <style name="SearchView">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="queryHint">Search product</item>
+        <item name="iconifiedByDefault">false</item>
+        <item name="queryBackground">@null</item>
+        <item name="android:background">@drawable/background_search</item>
     </style>
 </resources>

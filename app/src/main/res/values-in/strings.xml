@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Tugas Saya</string>
+    <string name="app_name">Tugas</string>
     <string name="task_progress">%d/%d tugas selesai</string>
     <string name="subtask_progress">%d/%d subtugas selesai</string>
     <string name="task_completed">Tugas selesai</string>
@@ -34,10 +34,6 @@
     <string name="about">Tentang</string>
     <string name="current_version">Versi saat ini</string>
     <string name="more">Lainnya</string>
-    <string name="market_string" translatable="false">market://search?q=pub:Kaushal Vasava</string>
-    <string name="market_developer_string" translatable="false">http://play.google.com/store/apps/developer?id=Kaushal Vasava</string>
-    <string name="play_store_share" translatable="false">https://play.google.com/store/apps/details?id=</string>
-    <string name="feedback_email" translatable="false">kaushalvasava.app.feedback@gmail.com</string>
     <string name="contact_support">Hubungi Dukungan</string>
     <string name="rating">Beri nilai aplikasi</string>
     <string name="more_apps">Aplikasi Lainnya</string>
@@ -70,7 +66,7 @@
     <string name="notify_delete">Tugas berhasil dihapus</string>
     <string name="please_select_task">Silakan pilih tugas</string>
     <string name="search_task">Tugas Pencarian</string>
-    <string name="speach_not_support">Perangkat Anda tidak didukung untuk input ucapan</string>
+    <string name="speech_not_support">Perangkat Anda tidak didukung untuk input ucapan</string>
     <string name="search_subtask">Cari subtugas</string>
     <string name="share">Bagikan</string>
     <string name="delete_task">Apakah Anda ingin menghapus?</string>
@@ -89,4 +85,40 @@
     <string name="theme">Tema</string>
     <string name="pm_format">pm</string>
     <string name="language">Bahasa</string>
+    <string name="copy_text">salinan</string>
+    <string name="something_went_wrong">ada yang tidak beres!</string>
+    <string name="share_by">Berbagi dengan</string>
+    <string name="text_copied">%s disalin</string>
+    <string name="write_suggestions">Silakan tulis saran atau masalah Anda</string>
+
+    <string name="very_small">Sangat Kecil</string>
+    <string name="medium_small">Sedang Kecil</string>
+    <string name="small">Kecil</string>
+    <string name="medium">Sedang</string>
+    <string name="large">Besar</string>
+    <string name="huge">Besar</string>
+    <string name="follow_system">Ikuti Sistem</string>
+    <string name="light">Cahaya</string>
+    <string name="dark">Gelap</string>
+    <string name="permission_denied">Izin ditolak</string>
+    <string name="open_settings">Buka setelan</string>
+    <string name="no_application_found">Aplikasi tidak ditemukan</string>
+    <string name="user_cancelled_the_operation">Pengguna membatalkan operasi</string>
+    <string name="downloading_start">Pengunduhan dimulai</string>
+    <string name="update_failed">Pembaruan gagal</string>
+    <string name="restart">Mulai ulang</string>
+    <string name="new_app_ready">Aplikasi baru sudah siap</string>
+    <string name="task_selected" formatted="false">%d/%d dipilih</string>
+    <string name="or">OU</string>
+    <string name="select_task">Sélectionner une tâche</string>
+    <string name="active">Actif</string>
+    <string name="done">Terminé</string>
+    <string name="home">Accueil</string>
+    <string name="personal">Personnel</string>
+    <string name="school">École</string>
+    <string name="work">Travailler</string>
+    <string name="other">Autre</string>
+    <string name="back">Retour</string>
+    <string name="feedback_from_app">Commentaires de %s, %s</string>
+    <string name="add_task_or_subtask">Tambahkan tugas atau subtugas baru</string>
 </resources>

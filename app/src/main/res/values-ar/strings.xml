@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">مهامي</string>
+    <string name="app_name">مهام</string>
     <string name="task_progress"> تم إكمال% d /% d مهمة </string>
     <string name="subtask_progress">تم إكمال% d /% d مهمة فرعية</string>
     <string name="task_completed"> اكتملت المهمة </string>
@@ -63,7 +63,7 @@
     <string name="notify_delete"> تم حذف المهام بنجاح </string>
     <string name="please_select_task"> الرجاء تحديد مهمة </string>
     <string name="search_task"> مهمة البحث </string>
-    <string name="speach_not_support"> جهازك غير مدعوم لإدخال الكلام </string>
+    <string name="speech_not_support"> جهازك غير مدعوم لإدخال الكلام </string>
     <string name="search_subtask"> بحث في مهمة فرعية </string>
     <string name="share"> مشاركة </string>
     <string name="delete_task"> هل تريد الحذف؟ </string>
@@ -83,4 +83,40 @@
     <string name="theme"> الموضوع </string>
     <string name="pm_format">م</string>
     <string name="language">لغة</string>
+    <string name="copy_text">ينسخ</string>
+    <string name="something_went_wrong">iets het verkeerd geloop!</string>
+    <string name="share_by">Deel deur</string>
+    <string name="text_copied">%s gekopieer</string>
+    <string name="write_suggestions">Skryf asseblief jou voorstelle of kwessies</string>
+
+    <string name="very_small"> صغير جدًا </string>
+    <string name="medium_small"> متوسط صغير </string>
+    <string name="small"> صغير </string>
+    <string name="medium"> متوسط </string>
+    <string name="large"> كبير </string>
+    <string name="huge"> ضخم </string>
+    <string name="follow_system"> اتبع النظام </string>
+    <string name="light"> Light </string>
+    <string name="dark"> Dark </string>
+    <string name="permission_denied"> تم رفض الإذن </string>
+    <string name="open_settings"> فتح الإعدادات </string>
+    <string name="no_application_found"> التطبيق غير موجود </string>
+    <string name="user_cancelled_the_operation"> ألغى المستخدم العملية </string>
+    <string name="downloading_start"> بدء التنزيل </string>
+    <string name="update_failed"> فشل التحديث </string>
+    <string name="restart"> إعادة التشغيل </string>
+    <string name="new_app_ready"> تطبيق جديد جاهز </string>
+    <string name="task_selected" formatted="false"> تم تحديد٪ d /٪ d </string>
+    <string name="or"> OR </string>
+    <string name="select_task"> حدد المهمة </string>
+    <string name="active"> نشط </string>
+    <string name="done"> تم </string>
+    <string name="home"> الصفحة الرئيسية </string>
+    <string name="personal"> شخصي </string>
+    <string name="school"> المدرسة </string>
+    <string name="work"> Work </string>
+    <string name="other"> أخرى </string>
+    <string name="back"> للخلف </string>
+    <string name="feedback_from_app"> تعليقات من٪ s،٪ s </string>
+    <string name="add_task_or_subtask"> إضافة مهمة أو مهمة فرعية جديدة </string>
 </resources>

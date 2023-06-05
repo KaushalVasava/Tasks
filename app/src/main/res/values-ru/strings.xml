@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Мои задачи</string>
+    <string name="app_name">Задания</string>
     <string name="task_progress">Выполнено %d/%d задач</string>
     <string name="subtask_progress">Выполнено %d/%d подзадач</string>
     <string name="task_completed">Задача выполнена</string>
@@ -65,7 +65,7 @@
     <string name="notify_delete">Задачи успешно удалены</string>
     <string name="please_select_task">Выберите задачу</string>
     <string name="search_task">Задание поиска</string>
-    <string name="speach_not_support">Ваше устройство не поддерживает речевой ввод</string>
+    <string name="speech_not_support">Ваше устройство не поддерживает речевой ввод</string>
     <string name="search_subtask">Подзадача поиска</string>
     <string name="share">Поделиться</string>
     <string name="delete_task">Удалить?</string>
@@ -85,5 +85,40 @@
     <string name="theme">Тема</string>
     <string name="pm_format">пп</string>
     <string name="language">Язык</string>
+    <string name="copy_text">копировать</string>
+    <string name="something_went_wrong">что-то пошло не так!</string>
+    <string name="share_by">Поделиться</string>
+    <string name="text_copied">%s скопировано</string>
+    <string name="write_suggestions">Напишите свои предложения или проблемы</string>
 
+    <string name="very_small">Очень маленький</string>
+    <string name="medium_small">Средний Маленький</string>
+    <string name="small">Маленький</string>
+    <string name="medium">Средний</string>
+    <string name="large">Большой</string>
+    <string name="huge">Огромный</string>
+    <string name="follow_system">Подписаться на систему</string>
+    <string name="light">Свет</string>
+    <string name="dark">Темный</string>
+    <string name="permission_denied">Отказано в доступе</string>
+    <string name="open_settings">Открыть настройки</string>
+    <string name="no_application_found">Приложение не найдено</string>
+    <string name="user_cancelled_the_operation">Пользователь отменил операцию</string>
+    <string name="downloading_start">Начало загрузки</string>
+    <string name="update_failed">Ошибка обновления</string>
+    <string name="restart">Перезапустить</string>
+    <string name="new_app_ready">Новое приложение готово</string>
+    <string name="task_selected" formatted="false">Выбрано %d/%d</string>
+    <string name="or">ИЛИ</string>
+    <string name="select_task">Выберите задачу</string>
+    <string name="active">Активный</string>
+    <string name="done">Готово</string>
+    <string name="home">Главная</string>
+    <string name="personal">Личное</string>
+    <string name="school">Школа</string>
+    <string name="work">Работа</string>
+    <string name="other">Другое</string>
+    <string name="back">Назад</string>
+    <string name="feedback_from_app">Отзыв от %s, %s</string>
+    <string name="add_task_or_subtask">Adicionar nova tarefa ou subtarefa</string>
 </resources>

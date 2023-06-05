@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">میرے کام</string>
+    <string name="app_name">کام</string>
     <string name="task_progress">%d/%d کام مکمل ہو گئے</string>
     <string name="subtask_progress">%d/%d ذیلی کام مکمل ہو گئے</string>
     <string name="task_completed">ٹاسک مکمل ہوگیا</string>
@@ -66,7 +66,7 @@
     <string name="notify_delete">کاموں کو کامیابی سے حذف کر دیا گیا ہے</string>
     <string name="please_select_task">براہ کرم ایک کام منتخب کریں</string>
     <string name="search_task"> تلاش کا کام</string>
-    <string name="speach_not_support">آپ کا آلہ اسپیچ ان پٹ کے لیے تعاون یافتہ نہیں ہے</string>
+    <string name="speech_not_support">آپ کا آلہ اسپیچ ان پٹ کے لیے تعاون یافتہ نہیں ہے</string>
     <string name="search_subtask"> ذیلی کام تلاش کریں</string>
     <string name="share">شیئر کریں</string>
     <string name="delete_task">کیا آپ حذف کرنا چاہتے ہیں؟</string>
@@ -86,5 +86,40 @@
     <string name="theme">تھیم</string>
     <string name="pm_format">بعد دوپہر</string>
     <string name="language">زبان</string>
+    <string name="copy_text">کاپی</string>
+    <string name="something_went_wrong">کچھ غلط ہو گیا!</string>
+    <string name="share_by">شیئر بذریعہ</string>
+    <string name="text_copied">%s کاپی کیا گیا</string>
+    <string name="write_suggestions">براہ کرم اپنی تجاویز یا مسائل لکھیں</string>
 
+    <string name = "very_small">بہت چھوٹا</string>
+    <string name = "medium_small"> درمیانہ چھوٹا</string>
+    <string name="small">چھوٹا</string>
+    <string name="medium">میڈیم</string>
+    <string name="large">بڑا</string>
+    <string name="huge">بہت بڑا</string>
+    <string name="follow_system">سسٹم کی پیروی کریں</string>
+    <string name="light">روشنی</string>
+    <string name="dark">گہرا</string>
+    <string name = "permission_denied"> اجازت نامنظور</string>
+    <string name = "open_settings"> ترتیبات کھولیں</string>
+    <string name="no_application_found">درخواست نہیں ملی</string>
+    <string name="user_cancelled_the_operation">صارف نے آپریشن منسوخ کر دیا</string>
+    <string name="downloading_start">ڈاؤن لوڈنگ شروع</string>
+    <string name="update_failed">اپ ڈیٹ ناکام ہو گیا</string>
+    <string name="restart">دوبارہ شروع کریں</string>
+    <string name="new_app_ready">نئی ایپ تیار ہے</string>
+    <string name="task_selected" formatted="false">%d/%d منتخب کیا گیا</string>
+    <string name="or">یا</string>
+    <string name="select_task">کام منتخب کریں</string>
+    <string name = "active"> فعال</string>
+    <string name = "done"> ہو گیا</string>
+    <string name="home">ہوم</string>
+    <string name = "personal">ذاتی</string>
+    <string name="school">اسکول</string>
+    <string name="work">کام</string>
+    <string name = "other"> دیگر</string>
+    <string name = "back"> پیچھے</string>
+    <string name="feedback_from_app">%s، %s کی طرف سے تاثرات</string>
+    <string name="add_task_or_subtask">نیا کام یا ذیلی کام شامل کریں</string>
 </resources>

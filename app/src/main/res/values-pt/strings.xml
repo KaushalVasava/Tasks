@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Minhas tarefas</string>
+    <string name="app_name">Tarefas</string>
     <string name="task_progress">%d/%d tarefas concluídas</string>
     <string name="subtask_progress">%d/%d subtarefas concluídas</string>
     <string name="task_completed">Tarefa concluída</string>
@@ -34,10 +34,6 @@
     <string name="about">Sobre</string>
     <string name="current_version">Versão atual</string>
     <string name="more">Mais</string>
-    <string name="market_string" translatable="false">market://search?q=pub:Kaushal Vasava</string>
-    <string name="market_developer_string" translatable="false">http://play.google.com/store/apps/developer?id=Kaushal Vasava</string>
-    <string name="play_store_share" translatable="false">https://play.google.com/store/apps/details?id=</string>
-    <string name="feedback_email" translatable="false">kaushalvasava.app.feedback@gmail.com</string>
     <string name="contact_support">Entre em contato com o suporte</string>
     <string name="rating">Avalie o aplicativo</string>
     <string name="more_apps">Mais aplicativos</string>
@@ -70,7 +66,7 @@
     <string name="notify_delete">As tarefas foram excluídas com sucesso</string>
     <string name="please_select_task">Selecione uma tarefa</string>
     <string name="search_task">Tarefa de pesquisa</string>
-    <string name="speach_not_support">Seu dispositivo não é compatível com entrada de fala</string>
+    <string name="speech_not_support">Seu dispositivo não é compatível com entrada de fala</string>
     <string name="search_subtask">Pesquisar subtarefa</string>
     <string name="share">Compartilhar</string>
     <string name="delete_task">Deseja excluir?</string>
@@ -89,5 +85,40 @@
     <string name="theme">Tema</string>
     <string name="pm_format">da tarde</string>
     <string name="language">Linguagem</string>
+    <string name="copy_text">cópia de</string>
+    <string name="something_went_wrong">algo deu errado!</string>
+    <string name="share_by">Compartilhar por</string>
+    <string name="text_copied">%s copiado</string>
+    <string name="write_suggestions">Por favor, escreva suas sugestões ou problemas</string>
 
+    <string name="very_small">Muito pequeno</string>
+    <string name="medium_small">Médio Pequeno</string>
+    <string name="small">Pequeno</string>
+    <string name="medium">Médio</string>
+    <string name="large">Grande</string>
+    <string name="huge">Enorme</string>
+    <string name="follow_system">Seguir sistema</string>
+    <string name="light">Luz</string>
+    <string name="dark">Escuro</string>
+    <string name="permission_denied">Permissão negada</string>
+    <string name="open_settings">Abrir configurações</string>
+    <string name="no_application_found">Aplicativo não encontrado</string>
+    <string name="user_cancelled_the_operation">O usuário cancelou a operação</string>
+    <string name="downloading_start">Início do download</string>
+    <string name="update_failed">Falha na atualização</string>
+    <string name="restart">Reiniciar</string>
+    <string name="new_app_ready">Novo aplicativo está pronto</string>
+    <string name="task_selected" formatted="false">%d/%d selecionado</string>
+    <string name="or">OU</string>
+    <string name="select_task">Selecionar tarefa</string>
+    <string name="active">Ativo</string>
+    <string name="done">Concluído</string>
+    <string name="home">Casa</string>
+    <string name="personal">Pessoal</string>
+    <string name="school">Escola</string>
+    <string name="work">Trabalho</string>
+    <string name="other">Outro</string>
+    <string name="back">Voltar</string>
+    <string name="feedback_from_app">Feedback de %s, %s</string>
+    <string name="add_task_or_subtask">Adicionar nova tarefa ou subtarefa</string>
 </resources>

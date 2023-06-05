@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Mis tareas</string>
+    <string name="app_name">Tareas</string>
     <string name="task_progress">%d/%d tareas completadas</string>
     <string name="subtask_progress">%d/%d subtareas completadas</string>
     <string name="task_completed">Tarea completada</string>
@@ -66,7 +66,7 @@
     <string name="notify_delete">Las tareas se eliminaron con éxito</string>
     <string name="please_select_task">Seleccione una tarea</string>
     <string name="search_task">Tarea de búsqueda</string>
-    <string name="speach_not_support">Su dispositivo no es compatible con la entrada de voz</string>
+    <string name="speech_not_support">Su dispositivo no es compatible con la entrada de voz</string>
     <string name="search_subtask">Subtarea de búsqueda</string>
     <string name="share">Compartir</string>
     <string name="delete_task">¿Quieres eliminar?</string>
@@ -86,4 +86,40 @@
     <string name="theme">Tema</string>
     <string name="pm_format">p. m.</string>
     <string name="language">Idioma</string>
+    <string name="copy_text">Copiar</string>
+    <string name="something_went_wrong">¡algo salió mal!</string>
+    <string name="share_by">Compartir por</string>
+    <string name="text_copied">%s copiado</string>
+    <string name="write_suggestions">Escriba sus sugerencias o problemas</string>
+
+    <string name="very_small">Muy pequeño</string>
+    <string name="medium_small">Mediano Pequeño</string>
+    <string name="small">Pequeño</string>
+    <string name="medium">Medio</string>
+    <string name="large">Grande</string>
+    <string name="huge">Enorme</string>
+    <string name="follow_system">Seguir sistema</string>
+    <string name="light">Luz</string>
+    <string name="dark">Oscuro</string>
+    <string name="permission_denied">Permiso denegado</string>
+    <string name="open_settings">Configuración abierta</string>
+    <string name="no_application_found">Aplicación no encontrada</string>
+    <string name="user_cancelled_the_operation">El usuario canceló la operación</string>
+    <string name="downloading_start">Inicio de descarga</string>
+    <string name="update_failed">Actualización fallida</string>
+    <string name="restart">Reiniciar</string>
+    <string name="new_app_ready">La nueva aplicación está lista</string>
+    <string name="task_selected" formatted="false">%d/%d seleccionado</string>
+    <string name="or">O</string>
+    <string name="select_task">Seleccionar tarea</string>
+    <string name="active">Activo</string>
+    <string name="done">Listo</string>
+    <string name="home">Inicio</string>
+    <string name="personal">Personal</string>
+    <string name="school">Escuela</string>
+    <string name="work">Trabajo</string>
+    <string name="other">Otro</string>
+    <string name="back">Atrás</string>
+    <string name="feedback_from_app">Comentarios de %s, %s</string>
+    <string name="add_task_or_subtask">Agregar nueva tarea o subtarea</string>
 </resources>

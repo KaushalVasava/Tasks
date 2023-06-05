@@ -1,19 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.lahsuak.apps.mytask">
+    package="com.lahsuak.apps.tasks">
 
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
     <application
-        android:name="com.lahsuak.apps.mytask.di.TodoApp"
+        android:name="com.lahsuak.apps.tasks.TaskApp"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.MyTask">
+        android:theme="@style/SplashScreen">
         <activity
-            android:name="com.lahsuak.apps.mytask.ui.MainActivity"
+            android:name="com.lahsuak.apps.tasks.ui.MainActivity"
             android:exported="true"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
@@ -35,9 +37,9 @@
                 android:resource="@xml/shortcuts" />
         </activity>
 
-        <receiver android:name="com.lahsuak.apps.mytask.receiver.AlarmReceiver" />
+        <receiver android:name="com.lahsuak.apps.tasks.receiver.AlarmReceiver" />
         <receiver
-            android:name="com.lahsuak.apps.mytask.ui.widget.TaskWidget"
+            android:name="com.lahsuak.apps.tasks.ui.widget.TaskWidget"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -47,10 +49,13 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/example_appwidget_info" />
         </receiver>
-        <receiver android:name="com.lahsuak.apps.mytask.receiver.BootReceiver"
+        <receiver
+            android:name="com.lahsuak.apps.tasks.receiver.BootReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </receiver>

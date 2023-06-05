@@ -17,7 +17,7 @@
                 android:id="@+id/sortByName"
                 android:title="@string/sort_by_name" />
             <item
-                android:id="@+id/sortByOld"
+                android:id="@+id/sortByDate"
                 android:title="@string/sort_by_creation_date" />
         </menu>
     </item>

@@ -1,6 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">내 작업</string>
+    <string name="app_name">작업</string>
     <string name="task_progress">%d/%d개의 작업 완료</string>
     <string name="subtask_progress">%d/%d 하위 작업 완료</string>
     <string name="task_completed">작업 완료</string>
@@ -33,10 +32,6 @@
     <string name="about">정보</string>
     <string name="current_version">현재 버전</string>
     <string name="more">더</string>
-    <string name="market_string" translatable="false">market://search?q=pub:카우샬 바사바</string>
-    <string name="market_developer_string" translatable="false">http://play.google.com/store/apps/developer?id=Kaushal Vasava</string>
-    <string name="play_store_share" translatable="false">https://play.google.com/store/apps/details?id=</string>
-    <string name="feedback_email" translatable="false">kaushalvasava.app.feedback@gmail.com</string>
     <string name="contact_support">지원팀에 문의</string>
     <string name="rating">앱 평가</string>
     <string name="more_apps">더 많은 앱</string>
@@ -69,7 +64,7 @@
     <string name="notify_delete">작업이 성공적으로 삭제되었습니다.</string>
     <string name="please_select_task">작업을 선택하십시오</string>
     <string name="search_task">검색 작업</string>
-    <string name="speach_not_support">귀하의 기기는 음성 입력을 지원하지 않습니다.</string>
+    <string name="speech_not_support">귀하의 기기는 음성 입력을 지원하지 않습니다.</string>
     <string name="search_subtask">하위 작업 검색</string>
     <string name="share">공유</string>
     <string name="delete_task">삭제하시겠습니까?</string>
@@ -88,4 +83,40 @@
     <string name="theme">테마</string>
     <string name="pm_format">오후</string>
     <string name="language">언어</string>
+    <string name="copy_text">복사</string>
+    <string name="something_went_wrong">문제가 발생했습니다!</string>
+    <string name="share_by">공유자</string>
+    <string name="text_copied">%s 복사됨</string>
+    <string name="write_suggestions">제안이나 문제를 적어주세요</string>
+
+    <string name="very_small">매우 작음</string>
+    <string name="medium_small">중소형</string>
+    <string name="small">작은</string>
+    <string name="medium">중간</string>
+    <string name="large">크게</string>
+    <string name="huge">거대한</string>
+    <string name="follow_system">시스템 팔로우</string>
+    <string name="light">조명</string>
+    <string name="dark">어두운</string>
+    <string name="permission_denied">권한이 거부되었습니다</string>
+    <string name="open_settings">설정 열기</string>
+    <string name="no_application_found">애플리케이션을 찾을 수 없습니다</string>
+    <string name="user_cancelled_the_operation">사용자가 작업을 취소했습니다</string>
+    <string name="downloading_start">다운로드 시작</string>
+    <string name="update_failed">업데이트 실패</string>
+    <string name="restart">재시작</string>
+    <string name="new_app_ready">새로운 앱이 준비되었습니다</string>
+    <string name="task_selected" formatted="false">%d/%d 선택됨</string>
+    <string name="or">또는</string>
+    <string name="select_task">작업 선택</string>
+    <string name="active">활성화</string>
+    <string name="done">완료</string>
+    <string name="home">집</string>
+    <string name="personal">개인</string>
+    <string name="school">학교</string>
+    <string name="work">일</string>
+    <string name="other">기타</string>
+    <string name="back">뒤로</string>
+    <string name="feedback_from_app">%s님, %s님의 피드백</string>
+    <string name="add_task_or_subtask">새 작업 또는 하위 작업 추가</string>
 </resources>

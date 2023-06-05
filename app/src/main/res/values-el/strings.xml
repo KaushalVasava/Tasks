@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Minhas tarefas</string>
+    <string name="app_name">Καθήκοντα</string>
     <string name="task_progress">%d/%d tarefas concluídas</string>
     <string name="subtask_progress">%d/%d subtarefas concluídas</string>
     <string name="task_completed">Tarefa concluída</string>
@@ -34,10 +34,6 @@
     <string name="about">Sobre</string>
     <string name="current_version">Versão atual</string>
     <string name="more">Mais</string>
-    <string name="market_string" translatable="false">market://search?q=pub:Kaushal Vasava</string>
-    <string name="market_developer_string" translatable="false">http://play.google.com/store/apps/developer?id=Kaushal Vasava</string>
-    <string name="play_store_share" translatable="false">https://play.google.com/store/apps/details?id=</string>
-    <string name="feedback_email" translatable="false">kaushalvasava.app.feedback@gmail.com</string>
     <string name="contact_support">Entre em contato com o suporte</string>
     <string name="rating">Avalie o aplicativo</string>
     <string name="more_apps">Mais aplicativos</string>
@@ -70,7 +66,7 @@
     <string name="notify_delete">As tarefas foram excluídas com sucesso</string>
     <string name="please_select_task">Selecione uma tarefa</string>
     <string name="search_task">Tarefa de pesquisa</string>
-    <string name="speach_not_support">Seu dispositivo não é compatível com entrada de fala</string>
+    <string name="speech_not_support">Seu dispositivo não é compatível com entrada de fala</string>
     <string name="search_subtask">Pesquisar subtarefa</string>
     <string name="share">Compartilhar</string>
     <string name="delete_task">Deseja excluir?</string>
@@ -89,4 +85,40 @@
     <string name="theme">Θέμα</string>
     <string name="pm_format">μ.μ.</string>
     <string name="language">Γλώσσα</string>
+    <string name="copy_text">αντίγραφο</string>
+    <string name="something_went_wrong">κάτι πήγε στραβά!</string>
+    <string name="share_by">Κοινή χρήση από</string>
+    <string name="text_copied">%s αντιγράφηκε</string>
+    <string name="write_suggestions">Γράψτε τις προτάσεις ή τα προβλήματά σας</string>
+
+    <string name="very_small">Πολύ μικρό</string>
+    <string name="medium_small">Μεσαίο Μικρό</string>
+    <string name="small">Μικρό</string>
+    <string name="medium">Μεσαίο</string>
+    <string name="large">Μεγάλο</string>
+    <string name="huge">Τεράστιο</string>
+    <string name="follow_system">Ακολουθήστε το σύστημα</string>
+    <string name="light">Φως</string>
+    <string name="dark">Σκούρο</string>
+    <string name="permission_denied">Απορρίφθηκε η άδεια</string>
+    <string name="open_settings">Άνοιγμα ρυθμίσεων</string>
+    <string name="no_application_found">Η εφαρμογή δεν βρέθηκε</string>
+    <string name="user_cancelled_the_operation">Ο χρήστης ακύρωσε τη λειτουργία</string>
+    <string name="downloading_start">Έναρξη λήψης</string>
+    <string name="update_failed">Η ενημέρωση απέτυχε</string>
+    <string name="restart">Επανεκκίνηση</string>
+    <string name="new_app_ready">Η νέα εφαρμογή είναι έτοιμη</string>
+    <string name="task_selected" formatted="false">Επιλέχτηκε %d/%d</string>
+    <string name="or">Ή</string>
+    <string name="select_task">Επιλογή εργασίας</string>
+    <string name="active">Ενεργό</string>
+    <string name="done">Τέλος</string>
+    <string name="home">Αρχική σελίδα</string>
+    <string name="personal">Προσωπικό</string>
+    <string name="school">Σχολείο</string>
+    <string name="work">Εργασία</string>
+    <string name="other">Άλλο</string>
+    <string name="back">Πίσω</string>
+    <string name="feedback_from_app">Σχόλια από %s, %s</string>
+    <string name="add_task_or_subtask">Προσθήκη νέας εργασίας ή δευτερεύουσας εργασίας</string>
 </resources>

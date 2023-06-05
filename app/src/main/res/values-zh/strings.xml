@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">我的任務</string>
+    <string name="app_name">任务</string>
     <string name="task_progress">%d/%d 個任務完成</string>
     <string name="subtask_progress">%d/%d 個子任務已完成</string>
     <string name="task_completed">任務完成</string>
@@ -66,7 +66,7 @@
     <string name="notify_delete">任務刪除成功</string>
     <string name="please_select_task">請選擇一個任務</string>
     <string name="search_task">搜索任務</string>
-    <string name="speach_not_support">您的設備不支持語音輸入</string>
+    <string name="speech_not_support">您的設備不支持語音輸入</string>
     <string name="search_subtask">搜索子任務</string>
     <string name="share">分享</string>
     <string name="delete_task">要刪除嗎？</string>
@@ -86,4 +86,40 @@
     <string name="theme">主题</string>
     <string name="pm_format">下午</string>
     <string name="language">语</string>
+    <string name="copy_text">複製</string>
+    <string name="something_went_wrong">出了点问题！</string>
+    <string name="share_by">分享方式</string>
+    <string name="text_copied">%s 已复制</string>
+    <string name="write_suggestions">请写下您的建议或问题</string>
+
+    <string name="very_small">非常小</string>
+    <string name="medium_small">中小</string>
+    <string name="small">小</string>
+    <string name="medium">中</string>
+    <string name="large">大</string>
+    <string name="huge">巨大</string>
+    <string name="follow_system">关注系统</string>
+    <string name="light">灯光</string>
+    <string name="dark">深色</string>
+    <string name="permission_denied">权限被拒绝</string>
+    <string name="open_settings">打开设置</string>
+    <string name="no_application_found">未找到应用</string>
+    <string name="user_cancelled_the_operation">用户取消了操作</string>
+    <string name="downloading_start">开始下载</string>
+    <string name="update_failed">更新失败</string>
+    <string name="restart">重启</string>
+    <string name="new_app_ready">新应用准备就绪</string>
+    <string name="task_selected" formatted="false">已选择%d/%d</string>
+    <string name="or">OR</string>
+    <string name="select_task">选择任务</string>
+    <string name="active">活跃</string>
+    <string name="done">完成</string>
+    <string name="home">主页</string>
+    <string name="personal">个人</string>
+    <string name="school">学校</string>
+    <string name="work">工作</string>
+    <string name="other">其他</string>
+    <string name="back">返回</string>
+    <string name="feedback_from_app">来自 %s，%s 的反馈</string>
+    <string name="add_task_or_subtask">添加新任务或子任务</string>
 </resources>

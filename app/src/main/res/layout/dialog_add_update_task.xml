@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context=".ui.fragments.AddUpdateTaskFragmentDialog">
+
+    <EditText
+        android:id="@+id/txt_rename"
+        style="@style/Title"
+        android:layout_marginVertical="10dp"
+        android:layout_marginStart="10dp"
+        android:background="@drawable/background_search"
+        android:hint="@string/enter_title"
+        android:importantForAutofill="no"
+        android:inputType="textMultiLine"
+        android:minHeight="48dp"
+        android:padding="10dp"
+        android:textColorHint="?attr/colorControlNormal"
+        app:layout_constraintEnd_toStartOf="@id/btn_paste"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/btn_copy"
+        style="@style/SubTitle"
+        android:layout_marginStart="8dp"
+        android:background="?attr/selectableItemBackground"
+        android:contentDescription="@string/copy_text"
+        android:gravity="center"
+        android:text="@string/copy_text"
+        android:textSize="12sp"
+        app:drawableStartCompat="@drawable/ic_copy"
+        app:layout_constraintBottom_toBottomOf="@id/cb_imp_task"
+        app:layout_constraintStart_toEndOf="@id/cb_imp_task"
+        app:layout_constraintTop_toTopOf="@id/cb_imp_task" />
+
+    <ImageView
+        android:id="@+id/btn_paste"
+        style="@style/IconButton"
+        android:background="?attr/selectableItemBackground"
+        android:contentDescription="@string/copy_text"
+        android:padding="8dp"
+        android:src="@drawable/ic_paste"
+        app:layout_constraintBottom_toBottomOf="@id/txt_rename"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/txt_rename" />
+
+    <Spinner
+        android:id="@+id/category_menu"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:spinnerMode="dropdown"
+        android:layout_marginStart="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/btn_copy"
+        app:layout_constraintTop_toTopOf="@id/btn_copy" />
+
+    <TextView
+        android:id="@+id/txt_reminder"
+        style="@style/SubTitle"
+        android:layout_marginBottom="10dp"
+        android:drawablePadding="4dp"
+        android:gravity="center"
+        android:background="?attr/selectableItemBackground"
+        android:text="@string/add_date_time"
+        android:textColor="@color/reminder_selector"
+        app:drawableLeftCompat="@drawable/ic_reminder"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@id/txt_rename"
+        app:layout_constraintTop_toBottomOf="@id/cb_imp_task" />
+
+    <CheckBox
+        android:id="@+id/cb_imp_task"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:minWidth="48dp"
+        android:textSize="12sp"
+        android:layout_marginStart="4dp"
+        android:text="@string/important_task"
+        android:minHeight="48dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/txt_rename" />
+
+    <TextView
+        android:id="@+id/btn_save"
+        style="@style/SubTitle"
+        android:layout_margin="10dp"
+        android:background="?attr/selectableItemBackground"
+        android:gravity="center"
+        android:text="@string/save"
+        android:elevation="8dp"
+        app:drawableStartCompat="@drawable/ic_save"
+        app:drawableTint="?attr/colorPrimary"
+        app:layout_constraintBottom_toBottomOf="@id/txt_reminder"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/txt_reminder" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

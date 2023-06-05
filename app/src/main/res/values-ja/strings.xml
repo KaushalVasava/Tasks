@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">私のタスク</string>
+    <string name="app_name">タスク</string>
     <string name="task_progress">%d /%dタスクが完了しました</string>
     <string name="subtask_progress">%d /%dサブタスクが完了しました</string>
     <string name="task_completed">タスクが完了しました</string>
@@ -63,7 +63,7 @@
     <string name="notify_delete">タスクは正常に削除されました</string>
     <string name="please_select_task">タスクを選択してください</string>
     <string name="search_task">検索タスク</string>
-    <string name="speach_not_support">お使いのデバイスは音声入力でサポートされていません</string>
+    <string name="speech_not_support">お使いのデバイスは音声入力でサポートされていません</string>
     <string name="search_subtask">サブタスクの検索</string>
     <string name="share">共有</string>
     <string name="delete_task">削除しますか？</string>
@@ -83,5 +83,40 @@
     <string name="theme">テーマ</string>
     <string name="pm_format">午後</string>
     <string name="language">言語</string>
+    <string name="copy_text">コピー</string>
+    <string name="something_went_wrong">何か問題が発生しました!</string>
+    <string name="share_by">共有する</string>
+    <string name="text_copied">%s をコピーしました</string>
+    <string name="write_suggestions">提案や問題を書いてください</string>
 
+    <string name="very_small">非常に小さい</string>
+    <string name="medium_small">ミディアム スモール</string>
+    <string name="small">小</string>
+    <string name="medium">ミディアム</string>
+    <string name="large">大</string>
+    <string name="huge">巨大</string>
+    <string name="follow_system">フォローシステム</string>
+    <string name="light">ライト</string>
+    <string name="dark">ダーク</string>
+    <string name="permission_denied">許可が拒否されました</string>
+    <string name="open_settings">設定を開く</string>
+    <string name="no_application_found">アプリケーションが見つかりません</string>
+    <string name="user_cancelled_the_operation">ユーザーが操作をキャンセルしました</string>
+    <string name="downloading_start">ダウンロード開始</string>
+    <string name="update_failed">更新に失敗しました</string>
+    <string name="restart">再起動</string>
+    <string name="new_app_ready">新しいアプリの準備ができました</string>
+    <string name="task_selected" formatted="false">%d/%d 選択済み</string>
+    <string name="or">OR</string>
+    <string name="select_task">タスクを選択</string>
+    <string name="active">アクティブ</string>
+    <string name="done">完了</string>
+    <string name="home">ホーム</string>
+    <string name="personal">個人</string>
+    <string name="school">学校</string>
+    <string name="work">仕事</string>
+    <string name="other">その他</string>
+    <string name="back">戻る</string>
+    <string name="feedback_from_app">%s、%s からのフィードバック</string>
+    <string name="add_task_or_subtask">新しいタスクまたはサブタスクを追加します</string>
 </resources>
