@@ -110,4 +110,16 @@
     <string name="restart">Herbegin</string>
     <string name="new_app_ready">Nuwe toepassing is gereed</string>
     <string name="task_selected" formatted="false">%d/%d gekies</string>
+    <string name="or">OF</string>
+    <string name="select_task">Kies taak</string>
+    <string name="active">Aktief</string>
+    <string name="done">Klaar</string>
+    <string name="home">Tuis</string>
+    <string name="personal">Persoonlik</string>
+    <string name="school">Skool</string>
+    <string name="work">Werk</string>
+    <string name="other">Ander</string>
+    <string name="back">Terug</string>
+    <string name="feedback_from_app">Terugvoer van %s, %s</string>
+    <string name="add_task_or_subtask">Voeg nuwe taak of subtaak by</string>
 </resources>

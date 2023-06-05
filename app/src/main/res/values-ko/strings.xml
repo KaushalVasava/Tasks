@@ -118,4 +118,5 @@
     <string name="other">기타</string>
     <string name="back">뒤로</string>
     <string name="feedback_from_app">%s님, %s님의 피드백</string>
+    <string name="add_task_or_subtask">새 작업 또는 하위 작업 추가</string>
 </resources>

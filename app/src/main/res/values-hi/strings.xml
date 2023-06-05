@@ -120,4 +120,5 @@
     <string name="other">अन्य</string>
     <string name="back">वापस</string>
     <string name="feedback_from_app">%s, %s से प्रतिक्रिया</string>
+    <string name="add_task_or_subtask">नया कार्य या उपकार्य जोड़ें</string>
 </resources>

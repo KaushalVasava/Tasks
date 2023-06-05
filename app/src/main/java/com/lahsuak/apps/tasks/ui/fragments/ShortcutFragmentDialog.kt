@@ -22,18 +22,24 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class ShortcutFragmentDialog : BottomSheetDialogFragment() {
 
-    private lateinit var binding: DialogAddUpdateTaskBinding
+    private var _binding: DialogAddUpdateTaskBinding? = null
+    private val binding: DialogAddUpdateTaskBinding
+        get() = _binding!!
     private val args: ShortcutFragmentDialogArgs by navArgs()
     private val model: TaskViewModel by viewModels()
     private lateinit var task: Task
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
 
-        binding = DialogAddUpdateTaskBinding.inflate(layoutInflater)
+        _binding = DialogAddUpdateTaskBinding.inflate(layoutInflater)
         @Suppress(AppConstants.DEPRECATION)
         if (dialog!!.window != null) {
             dialog!!.window!!.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)

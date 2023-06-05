@@ -110,4 +110,16 @@
     <string name="restart">Neu starten</string>
     <string name="new_app_ready">Neue App ist fertig</string>
     <string name="task_selected" formatted="false">%d/%d ausgewählt</string>
+    <string name="or">ODER</string>
+    <string name="select_task">Aufgabe auswählen</string>
+    <string name="active">Aktiv</string>
+    <string name="done">Fertig</string>
+    <string name="home">Zuhause</string>
+    <string name="personal">Persönlich</string>
+    <string name="school">Schule</string>
+    <string name="work">Arbeit</string>
+    <string name="other">Sonstiges</string>
+    <string name="back">Zurück</string>
+    <string name="feedback_from_app">Feedback von %s, %s</string>
+    <string name="add_task_or_subtask">Neue Aufgabe oder Unteraufgabe hinzufügen</string>
 </resources>

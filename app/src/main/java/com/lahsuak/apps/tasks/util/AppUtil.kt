@@ -182,11 +182,14 @@ object AppUtil {
             val intent = Intent(Intent.ACTION_VIEW)
             intent.data = Uri.parse(url)
             context.startActivity(intent)
-        } catch (e: Throwable) {
+        } catch (e: ActivityNotFoundException) {
             e.logError()
             context.toast {
                 context.getString(R.string.no_application_found)
             }
+        } catch (e: Throwable) {
+            e.logError()
+            context.toast { context.getString(R.string.something_went_wrong) }
         }
     }
 

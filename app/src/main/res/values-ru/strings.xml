@@ -120,4 +120,5 @@
     <string name="other">Другое</string>
     <string name="back">Назад</string>
     <string name="feedback_from_app">Отзыв от %s, %s</string>
+    <string name="add_task_or_subtask">Adicionar nova tarefa ou subtarefa</string>
 </resources>

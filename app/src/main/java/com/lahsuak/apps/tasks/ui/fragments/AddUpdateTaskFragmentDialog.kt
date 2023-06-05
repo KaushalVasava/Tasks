@@ -31,7 +31,9 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class AddUpdateTaskFragmentDialog : BottomSheetDialogFragment() {
 
-    private lateinit var binding: DialogAddUpdateTaskBinding
+    private var _binding: DialogAddUpdateTaskBinding? = null
+    private val binding: DialogAddUpdateTaskBinding
+        get() = _binding!!
     private val args: AddUpdateTaskFragmentDialogArgs by navArgs()
     private val taskViewModel: TaskViewModel by viewModels()
     private val subTaskViewModel: SubTaskViewModel by viewModels()
@@ -44,7 +46,7 @@ class AddUpdateTaskFragmentDialog : BottomSheetDialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        binding = DialogAddUpdateTaskBinding.inflate(layoutInflater)
+        _binding = DialogAddUpdateTaskBinding.inflate(layoutInflater)
         @Suppress(AppConstants.DEPRECATION)
         requireDialog().window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
         (dialog as? BottomSheetDialog)?.run {

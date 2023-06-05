@@ -120,4 +120,5 @@
     <string name="other">Andere</string>
     <string name="back">Terug</string>
     <string name="feedback_from_app">Feedback van %s, %s</string>
+    <string name="add_task_or_subtask">Nieuwe taak of subtaak toevoegen</string>
 </resources>

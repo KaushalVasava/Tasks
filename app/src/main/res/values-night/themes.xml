@@ -6,7 +6,7 @@
         <item name="background">@color/blue_500</item>
     </style>
 
-    <style name="Theme.MyTask" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Theme.Tasks" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/dark_primary</item>
         <item name="colorOnPrimary">@color/dark_onPrimary</item>

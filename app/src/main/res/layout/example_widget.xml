@@ -13,7 +13,6 @@
         android:src = "@drawable/ic_edit"
         app:tint="@color/white"
         android:background="@drawable/background_progress"
-        android:contentDescription="@string/create_task"
-        />
+        android:contentDescription="@string/create_task" />
 
 </RelativeLayout>

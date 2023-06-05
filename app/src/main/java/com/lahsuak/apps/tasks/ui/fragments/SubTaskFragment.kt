@@ -51,7 +51,9 @@ import java.util.*
 class SubTaskFragment : Fragment(R.layout.fragment_subtask),
     SubTaskAdapter.SubTaskListener, SelectionListener {
 
-    private lateinit var binding: FragmentSubtaskBinding
+    private var _binding: FragmentSubtaskBinding? = null
+    private val binding: FragmentSubtaskBinding
+        get() = _binding!!
 
     //    private val taskViewModel: TaskViewModel by viewModels()
     private val subTaskViewModel: SubTaskViewModel by viewModels()
@@ -71,15 +73,17 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
     private var actionModeEnable = false
     private var isSelectedAll = false
     private var viewType = false // listview = false, gridView = true
+    private var isTaskActive = true
 
     companion object {
         private const val FIRST = "1. "
+        private const val COLON = " :"
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.apply {
-            putBoolean(TaskFragment.TASKS_STATUS_BUNDLE_KEY, binding.chipActive.isChecked)
+            putBoolean(TaskFragment.TASKS_STATUS_BUNDLE_KEY, isTaskActive)
             putBoolean(TaskFragment.VIEW_TYPE_BUNDLE_KEY, viewType)
             putInt(TaskFragment.COUNTER_BUNDLE_KEY, counter)
             putBoolean(TaskFragment.IS_IN_ACTION_MODE_BUNDLE_KEY, actionModeEnable)
@@ -97,9 +101,9 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
             isSelectedAll = it.getBoolean(TaskFragment.IS_SELECT_ALL_BUNDLE_KEY)
             selectedItem =
                 it.getBooleanArray(TaskFragment.SELECTED_ITEMS_BUNDLE_KEY)?.toTypedArray()
-            val isTaskDone = it.getBoolean(TaskFragment.TASKS_STATUS_BUNDLE_KEY)
-            setButtonVisibility(isTaskDone)
-            setChipColor(isTaskDone, TaskApp.categoryTypes[task.color].color)
+            isTaskActive = it.getBoolean(TaskFragment.TASKS_STATUS_BUNDLE_KEY)
+            setButtonVisibility(isTaskActive)
+            setChipColor(isTaskActive, TaskApp.categoryTypes[task.color].color)
             if (actionModeEnable) {
                 if (actionMode == null) {
                     actionMode = (activity as AppCompatActivity).startSupportActionMode(callback)
@@ -125,10 +129,19 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
             }
         }
 
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        super.onCreateView(inflater, container, savedInstanceState)
+        _binding = FragmentSubtaskBinding.inflate(inflater, container, false)
+        return _binding?.root
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         (activity as AppCompatActivity).supportActionBar?.hide()
-        binding = FragmentSubtaskBinding.bind(view)
         task = args.task
         initView()
         subTaskViewModel.taskId.value = task.id
@@ -276,6 +289,7 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
             } else {
                 binding.chipActive.isChecked = true
             }
+            isTaskActive = true
         }
         binding.chipDone.setOnClickListener {
             if (binding.chipDone.isChecked) {
@@ -285,6 +299,7 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
             } else {
                 binding.chipDone.isChecked = true
             }
+            isTaskActive = false
         }
     }
 
@@ -453,7 +468,7 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
     }
 
     private fun getAllText(): String {
-        var sendtxt: String = task.title + " :"
+        var sendtxt: String = task.title + COLON
         for (i in 0 until subTaskAdapter.currentList.size) {
             sendtxt += "\n${i + 1}. " + subTaskAdapter.currentList[i].subTitle
         }
@@ -705,5 +720,6 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
             subTaskViewModel.update(task)
         }
         searchView?.setOnQueryTextListener(null)
+        _binding = null
     }
 }

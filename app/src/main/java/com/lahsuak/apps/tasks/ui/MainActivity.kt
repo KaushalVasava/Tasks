@@ -26,7 +26,9 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityMainBinding
+    private var _binding: ActivityMainBinding? = null
+    private val binding: ActivityMainBinding
+        get() = _binding!!
     private lateinit var navController: NavController
 
     companion object {
@@ -47,8 +49,8 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setTheme(R.style.Theme_MyTask)
-        binding = ActivityMainBinding.inflate(layoutInflater)
+        setTheme(R.style.Theme_Tasks)
+        _binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         val sp = PreferenceManager.getDefaultSharedPreferences(this)
@@ -91,5 +93,10 @@ class MainActivity : AppCompatActivity() {
 
     override fun onSupportNavigateUp(): Boolean {
         return navController.navigateUp() || super.onSupportNavigateUp()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 }

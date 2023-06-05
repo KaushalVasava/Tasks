@@ -107,4 +107,16 @@
     <string name="restart"> إعادة التشغيل </string>
     <string name="new_app_ready"> تطبيق جديد جاهز </string>
     <string name="task_selected" formatted="false"> تم تحديد٪ d /٪ d </string>
+    <string name="or"> OR </string>
+    <string name="select_task"> حدد المهمة </string>
+    <string name="active"> نشط </string>
+    <string name="done"> تم </string>
+    <string name="home"> الصفحة الرئيسية </string>
+    <string name="personal"> شخصي </string>
+    <string name="school"> المدرسة </string>
+    <string name="work"> Work </string>
+    <string name="other"> أخرى </string>
+    <string name="back"> للخلف </string>
+    <string name="feedback_from_app"> تعليقات من٪ s،٪ s </string>
+    <string name="add_task_or_subtask"> إضافة مهمة أو مهمة فرعية جديدة </string>
 </resources>

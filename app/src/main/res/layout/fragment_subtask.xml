@@ -39,7 +39,7 @@
             app:layout_constraintEnd_toStartOf="@id/btn_settings"
             app:layout_constraintStart_toEndOf="@id/btn_back"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="Task namesdjnd" />
+            tools:text="Task name" />
 
         <ImageView
             android:id="@+id/btn_settings"
@@ -121,14 +121,15 @@
 
         <CheckBox
             android:id="@+id/cb_task_completed"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
-            android:layout_marginTop="16dp"
             android:minWidth="24dp"
             android:minHeight="24dp"
+            android:gravity="start|center_vertical"
             android:text="@string/mark_as_completed"
             android:textSize="12sp"
+            app:layout_constraintEnd_toStartOf="@id/chip_group"
             app:layout_constraintBottom_toBottomOf="@id/chip_group"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/chip_group" />

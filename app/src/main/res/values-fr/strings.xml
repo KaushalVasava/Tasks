@@ -110,7 +110,7 @@
     <string name="restart">Redémarrer</string>
     <string name="new_app_ready">La nouvelle application est prête</string>
     <string name="task_selected" formatted="false">%d/%d sélectionné</string>
-    <string name="ou">OU</string>
+    <string name="or">OU</string>
     <string name="select_task">Sélectionner une tâche</string>
     <string name="active">Actif</string>
     <string name="done">Terminé</string>
@@ -118,7 +118,8 @@
     <string name="personal">Personnel</string>
     <string name="school">École</string>
     <string name="work">Travailler</string>
-    <string name="autre">Autre</string>
-    <string name="retour">Retour</string>
+    <string name="other">Autre</string>
+    <string name="back">Retour</string>
     <string name="feedback_from_app">Commentaires de %s, %s</string>
+    <string name="add_task_or_subtask">Ajouter une nouvelle tâche ou sous-tâche</string>
 </resources>

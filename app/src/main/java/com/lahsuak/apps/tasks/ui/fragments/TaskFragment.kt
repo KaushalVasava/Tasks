@@ -11,7 +11,6 @@ import android.graphics.Canvas
 import android.os.Build
 import android.os.Bundle
 import android.speech.RecognizerIntent
-import android.util.Log
 import android.view.*
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
@@ -39,8 +38,8 @@ import com.google.android.play.core.install.InstallStateUpdatedListener
 import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.InstallStatus
 import com.google.android.play.core.install.model.UpdateAvailability
-import com.lahsuak.apps.tasks.TaskApp
 import com.lahsuak.apps.tasks.R
+import com.lahsuak.apps.tasks.TaskApp
 import com.lahsuak.apps.tasks.data.SortOrder
 import com.lahsuak.apps.tasks.data.model.Task
 import com.lahsuak.apps.tasks.databinding.FragmentTaskBinding
@@ -87,6 +86,7 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
     private var actionModeEnable = false
     private var isSelectAll = false
     private var openTaskItems = mutableListOf<Boolean>()
+    private var isTaskActive = true
 
     private val speakLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult())
@@ -121,7 +121,7 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
         savedInstanceState: Bundle?
     ): View? {
         super.onCreateView(inflater, container, savedInstanceState)
-        _binding = FragmentTaskBinding.inflate(inflater)
+        _binding = FragmentTaskBinding.inflate(inflater, container, false)
         return _binding?.root
     }
 
@@ -340,6 +340,7 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
             } else {
                 binding.chipActive.isChecked = true
             }
+            isTaskActive = true
         }
         binding.chipDone.setOnClickListener {
             if (binding.chipDone.isChecked) {
@@ -348,6 +349,7 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
             } else {
                 binding.chipDone.isChecked = true
             }
+            isTaskActive = false
         }
     }
 
@@ -488,7 +490,6 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
                         task.isDone
                     }
                 }
-                Log.d("TAG", "TASK : # ${data.map { it.title to it.date }}")
                 taskAdapter.submitList(data)
                 if (openTaskItems.isEmpty()) {
                     data.forEachIndexed { index, _ ->
@@ -808,7 +809,7 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
             putBoolean(IS_SELECT_ALL_BUNDLE_KEY, isSelectAll)
             putBooleanArray(SELECTED_ITEMS_BUNDLE_KEY, selectedItem?.toBooleanArray())
             putBooleanArray(OPEN_TASK_ITEMS_BUNDLE_KEY, openTaskItems.toBooleanArray())
-            putBoolean(TASKS_STATUS_BUNDLE_KEY, _binding?.chipActive?.isChecked ?: false)
+            putBoolean(TASKS_STATUS_BUNDLE_KEY, isTaskActive)
         }
     }
 
@@ -823,8 +824,8 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
             openTaskItems =
                 (it.getBooleanArray(OPEN_TASK_ITEMS_BUNDLE_KEY)?.toTypedArray()?.toMutableList()
                     ?: emptyList()) as MutableList<Boolean>
-            val isTaskDone = it.getBoolean(TASKS_STATUS_BUNDLE_KEY)
-            setButtonVisibility(isTaskDone)
+            isTaskActive = it.getBoolean(TASKS_STATUS_BUNDLE_KEY)
+            setButtonVisibility(isTaskActive)
             if (actionModeEnable) {
                 if (actionMode == null) {
                     actionMode = (activity as AppCompatActivity).startSupportActionMode(callback)

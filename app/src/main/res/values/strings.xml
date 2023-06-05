@@ -123,5 +123,6 @@
     <string name="other">Other</string>
     <string name="back">Back</string>
     <string name="feedback_from_app">Feedback from %s, %s</string>
+    <string name="add_task_or_subtask">Add new task or subtask</string>
     <string name="made_in_india" translatable="false">Made with ❤️ in India \uD83C\uDDEE\uD83C\uDDF3</string>
 </resources>

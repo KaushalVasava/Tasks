@@ -120,4 +120,5 @@
     <string name="other">Autre</string>
     <string name="back">Retour</string>
     <string name="feedback_from_app">Commentaires de %s, %s</string>
+    <string name="add_task_or_subtask">Tambahkan tugas atau subtugas baru</string>
 </resources>
