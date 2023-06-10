@@ -152,7 +152,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 false
         }
     }
-
     private fun setLocal(lang: String) {
         val locale = Locale(lang)
         Locale.setDefault(locale)
