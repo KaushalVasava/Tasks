@@ -8,6 +8,8 @@ import android.graphics.Canvas
 import android.os.Bundle
 import android.speech.RecognizerIntent
 import android.view.*
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
@@ -31,6 +33,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.lahsuak.apps.tasks.TaskApp
 import com.lahsuak.apps.tasks.R
+import com.lahsuak.apps.tasks.data.SortOrder
 import com.lahsuak.apps.tasks.data.model.SubTask
 import com.lahsuak.apps.tasks.data.model.Task
 import com.lahsuak.apps.tasks.databinding.FragmentSubtaskBinding
@@ -74,6 +77,7 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
     private var isSelectedAll = false
     private var viewType = false // listview = false, gridView = true
     private var isTaskActive = true
+    private var selectedSortPosition = 0
 
     companion object {
         private const val FIRST = "1. "
@@ -271,7 +275,45 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
             )
             navController.navigate(action)
         }
+        setSortMenu()
         setVisibilityOfTasks()
+    }
+
+    private fun setSortMenu() {
+        val sortTypes = listOf(
+            getString(R.string.name),
+            getString(R.string.name_desc),
+            getString(R.string.date),
+            getString(R.string.date_desc)
+        )
+        val adapter = ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_spinner_dropdown_item,
+            sortTypes
+        )
+        binding.sortMenu.adapter = adapter
+        binding.sortMenu.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View?,
+                    pos: Int,
+                    id: Long
+                ) {
+                    if (selectedSortPosition != pos) {
+                        selectedSortPosition = pos
+                        val sortType = sortTypes[pos]
+                        subTaskViewModel.onSortOrderSelected(
+                            SortOrder.getOrder(sortType),
+                            requireContext()
+                        )
+                    }
+                }
+
+                override fun onNothingSelected(parent: AdapterView<*>?) {
+                    /* no-op */
+                }
+            }
     }
 
     private fun setButtonVisibility(isVisible: Boolean) {

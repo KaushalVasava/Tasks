@@ -25,13 +25,13 @@
         <TextView
             android:id="@+id/txt_title"
             style="@style/Title.BOLD"
-            android:layout_marginHorizontal="8dp"
             android:layout_height="48dp"
-            android:paddingVertical="8dp"
-            android:textSize="24sp"
-            android:maxLines="2"
+            android:layout_marginHorizontal="8dp"
             android:layout_marginTop="8dp"
             android:gravity="center_vertical"
+            android:maxLines="2"
+            android:paddingVertical="8dp"
+            android:textSize="24sp"
             app:autoSizeMaxTextSize="24sp"
             app:autoSizeMinTextSize="12sp"
             app:autoSizeStepGranularity="0.5sp"
@@ -48,8 +48,8 @@
             android:contentDescription="@string/settings"
             android:padding="8dp"
             android:src="@drawable/ic_settings"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="@id/txt_title"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/txt_title"
             app:layout_constraintTop_toTopOf="@id/txt_title" />
 
@@ -92,8 +92,9 @@
             android:id="@+id/chip_group"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             app:layout_constraintEnd_toEndOf="@id/btn_share"
-            app:layout_constraintTop_toBottomOf="@id/reminder_layout"
+            app:layout_constraintTop_toBottomOf="@id/btn_share"
             app:singleSelection="true">
 
             <com.google.android.material.chip.Chip
@@ -119,18 +120,39 @@
 
         </com.google.android.material.chip.ChipGroup>
 
+
+        <TextView
+            android:id="@+id/txt_sort"
+            style="@style/SubTitle"
+            android:text="@string/sorting_option"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="@id/btn_share"
+            app:layout_constraintStart_toStartOf="@id/search_view"
+            app:layout_constraintTop_toTopOf="@id/btn_share" />
+
+        <Spinner
+            android:id="@+id/sort_menu"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:spinnerMode="dropdown"
+            app:layout_constraintBottom_toBottomOf="@id/txt_sort"
+            app:layout_constraintEnd_toStartOf="@id/btn_share"
+            app:layout_constraintStart_toEndOf="@id/txt_sort"
+            app:layout_constraintTop_toTopOf="@id/txt_sort" />
+
         <CheckBox
             android:id="@+id/cb_task_completed"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
+            android:gravity="start|center_vertical"
             android:minWidth="24dp"
             android:minHeight="24dp"
-            android:gravity="start|center_vertical"
             android:text="@string/mark_as_completed"
             android:textSize="12sp"
-            app:layout_constraintEnd_toStartOf="@id/chip_group"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@id/chip_group"
+            app:layout_constraintEnd_toStartOf="@id/chip_group"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/chip_group" />
 
@@ -138,12 +160,11 @@
             android:id="@+id/reminder_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginVertical="16dp"
-            android:layout_marginStart="16dp"
             android:orientation="horizontal"
             android:paddingVertical="5dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/search_view">
+            app:layout_constraintStart_toStartOf="@id/search_view"
+            app:layout_constraintBottom_toBottomOf="@id/chip_group"
+            app:layout_constraintTop_toTopOf="@id/chip_group">
 
             <ImageView
                 android:id="@+id/img_reminder"
@@ -180,14 +201,14 @@
             android:id="@+id/btn_share"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
             android:background="?attr/selectableItemBackground"
             android:drawablePadding="4dp"
             android:gravity="center"
             android:text="@string/share"
             app:drawableEndCompat="@drawable/ic_share"
-            app:layout_constraintBottom_toBottomOf="@id/reminder_layout"
             app:layout_constraintEnd_toEndOf="@id/search_view"
-            app:layout_constraintTop_toTopOf="@id/reminder_layout" />
+            app:layout_constraintTop_toBottomOf="@id/search_view" />
 
         <TextView
             android:id="@+id/btn_create_new_task"
@@ -206,15 +227,14 @@
             android:id="@+id/sub_task_recycler_view"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginTop="8dp"
             android:clipToPadding="false"
+            android:paddingHorizontal="8dp"
             android:visibility="gone"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:paddingHorizontal="8dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/cb_task_completed"
+            app:layout_constraintTop_toBottomOf="@id/chip_group"
             tools:listitem="@layout/sub_task_item"
             tools:visibility="invisible" />
     </androidx.constraintlayout.widget.ConstraintLayout>

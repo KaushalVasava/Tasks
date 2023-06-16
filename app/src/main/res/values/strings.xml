@@ -125,4 +125,12 @@
     <string name="feedback_from_app">Feedback from %s, %s</string>
     <string name="add_task_or_subtask">Add new task or subtask</string>
     <string name="made_in_india" translatable="false">Made with ❤️ in India \uD83C\uDDEE\uD83C\uDDF3</string>
+
+    <!--    sort type-->
+    <string name="name" translatable="false">Name</string>
+    <string name="name_desc" translatable="false">Name desc</string>
+    <string name="date" translatable="false">Date</string>
+    <string name="date_desc" translatable="false">Date desc</string>
+    <string name="category" translatable="false">Category</string>
+    <string name="category_desc" translatable="false">Category desc</string>
 </resources>

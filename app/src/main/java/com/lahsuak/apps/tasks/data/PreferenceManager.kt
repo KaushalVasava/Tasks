@@ -4,6 +4,8 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.*
 import androidx.datastore.preferences.preferencesDataStore
+import com.lahsuak.apps.tasks.R
+import com.lahsuak.apps.tasks.TaskApp
 import com.lahsuak.apps.tasks.util.AppConstants
 import com.lahsuak.apps.tasks.util.AppConstants.SETTING
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -13,8 +15,31 @@ import java.io.IOException
 import javax.inject.Inject
 import javax.inject.Singleton
 
+enum class SortOrder {
+    BY_NAME,
+    BY_NAME_DESC,
+    BY_DATE,
+    BY_DATE_DESC,
+    BY_CATEGORY,
+    BY_CATEGORY_DESC
+    ;
 
-enum class SortOrder { BY_NAME, BY_DATE }
+    companion object {
+        fun getOrder(typeName: String): SortOrder {
+            return when (typeName) {
+                TaskApp.appContext.getString(R.string.date)-> BY_DATE
+                TaskApp.appContext.getString(R.string.date_desc)-> BY_DATE_DESC
+                TaskApp.appContext.getString(R.string.name) -> BY_NAME
+                TaskApp.appContext.getString(R.string.name_desc) -> BY_NAME_DESC
+                TaskApp.appContext.getString(R.string.category) -> BY_CATEGORY
+                TaskApp.appContext.getString(R.string.category_desc) -> BY_CATEGORY_DESC
+                else -> {
+                    throw IllegalArgumentException()
+                }
+            }
+        }
+    }
+}
 
 data class FilterPreferences(
     val sortOrder: SortOrder,
@@ -59,7 +84,7 @@ class PreferenceManager @Inject constructor(@ApplicationContext context: Context
             )
             val viewType = preferences[PreferencesKeys.VIEW_TYPE] ?: false
             val hideCompleted = preferences[PreferencesKeys.HIDE_COMPLETED2] ?: false
-            FilterPreferences(sortOrder, hideCompleted,viewType)
+            FilterPreferences(sortOrder, hideCompleted, viewType)
         }
 
     suspend fun updateSortOrder(sortOrder: SortOrder, context: Context) {

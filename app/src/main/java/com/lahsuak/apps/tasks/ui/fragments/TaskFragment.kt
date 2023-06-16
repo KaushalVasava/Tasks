@@ -292,8 +292,12 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
 
     private fun setSortMenu() {
         val sortTypes = listOf(
-            SortOrder.BY_NAME.name.toSortForm(),
-            SortOrder.BY_DATE.name.toSortForm()
+            getString(R.string.name),
+            getString(R.string.name_desc),
+            getString(R.string.date),
+            getString(R.string.date_desc),
+            getString(R.string.category),
+            getString(R.string.category_desc)
         )
         val adapter = ArrayAdapter(
             requireContext(),
@@ -311,12 +315,11 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
                 ) {
                     if (selectedSortPosition != pos) {
                         selectedSortPosition = pos
-                        val sortType = if (sortTypes[pos] != SortOrder.BY_NAME.name.toSortForm()) {
-                            SortOrder.BY_NAME
-                        } else {
-                            SortOrder.BY_DATE
-                        }
-                        viewModel.onSortOrderSelected(sortType, requireContext())
+                        val sortType = sortTypes[pos]
+                        viewModel.onSortOrderSelected(
+                            SortOrder.getOrder(sortType),
+                            requireContext()
+                        )
                     }
                 }
 
