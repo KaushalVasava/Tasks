@@ -27,34 +27,35 @@ class TaskViewHolder2(
     private val adapter: TaskAdapter,
     private val binding: TaskItemGridBinding,
     private val listener: TaskAdapter.TaskListener,
-    private val selectionListener: SelectionListener
+    private val selectionListener: SelectionListener,
 ) : RecyclerView.ViewHolder(binding.root) {
     init {
         binding.apply {
-//            imgMore.setOnClickListener {
-//                val position = adapterPosition
-//                if (position != RecyclerView.NO_POSITION) {
-//                    imgMore.rotation = if (imgMore.rotation == TaskViewHolder1.CLOSE_ROTATION_ANGLE)
-//                        TaskViewHolder1.OPEN_ROTATION_ANGLE
-//                    else {
-//                        TaskViewHolder1.CLOSE_ROTATION_ANGLE
-//                    }
-//                    txtSubtask.isVisible = !txtSubtask.isVisible
-//                    listener.onSubTaskClicked(position, txtSubtask.isVisible)
-//                }
-//            }
+            imgMore.setOnClickListener {
+                val position = adapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    imgMore.rotation = if (imgMore.rotation == TaskViewHolder1.CLOSE_ROTATION_ANGLE)
+                        TaskViewHolder1.OPEN_ROTATION_ANGLE
+                    else {
+                        TaskViewHolder1.CLOSE_ROTATION_ANGLE
+                    }
+                    txtSubtask.isVisible = !txtSubtask.isVisible
+                    listener.setExpandCollapseState(position, txtSubtask.isVisible)
+                }
+            }
             root.setOnClickListener {
                 val position = adapterPosition
                 if (position != RecyclerView.NO_POSITION) {
                     val task = adapter.currentList[position]
+                    binding.root.transitionName = task.title
                     if (selectionListener.getActionModeStatus()) {
-                        if (!selectionListener.getItemStatus(position)) {
-                            root.strokeWidth = 5
-                        } else {
-                            root.strokeWidth = 0
+                        root.strokeWidth = if (!selectionListener.getItemStatus(position))
+                            5
+                        else {
+                            0
                         }
                     }
-                    listener.onItemClicked(task, position)
+                    listener.onItemClicked(task, position, root)
                 }
             }
             checkbox.setOnClickListener {
@@ -120,6 +121,7 @@ class TaskViewHolder2(
             )
 
             if (showSubTask) {
+                imgMore.isVisible = task.subTaskList?.isNotEmpty() == true
                 txtSubtask.isVisible = if (task.subTaskList != null) {
                     txtSubtask.text = task.subTaskList
                     true
@@ -127,23 +129,31 @@ class TaskViewHolder2(
                     false
                 }
             }
+            val position = adapterPosition
             //action mode
-            root.strokeWidth = if (!selectionListener.getActionModeStatus()) {
-                0
+            if (!selectionListener.getActionModeStatus()) {
+                root.strokeWidth = 0
             } else {
-                if (selectionListener.isAllSelected()) {
-                    if (!selectionListener.getSelectedItemEmpty()) {
-                        selectionListener.setItemStatus(true, adapterPosition)
+                if (position != RecyclerView.NO_POSITION) {
+                    if (selectionListener.isAllSelected) {
+                        root.strokeWidth = 5
+                        if (!selectionListener.getSelectedItemEmpty()) {
+                            selectionListener.setItemStatus(true, position)
+                        }
+                    } else {
+                        if (!selectionListener.getSelectedItemEmpty()) {
+                            root.strokeWidth =
+                                if (!selectionListener.getItemStatus(position)) {
+                                    selectionListener.setItemStatus(false, position)
+                                    0
+                                } else {
+                                    selectionListener.setItemStatus(true, position)
+                                    5
+                                }
+                        }
                     }
-                    5
-                } else {
-                    if (!selectionListener.getSelectedItemEmpty()) {
-                        selectionListener.setItemStatus(false, adapterPosition)
-                    }
-                    0
                 }
             }
-
             //check if task is completed or not
             checkbox.isChecked = task.isDone
             txtTitle.paintFlags = if (task.isDone) {

@@ -11,17 +11,17 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.preference.PreferenceManager
-import com.lahsuak.apps.tasks.TaskApp.Companion.mylang
 import com.lahsuak.apps.tasks.R
+import com.lahsuak.apps.tasks.TaskApp.Companion.mylang
+import com.lahsuak.apps.tasks.databinding.ActivityMainBinding
 import com.lahsuak.apps.tasks.util.AppConstants.LANGUAGE_SHARED_PREFERENCE
 import com.lahsuak.apps.tasks.util.AppConstants.LANGUAGE_SHARED_PREFERENCE_LANGUAGE_KEY
 import com.lahsuak.apps.tasks.util.AppConstants.SHARE_FORMAT
 import com.lahsuak.apps.tasks.util.AppConstants.THEME_DEFAULT
 import com.lahsuak.apps.tasks.util.AppConstants.THEME_KEY
-import com.lahsuak.apps.tasks.util.RuntimeLocaleChanger
 import com.lahsuak.apps.tasks.util.AppUtil.getLanguage
 import com.lahsuak.apps.tasks.util.AppUtil.setClipboard
-import com.lahsuak.apps.tasks.databinding.ActivityMainBinding
+import com.lahsuak.apps.tasks.util.RuntimeLocaleChanger
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

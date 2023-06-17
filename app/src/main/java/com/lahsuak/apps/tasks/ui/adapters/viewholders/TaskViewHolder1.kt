@@ -5,6 +5,7 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.text.util.Linkify
 import android.util.TypedValue
+import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
@@ -54,6 +55,7 @@ class TaskViewHolder1(
                 val position = adapterPosition
                 if (position != RecyclerView.NO_POSITION) {
                     val task = adapter.currentList[position]
+                    binding.root.transitionName = task.title
                     if (selectionListener.getActionModeStatus()) {
                         root.strokeWidth = if (!selectionListener.getItemStatus(position))
                             5
@@ -61,7 +63,7 @@ class TaskViewHolder1(
                             0
                         }
                     }
-                    listener.onItemClicked(task, position)
+                    listener.onItemClicked(task, position, root)
                 }
             }
             checkbox.setOnClickListener {
@@ -139,7 +141,7 @@ class TaskViewHolder1(
                 root.strokeWidth = 0
             } else {
                 if (position != RecyclerView.NO_POSITION) {
-                    if (selectionListener.isAllSelected()) {
+                    if (selectionListener.isAllSelected) {
                         root.strokeWidth = 5
                         if (!selectionListener.getSelectedItemEmpty()) {
                             selectionListener.setItemStatus(true, position)

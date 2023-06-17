@@ -5,6 +5,7 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.content.res.ColorStateList
 import android.graphics.Canvas
+import android.graphics.Color
 import android.os.Bundle
 import android.speech.RecognizerIntent
 import android.view.*
@@ -18,9 +19,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ActionMode
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
+import androidx.core.view.doOnPreDraw
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
@@ -30,9 +33,12 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import androidx.transition.TransitionInflater
+import androidx.transition.TransitionManager
 import com.google.android.material.snackbar.Snackbar
-import com.lahsuak.apps.tasks.TaskApp
+import com.google.android.material.transition.MaterialContainerTransform
 import com.lahsuak.apps.tasks.R
+import com.lahsuak.apps.tasks.TaskApp
 import com.lahsuak.apps.tasks.data.SortOrder
 import com.lahsuak.apps.tasks.data.model.SubTask
 import com.lahsuak.apps.tasks.data.model.Task
@@ -46,9 +52,11 @@ import com.lahsuak.apps.tasks.util.AppUtil.createNotification
 import com.lahsuak.apps.tasks.util.AppUtil.unsafeLazy
 import dagger.hilt.android.AndroidEntryPoint
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 @AndroidEntryPoint
 class SubTaskFragment : Fragment(R.layout.fragment_subtask),
@@ -58,7 +66,6 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
     private val binding: FragmentSubtaskBinding
         get() = _binding!!
 
-    //    private val taskViewModel: TaskViewModel by viewModels()
     private val subTaskViewModel: SubTaskViewModel by viewModels()
     private val args: SubTaskFragmentArgs by navArgs()
     private val navController: NavController by unsafeLazy {
@@ -79,45 +86,6 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
     private var isTaskActive = true
     private var selectedSortPosition = 0
 
-    companion object {
-        private const val FIRST = "1. "
-        private const val COLON = " :"
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.apply {
-            putBoolean(TaskFragment.TASKS_STATUS_BUNDLE_KEY, isTaskActive)
-            putBoolean(TaskFragment.VIEW_TYPE_BUNDLE_KEY, viewType)
-            putInt(TaskFragment.COUNTER_BUNDLE_KEY, counter)
-            putBoolean(TaskFragment.IS_IN_ACTION_MODE_BUNDLE_KEY, actionModeEnable)
-            putBoolean(TaskFragment.IS_SELECT_ALL_BUNDLE_KEY, isSelectedAll)
-            putBooleanArray(TaskFragment.SELECTED_ITEMS_BUNDLE_KEY, selectedItem?.toBooleanArray())
-        }
-    }
-
-    override fun onViewStateRestored(savedInstanceState: Bundle?) {
-        super.onViewStateRestored(savedInstanceState)
-        savedInstanceState?.let {
-            viewType = it.getBoolean(TaskFragment.VIEW_TYPE_BUNDLE_KEY)
-            counter = it.getInt(TaskFragment.COUNTER_BUNDLE_KEY, counter)
-            actionModeEnable = it.getBoolean(TaskFragment.IS_IN_ACTION_MODE_BUNDLE_KEY)
-            isSelectedAll = it.getBoolean(TaskFragment.IS_SELECT_ALL_BUNDLE_KEY)
-            selectedItem =
-                it.getBooleanArray(TaskFragment.SELECTED_ITEMS_BUNDLE_KEY)?.toTypedArray()
-            isTaskActive = it.getBoolean(TaskFragment.TASKS_STATUS_BUNDLE_KEY)
-            setButtonVisibility(isTaskActive)
-            setChipColor(isTaskActive, TaskApp.categoryTypes[task.color].color)
-            if (actionModeEnable) {
-                if (actionMode == null) {
-                    actionMode = (activity as AppCompatActivity).startSupportActionMode(callback)
-                }
-                actionMode?.title =
-                    String.format(getString(R.string.task_selected), counter, selectedItem?.size)
-            }
-        }
-    }
-
     private val speakLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult())
         { result: ActivityResult ->
@@ -133,6 +101,17 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
             }
         }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        sharedElementEnterTransition = MaterialContainerTransform().apply {
+            // Scope the transition to a view in the hierarchy so we know it will be added under
+            // the bottom app bar but over the elevation scale of the exiting HomeFragment.
+            drawingViewId = R.id.my_container
+            duration = resources.getInteger(R.integer.reply_motion_duration_large).toLong()
+            scrimColor = Color.TRANSPARENT
+            setAllContainerColors(requireContext().getAttribute(R.attr.colorSurface))
+        }
+    }
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -140,6 +119,8 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
     ): View? {
         super.onCreateView(inflater, container, savedInstanceState)
         _binding = FragmentSubtaskBinding.inflate(inflater, container, false)
+        selectedItem = null
+//        postponeEnterTransition(200, TimeUnit.MILLISECONDS)
         return _binding?.root
     }
 
@@ -165,6 +146,7 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
         setSubTaskObserver()
         subTaskEventCollector() //subtask event handler
         addClickListeners()
+        setTransition()
     }
 
     private fun initView() {
@@ -190,17 +172,19 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
     }
 
     private fun setSubTaskObserver() {
-        subTaskViewModel.subTasks.observe(viewLifecycleOwner) { //this is for adapter
-            val data = if (binding.chipActive.isChecked) {
-                it.filter { task ->
-                    !task.isDone
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            subTaskViewModel.subTasks.collectLatest { //this is for adapter
+                val data = if (binding.chipActive.isChecked) {
+                    it.filter { task ->
+                        !task.isDone
+                    }
+                } else {
+                    it.filter { task ->
+                        task.isDone
+                    }
                 }
-            } else {
-                it.filter { task ->
-                    task.isDone
-                }
+                subTaskAdapter.submitList(data)
             }
-            subTaskAdapter.submitList(data)
         }
     }
 
@@ -277,6 +261,10 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
         }
         setSortMenu()
         setVisibilityOfTasks()
+    }
+
+    private fun setTransition() {
+        binding.root.transitionName = args.task.title
     }
 
     private fun setSortMenu() {
@@ -457,7 +445,7 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
     }
 
     private fun completedSubTaskObserver() {
-        subTaskViewModel.subTasks2.observe(viewLifecycleOwner) { //this is for all task
+        subTaskViewModel.subTasks2.asLiveData().observe(viewLifecycleOwner) { //this is for all task
             val count = it.count { subtask ->
                 subtask.isDone
             }
@@ -682,9 +670,11 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
         return actionModeEnable
     }
 
-    override fun isAllSelected(): Boolean {
-        return isSelectedAll
-    }
+    override var isAllSelected: Boolean
+        get() = isSelectedAll
+        set(value) {
+            isSelectedAll = value
+        }
 
     override fun setItemStatus(status: Boolean, position: Int) {
         selectedItem?.set(position, status)
@@ -698,14 +688,27 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
         return selectedItem.isNullOrEmpty()
     }
 
-    private fun onActionMode(isActionModeOn: Boolean) {
+    private fun setViewVisibility(isVisible: Boolean) {
         val prefManager = PreferenceManager.getDefaultSharedPreferences(requireContext())
-        binding.btnVoiceTask.isVisible = !isActionModeOn &&
+        binding.btnVoiceTask.isVisible = !isVisible &&
                 prefManager.getBoolean(AppConstants.SHOW_VOICE_TASK_KEY, true)
-        binding.btnAddTask.isVisible = !isActionModeOn
+        binding.btnAddTask.isVisible = !isVisible
+        binding.sortMenu.isVisible = !isVisible
+        binding.chipGroup.isVisible = !isVisible
+        binding.reminderLayout.isVisible = !isVisible
+        binding.searchView.isVisible = !isVisible
+        binding.txtSort.isVisible = !isVisible
+        binding.btnShare.isVisible = !isVisible
+    }
+
+    private fun onActionMode(isActionModeOn: Boolean) {
+        setViewVisibility(isActionModeOn)
         actionModeEnable = isActionModeOn
 
         if (isActionModeOn) {
+            val transition = TransitionInflater.from(requireContext())
+                .inflateTransition(R.transition.transition2)
+            TransitionManager.beginDelayedTransition(binding.root, transition)
             selectedItem = Array(subTaskAdapter.currentList.size) { false }
         } else {
             isSelectedAll = false
@@ -731,7 +734,7 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
                     }
                 }
                 counter = 0
-                actionMode!!.finish()
+                actionMode?.finish()
                 onActionMode(false)
                 context.toast { getString(R.string.notify_delete) }
                 dialog.dismiss()
@@ -763,5 +766,51 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
         }
         searchView?.setOnQueryTextListener(null)
         _binding = null
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.apply {
+            putBoolean(SUBTASK_STATUS_BUNDLE_KEY, isTaskActive)
+            putBoolean(VIEW_TYPE_BUNDLE_KEY, viewType)
+            putInt(COUNTER_BUNDLE_KEY, counter)
+            putBoolean(IS_IN_ACTION_MODE_BUNDLE_KEY, actionModeEnable)
+            putBoolean(IS_SELECT_ALL_BUNDLE_KEY, isSelectedAll)
+            putBooleanArray(SELECTED_ITEMS_BUNDLE_KEY, selectedItem?.toBooleanArray())
+        }
+    }
+
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        super.onViewStateRestored(savedInstanceState)
+        savedInstanceState?.let {
+            viewType = it.getBoolean(VIEW_TYPE_BUNDLE_KEY)
+            counter = it.getInt(COUNTER_BUNDLE_KEY, counter)
+            actionModeEnable = it.getBoolean(IS_IN_ACTION_MODE_BUNDLE_KEY)
+            isSelectedAll = it.getBoolean(IS_SELECT_ALL_BUNDLE_KEY)
+            selectedItem =
+                it.getBooleanArray(SELECTED_ITEMS_BUNDLE_KEY)?.toTypedArray()
+            isTaskActive = it.getBoolean(SUBTASK_STATUS_BUNDLE_KEY)
+            setButtonVisibility(isTaskActive)
+            setChipColor(isTaskActive, TaskApp.categoryTypes[task.color].color)
+            if (actionModeEnable) {
+                if (actionMode == null) {
+                    actionMode = (activity as AppCompatActivity).startSupportActionMode(callback)
+                    setViewVisibility(true)
+                }
+                actionMode?.title =
+                    String.format(getString(R.string.task_selected), counter, selectedItem?.size)
+            }
+        }
+    }
+
+    companion object {
+        private const val FIRST = "1. "
+        private const val COLON = " :"
+        private const val VIEW_TYPE_BUNDLE_KEY = "subtask_view_type_bundle_key"
+        private const val COUNTER_BUNDLE_KEY = "subtask_counter_bundle_key"
+        private const val IS_IN_ACTION_MODE_BUNDLE_KEY = "subtask_is_in_action_mode_bundle_key"
+        private const val IS_SELECT_ALL_BUNDLE_KEY = "subtask_is_select_all_bundle_key"
+        private const val SELECTED_ITEMS_BUNDLE_KEY = "subtask_selected_items_bundle_key"
+        private const val SUBTASK_STATUS_BUNDLE_KEY = "subtasks_status_bundle_key"
     }
 }

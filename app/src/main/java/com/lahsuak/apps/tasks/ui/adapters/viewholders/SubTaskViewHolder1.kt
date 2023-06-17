@@ -111,19 +111,29 @@ class SubTaskViewHolder1(
                     false
                 )
 
-            root.strokeWidth = if (!selectionListener.getActionModeStatus()) {
-                0
+            val position = adapterPosition
+            //action mode
+            if (!selectionListener.getActionModeStatus()) {
+                root.strokeWidth = 0
             } else {
-                if (selectionListener.isAllSelected()) {
-                    if (!selectionListener.getSelectedItemEmpty()) {
-                        selectionListener.setItemStatus(true, adapterPosition)
+                if (position != RecyclerView.NO_POSITION) {
+                    if (selectionListener.isAllSelected) {
+                        root.strokeWidth = 5
+                        if (!selectionListener.getSelectedItemEmpty()) {
+                            selectionListener.setItemStatus(true, position)
+                        }
+                    } else {
+                        if (!selectionListener.getSelectedItemEmpty()) {
+                            root.strokeWidth =
+                                if (!selectionListener.getItemStatus(position)) {
+                                    selectionListener.setItemStatus(false, position)
+                                    0
+                                } else {
+                                    selectionListener.setItemStatus(true, position)
+                                    5
+                                }
+                        }
                     }
-                    5
-                } else {
-                    if (!selectionListener.getSelectedItemEmpty()) {
-                        selectionListener.setItemStatus(false, adapterPosition)
-                    }
-                    0
                 }
             }
             checkbox.isChecked = subTask.isDone

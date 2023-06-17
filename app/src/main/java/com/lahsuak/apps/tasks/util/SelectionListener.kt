@@ -7,7 +7,7 @@ interface SelectionListener {
 
     fun getActionModeStatus(): Boolean
 
-    fun isAllSelected(): Boolean
+    var isAllSelected: Boolean
 
     fun getItemStatus(position: Int): Boolean
 

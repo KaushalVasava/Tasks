@@ -90,18 +90,9 @@ class SubTaskViewModel @Inject constructor(
         ).distinctUntilChanged()
     }
 
-    val subTasks = subTasksFlow.asLiveData()
+    val subTasks = subTasksFlow
 
-    val subTasks2 = subTasksFlow2.asLiveData()
-
-    fun getSubTask(taskId: Int): LiveData<List<SubTask>> {
-        return repository.getAllSubTasks(
-            taskId,
-            SEARCH_INITIAL_VALUE,
-            SortOrder.BY_NAME,
-            false
-        ).distinctUntilChanged().asLiveData()
-    }
+    val subTasks2 = subTasksFlow2
 
     fun onSortOrderSelected(sortOrder: SortOrder, context: Context) = viewModelScope.launch {
         preferenceManager.updateSortOrder2(sortOrder, context)

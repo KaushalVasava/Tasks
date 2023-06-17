@@ -8,17 +8,26 @@
     <fragment
         android:id="@+id/taskFragment"
         android:name="com.lahsuak.apps.tasks.ui.fragments.TaskFragment"
-        android:label="@string/app_name"
+        android:label=""
         tools:layout="@layout/fragment_task">
+
         <action
             android:id="@+id/action_taskFragment_to_subTaskFragment"
             app:destination="@id/subTaskFragment" />
         <action
             android:id="@+id/action_taskFragment_to_settingsFragment"
-            app:destination="@id/settingsFragment" />
+            app:destination="@id/settingsFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
         <action
             android:id="@+id/action_taskFragment_to_renameFragmentDialog"
-            app:destination="@id/renameFragmentDialog">
+            app:destination="@id/renameFragmentDialog"
+            app:enterAnim="@anim/slide_in_top"
+            app:exitAnim="@anim/slide_out_bottom"
+            app:popEnterAnim="@anim/slide_in_bottom"
+            app:popExitAnim="@anim/slide_out_top">
             <argument
                 android:name="subTaskId"
                 android:defaultValue="-1" />
@@ -44,10 +53,18 @@
             app:uri="myapp://kmv.com/editFragment/{task}{isSharedSubtask}{sharedText}" />
         <action
             android:id="@+id/action_subTaskFragment_to_renameFragmentDialog"
-            app:destination="@id/renameFragmentDialog" />
+            app:destination="@id/renameFragmentDialog"
+            app:enterAnim="@anim/slide_in_top"
+            app:exitAnim="@anim/slide_out_bottom"
+            app:popEnterAnim="@anim/slide_in_bottom"
+            app:popExitAnim="@anim/slide_out_top" />
         <action
             android:id="@+id/action_subTaskFragment_to_settingsFragment"
-            app:destination="@id/settingsFragment" />
+            app:destination="@id/settingsFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
     <dialog
         android:id="@+id/deleteAllCompletedDialogFragment"

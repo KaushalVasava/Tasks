@@ -4,6 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:id="@+id/dialog_layout"
+    android:transitionGroup="true"
     tools:context=".ui.fragments.AddUpdateTaskFragmentDialog">
 
     <EditText

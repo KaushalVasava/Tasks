@@ -4,14 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:animateLayoutChanges="true"
     tools:context=".ui.fragments.TaskFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/top_layout"
-        android:animateLayoutChanges="true"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:animateLayoutChanges="true"
         app:layout_anchor="@+id/top_layout"
         app:layout_anchorGravity="center">
 
@@ -153,6 +152,7 @@
             android:layout_height="0dp"
             android:clipToPadding="false"
             android:paddingHorizontal="8dp"
+            android:transitionGroup="true"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

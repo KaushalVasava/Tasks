@@ -30,7 +30,6 @@ import com.lahsuak.apps.tasks.util.AppUtil.sendFeedbackMail
 import com.lahsuak.apps.tasks.util.AppUtil.shareApp
 import java.util.*
 
-
 class SettingsFragment : PreferenceFragmentCompat() {
     companion object {
         var selectedTheme = -1
@@ -50,7 +49,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
         setPreferencesFromResource(R.xml.settings_preferences, rootKey)
         val sp = PreferenceManager.getDefaultSharedPreferences(requireContext())
         selectedTheme = sp.getString(THEME_KEY, THEME_DEFAULT)!!.toInt()
-
         val prefFeedback = findPreference<Preference>("feedback")
         val prefShare = findPreference<Preference>("share")
         val prefMoreApp = findPreference<Preference>("more_app")

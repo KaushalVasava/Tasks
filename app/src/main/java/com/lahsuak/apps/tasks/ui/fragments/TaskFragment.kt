@@ -22,16 +22,23 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ActionMode
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
+import androidx.core.view.doOnPreDraw
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
+import androidx.navigation.NavDirections
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.*
+import androidx.transition.TransitionInflater
+import androidx.transition.TransitionManager
+import com.google.android.material.card.MaterialCardView
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.transition.MaterialElevationScale
 import com.google.android.play.core.appupdate.AppUpdateManager
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import com.google.android.play.core.install.InstallStateUpdatedListener
@@ -58,7 +65,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import hotchemi.android.rate.AppRate
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -122,6 +128,10 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
     ): View? {
         super.onCreateView(inflater, container, savedInstanceState)
         _binding = FragmentTaskBinding.inflate(inflater, container, false)
+        selectedItem = null
+        val animation =
+            TransitionInflater.from(requireContext()).inflateTransition(android.R.transition.move)
+        sharedElementEnterTransition = animation
         return _binding?.root
     }
 
@@ -149,17 +159,22 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
         setTaskEventCollector()
         addClickListeners()
         savedStateHandleValueObserver()
+        postponeEnterTransition()
+        view.doOnPreDraw { startPostponedEnterTransition() }
     }
 
     private fun initView() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            viewType = viewModel.preferencesFlow.first().viewType
-            binding.taskRecyclerView.layoutManager = if (viewType) {
-                binding.btnView.setImageResource(R.drawable.ic_list_view)
-                StaggeredGridLayoutManager(2, RecyclerView.VERTICAL)
-            } else {
-                binding.btnView.setImageResource(R.drawable.ic_grid_view)
-                LinearLayoutManager(requireContext())
+            viewModel.preferencesFlow.collectLatest {
+                viewType = it.viewType
+                binding.taskRecyclerView.layoutManager = if (viewType) {
+                    binding.btnView.setImageResource(R.drawable.ic_list_view)
+                    StaggeredGridLayoutManager(2, RecyclerView.VERTICAL)
+                } else {
+                    binding.btnView.setImageResource(R.drawable.ic_grid_view)
+                    StaggeredGridLayoutManager(1, RecyclerView.VERTICAL)
+                }
+                binding.taskRecyclerView.adapter = taskAdapter
             }
         }
         binding.taskRecyclerView.apply {
@@ -285,7 +300,6 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
             binding.btnView.setImageResource(R.drawable.ic_grid_view)
             false
         }
-        binding.taskRecyclerView.adapter = taskAdapter
         isLayoutChange = true
         viewModel.onViewTypeChanged(viewType, requireContext())
     }
@@ -480,7 +494,7 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
                         if (viewType) {
                             StaggeredGridLayoutManager(2, RecyclerView.VERTICAL)
                         } else {
-                            LinearLayoutManager(requireContext())
+                            StaggeredGridLayoutManager(1, RecyclerView.VERTICAL)
                         }
                     isLayoutChange = false
                 }
@@ -496,7 +510,7 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
                 taskAdapter.submitList(data)
                 if (openTaskItems.isEmpty()) {
                     data.forEachIndexed { index, _ ->
-                        openTaskItems.add(index, true)
+                        openTaskItems.add(index, false)
                     }
                 }
             }
@@ -511,7 +525,7 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
             binding.taskRecyclerView.isVisible = hasTasks
             binding.txtTaskProgress.isVisible = hasTasks
             binding.progressBar.isVisible = hasTasks
-            binding.chipGroup.isVisible = hasTasks
+            binding.chipGroup.isVisible = hasTasks && !actionModeEnable
             val value = (count.toFloat() / it.size.toFloat()) * TOTAL_PROGRESS_VALUE
             binding.progressBar.progress = value.toInt()
             binding.txtTaskProgress.text = getString(R.string.task_progress, count, it.size)
@@ -528,7 +542,7 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
         navController.navigate(action)
     }
 
-    override fun onItemClicked(task: Task, position: Int) {
+    override fun onItemClicked(task: Task, position: Int, cardView: MaterialCardView) {
         if (actionModeEnable) {
             selectedItem!![position] =
                 if (selectedItem!![position]) {
@@ -538,16 +552,25 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
                     counter++
                     true
                 }
-            actionMode!!.title =
+            actionMode?.title =
                 String.format(getString(R.string.task_selected), counter, taskAdapter.itemCount)
         } else {
-            val action =
+            exitTransition = MaterialElevationScale(false).apply {
+                duration = resources.getInteger(R.integer.reply_motion_duration_large).toLong()
+            }
+            reenterTransition = MaterialElevationScale(true).apply {
+                duration = resources.getInteger(R.integer.reply_motion_duration_large).toLong()
+            }
+            val directions: NavDirections =
                 TaskFragmentDirections.actionTaskFragmentToSubTaskFragment(
                     task,
                     false,
                     null
                 )
-            navController.navigate(action)
+            val extras = FragmentNavigatorExtras(
+                cardView to task.title
+            )
+            navController.navigate(directions, extras)
         }
     }
 
@@ -563,11 +586,12 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
             viewModel.showDeleteDialog(requireContext(), task)
         } else {
             taskPosition = position
-            val action = TaskFragmentDirections.actionTaskFragmentToRenameFragmentDialog(
-                false,
-                task.id,
-                task.title
-            )
+            val action =
+                TaskFragmentDirections.actionTaskFragmentToRenameFragmentDialog(
+                    false,
+                    task.id,
+                    task.title
+                )
             navController.navigate(action)
         }
     }
@@ -660,7 +684,7 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
             actionMode =
                 (activity as AppCompatActivity).startSupportActionMode(callback)!!
         }
-        actionMode!!.title =
+        actionMode?.title =
             String.format(getString(R.string.task_selected), counter, taskAdapter.itemCount)
     }
 
@@ -688,6 +712,9 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
         setViewVisibility(isActionModeOn)
         actionModeEnable = isActionModeOn
         if (isActionModeOn) {
+            val transition = TransitionInflater.from(requireContext())
+                .inflateTransition(R.transition.transition2)
+            TransitionManager.beginDelayedTransition(binding.root, transition)
             selectedItem = Array(taskAdapter.currentList.size) { false }
         } else {
             isSelectAll = false
@@ -787,9 +814,11 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
         return viewType
     }
 
-    override fun isAllSelected(): Boolean {
-        return isSelectAll
-    }
+    override var isAllSelected: Boolean
+        get() = isSelectAll
+        set(value) {
+            isSelectAll = value
+        }
 
     override fun setItemStatus(status: Boolean, position: Int) {
         selectedItem?.set(position, status)
@@ -841,13 +870,13 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
     }
 
     companion object {
-        const val VIEW_TYPE_BUNDLE_KEY = "view_type_bundle_key"
-        const val COUNTER_BUNDLE_KEY = "counter_bundle_key"
-        const val IS_IN_ACTION_MODE_BUNDLE_KEY = "is_in_action_mode_bundle_key"
-        const val IS_SELECT_ALL_BUNDLE_KEY = "is_select_all_bundle_key"
-        const val SELECTED_ITEMS_BUNDLE_KEY = "selected_items_bundle_key"
-        const val OPEN_TASK_ITEMS_BUNDLE_KEY = "selected_items_bundle_key"
-        const val TASKS_STATUS_BUNDLE_KEY = "tasks_status_bundle_key"
+        private const val VIEW_TYPE_BUNDLE_KEY = "view_type_bundle_key"
+        private const val COUNTER_BUNDLE_KEY = "counter_bundle_key"
+        private const val IS_IN_ACTION_MODE_BUNDLE_KEY = "is_in_action_mode_bundle_key"
+        private const val IS_SELECT_ALL_BUNDLE_KEY = "is_select_all_bundle_key"
+        private const val SELECTED_ITEMS_BUNDLE_KEY = "task_selected_items_bundle_key"
+        private const val OPEN_TASK_ITEMS_BUNDLE_KEY = "selected_items_bundle_key"
+        private const val TASKS_STATUS_BUNDLE_KEY = "tasks_status_bundle_key"
         const val TOTAL_PROGRESS_VALUE = 100
     }
 }
