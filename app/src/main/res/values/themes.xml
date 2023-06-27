@@ -113,4 +113,22 @@
         <item name="queryBackground">@null</item>
         <item name="android:background">@drawable/background_search</item>
     </style>
+
+    <style name="InputTextLayout" parent="Widget.Material3.TextInputLayout.OutlinedBox">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="boxCornerRadiusTopStart">8dp</item>
+        <item name="boxCornerRadiusTopEnd">8dp</item>
+        <item name="boxCornerRadiusBottomStart">8dp</item>
+        <item name="boxCornerRadiusBottomEnd">8dp</item>
+        <item name="helperTextTextColor">?colorError</item>
+    </style>
+
+    <style name="InputEditTextLayout">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="backgroundTint">?attr/colorSurfaceVariant</item>
+        <item name="backgroundTintMode">src_over</item>
+        <item name="android:textColor">?attr/colorOnSurface</item>
+    </style>
 </resources>

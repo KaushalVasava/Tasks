@@ -107,8 +107,7 @@ class SubTaskViewHolder1(
             txtReminder.setDrawableColor(Color.BLACK)
             txtDate.text =
                 DateUtil.getTaskDateTime(
-                    subTask.dateTime ?: System.currentTimeMillis(),
-                    false
+                    subTask.dateTime ?: System.currentTimeMillis()
                 )
 
             val position = adapterPosition

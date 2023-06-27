@@ -14,6 +14,7 @@ import android.os.Build
 import android.provider.Settings
 import android.speech.RecognizerIntent
 import android.util.TypedValue
+import android.view.View
 import android.widget.TextView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.annotation.ColorRes
@@ -23,12 +24,15 @@ import androidx.core.widget.TextViewCompat
 import androidx.fragment.app.FragmentActivity
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.timepicker.MaterialTimePicker
+import com.google.gson.GsonBuilder
 import com.lahsuak.apps.tasks.BuildConfig
 import com.lahsuak.apps.tasks.R
 import com.lahsuak.apps.tasks.TaskApp
 import com.lahsuak.apps.tasks.data.model.SubTask
 import com.lahsuak.apps.tasks.data.model.Task
 import com.lahsuak.apps.tasks.receiver.AlarmReceiver
+import com.lahsuak.apps.tasks.receiver.BootReceiver
+import com.lahsuak.apps.tasks.receiver.Reminder
 import com.lahsuak.apps.tasks.util.AppConstants.MAIL_TO
 import com.lahsuak.apps.tasks.util.AppConstants.MARKET_PLACE_HOLDER
 import com.lahsuak.apps.tasks.util.AppConstants.NOTIFICATION_CHANNEL_ID
@@ -150,8 +154,10 @@ object AppUtil {
                 putExtra(Intent.EXTRA_TEXT, context.getString(R.string.write_suggestions))
                 putExtra(
                     Intent.EXTRA_SUBJECT,
-                    context.getString(
-                        R.string.feedback_from_app,
+                    String.format(
+                        context.getString(
+                            R.string.feedback_from_app
+                        ),
                         context.getString(R.string.app_name),
                         info
                     )
@@ -193,8 +199,7 @@ object AppUtil {
         }
     }
 
-    fun showReminder(activity: FragmentActivity, timerTxt: TextView, task: Task): Task {
-
+    fun  showReminder(activity: FragmentActivity, timerTxt: TextView, task: Task): Task {
         val mCalendar = Calendar.getInstance()
         val formatter = SimpleDateFormat(AppConstants.TIME_FORMAT, Locale.getDefault())
         var hour = formatter.format(mCalendar.time).substring(0, 2).trim().toInt()
@@ -202,7 +207,6 @@ object AppUtil {
 
         val isAm = formatter.format(mCalendar.time).substring(6).trim().lowercase()
 
-        /** PLEASE ADD TRANSLATION FOR ALL LANGUAGES*/
         if (isAm == activity.getString(R.string.pm_format))
             hour += 12
 
@@ -237,6 +241,27 @@ object AppUtil {
                         DateFormat.SHORT
                     ).format(mCalendar.time)
 
+
+                    timerTxt.text = time
+//                    binding.btnCancelReminder.visibility = View.VISIBLE
+                    val sharedPref =
+                        activity.getSharedPreferences(
+                            AppConstants.REMINDER_DATA,
+                            Context.MODE_PRIVATE
+                        ).edit()
+                    BootReceiver.timeList.add(
+                        Reminder(
+                            mCalendar.timeInMillis,
+                            task.id.toString() + AppConstants.SEPARATOR + task.isDone.toString(),
+                            task.title
+                        )
+                    )
+                    val json = GsonBuilder().create().toJson(BootReceiver.timeList)
+                    sharedPref.apply {
+                        putString(AppConstants.REMINDER_KEY, json)
+                        apply()
+                    }
+
                     timerTxt.apply {
                         setTextDrawableColor(activity.baseContext, R.color.black)
                         text = time
@@ -246,9 +271,8 @@ object AppUtil {
                     }
 
                     val intent = Intent(activity.baseContext, AlarmReceiver::class.java).apply {
-                        putExtra(AppConstants.TASK_KEY, task.id.toString())
+                        putExtra(AppConstants.TASK_KEY, "${task.id}${AppConstants.SEPARATOR}${task.isDone}")
                         putExtra(AppConstants.TASK_TITLE, task.title)
-                        putExtra(AppConstants.TASK_STATUS, task.isDone)
                         flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     }
                     val pendingIntentFlag =
@@ -271,6 +295,16 @@ object AppUtil {
                         mCalendar.timeInMillis,
                         pendingIntent
                     )
+                    val diff = DateUtil.getTimeDiff(mCalendar.timeInMillis)
+//                    if (diff < 0) {
+//                        binding.txtReminder.setTextColor(activity.getAttribute(R.attr.colorError))
+//                    }
+//                    binding.reminderLayout.background = ContextCompat.getDrawable(
+//                        activity.baseContext,
+//                        R.drawable.background_progress
+//                    )
+//                    binding.txtReminder.isSelected = true
+//                    binding.imgReminder.setColorFilter(activity.getAttribute(R.attr.colorOnSurface))
                     task.reminder = mCalendar.timeInMillis
                 }
             }

@@ -121,4 +121,11 @@
     <string name="back">वापस</string>
     <string name="feedback_from_app">%s, %s से प्रतिक्रिया</string>
     <string name="add_task_or_subtask">नया कार्य या उपकार्य जोड़ें</string>
+
+    <string name="name">नाम</string>
+    <string name="name_desc">नाम विवरण</string>
+    <string name="date">दिनांक</string>
+    <string name="date_desc">दिनांक विवरण</string>
+    <string name="category">श्रेणी</string>
+    <string name="category_desc">श्रेणी विवरण</string>
 </resources>

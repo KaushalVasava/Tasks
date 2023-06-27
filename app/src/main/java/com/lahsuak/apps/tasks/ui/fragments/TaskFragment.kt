@@ -172,7 +172,7 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
                     StaggeredGridLayoutManager(2, RecyclerView.VERTICAL)
                 } else {
                     binding.btnView.setImageResource(R.drawable.ic_grid_view)
-                    StaggeredGridLayoutManager(1, RecyclerView.VERTICAL)
+                    LinearLayoutManager(requireContext())
                 }
                 binding.taskRecyclerView.adapter = taskAdapter
             }
@@ -329,9 +329,8 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
                 ) {
                     if (selectedSortPosition != pos) {
                         selectedSortPosition = pos
-                        val sortType = sortTypes[pos]
                         viewModel.onSortOrderSelected(
-                            SortOrder.getOrder(sortType),
+                            SortOrder.getOrder(pos),
                             requireContext()
                         )
                     }
@@ -350,21 +349,21 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
     }
 
     private fun setVisibilityOfTasks() {
-        binding.chipActive.setOnClickListener {
-            if (binding.chipActive.isChecked) {
+        binding.taskActive.setOnClickListener {
+            if (binding.taskActive.isChecked) {
                 setButtonVisibility(true)
                 viewModel.onHideCompleted(true, requireContext())
             } else {
-                binding.chipActive.isChecked = true
+                binding.taskActive.isChecked = true
             }
             isTaskActive = true
         }
-        binding.chipDone.setOnClickListener {
-            if (binding.chipDone.isChecked) {
+        binding.taskDone.setOnClickListener {
+            if (binding.taskDone.isChecked) {
                 setButtonVisibility(false)
                 viewModel.onHideCompleted(false, requireContext())
             } else {
-                binding.chipDone.isChecked = true
+                binding.taskDone.isChecked = true
             }
             isTaskActive = false
         }
@@ -494,11 +493,11 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
                         if (viewType) {
                             StaggeredGridLayoutManager(2, RecyclerView.VERTICAL)
                         } else {
-                            StaggeredGridLayoutManager(1, RecyclerView.VERTICAL)
+                            LinearLayoutManager(requireContext())
                         }
                     isLayoutChange = false
                 }
-                val data = if (binding.chipActive.isChecked) {
+                val data = if (binding.taskActive.isChecked) {
                     it.filter { task ->
                         !task.isDone
                     }
@@ -525,7 +524,7 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
             binding.taskRecyclerView.isVisible = hasTasks
             binding.txtTaskProgress.isVisible = hasTasks
             binding.progressBar.isVisible = hasTasks
-            binding.chipGroup.isVisible = hasTasks && !actionModeEnable
+            binding.taskGroup.isVisible = hasTasks && !actionModeEnable
             val value = (count.toFloat() / it.size.toFloat()) * TOTAL_PROGRESS_VALUE
             binding.progressBar.progress = value.toInt()
             binding.txtTaskProgress.text = getString(R.string.task_progress, count, it.size)
@@ -702,7 +701,7 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
                 prefManager.getBoolean(AppConstants.SHOW_VOICE_TASK_KEY, true)
         binding.btnAddTask.isVisible = !isVisible
         binding.sortMenu.isVisible = !isVisible
-        binding.chipGroup.isVisible = !isVisible
+        binding.taskGroup.isVisible = !isVisible
         binding.btnView.isVisible = !isVisible
         binding.searchView.isVisible = !isVisible
         binding.txtSort.isVisible = !isVisible

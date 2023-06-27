@@ -10,6 +10,40 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/start_layout"
+            style="@style/InputTextLayout"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toStartOf="@id/end_layout"
+            app:layout_constraintStart_toStartOf="@id/search_view"
+            app:layout_constraintTop_toBottomOf="@id/btn_share"
+            app:startIconDrawable="@drawable/ic_calendar_small">
+
+            <com.google.android.material.textfield.TextInputEditText
+                style="@style/InputEditTextLayout"
+                android:hint="@string/start_date"
+                android:inputType="date"
+                android:id="@+id/et_start_date"
+                />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/end_layout"
+            style="@style/InputTextLayout"
+            android:layout_marginStart="8dp"
+            app:layout_constraintEnd_toEndOf="@id/search_view"
+            app:layout_constraintStart_toEndOf="@id/start_layout"
+            app:layout_constraintTop_toTopOf="@id/start_layout"
+            app:startIconDrawable="@drawable/ic_calendar_small">
+
+            <com.google.android.material.textfield.TextInputEditText
+                style="@style/InputEditTextLayout"
+                android:hint="@string/end_date"
+                android:inputType="date"
+                android:id="@+id/et_end_date" />
+        </com.google.android.material.textfield.TextInputLayout>
+
         <ImageView
             android:id="@+id/btn_back"
             style="@style/IconButton"
@@ -89,16 +123,16 @@
             app:queryHint="@string/search_subtask" />
 
         <com.google.android.material.chip.ChipGroup
-            android:id="@+id/chip_group"
+            android:id="@+id/task_group"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             app:layout_constraintEnd_toEndOf="@id/btn_share"
-            app:layout_constraintTop_toBottomOf="@id/btn_share"
+            app:layout_constraintTop_toBottomOf="@id/start_layout"
             app:singleSelection="true">
 
             <com.google.android.material.chip.Chip
-                android:id="@+id/chip_active"
+                android:id="@+id/task_active"
                 style="@style/Widget.Material3.Chip.Suggestion.Elevated"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -109,7 +143,7 @@
                 app:chipStrokeColor="@android:color/transparent" />
 
             <com.google.android.material.chip.Chip
-                android:id="@+id/chip_done"
+                android:id="@+id/task_done"
                 style="@style/Widget.Material3.Chip.Suggestion.Elevated"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -119,7 +153,6 @@
                 app:chipStrokeColor="@android:color/transparent" />
 
         </com.google.android.material.chip.ChipGroup>
-
 
         <TextView
             android:id="@+id/txt_sort"
@@ -151,10 +184,10 @@
             android:text="@string/mark_as_completed"
             android:textSize="12sp"
             android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="@id/chip_group"
-            app:layout_constraintEnd_toStartOf="@id/chip_group"
+            app:layout_constraintBottom_toBottomOf="@id/task_group"
+            app:layout_constraintEnd_toStartOf="@id/task_group"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/chip_group" />
+            app:layout_constraintTop_toTopOf="@id/task_group" />
 
         <LinearLayout
             android:id="@+id/reminder_layout"
@@ -162,9 +195,9 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:paddingVertical="5dp"
+            app:layout_constraintBottom_toBottomOf="@id/task_group"
             app:layout_constraintStart_toStartOf="@id/search_view"
-            app:layout_constraintBottom_toBottomOf="@id/chip_group"
-            app:layout_constraintTop_toTopOf="@id/chip_group">
+            app:layout_constraintTop_toTopOf="@id/task_group">
 
             <ImageView
                 android:id="@+id/img_reminder"
@@ -173,6 +206,7 @@
                 android:layout_marginEnd="2dp"
                 android:contentDescription="@string/reminder"
                 android:padding="0dp"
+                app:tint="?colorOnSurface"
                 android:src="@drawable/ic_reminder" />
 
             <TextView
@@ -193,20 +227,20 @@
                 android:padding="0dp"
                 android:src="@drawable/ic_cancel"
                 android:visibility="gone"
-                app:tint="@color/black"
+                app:tint="?colorOnSurface"
                 tools:visibility="visible" />
         </LinearLayout>
 
-        <TextView
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_share"
+            style="@style/Widget.Material3.Button.ElevatedButton.Icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:background="?attr/selectableItemBackground"
             android:drawablePadding="4dp"
             android:gravity="center"
             android:text="@string/share"
-            app:drawableEndCompat="@drawable/ic_share"
+            app:icon="@drawable/ic_share"
             app:layout_constraintEnd_toEndOf="@id/search_view"
             app:layout_constraintTop_toBottomOf="@id/search_view" />
 
@@ -234,9 +268,9 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/chip_group"
+            app:layout_constraintTop_toBottomOf="@id/task_group"
             tools:listitem="@layout/sub_task_item"
-            tools:visibility="invisible" />
+            tools:visibility="visible" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton

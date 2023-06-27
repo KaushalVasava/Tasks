@@ -25,7 +25,9 @@ import com.lahsuak.apps.tasks.data.model.Task
 import com.lahsuak.apps.tasks.data.repository.TaskRepository
 import com.lahsuak.apps.tasks.databinding.FragmentSubtaskBinding
 import com.lahsuak.apps.tasks.model.SubTaskEvent
-import com.lahsuak.apps.tasks.util.AppConstants.TIME_FORMAT
+import com.lahsuak.apps.tasks.receiver.AlarmReceiver
+import com.lahsuak.apps.tasks.receiver.BootReceiver.Companion.timeList
+import com.lahsuak.apps.tasks.receiver.Reminder
 import com.lahsuak.apps.tasks.util.AppConstants.REMINDER_DATA
 import com.lahsuak.apps.tasks.util.AppConstants.REMINDER_KEY
 import com.lahsuak.apps.tasks.util.AppConstants.SEARCH_INITIAL_VALUE
@@ -35,9 +37,7 @@ import com.lahsuak.apps.tasks.util.AppConstants.SHARE_FORMAT
 import com.lahsuak.apps.tasks.util.AppConstants.TASK_ID
 import com.lahsuak.apps.tasks.util.AppConstants.TASK_KEY
 import com.lahsuak.apps.tasks.util.AppConstants.TASK_TITLE
-import com.lahsuak.apps.tasks.receiver.AlarmReceiver
-import com.lahsuak.apps.tasks.receiver.BootReceiver.Companion.timeList
-import com.lahsuak.apps.tasks.receiver.Reminder
+import com.lahsuak.apps.tasks.util.AppConstants.TIME_FORMAT
 import com.lahsuak.apps.tasks.util.DateUtil
 import com.lahsuak.apps.tasks.util.getAttribute
 import com.lahsuak.apps.tasks.util.toast
@@ -139,6 +139,10 @@ class SubTaskViewModel @Inject constructor(
         return repository.getBySubTaskId(id)
     }
 
+    fun update(task: Task) = viewModelScope.launch(Dispatchers.IO) {
+        repository.updateTask(task)
+    }
+
     fun showDeleteDialog(
         context: Context,
         subTask: SubTask
@@ -147,9 +151,7 @@ class SubTaskViewModel @Inject constructor(
             .setTitle(context.getString(R.string.delete))
             .setMessage(context.getString(R.string.delete_task))
             .setPositiveButton(context.getString(R.string.delete)) { dialog, _ ->
-                viewModelScope.launch {
-                    deleteSubTask(subTask)
-                }
+                deleteSubTask(subTask)
                 dialog.dismiss()
             }
             .setNegativeButton(context.getString(R.string.cancel)) { dialog, _ ->
@@ -168,24 +170,21 @@ class SubTaskViewModel @Inject constructor(
         try {
             context.startActivity(sendIntent)
         } catch (e: ActivityNotFoundException) {
-            context.toast {
-                context.getString(R.string.empty_task)
-            }
+            context.toast { context.getString(R.string.empty_task) }
         }
     }
 
     fun showReminder(
         binding: FragmentSubtaskBinding,
         activity: FragmentActivity,
-        mCalendar: Calendar,
         task: Task
     ) {
+        val mCalendar = Calendar.getInstance()
         val formatter = SimpleDateFormat(TIME_FORMAT, Locale.getDefault())
         var hour = formatter.format(mCalendar.time).substring(0, 2).trim().toInt()
         val min = formatter.format(mCalendar.time).substring(3, 5).trim().toInt()
         val isAm = formatter.format(mCalendar.time).substring(6).trim().lowercase()
 
-        /** PLEASE ADD TRANSLATION FOR ALL LANGUAGES*/
         if (isAm == activity.getString(R.string.pm_format))
             hour += 12
         val materialTimePicker: MaterialTimePicker = MaterialTimePicker.Builder()
@@ -217,8 +216,8 @@ class SubTaskViewModel @Inject constructor(
                     val time = java.text.DateFormat.getDateTimeInstance(
                         java.text.DateFormat.MEDIUM,
                         java.text.DateFormat.SHORT
-                    )
-                        .format(mCalendar.time)
+                    ).format(mCalendar.time)
+
                     binding.txtReminder.text = time
                     binding.btnCancelReminder.visibility = View.VISIBLE
                     val sharedPref =
@@ -312,6 +311,7 @@ class SubTaskViewModel @Inject constructor(
             activity.getString(R.string.cancel_reminder)
         }
     }
+
     fun cancelSubTaskReminder(
         activity: FragmentActivity,
         subTask: SubTask,
@@ -335,15 +335,7 @@ class SubTaskViewModel @Inject constructor(
         timerTxt.text = activity.getString(R.string.add_date_time)
         subTask.reminder = null
         updateSubTask(subTask)
-        update(task.copy(date = System.currentTimeMillis()))
-        activity.baseContext.toast {
-            activity.getString(R.string.cancel_reminder)
-        }
-    }
-
-    fun update(task: Task) {
-        viewModelScope.launch(Dispatchers.IO) {
-            repository.updateTask(task)
-        }
+        update(task.copy(startDate = System.currentTimeMillis()))
+        activity.baseContext.toast { activity.getString(R.string.cancel_reminder) }
     }
 }

@@ -67,7 +67,7 @@ class ShortcutFragmentDialog : BottomSheetDialogFragment() {
                     null,
                     -1f,
                     null,
-                    date = System.currentTimeMillis()
+                    startDate = System.currentTimeMillis()
                 )
             }
             task = AppUtil.showReminder(requireActivity(), binding.txtReminder, task)
@@ -84,7 +84,7 @@ class ShortcutFragmentDialog : BottomSheetDialogFragment() {
                             null,
                             -1f,
                             null,
-                            date = System.currentTimeMillis()
+                            startDate = System.currentTimeMillis()
                         )
                     }
                     model.insert(task)

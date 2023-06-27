@@ -1,18 +1,19 @@
 package com.lahsuak.apps.tasks.ui.adapters.viewholders
 
+import android.annotation.SuppressLint
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.Paint
+import android.os.Build
 import android.text.util.Linkify
 import android.util.TypedValue
-import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.RecyclerView
-import com.lahsuak.apps.tasks.TaskApp
 import com.lahsuak.apps.tasks.R
+import com.lahsuak.apps.tasks.TaskApp
 import com.lahsuak.apps.tasks.data.model.Task
 import com.lahsuak.apps.tasks.databinding.TaskItemBinding
 import com.lahsuak.apps.tasks.ui.adapters.TaskAdapter
@@ -113,10 +114,15 @@ class TaskViewHolder1(
             txtTitle.text = task.title
             Linkify.addLinks(txtTitle, Linkify.ALL)
             txtTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, txtSize)
-            txtDate.text = DateUtil.getTaskDateTime(
-                task.date ?: System.currentTimeMillis(),
-                false
-            )
+            endDateLayout.isVisible = task.endDate != null
+//            task.endDate?.let {
+//                txtEndDate.text = DateUtil.getDate(it)
+//            }
+            txtDate.text = DateUtil.getDateRange(task.startDate?:System.currentTimeMillis(), task.endDate)
+
+//            task.startDate?.let {
+//                txtDate.text = DateUtil.getDate(it)
+//            }
             val color = TaskApp.categoryTypes[task.color].color
             imgCategory.setColorFilter(color)
             progressBar.progressTintList = ColorStateList.valueOf(color)

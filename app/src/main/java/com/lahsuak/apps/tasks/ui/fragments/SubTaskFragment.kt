@@ -19,7 +19,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ActionMode
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
-import androidx.core.view.doOnPreDraw
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -35,6 +34,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.transition.TransitionInflater
 import androidx.transition.TransitionManager
+import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.MaterialContainerTransform
 import com.lahsuak.apps.tasks.R
@@ -56,7 +56,6 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.util.*
-import java.util.concurrent.TimeUnit
 
 @AndroidEntryPoint
 class SubTaskFragment : Fragment(R.layout.fragment_subtask),
@@ -77,7 +76,6 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
     private lateinit var task: Task
     private var searchView: SearchView? = null
     private var actionMode: ActionMode? = null
-    private val mCalendar = Calendar.getInstance()
     private var selectedItem: Array<Boolean>? = null
     private var counter = 0
     private var actionModeEnable = false
@@ -112,6 +110,7 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
             setAllContainerColors(requireContext().getAttribute(R.attr.colorSurface))
         }
     }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -120,7 +119,6 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
         super.onCreateView(inflater, container, savedInstanceState)
         _binding = FragmentSubtaskBinding.inflate(inflater, container, false)
         selectedItem = null
-//        postponeEnterTransition(200, TimeUnit.MILLISECONDS)
         return _binding?.root
     }
 
@@ -150,6 +148,12 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
     }
 
     private fun initView() {
+        task.startDate?.let {
+            binding.etStartDate.setText(DateUtil.getDate(it))
+        }
+        task.endDate?.let {
+            binding.etEndDate.setText(DateUtil.getDate(it))
+        }
         binding.root.setBackgroundColor(AppUtil.getTransparentColor(task.color))
         binding.txtTitle.text = task.title
         setColors(TaskApp.categoryTypes[task.color].color)
@@ -174,7 +178,7 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
     private fun setSubTaskObserver() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             subTaskViewModel.subTasks.collectLatest { //this is for adapter
-                val data = if (binding.chipActive.isChecked) {
+                val data = if (binding.taskActive.isChecked) {
                     it.filter { task ->
                         !task.isDone
                     }
@@ -215,7 +219,6 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
             subTaskViewModel.showReminder(
                 binding,
                 requireActivity(),
-                mCalendar,
                 task
             )
         }
@@ -259,6 +262,35 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
             )
             navController.navigate(action)
         }
+        binding.etStartDate.setOnClickListener {
+            val datePickerDialog = MaterialDatePicker
+                .Builder
+                .datePicker()
+                .setTitleText(getString(R.string.select_project_start_date))
+                .build()
+
+            datePickerDialog.show(childFragmentManager, "DATE_PICKER")
+            datePickerDialog.addOnPositiveButtonClickListener {
+                binding.etStartDate.setText(DateUtil.getDate(it))
+                task = task.copy(startDate = it)
+            }
+        }
+        binding.etEndDate.setOnClickListener {
+            val datePickerDialog = MaterialDatePicker
+                .Builder
+                .datePicker()
+                .setTitleText(getString(R.string.select_project_end_date))
+                .build()
+
+            datePickerDialog.show(childFragmentManager, "DATE_PICKER")
+            datePickerDialog.addOnPositiveButtonClickListener {
+                binding.etEndDate.setText(DateUtil.getDate(it))
+                if (binding.etStartDate.text.isNullOrEmpty().not()) {
+                    task = task.copy(endDate = it)
+                    subTaskViewModel.update(task)
+                }
+            }
+        }
         setSortMenu()
         setVisibilityOfTasks()
     }
@@ -290,9 +322,8 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
                 ) {
                     if (selectedSortPosition != pos) {
                         selectedSortPosition = pos
-                        val sortType = sortTypes[pos]
                         subTaskViewModel.onSortOrderSelected(
-                            SortOrder.getOrder(sortType),
+                            SortOrder.getOrder(pos),
                             requireContext()
                         )
                     }
@@ -311,23 +342,23 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
     }
 
     private fun setVisibilityOfTasks() {
-        binding.chipActive.setOnClickListener {
-            if (binding.chipActive.isChecked) {
+        binding.taskActive.setOnClickListener {
+            if (binding.taskActive.isChecked) {
                 setButtonVisibility(true)
                 setChipColor(true, TaskApp.categoryTypes[task.color].color)
                 subTaskViewModel.onHideCompleted(true, requireContext())
             } else {
-                binding.chipActive.isChecked = true
+                binding.taskActive.isChecked = true
             }
             isTaskActive = true
         }
-        binding.chipDone.setOnClickListener {
-            if (binding.chipDone.isChecked) {
+        binding.taskDone.setOnClickListener {
+            if (binding.taskDone.isChecked) {
                 setChipColor(false, TaskApp.categoryTypes[task.color].color)
                 setButtonVisibility(false)
                 subTaskViewModel.onHideCompleted(false, requireContext())
             } else {
-                binding.chipDone.isChecked = true
+                binding.taskDone.isChecked = true
             }
             isTaskActive = false
         }
@@ -338,23 +369,25 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
         binding.btnAddTask.backgroundTintList = ColorStateList.valueOf(color)
         binding.btnVoiceTask.backgroundTintList = ColorStateList.valueOf(color)
         binding.btnDeleteAll.backgroundTintList = ColorStateList.valueOf(color)
+        binding.btnShare.setTextColor(ColorStateList.valueOf(color))
+        binding.btnShare.iconTint = ColorStateList.valueOf(color)
         binding.btnCreateNewTask.setDrawableColor(color)
         setChipColor(true, color)
     }
 
     private fun setChipColor(isEnable: Boolean, color: Int) {
         if (isEnable) {
-            binding.chipActive.chipBackgroundColor = ColorStateList.valueOf(color)
-            binding.chipActive.setTextColor(requireContext().getAttribute(R.attr.colorSurface))
-            binding.chipDone.chipBackgroundColor =
+            binding.taskActive.chipBackgroundColor = ColorStateList.valueOf(color)
+            binding.taskActive.setTextColor(requireContext().getAttribute(R.attr.colorSurface))
+            binding.taskDone.chipBackgroundColor =
                 ColorStateList.valueOf(requireContext().getAttribute(R.attr.colorSurfaceVariant))
-            binding.chipDone.setTextColor(requireContext().getAttribute(R.attr.colorOnSurface))
+            binding.taskDone.setTextColor(requireContext().getAttribute(R.attr.colorOnSurface))
         } else {
-            binding.chipDone.chipBackgroundColor = ColorStateList.valueOf(color)
-            binding.chipDone.setTextColor(requireContext().getAttribute(R.attr.colorSurface))
-            binding.chipActive.chipBackgroundColor =
+            binding.taskDone.chipBackgroundColor = ColorStateList.valueOf(color)
+            binding.taskDone.setTextColor(requireContext().getAttribute(R.attr.colorSurface))
+            binding.taskActive.chipBackgroundColor =
                 ColorStateList.valueOf(requireContext().getAttribute(R.attr.colorSurfaceVariant))
-            binding.chipActive.setTextColor(requireContext().getAttribute(R.attr.colorOnSurface))
+            binding.taskActive.setTextColor(requireContext().getAttribute(R.attr.colorOnSurface))
         }
     }
 
@@ -694,7 +727,7 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
                 prefManager.getBoolean(AppConstants.SHOW_VOICE_TASK_KEY, true)
         binding.btnAddTask.isVisible = !isVisible
         binding.sortMenu.isVisible = !isVisible
-        binding.chipGroup.isVisible = !isVisible
+        binding.taskGroup.isVisible = !isVisible
         binding.reminderLayout.isVisible = !isVisible
         binding.searchView.isVisible = !isVisible
         binding.txtSort.isVisible = !isVisible

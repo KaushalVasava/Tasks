@@ -3,7 +3,7 @@ package com.lahsuak.apps.tasks.util
 object AppConstants {
     const val WEBSITE = "https://zaap.bio/KaushalVasava"
     const val NOTIFICATION_CHANNEL_ID = "com.lahsuak.apps.mytask.notificationID"
-    const val DATE_FORMAT = "dd MMM, yyyy"
+    const val DATE_FORMAT = "dd MMM, yy"
     const val TIME_FORMAT = "hh:mm a"
     const val REMINDER_DATE_TIME_FORMAT = "dd MMM, yyyy hh:mm a"
     const val TOOLBAR_DATE_TIME_FORMAT = "E, dd LLLL"
@@ -26,7 +26,7 @@ object AppConstants {
     const val THEME_KEY = "theme_key"
     const val THEME_DEFAULT = "-1"
     const val UPDATE_REQUEST_CODE = 123
-    const val SEPARATOR = "-"
+    const val SEPARATOR = " - "
     const val REMINDER_DATA = "REMINDER_DATA"
     const val REMINDER_KEY = "reminder_data"
     const val REM_KEY = "rem_key"

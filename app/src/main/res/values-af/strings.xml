@@ -122,4 +122,10 @@
     <string name="back">Terug</string>
     <string name="feedback_from_app">Terugvoer van %s, %s</string>
     <string name="add_task_or_subtask">Voeg nuwe taak of subtaak by</string>
+    <string name="name">Naam</string>
+    <string name="name_desc">Naambeskrywing</string>
+    <string name="date" >Datum</string>
+    <string name="date_desc">Datumbeskrywing</string>
+    <string name="category">Kategorie</string>
+    <string name="category_desc">Kategoriebeskrywing</string>
 </resources>

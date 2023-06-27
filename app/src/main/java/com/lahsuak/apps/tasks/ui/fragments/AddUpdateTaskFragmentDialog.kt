@@ -12,6 +12,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.android.material.datepicker.MaterialDatePicker
 import com.lahsuak.apps.tasks.R
 import com.lahsuak.apps.tasks.TaskApp
 import com.lahsuak.apps.tasks.data.model.SubTask
@@ -47,6 +48,7 @@ class AddUpdateTaskFragmentDialog : BottomSheetDialogFragment() {
         savedInstanceState: Bundle?,
     ): View {
         _binding = DialogAddUpdateTaskBinding.inflate(layoutInflater)
+        setPrefetchData()
         @Suppress(AppConstants.DEPRECATION)
         requireDialog().window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
         (dialog as? BottomSheetDialog)?.run {
@@ -58,10 +60,9 @@ class AddUpdateTaskFragmentDialog : BottomSheetDialogFragment() {
         }
         binding.txtRename.requestFocus()
         binding.txtRename.post {
-            binding.txtRename.setSelection(binding.txtRename.text.length)
+            binding.txtRename.setSelection(binding.txtRename.text?.length ?: 0)
         }
         setVisibility()
-        setPrefetchData()
         addClickListeners()
         setCategoryMenu()
         return binding.root
@@ -100,6 +101,12 @@ class AddUpdateTaskFragmentDialog : BottomSheetDialogFragment() {
             if (!args.navigateFromSubtask) {
                 if (args.taskId != -1) {
                     task = taskViewModel.getById(args.taskId)
+                    task.startDate?.let {
+                        binding.etStartDate.setText(DateUtil.getDate(it))
+                    }
+                    task.endDate?.let {
+                        binding.etEndDate.setText(DateUtil.getDate(it))
+                    }
                     selectedCategoryPosition = task.color
                     binding.categoryMenu.setSelection(selectedCategoryPosition)
                     binding.cbImpTask.isChecked = task.isImp
@@ -168,7 +175,7 @@ class AddUpdateTaskFragmentDialog : BottomSheetDialogFragment() {
                 setClipboard(requireContext(), binding.txtRename.toTrimString())
             }
         }
-        binding.btnPaste.setOnClickListener {
+        binding.titleLayout.setEndIconOnClickListener {
             val text = AppUtil.pasteText(requireContext())
             binding.txtRename.setText(text)
         }
@@ -192,6 +199,36 @@ class AddUpdateTaskFragmentDialog : BottomSheetDialogFragment() {
                 }
             }
         }
+
+        binding.etStartDate.setOnClickListener {
+            val datePickerDialog = MaterialDatePicker
+                .Builder
+                .datePicker()
+                .setTitleText(getString(R.string.select_project_start_date))
+                .build()
+
+            datePickerDialog.show(childFragmentManager, "DATE_PICKER")
+            datePickerDialog.addOnPositiveButtonClickListener {
+                binding.etStartDate.setText(DateUtil.getDate(it))
+                task = Task(id=0,title= binding.txtRename.text.toString(),startDate = it)
+            }
+        }
+        binding.etEndDate.setOnClickListener {
+            val datePickerDialog = MaterialDatePicker
+                .Builder
+                .datePicker()
+                .setTitleText(getString(R.string.select_project_end_date))
+                .build()
+
+            datePickerDialog.show(childFragmentManager, "DATE_PICKER")
+            datePickerDialog.addOnPositiveButtonClickListener {
+                binding.etEndDate.setText(DateUtil.getDate(it))
+                if (binding.etStartDate.text.isNullOrEmpty().not()) {
+                    task = task.copy(endDate = it)
+                    subTaskViewModel.update(task)
+                }
+            }
+        }
     }
 
     private fun saveData() {
@@ -203,8 +240,9 @@ class AddUpdateTaskFragmentDialog : BottomSheetDialogFragment() {
                         id = 0,
                         title = binding.txtRename.toTrimString(),
                         isImp = binding.cbImpTask.isChecked,
-                        date = System.currentTimeMillis(),
-                        color = TaskApp.categoryTypes[selectedCategoryPosition].order
+                        startDate = task.startDate ?: System.currentTimeMillis(),
+                        color = TaskApp.categoryTypes[selectedCategoryPosition].order,
+                        endDate = task.endDate
                     )
                 }
                 taskViewModel.insert(task)
@@ -220,15 +258,16 @@ class AddUpdateTaskFragmentDialog : BottomSheetDialogFragment() {
                 dateTime = System.currentTimeMillis()
             )
             subTaskViewModel.insertSubTask(subTask)
-            subTaskViewModel.update(task.copy(date = System.currentTimeMillis()))
+            subTaskViewModel.update(task.copy(startDate = System.currentTimeMillis()))
         } else {
-            if (binding.txtRename.text.trim().isNotEmpty()) {
+            if (binding.txtRename.text?.trim().isNullOrEmpty().not()) {
                 if (!args.navigateFromSubtask) {
                     //update task
                     task.apply {
                         title = binding.txtRename.toTrimString()
                         isImp = binding.cbImpTask.isChecked
-                        date = System.currentTimeMillis()
+                        startDate = task.startDate ?: System.currentTimeMillis()
+                        endDate = task.endDate
                     }
                     if (!binding.txtRename.text.isNullOrEmpty()) {
                         if (binding.txtReminder.text != getString(R.string.add_date_time)) {

@@ -21,7 +21,7 @@
             app:cardBackgroundColor="@color/light_blue"
             app:cardCornerRadius="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
+            app:layout_constraintEnd_toStartOf="@id/end_date_layout">
 
             <TextView
                 android:id="@+id/txt_date"
@@ -37,9 +37,36 @@
                 app:autoSizeStepGranularity="0.5sp"
                 app:autoSizeTextType="uniform"
                 app:drawableStartCompat="@drawable/ic_calendar_small"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
                 tools:text="30 July,2022" />
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/end_date_layout"
+            style="@style/CircularCardView"
+            android:layout_width="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="4dp"
+            app:cardBackgroundColor="?colorError"
+            app:cardCornerRadius="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <TextView
+                android:id="@+id/txt_end_date"
+                style="@style/SubTitle.Bold"
+                android:layout_width="wrap_content"
+                android:drawablePadding="2dp"
+                android:gravity="center"
+                android:maxLines="3"
+                android:paddingHorizontal="4dp"
+                android:textColor="?colorSurface"
+                app:autoSizeMaxTextSize="11sp"
+                app:autoSizeMinTextSize="6sp"
+                app:autoSizeStepGranularity="0.5sp"
+                app:autoSizeTextType="uniform"
+                app:drawableStartCompat="@drawable/ic_calendar_small"
+                tools:text="30 July,2022"
+                app:drawableTint="?colorSurface" />
         </com.google.android.material.card.MaterialCardView>
 
         <ImageView

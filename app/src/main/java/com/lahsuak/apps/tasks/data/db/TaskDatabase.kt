@@ -7,7 +7,7 @@ import com.lahsuak.apps.tasks.data.model.Task
 
 @Database(
     entities = [Task::class, SubTask::class],
-    version = 1
+    version = 2
 )
 abstract class TaskDatabase : RoomDatabase() {
     abstract val dao: TaskDao

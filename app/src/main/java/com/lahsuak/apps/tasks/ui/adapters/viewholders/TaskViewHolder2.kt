@@ -103,7 +103,8 @@ class TaskViewHolder2(
             val showSubTask = prefManager.getBoolean(AppConstants.SHOW_SUBTASK_KEY, true)
             val prefMgr = PreferenceManager.getDefaultSharedPreferences(context)
             val txtSize =
-                prefMgr.getString(AppConstants.FONT_SIZE_KEY, AppConstants.INITIAL_FONT_SIZE)!!.toFloat()
+                prefMgr.getString(AppConstants.FONT_SIZE_KEY, AppConstants.INITIAL_FONT_SIZE)!!
+                    .toFloat()
 
             txtTitle.text = task.title
             Linkify.addLinks(txtTitle, Linkify.ALL)
@@ -115,10 +116,18 @@ class TaskViewHolder2(
             txtReminder.backgroundTintList = ColorStateList.valueOf(color)
             txtReminder.setTextColor(Color.BLACK)
             txtReminder.setDrawableColor(Color.BLACK)
-            txtDate.text = DateUtil.getTaskDateTime(
-                task.date ?: System.currentTimeMillis(),
-                true
-            )
+
+            txtDate.isVisible = task.endDate != null
+//            task.startDate?.let {
+//                txtDate.text = DateUtil.getDate(it) + " To " + task.endDate?.let {
+//                    DateUtil.getDate(it)
+//                }
+//            }
+            txtDate.text = DateUtil.getDateRange(task.startDate?:System.currentTimeMillis(), task.endDate)
+//            txtDate.text = DateUtil.getTaskDateTime(
+//                task.startDate ?: System.currentTimeMillis(),
+//                true
+//            )
 
             if (showSubTask) {
                 imgMore.isVisible = task.subTaskList?.isNotEmpty() == true

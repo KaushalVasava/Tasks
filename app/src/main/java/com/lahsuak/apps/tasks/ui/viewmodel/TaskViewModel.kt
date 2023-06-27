@@ -91,10 +91,8 @@ class TaskViewModel @Inject constructor(
         repository.insertTask(task)
     }
 
-    fun update(task: Task) {
-        viewModelScope.launch(Dispatchers.IO) {
-            repository.updateTask(task)
-        }
+    fun update(task: Task) = viewModelScope.launch(Dispatchers.IO) {
+        repository.updateTask(task)
     }
 
     fun delete(task: Task) = viewModelScope.launch(Dispatchers.IO) {
@@ -117,9 +115,7 @@ class TaskViewModel @Inject constructor(
             .setTitle(context.getString(R.string.delete))
             .setMessage(context.getString(R.string.delete_task))
             .setPositiveButton(context.getString(R.string.delete)) { dialog, _ ->
-                viewModelScope.launch {
-                    delete(task)
-                }
+                delete(task)
                 dialog.dismiss()
             }
             .setNegativeButton(context.getString(R.string.cancel)) { dialog, _ ->
