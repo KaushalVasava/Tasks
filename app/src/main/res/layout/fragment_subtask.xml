@@ -145,7 +145,7 @@
                 app:queryHint="@string/search_subtask" />
 
             <com.google.android.material.chip.ChipGroup
-                android:id="@+id/task_group"
+                android:id="@+id/task_chip_group"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
@@ -154,7 +154,7 @@
                 app:singleSelection="true">
 
                 <com.google.android.material.chip.Chip
-                    android:id="@+id/task_active"
+                    android:id="@+id/task_chip_active"
                     style="@style/Widget.Material3.Chip.Suggestion.Elevated"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -165,7 +165,7 @@
                     app:chipStrokeColor="@android:color/transparent" />
 
                 <com.google.android.material.chip.Chip
-                    android:id="@+id/task_done"
+                    android:id="@+id/task_chip_done"
                     style="@style/Widget.Material3.Chip.Suggestion.Elevated"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -204,19 +204,19 @@
                 android:text="@string/mark_as_completed"
                 android:textSize="12sp"
                 android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="@id/task_group"
-                app:layout_constraintEnd_toStartOf="@id/task_group"
+                app:layout_constraintBottom_toBottomOf="@id/task_chip_group"
+                app:layout_constraintEnd_toStartOf="@id/task_chip_group"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@id/task_group" />
+                app:layout_constraintTop_toTopOf="@id/task_chip_group" />
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/reminder_layout"
                 style="@style/CircularCardView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="@id/task_group"
+                app:layout_constraintBottom_toBottomOf="@id/task_chip_group"
                 app:layout_constraintStart_toStartOf="@id/search_view"
-                app:layout_constraintTop_toTopOf="@id/task_group">
+                app:layout_constraintTop_toTopOf="@id/task_chip_group">
 
                 <LinearLayout
                     android:layout_width="wrap_content"

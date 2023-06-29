@@ -95,7 +95,7 @@
                 tools:targetApi="o" />
 
             <com.google.android.material.chip.ChipGroup
-                android:id="@+id/task_group"
+                android:id="@+id/task_chip_group"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="@id/btn_view"
@@ -103,7 +103,7 @@
                 app:singleSelection="true">
 
                 <com.google.android.material.chip.Chip
-                    android:id="@+id/task_active"
+                    android:id="@+id/task_chip_active"
                     style="@style/Widget.Material3.Chip.Suggestion.Elevated"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -114,7 +114,7 @@
                     app:chipStrokeColor="@android:color/transparent" />
 
                 <com.google.android.material.chip.Chip
-                    android:id="@+id/task_done"
+                    android:id="@+id/task_chip_done"
                     style="@style/Widget.Material3.Chip.Suggestion.Elevated"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

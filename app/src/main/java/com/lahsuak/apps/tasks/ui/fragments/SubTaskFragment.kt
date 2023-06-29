@@ -3,7 +3,6 @@ package com.lahsuak.apps.tasks.ui.fragments
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
-import android.content.SharedPreferences
 import android.content.res.ColorStateList
 import android.graphics.Canvas
 import android.graphics.Color
@@ -36,7 +35,6 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.transition.TransitionInflater
 import androidx.transition.TransitionManager
-import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.MaterialContainerTransform
 import com.lahsuak.apps.tasks.R
@@ -51,7 +49,6 @@ import com.lahsuak.apps.tasks.ui.fragments.TaskFragment.Companion.TOTAL_PROGRESS
 import com.lahsuak.apps.tasks.ui.viewmodel.SubTaskViewModel
 import com.lahsuak.apps.tasks.util.*
 import com.lahsuak.apps.tasks.util.AppConstants.SEARCH_INITIAL_VALUE
-import com.lahsuak.apps.tasks.util.AppUtil.createNotification
 import com.lahsuak.apps.tasks.util.AppUtil.setDateTime
 import com.lahsuak.apps.tasks.util.AppUtil.unsafeLazy
 import dagger.hilt.android.AndroidEntryPoint
@@ -60,7 +57,6 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.util.*
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class SubTaskFragment : Fragment(R.layout.fragment_subtask),
@@ -70,8 +66,6 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
     private val binding: FragmentSubtaskBinding
         get() = _binding!!
 
-    @Inject
-    lateinit var reminderPreferences: SharedPreferences
     private val subTaskViewModel: SubTaskViewModel by viewModels()
     private val args: SubTaskFragmentArgs by navArgs()
     private val navController: NavController by unsafeLazy {
@@ -152,7 +146,6 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
             )
             navController.navigate(action)
         }
-        createNotification(requireContext())
         addSwipeGesturesHandler() //swipe to delete and mark as imp functionality
         completedSubTaskObserver() //completed and uncompleted task observer
         setSubTaskObserver()
@@ -164,7 +157,6 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
             backPressedDispatcher
         )
     }
-
 
     private val backPressedDispatcher = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
@@ -209,7 +201,7 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
     private fun setSubTaskObserver() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             subTaskViewModel.subTasks.collectLatest { //this is for adapter
-                val data = if (binding.taskActive.isChecked) {
+                val data = if (binding.taskChipActive.isChecked) {
                     it.filter { task ->
                         !task.isDone
                     }
@@ -251,9 +243,9 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
                 binding.txtReminder.text = time
                 AppUtil.setupReminderData(
                     requireContext(),
+                    task.title,
                     task,
-                    calendar,
-                    reminderPreferences
+                    calendar
                 )
                 val diff = DateUtil.getTimeDiff(calendar.timeInMillis)
                 if (diff < 0) {
@@ -287,23 +279,14 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
         binding.btnShare.setOnClickListener {
             subTaskViewModel.shareTask(requireContext(), getAllText())
         }
-        binding.txtTitle.setOnClickListener {
-            val action = SubTaskFragmentDirections.actionSubTaskFragmentToRenameFragmentDialog(
-                false,
-                args.task.id,
-                args.task.title,
-                0
-            )
-            navController.navigate(action)
-        }
         binding.etStartDate.setOnClickListener {
-            requireActivity().setDateTime{ calendar, time ->
+            requireActivity().setDateTime { calendar, time ->
                 binding.etStartDate.setText(time)
                 task = task.copy(startDate = calendar.timeInMillis)
             }
         }
         binding.etEndDate.setOnClickListener {
-            requireActivity().setDateTime{ calendar, time ->
+            requireActivity().setDateTime { calendar, time ->
                 binding.etEndDate.setText(time)
                 if (binding.etStartDate.text.isNullOrEmpty().not()) {
                     task = task.copy(endDate = calendar.timeInMillis)
@@ -362,23 +345,23 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
     }
 
     private fun setVisibilityOfTasks() {
-        binding.taskActive.setOnClickListener {
-            if (binding.taskActive.isChecked) {
+        binding.taskChipActive.setOnClickListener {
+            if (binding.taskChipActive.isChecked) {
                 setButtonVisibility(true)
                 setChipColor(true, TaskApp.categoryTypes[task.color].color)
                 subTaskViewModel.onHideCompleted(true, requireContext())
             } else {
-                binding.taskActive.isChecked = true
+                binding.taskChipActive.isChecked = true
             }
             isTaskActive = true
         }
-        binding.taskDone.setOnClickListener {
-            if (binding.taskDone.isChecked) {
+        binding.taskChipDone.setOnClickListener {
+            if (binding.taskChipDone.isChecked) {
                 setChipColor(false, TaskApp.categoryTypes[task.color].color)
                 setButtonVisibility(false)
                 subTaskViewModel.onHideCompleted(false, requireContext())
             } else {
-                binding.taskDone.isChecked = true
+                binding.taskChipDone.isChecked = true
             }
             isTaskActive = false
         }
@@ -397,17 +380,17 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
 
     private fun setChipColor(isEnable: Boolean, color: Int) {
         if (isEnable) {
-            binding.taskActive.chipBackgroundColor = ColorStateList.valueOf(color)
-            binding.taskActive.setTextColor(requireContext().getAttribute(R.attr.colorSurface))
-            binding.taskDone.chipBackgroundColor =
+            binding.taskChipActive.chipBackgroundColor = ColorStateList.valueOf(color)
+            binding.taskChipActive.setTextColor(requireContext().getAttribute(R.attr.colorSurface))
+            binding.taskChipDone.chipBackgroundColor =
                 ColorStateList.valueOf(requireContext().getAttribute(R.attr.colorSurfaceVariant))
-            binding.taskDone.setTextColor(requireContext().getAttribute(R.attr.colorOnSurface))
+            binding.taskChipDone.setTextColor(requireContext().getAttribute(R.attr.colorOnSurface))
         } else {
-            binding.taskDone.chipBackgroundColor = ColorStateList.valueOf(color)
-            binding.taskDone.setTextColor(requireContext().getAttribute(R.attr.colorSurface))
-            binding.taskActive.chipBackgroundColor =
+            binding.taskChipDone.chipBackgroundColor = ColorStateList.valueOf(color)
+            binding.taskChipDone.setTextColor(requireContext().getAttribute(R.attr.colorSurface))
+            binding.taskChipActive.chipBackgroundColor =
                 ColorStateList.valueOf(requireContext().getAttribute(R.attr.colorSurfaceVariant))
-            binding.taskActive.setTextColor(requireContext().getAttribute(R.attr.colorOnSurface))
+            binding.taskChipActive.setTextColor(requireContext().getAttribute(R.attr.colorOnSurface))
         }
     }
 
@@ -741,7 +724,7 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
                 prefManager.getBoolean(AppConstants.SHOW_VOICE_TASK_KEY, true)
         binding.btnAddTask.isVisible = !isVisible
         binding.sortMenu.isVisible = !isVisible
-        binding.taskGroup.isVisible = !isVisible
+        binding.taskChipGroup.isVisible = !isVisible
         binding.reminderLayout.isVisible = !isVisible
         binding.searchView.isVisible = !isVisible
         binding.txtSort.isVisible = !isVisible

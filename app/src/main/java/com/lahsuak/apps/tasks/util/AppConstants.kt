@@ -3,7 +3,8 @@ package com.lahsuak.apps.tasks.util
 object AppConstants {
     const val WEBSITE = "https://zaap.bio/KaushalVasava"
     const val NOTIFICATION_CHANNEL_ID = "com.lahsuak.apps.mytask.notificationID"
-    const val DATE_FORMAT = "dd MMM, yy"
+    const val NOTIFICATION_CHANNEL_NAME = "Reminder"
+    const val NOTIFICATION_CHANNEL_DESCRIPTION = "Task reminder"
     const val TIME_FORMAT = "hh:mm a"
     const val REMINDER_DATE_TIME_FORMAT = "dd MMM, yy hh:mm a"
     const val TOOLBAR_DATE_TIME_FORMAT = "E, dd LLLL"
@@ -16,9 +17,6 @@ object AppConstants {
     const val HIDE_COMPLETED2 = "hide_completed2"
     const val SETTING = "SETTING_FOR_TASK_APP"
     const val DATABASE_NAME = "task_database"
-    const val TASK_KEY = "task"
-    const val TASK_TITLE = "TASK_TITLE"
-    const val TASK_STATUS = "TASK_STATUS"
     const val VIEW_TYPE = "VIEW_TYPE"
     const val SEARCH_QUERY = "searchQuery"
     const val SEARCH_INITIAL_VALUE = ""
@@ -27,8 +25,6 @@ object AppConstants {
     const val THEME_DEFAULT = "-1"
     const val UPDATE_REQUEST_CODE = 123
     const val SEPARATOR = " - "
-    const val REMINDER_DATA = "REMINDER_DATA"
-    const val REMINDER_KEY = "reminder_data"
     const val REM_KEY = "rem_key"
 
     const val LANGUAGE_SHARED_PREFERENCE = "LANGUAGE"
@@ -47,4 +43,13 @@ object AppConstants {
 
     const val PACKAGE = "package"
     const val DEPRECATION = "deprecation"
+
+    object WorkManager {
+        const val ID_KEY = "id"
+        const val MESSAGE_KEY = "message"
+        const val PARENT_TITLE_KEY = "parent_title_key"
+        const val STATUS_KEY = "status"
+        const val START_DATE_KEY = "start_date"
+        const val END_DATE_KEY = "end_date"
+    }
 }

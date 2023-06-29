@@ -1,6 +1,5 @@
 package com.lahsuak.apps.tasks.ui.fragments
 
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.InputFilter
 import android.text.InputFilter.LengthFilter
@@ -28,7 +27,6 @@ import com.lahsuak.apps.tasks.util.AppUtil.setClipboard
 import com.lahsuak.apps.tasks.util.AppUtil.setDateTime
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class AddUpdateTaskFragmentDialog : BottomSheetDialogFragment() {
@@ -43,8 +41,6 @@ class AddUpdateTaskFragmentDialog : BottomSheetDialogFragment() {
     private lateinit var subTask: SubTask
     private var selectedCategoryPosition = 0
 
-    @Inject
-    lateinit var reminderPreferences: SharedPreferences
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -139,6 +135,7 @@ class AddUpdateTaskFragmentDialog : BottomSheetDialogFragment() {
                     }
                 }
             } else {
+                task = taskViewModel.getById(args.taskId)
                 if (args.subTaskId != -1) {
                     subTask = subTaskViewModel.getBySubTaskId(args.subTaskId)
                     binding.cbImpTask.isChecked = subTask.isImportant
@@ -166,7 +163,6 @@ class AddUpdateTaskFragmentDialog : BottomSheetDialogFragment() {
                     }
                 } else {
                     subTask = SubTask(id = args.taskId, subTitle = "", sId = 0)
-                    task = taskViewModel.getById(args.taskId)
                 }
             }
         }
@@ -203,9 +199,9 @@ class AddUpdateTaskFragmentDialog : BottomSheetDialogFragment() {
                         binding.txtReminder.text = time
                         AppUtil.setupReminderData(
                             requireContext(),
+                            task.title,
                             task,
-                            calendar,
-                            reminderPreferences
+                            calendar
                         )
                         task.reminder = calendar.timeInMillis
                     }
@@ -214,9 +210,9 @@ class AddUpdateTaskFragmentDialog : BottomSheetDialogFragment() {
                         binding.txtReminder.text = time
                         AppUtil.setupReminderData(
                             requireContext(),
+                            task.title,
                             subTask,
-                            calendar,
-                            reminderPreferences
+                            calendar
                         )
                         subTask.reminder = calendar.timeInMillis
                     }

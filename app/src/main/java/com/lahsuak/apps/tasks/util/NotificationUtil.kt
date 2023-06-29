@@ -1,0 +1,86 @@
+package com.lahsuak.apps.tasks.util
+
+import android.Manifest
+import android.annotation.SuppressLint
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.Context
+import android.content.pm.PackageManager
+import android.graphics.Color
+import android.os.Build
+import androidx.core.app.ActivityCompat
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
+import androidx.navigation.NavDeepLinkBuilder
+import com.lahsuak.apps.tasks.R
+import com.lahsuak.apps.tasks.data.model.Task
+import com.lahsuak.apps.tasks.ui.fragments.SubTaskFragmentArgs
+
+object NotificationUtil {
+    @SuppressLint("MissingPermission")
+    fun createNotification(
+        context: Context,
+        id: Int,
+        title: String,
+        parentTitle: String?,
+        isDone: Boolean,
+        startDate: Long,
+        endDate: Long,
+    ) {
+        createNotificationChannel(context)
+        val task = if (parentTitle != null) {
+            Task(id = id, title = parentTitle)
+        } else {
+            val lastDate = if (endDate == -1L) null else endDate
+            Task(id, title, isDone, startDate = startDate, endDate = lastDate)
+        }
+        val pendingIntent = NavDeepLinkBuilder(context)
+            .setGraph(R.navigation.main_nav_graph)
+            .setDestination(R.id.subTaskFragment)
+            .setArguments(
+                SubTaskFragmentArgs.Builder(
+                    task, false, null
+                ).build().toBundle()
+            )
+            .createPendingIntent()
+        val notification = NotificationCompat.Builder(context, AppConstants.NOTIFICATION_CHANNEL_ID)
+            .setSmallIcon(R.drawable.ic_reminder)
+            .setContentTitle(title)
+            .setAutoCancel(true)
+            .setContentIntent(pendingIntent)
+            .setDefaults(NotificationCompat.DEFAULT_ALL)
+            .setLights(Color.WHITE, 200, 200)
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .build()
+
+        if (isPermissionGranted(context)) {
+            NotificationManagerCompat.from(context).notify(1, notification)
+        }
+    }
+
+    private fun createNotificationChannel(context: Context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(
+                AppConstants.NOTIFICATION_CHANNEL_ID,
+                AppConstants.NOTIFICATION_CHANNEL_NAME,
+                NotificationManager.IMPORTANCE_DEFAULT
+            ).apply {
+                description = AppConstants.NOTIFICATION_CHANNEL_DESCRIPTION
+            }
+            val notificationManager =
+                context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
+        }
+    }
+
+    private fun isPermissionGranted(context: Context): Boolean {
+        return if (Build.VERSION_CODES.TIRAMISU <= Build.VERSION.SDK_INT) {
+            ActivityCompat.checkSelfPermission(
+                context,
+                Manifest.permission.POST_NOTIFICATIONS
+            ) == PackageManager.PERMISSION_GRANTED
+        } else {
+            true
+        }
+    }
+}

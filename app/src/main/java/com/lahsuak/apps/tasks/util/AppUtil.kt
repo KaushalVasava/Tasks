@@ -21,32 +21,29 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.widget.TextViewCompat
 import androidx.fragment.app.FragmentActivity
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
+import androidx.work.workDataOf
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.timepicker.MaterialTimePicker
-import com.google.gson.GsonBuilder
 import com.lahsuak.apps.tasks.BuildConfig
 import com.lahsuak.apps.tasks.R
 import com.lahsuak.apps.tasks.TaskApp
 import com.lahsuak.apps.tasks.data.model.SubTask
 import com.lahsuak.apps.tasks.data.model.Task
-import com.lahsuak.apps.tasks.receiver.AlarmReceiver
-import com.lahsuak.apps.tasks.receiver.BootReceiver
-import com.lahsuak.apps.tasks.receiver.Reminder
 import com.lahsuak.apps.tasks.util.AppConstants.MAIL_TO
 import com.lahsuak.apps.tasks.util.AppConstants.MARKET_PLACE_HOLDER
-import com.lahsuak.apps.tasks.util.AppConstants.NOTIFICATION_CHANNEL_ID
 import com.lahsuak.apps.tasks.util.AppConstants.SHARE_FORMAT
 import com.lahsuak.apps.tasks.util.AppUtil.UNDERSCORE
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 
 object AppUtil {
     private const val COPY_TAG = "Copied Text"
     private const val COMMA_SEPARATOR = ","
-    private const val NOTIFICATION_CHANNEL_NAME = "Reminder"
-    private const val DESCRIPTION = "Task Reminder"
     const val UNDERSCORE = "_"
     fun <T> unsafeLazy(initializer: () -> T): Lazy<T> {
         return lazy(LazyThreadSafetyMode.NONE, initializer)
@@ -81,21 +78,21 @@ object AppUtil {
         return item?.text.toString()
     }
 
-    fun createNotification(context: Context) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-
-            val notificationChannel =
-                NotificationChannel(
-                    NOTIFICATION_CHANNEL_ID,
-                    NOTIFICATION_CHANNEL_NAME,
-                    NotificationManager.IMPORTANCE_DEFAULT
-                )
-            notificationChannel.description = DESCRIPTION
-
-            val notificationManager = context.getSystemService(NotificationManager::class.java)
-            notificationManager.createNotificationChannel(notificationChannel)
-        }
-    }
+//    fun createNotification(context: Context) {
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//
+//            val notificationChannel =
+//                NotificationChannel(
+//                    NOTIFICATION_CHANNEL_ID,
+//                    NOTIFICATION_CHANNEL_NAME,
+//                    NotificationManager.IMPORTANCE_DEFAULT
+//                )
+//            notificationChannel.description = DESCRIPTION
+//
+//            val notificationManager = context.getSystemService(NotificationManager::class.java)
+//            notificationManager.createNotificationChannel(notificationChannel)
+//        }
+//    }
 
     //settings methods
     fun moreApp(context: Context) {
@@ -250,68 +247,94 @@ object AppUtil {
         datePickerDialog.show()
     }
 
+    fun createWorkRequest(
+        context: Context,
+        id: Int,
+        message: String,
+        parentTitle: String?,
+        isDone: Boolean,
+        startDate: Long,
+        endDate: Long?,
+        timeDelayInSeconds: Long
+    ) {
+        val myWorkRequest = OneTimeWorkRequestBuilder<ReminderWorker>()
+            .setInitialDelay(timeDelayInSeconds, TimeUnit.SECONDS)
+            .setInputData(
+                workDataOf(
+                    AppConstants.WorkManager.ID_KEY to id,
+                    AppConstants.WorkManager.MESSAGE_KEY to message,
+                    AppConstants.WorkManager.PARENT_TITLE_KEY to parentTitle,
+                    AppConstants.WorkManager.STATUS_KEY to isDone,
+                    AppConstants.WorkManager.START_DATE_KEY to startDate,
+                    AppConstants.WorkManager.END_DATE_KEY to endDate,
+                )
+            )
+            .build()
+        WorkManager.getInstance(context).enqueue(myWorkRequest)
+    }
+
     inline fun <reified M> setupReminderData(
         context: Context,
+        title: String,
         data: M,
-        calendar: Calendar,
-        reminderPreferences: SharedPreferences
+        calendar: Calendar
     ) {
-        val intent = when (data) {
+        val todayDateTime = Calendar.getInstance()
+
+        // 8
+        val delayInSeconds =
+            (calendar.timeInMillis / 1000L) - (todayDateTime.timeInMillis / 1000L)
+        when (data) {
             is Task -> {
-                BootReceiver.timeList.add(
-                    Reminder(
-                        calendar.timeInMillis,
-                        data.id.toString() + AppConstants.SEPARATOR + data.isDone.toString(),
-                        data.title
-                    )
+                createWorkRequest(
+                    context,
+                    data.id,
+                    data.title,
+                    null,
+                    data.isDone,
+                    data.startDate!!,
+                    data.endDate,
+                    delayInSeconds
                 )
-                val json = GsonBuilder().create().toJson(BootReceiver.timeList)
-                reminderPreferences.edit().apply {
-                    putString(AppConstants.REMINDER_KEY, json)
-                    apply()
-                }
-                Intent(context, AlarmReceiver::class.java).apply {
-                    putExtra(
-                        AppConstants.TASK_KEY,
-                        "${data.id}${AppConstants.SEPARATOR}${data.isDone}"
-                    )
-                    putExtra(AppConstants.TASK_TITLE, data.title)
-                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                }
             }
 
             is SubTask -> {
-                Intent(context, AlarmReceiver::class.java).apply {
-                    putExtra(AppConstants.TASK_KEY, data.id.toString())
-                    putExtra(AppConstants.TASK_TITLE, data.subTitle)
-                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                }
+                createWorkRequest(
+                    context,
+                    data.id,
+                    data.subTitle,
+                    title,
+                    data.isDone,
+                    data.dateTime?:System.currentTimeMillis(),
+                    null,
+                    delayInSeconds
+                )
             }
 
             else -> {
                 throw IllegalArgumentException()
             }
         }
-        val pendingIntentFlag =
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                PendingIntent.FLAG_IMMUTABLE
-            } else {
-                0
-            }
-        val pendingIntent = PendingIntent.getBroadcast(
-            context,
-            System.currentTimeMillis().toInt(),
-            intent,
-            pendingIntentFlag
-        )
+//        val pendingIntentFlag =
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//                PendingIntent.FLAG_IMMUTABLE
+//            } else {
+//                0
+//            }
+//        val pendingIntent = PendingIntent.getBroadcast(
+//            context,
+//            System.currentTimeMillis().toInt(),
+//            intent,
+//            pendingIntentFlag
+//        )
 
-        val alarmManager =
-            context.getSystemService(AppCompatActivity.ALARM_SERVICE) as AlarmManager
-        alarmManager.setExact(
-            AlarmManager.RTC_WAKEUP,
-            calendar.timeInMillis,
-            pendingIntent
-        )
+//        val alarmManager =
+//            context.getSystemService(AppCompatActivity.ALARM_SERVICE) as AlarmManager
+//        alarmManager.setExact(
+//            AlarmManager.RTC_WAKEUP,
+//            calendar.timeInMillis,
+//            pendingIntent
+//        )
     }
 
     @SuppressLint("QueryPermissionsNeeded")

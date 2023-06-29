@@ -16,7 +16,6 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
-import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ActionMode
@@ -109,17 +108,14 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
                 viewModel.insert(task)
             }
         }
-    private val permissionResultLauncher: ActivityResultLauncher<Array<String>> =
+    private val permissionResultLauncher =
         registerForActivityResult(
-            ActivityResultContracts.RequestMultiplePermissions()
-        ) { permissions ->
-            if (permissions.all { it.value }) {
-                /* no-op */
-            } else {
+            ActivityResultContracts.RequestPermission()
+        ) { isGranted ->
+            if (!isGranted)
                 context.toast {
                     getString(R.string.user_cancelled_the_operation)
                 }
-            }
         }
 
     override fun onCreateView(
@@ -365,21 +361,21 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
     }
 
     private fun setVisibilityOfTasks() {
-        binding.taskActive.setOnClickListener {
-            if (binding.taskActive.isChecked) {
+        binding.taskChipActive.setOnClickListener {
+            if (binding.taskChipActive.isChecked) {
                 setButtonVisibility(true)
                 viewModel.onHideCompleted(true, requireContext())
             } else {
-                binding.taskActive.isChecked = true
+                binding.taskChipActive.isChecked = true
             }
             isTaskActive = true
         }
-        binding.taskDone.setOnClickListener {
-            if (binding.taskDone.isChecked) {
+        binding.taskChipDone.setOnClickListener {
+            if (binding.taskChipDone.isChecked) {
                 setButtonVisibility(false)
                 viewModel.onHideCompleted(false, requireContext())
             } else {
-                binding.taskDone.isChecked = true
+                binding.taskChipDone.isChecked = true
             }
             isTaskActive = false
         }
@@ -504,7 +500,7 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
     private fun setTaskObserver() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.tasksFlow.collectLatest {
-                val data = if (binding.taskActive.isChecked) {
+                val data = if (binding.taskChipActive.isChecked) {
                     it.filter { task ->
                         !task.isDone
                     }
@@ -531,7 +527,7 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
             binding.taskRecyclerView.isVisible = hasTasks
             binding.txtTaskProgress.isVisible = hasTasks
             binding.progressBar.isVisible = hasTasks
-            binding.taskGroup.isVisible = hasTasks && !actionModeEnable
+            binding.taskChipGroup.isVisible = hasTasks && !actionModeEnable
             val value = (count.toFloat() / it.size.toFloat()) * TOTAL_PROGRESS_VALUE
             binding.progressBar.progress = value.toInt()
             binding.txtTaskProgress.text = getString(R.string.task_progress, count, it.size)
@@ -708,7 +704,7 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
                 prefManager.getBoolean(AppConstants.SHOW_VOICE_TASK_KEY, true)
         binding.btnAddTask.isVisible = !isVisible
         binding.sortMenu.isVisible = !isVisible
-        binding.taskGroup.isVisible = !isVisible
+        binding.taskChipGroup.isVisible = !isVisible
         binding.btnView.isVisible = !isVisible
         binding.searchView.isVisible = !isVisible
         binding.txtSort.isVisible = !isVisible

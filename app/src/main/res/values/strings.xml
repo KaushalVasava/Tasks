@@ -105,7 +105,7 @@
     <string name="permission_denied">Permission denied</string>
     <string name="open_settings">Open settings</string>
     <string name="no_application_found">Application not found</string>
-    <string name="user_cancelled_the_operation">User cancelled the operation</string>
+    <string name="user_cancelled_the_operation">Please allow notification permission from settings else your reminder not working!!</string>
     <string name="downloading_start">Downloading started</string>
     <string name="update_failed">Update failed</string>
     <string name="restart">Restart</string>

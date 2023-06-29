@@ -1,26 +1,24 @@
 package com.lahsuak.apps.tasks.ui.fragments
 
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.lahsuak.apps.tasks.data.model.Task
-import com.lahsuak.apps.tasks.ui.viewmodel.TaskViewModel
-import dagger.hilt.android.AndroidEntryPoint
-import android.view.WindowManager
-import androidx.lifecycle.lifecycleScope
 import com.lahsuak.apps.tasks.R
+import com.lahsuak.apps.tasks.data.model.Task
 import com.lahsuak.apps.tasks.databinding.DialogAddUpdateTaskBinding
+import com.lahsuak.apps.tasks.ui.viewmodel.TaskViewModel
 import com.lahsuak.apps.tasks.util.AppConstants
 import com.lahsuak.apps.tasks.util.AppUtil
 import com.lahsuak.apps.tasks.util.AppUtil.setDateTime
 import com.lahsuak.apps.tasks.util.toTrimString
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class ShortcutFragmentDialog : BottomSheetDialogFragment() {
@@ -31,8 +29,6 @@ class ShortcutFragmentDialog : BottomSheetDialogFragment() {
     private val args: ShortcutFragmentDialogArgs by navArgs()
     private val model: TaskViewModel by viewModels()
     private lateinit var task: Task
-    @Inject
-    lateinit var reminderPreferences: SharedPreferences
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
@@ -78,9 +74,9 @@ class ShortcutFragmentDialog : BottomSheetDialogFragment() {
                 binding.txtReminder.text = time
                 AppUtil.setupReminderData(
                     requireContext(),
+                    task.title,
                     task,
-                    calendar,
-                    reminderPreferences
+                    calendar
                 )
                 task.reminder = calendar.timeInMillis
             }
