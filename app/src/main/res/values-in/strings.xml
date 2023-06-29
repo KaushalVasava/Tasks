@@ -51,7 +51,6 @@
     <string name="reminder">Pengingat</string>
     <string name="add_task_by_speak">Tambahkan tugas dengan berbicara</string>
     <string name="save">Simpan</string>
-    <string name="cancel_timer">Batalkan pengatur waktu</string>
     <string name="overdue">Terlambat</string>
 
     <string name="mark_as_completed">Tandai sebagai selesai</string>

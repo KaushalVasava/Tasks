@@ -51,7 +51,6 @@
     <string name="reminder">Erinnerung</string>
     <string name="add_task_by_speak">Aufgabe durch Sprechen hinzufügen</string>
     <string name="save">Speichern</string>
-    <string name="cancel_timer">Timer abbrechen</string>
     <string name="overdue">Überfällig</string>
 
     <string name="mark_as_completed">Als abgeschlossen markieren</string>

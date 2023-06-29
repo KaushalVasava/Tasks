@@ -51,7 +51,6 @@
     <string name="reminder"> یاد دہانی</string>
     <string name="add_task_by_speak"> بول کر کام شامل کریں</string>
     <string name="save">محفوظ کریں</string>
-    <string name="cancel_timer"> ٹائمر منسوخ کریں</string>
     <string name="overdue"> زائد المیعاد</string>
 
     <string name="mark_as_completed">مکمل کے طور پر نشان زد کریں</string>

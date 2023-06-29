@@ -48,7 +48,6 @@
     <string name="reminder">リマインダー</string>
     <string name="add_task_by_speak">話すことでタスクを追加する</string>
     <string name="save">保存</string>
-    <string name="cancel_timer">タイマーをキャンセル</string>
     <string name="overdue">期限切れ</string>
 
     <string name="mark_as_completed">完了としてマーク</string>

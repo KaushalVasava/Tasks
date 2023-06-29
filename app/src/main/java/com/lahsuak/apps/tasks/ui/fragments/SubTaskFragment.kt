@@ -3,6 +3,7 @@ package com.lahsuak.apps.tasks.ui.fragments
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
+import android.content.SharedPreferences
 import android.content.res.ColorStateList
 import android.graphics.Canvas
 import android.graphics.Color
@@ -13,12 +14,13 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ActionMode
 import androidx.appcompat.widget.SearchView
-import androidx.core.content.ContextCompat
+import androidx.core.view.doOnLayout
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -48,7 +50,9 @@ import com.lahsuak.apps.tasks.ui.adapters.SubTaskAdapter
 import com.lahsuak.apps.tasks.ui.fragments.TaskFragment.Companion.TOTAL_PROGRESS_VALUE
 import com.lahsuak.apps.tasks.ui.viewmodel.SubTaskViewModel
 import com.lahsuak.apps.tasks.util.*
+import com.lahsuak.apps.tasks.util.AppConstants.SEARCH_INITIAL_VALUE
 import com.lahsuak.apps.tasks.util.AppUtil.createNotification
+import com.lahsuak.apps.tasks.util.AppUtil.setDateTime
 import com.lahsuak.apps.tasks.util.AppUtil.unsafeLazy
 import dagger.hilt.android.AndroidEntryPoint
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
@@ -56,6 +60,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.util.*
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class SubTaskFragment : Fragment(R.layout.fragment_subtask),
@@ -65,6 +70,8 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
     private val binding: FragmentSubtaskBinding
         get() = _binding!!
 
+    @Inject
+    lateinit var reminderPreferences: SharedPreferences
     private val subTaskViewModel: SubTaskViewModel by viewModels()
     private val args: SubTaskFragmentArgs by navArgs()
     private val navController: NavController by unsafeLazy {
@@ -125,6 +132,13 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         (activity as AppCompatActivity).supportActionBar?.hide()
+        binding.root.doOnLayout {
+            if (binding.root.measuredHeight > binding.root.measuredWidth) {
+                binding.flow.setMaxElementsWrap(1)
+            } else {
+                binding.flow.setMaxElementsWrap(2)
+            }
+        }
         task = args.task
         initView()
         subTaskViewModel.taskId.value = task.id
@@ -145,6 +159,20 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
         subTaskEventCollector() //subtask event handler
         addClickListeners()
         setTransition()
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            backPressedDispatcher
+        )
+    }
+
+
+    private val backPressedDispatcher = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            // Redirect to our own function
+            subTaskViewModel.searchQuery.value = SEARCH_INITIAL_VALUE
+            searchView = null
+            navController.popBackStack()
+        }
     }
 
     private fun initView() {
@@ -161,13 +189,16 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
         binding.btnVoiceTask.isVisible =
             prefManager.getBoolean(AppConstants.SHOW_VOICE_TASK_KEY, true)
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            viewType = subTaskViewModel.preferencesFlow.first().viewType
-            binding.subTaskRecyclerView.layoutManager =
-                if (viewType) {
-                    StaggeredGridLayoutManager(2, RecyclerView.VERTICAL)
-                } else {
-                    LinearLayoutManager(requireContext())
-                }
+            val tempViewType = subTaskViewModel.preferencesFlow.first().viewType
+            if (tempViewType != viewType) {
+                binding.subTaskRecyclerView.layoutManager =
+                    if (viewType) {
+                        StaggeredGridLayoutManager(2, RecyclerView.VERTICAL)
+                    } else {
+                        LinearLayoutManager(requireContext())
+                    }
+                viewType = tempViewType
+            }
         }
         binding.subTaskRecyclerView.apply {
             setHasFixedSize(true)
@@ -216,11 +247,21 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
             AppUtil.speakToAddTask(requireActivity(), speakLauncher)
         }
         binding.reminderLayout.setOnClickListener {
-            subTaskViewModel.showReminder(
-                binding,
-                requireActivity(),
-                task
-            )
+            requireActivity().setDateTime { calendar, time ->
+                binding.txtReminder.text = time
+                AppUtil.setupReminderData(
+                    requireContext(),
+                    task,
+                    calendar,
+                    reminderPreferences
+                )
+                val diff = DateUtil.getTimeDiff(calendar.timeInMillis)
+                if (diff < 0) {
+                    binding.txtReminder.setTextColor(requireContext().getAttribute(R.attr.colorError))
+                }
+                binding.txtReminder.isSelected = true
+                task.reminder = calendar.timeInMillis
+            }
         }
         binding.btnCancelReminder.setOnClickListener {
             subTaskViewModel.cancelReminder(
@@ -229,14 +270,7 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
                 binding.txtReminder
             )
             binding.btnCancelReminder.isVisible = false
-            binding.reminderLayout.background = null
-            binding.txtReminder.isEnabled = false
-            binding.txtReminder.setTextColor(
-                requireContext().getAttribute(R.attr.colorOnSurface)
-            )
-            binding.imgReminder.setColorFilter(
-                requireContext().getAttribute(R.attr.colorOnSurface)
-            )
+            binding.txtReminder.isSelected = false
         }
         binding.cbTaskCompleted.setOnCheckedChangeListener { _, isChecked ->
             binding.cbTaskCompleted.isChecked = isChecked
@@ -263,30 +297,16 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
             navController.navigate(action)
         }
         binding.etStartDate.setOnClickListener {
-            val datePickerDialog = MaterialDatePicker
-                .Builder
-                .datePicker()
-                .setTitleText(getString(R.string.select_project_start_date))
-                .build()
-
-            datePickerDialog.show(childFragmentManager, "DATE_PICKER")
-            datePickerDialog.addOnPositiveButtonClickListener {
-                binding.etStartDate.setText(DateUtil.getDate(it))
-                task = task.copy(startDate = it)
+            requireActivity().setDateTime{ calendar, time ->
+                binding.etStartDate.setText(time)
+                task = task.copy(startDate = calendar.timeInMillis)
             }
         }
         binding.etEndDate.setOnClickListener {
-            val datePickerDialog = MaterialDatePicker
-                .Builder
-                .datePicker()
-                .setTitleText(getString(R.string.select_project_end_date))
-                .build()
-
-            datePickerDialog.show(childFragmentManager, "DATE_PICKER")
-            datePickerDialog.addOnPositiveButtonClickListener {
-                binding.etEndDate.setText(DateUtil.getDate(it))
+            requireActivity().setDateTime{ calendar, time ->
+                binding.etEndDate.setText(time)
                 if (binding.etStartDate.text.isNullOrEmpty().not()) {
-                    task = task.copy(endDate = it)
+                    task = task.copy(endDate = calendar.timeInMillis)
                     subTaskViewModel.update(task)
                 }
             }
@@ -398,19 +418,13 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
             binding.btnCancelReminder.isVisible =
                 if (taskReminder != null) {
                     val diff = DateUtil.getTimeDiff(taskReminder)
-                    binding.txtReminder.text = DateUtil.getReminderDateTime(taskReminder)
+                    binding.txtReminder.text = DateUtil.getDate(taskReminder)
                     binding.txtReminder.isSelected = true
-                    binding.imgReminder.setColorFilter(requireContext().getAttribute(R.attr.colorOnSurface))
-                    binding.reminderLayout.background = ContextCompat.getDrawable(
-                        requireContext(),
-                        R.drawable.background_reminder
-                    )
                     if (diff < 0) {
                         binding.txtReminder.setTextColor(requireContext().getAttribute(R.attr.colorError))
                     }
                     true
                 } else {
-                    binding.reminderLayout.background = null
                     false
                 }
         }

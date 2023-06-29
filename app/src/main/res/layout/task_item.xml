@@ -18,10 +18,9 @@
             android:layout_width="wrap_content"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="4dp"
-            app:cardBackgroundColor="@color/light_blue"
             app:cardCornerRadius="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/end_date_layout">
+            app:layout_constraintEnd_toEndOf="parent">
 
             <TextView
                 android:id="@+id/txt_date"
@@ -40,34 +39,15 @@
                 tools:text="30 July,2022" />
         </com.google.android.material.card.MaterialCardView>
 
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/end_date_layout"
-            style="@style/CircularCardView"
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/end_barrier"
             android:layout_width="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="4dp"
-            app:cardBackgroundColor="?colorError"
-            app:cardCornerRadius="8dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
-
-            <TextView
-                android:id="@+id/txt_end_date"
-                style="@style/SubTitle.Bold"
-                android:layout_width="wrap_content"
-                android:drawablePadding="2dp"
-                android:gravity="center"
-                android:maxLines="3"
-                android:paddingHorizontal="4dp"
-                android:textColor="?colorSurface"
-                app:autoSizeMaxTextSize="11sp"
-                app:autoSizeMinTextSize="6sp"
-                app:autoSizeStepGranularity="0.5sp"
-                app:autoSizeTextType="uniform"
-                app:drawableStartCompat="@drawable/ic_calendar_small"
-                tools:text="30 July,2022"
-                app:drawableTint="?colorSurface" />
-        </com.google.android.material.card.MaterialCardView>
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:constraint_referenced_ids="txt_reminder,img_more,btn_delete"
+            app:layout_constraintBottom_toTopOf="@id/txt_subtask"
+            app:layout_constraintStart_toEndOf="@id/txt_title"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
             android:id="@+id/img_category"
@@ -86,10 +66,10 @@
             android:ellipsize="end"
             android:maxLines="2"
             app:layout_constraintBottom_toTopOf="@id/txt_subtask"
-            app:layout_constraintEnd_toStartOf="@id/date_layout"
+            app:layout_constraintEnd_toStartOf="@id/end_barrier"
             app:layout_constraintStart_toEndOf="@id/checkbox"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="Title" />
+            tools:text="Titlecjjdjdfjdfdjfdjfdfdffdfdfdfdfd" />
 
         <ImageView
             android:id="@+id/btn_delete"
@@ -182,7 +162,7 @@
             android:layout_marginEnd="8dp"
             android:ellipsize="end"
             android:marqueeRepeatLimit="marquee_forever"
-            app:layout_constraintBottom_toTopOf="@id/progress_bar"
+            app:layout_constraintBottom_toTopOf="@id/date_layout"
             app:layout_constraintEnd_toStartOf="@id/img_more"
             app:layout_constraintStart_toStartOf="@id/txt_title"
             app:layout_constraintTop_toBottomOf="@id/txt_title"
@@ -190,11 +170,11 @@
 
         <TextView
             android:id="@+id/txt_reminder"
-            style="@style/SubTitle"
+            style="@style/SubTitle.Bold"
             android:layout_width="wrap_content"
             android:layout_marginTop="4dp"
             android:layout_marginEnd="8dp"
-            android:background="@drawable/background_reminder"
+            android:background="@drawable/background_round"
             android:drawablePadding="2dp"
             android:elevation="4dp"
             android:paddingHorizontal="4dp"

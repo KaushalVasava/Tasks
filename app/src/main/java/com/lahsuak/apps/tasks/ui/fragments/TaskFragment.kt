@@ -22,6 +22,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ActionMode
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
+import androidx.core.view.doOnLayout
 import androidx.core.view.doOnPreDraw
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -138,7 +139,13 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         (activity as AppCompatActivity).supportActionBar?.hide()
-
+        binding.root.doOnLayout {
+            if (binding.root.measuredHeight > binding.root.measuredWidth) {
+                binding.flow.setMaxElementsWrap(1)
+            } else {
+                binding.flow.setMaxElementsWrap(2)
+            }
+        }
         binding.txtTitle.text = DateUtil.getToolbarDateTime(System.currentTimeMillis())
         val prefManager = PreferenceManager.getDefaultSharedPreferences(requireContext())
         binding.btnVoiceTask.isVisible =
@@ -166,15 +173,24 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
     private fun initView() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.preferencesFlow.collectLatest {
-                viewType = it.viewType
-                binding.taskRecyclerView.layoutManager = if (viewType) {
-                    binding.btnView.setImageResource(R.drawable.ic_list_view)
-                    StaggeredGridLayoutManager(2, RecyclerView.VERTICAL)
+                if (TaskApp.firstTime) {
+                    val tempType = viewType
+                    viewType = it.viewType
+                    isLayoutChange = tempType != viewType
                 } else {
-                    binding.btnView.setImageResource(R.drawable.ic_grid_view)
-                    LinearLayoutManager(requireContext())
+                    viewType = it.viewType
                 }
-                binding.taskRecyclerView.adapter = taskAdapter
+                if (isLayoutChange) {
+                    binding.taskRecyclerView.layoutManager = if (viewType) {
+                        binding.btnView.setImageResource(R.drawable.ic_list_view)
+                        StaggeredGridLayoutManager(2, RecyclerView.VERTICAL)
+                    } else {
+                        binding.btnView.setImageResource(R.drawable.ic_grid_view)
+                        LinearLayoutManager(requireContext())
+                    }
+                    binding.taskRecyclerView.adapter = taskAdapter
+                }
+                TaskApp.firstTime = false
             }
         }
         binding.taskRecyclerView.apply {
@@ -488,15 +504,6 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
     private fun setTaskObserver() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.tasksFlow.collectLatest {
-                if (isLayoutChange) {
-                    binding.taskRecyclerView.layoutManager =
-                        if (viewType) {
-                            StaggeredGridLayoutManager(2, RecyclerView.VERTICAL)
-                        } else {
-                            LinearLayoutManager(requireContext())
-                        }
-                    isLayoutChange = false
-                }
                 val data = if (binding.taskActive.isChecked) {
                     it.filter { task ->
                         !task.isDone
@@ -835,6 +842,7 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
         super.onSaveInstanceState(outState)
         outState.apply {
             putBoolean(VIEW_TYPE_BUNDLE_KEY, viewType)
+            putBoolean(LAYOUT_CHANGE_BUNDLE_KEY, isLayoutChange)
             putInt(COUNTER_BUNDLE_KEY, counter)
             putBoolean(IS_IN_ACTION_MODE_BUNDLE_KEY, actionModeEnable)
             putBoolean(IS_SELECT_ALL_BUNDLE_KEY, isSelectAll)
@@ -848,6 +856,7 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
         super.onViewStateRestored(savedInstanceState)
         savedInstanceState?.let {
             viewType = it.getBoolean(VIEW_TYPE_BUNDLE_KEY)
+            isLayoutChange = it.getBoolean(LAYOUT_CHANGE_BUNDLE_KEY)
             counter = it.getInt(COUNTER_BUNDLE_KEY, counter)
             actionModeEnable = it.getBoolean(IS_IN_ACTION_MODE_BUNDLE_KEY)
             isSelectAll = it.getBoolean(IS_SELECT_ALL_BUNDLE_KEY)
@@ -876,6 +885,7 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
         private const val SELECTED_ITEMS_BUNDLE_KEY = "task_selected_items_bundle_key"
         private const val OPEN_TASK_ITEMS_BUNDLE_KEY = "selected_items_bundle_key"
         private const val TASKS_STATUS_BUNDLE_KEY = "tasks_status_bundle_key"
+        private const val LAYOUT_CHANGE_BUNDLE_KEY = "layout_change_bundle_key"
         const val TOTAL_PROGRESS_VALUE = 100
     }
 }

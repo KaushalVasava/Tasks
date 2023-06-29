@@ -16,6 +16,7 @@ import dagger.hilt.android.HiltAndroidApp
 @HiltAndroidApp
 class TaskApp : Application() {
     companion object {
+        var firstTime = true
         var mylang = getLanguage()
         lateinit var appContext: Context
         val categoryTypes = mutableListOf<Category>()

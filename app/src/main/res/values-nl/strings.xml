@@ -51,7 +51,6 @@
     <string name="reminder">Herinnering</string>
     <string name="add_task_by_speak">Taak toevoegen door te spreken</string>
     <string name="save">Opslaan</string>
-    <string name="cancel_timer">Timer annuleren</string>
     <string name="overdue">Te laat</string>
 
     <string name="mark_as_completed">Markeer als voltooid</string>

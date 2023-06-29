@@ -51,7 +51,6 @@
     <string name="reminder">Rappel</string>
     <string name="add_task_by_speak">Ajouter une tâche en parlant</string>
     <string name="save">Enregistrer</string>
-    <string name="cancel_timer">Annuler le minuteur</string>
     <string name="overdue">En retard</string>
 
     <string name="mark_as_completed">Marquer comme terminé</string>

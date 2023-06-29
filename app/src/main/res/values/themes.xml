@@ -43,6 +43,13 @@
         <item name="floatingActionButtonStyle">@style/FloatingActionButtonStyle</item>
     </style>
 
+    <style name="Spinner">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:spinnerMode">dropdown</item>
+        <item name="android:popupBackground">@drawable/background_dropdown</item>
+    </style>
+
     <style name="Widget.App.ActionMode" parent="Widget.AppCompat.ActionMode">
         <item name="titleTextStyle">?attr/textAppearanceHeadline6</item>
         <item name="subtitleTextStyle">?attr/textAppearanceSubtitle1</item>
@@ -94,7 +101,6 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_margin">16dp</item>
-<!--        <item name="tint">?attr/colorOnPrimary</item>-->
     </style>
 
     <style name="CircularCardView">
@@ -111,7 +117,7 @@
         <item name="queryHint">Search product</item>
         <item name="iconifiedByDefault">false</item>
         <item name="queryBackground">@null</item>
-        <item name="android:background">@drawable/background_search</item>
+        <item name="android:background">@drawable/background_round</item>
     </style>
 
     <style name="InputTextLayout" parent="Widget.Material3.TextInputLayout.OutlinedBox">

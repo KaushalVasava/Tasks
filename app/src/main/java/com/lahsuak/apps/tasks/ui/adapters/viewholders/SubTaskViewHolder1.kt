@@ -106,7 +106,7 @@ class SubTaskViewHolder1(
             txtReminder.setTextColor(Color.BLACK)
             txtReminder.setDrawableColor(Color.BLACK)
             txtDate.text =
-                DateUtil.getTaskDateTime(
+                DateUtil.getDate(
                     subTask.dateTime ?: System.currentTimeMillis()
                 )
 
@@ -164,7 +164,7 @@ class SubTaskViewHolder1(
                     txtReminder.setTextColor(ContextCompat.getColor(context, R.color.red))
                     context.getString(R.string.overdue)
                 } else {
-                    DateUtil.getReminderDateTime(taskReminder)
+                    DateUtil.getDate(taskReminder)
                 }
             }
         }

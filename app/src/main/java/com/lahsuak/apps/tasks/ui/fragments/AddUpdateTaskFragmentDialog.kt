@@ -1,5 +1,6 @@
 package com.lahsuak.apps.tasks.ui.fragments
 
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.InputFilter
 import android.text.InputFilter.LengthFilter
@@ -24,10 +25,10 @@ import com.lahsuak.apps.tasks.ui.viewmodel.TaskViewModel
 import com.lahsuak.apps.tasks.util.*
 import com.lahsuak.apps.tasks.util.AppConstants.REM_KEY
 import com.lahsuak.apps.tasks.util.AppUtil.setClipboard
-import com.lahsuak.apps.tasks.util.AppUtil.showReminder
-import com.lahsuak.apps.tasks.util.AppUtil.showSubTaskReminder
+import com.lahsuak.apps.tasks.util.AppUtil.setDateTime
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class AddUpdateTaskFragmentDialog : BottomSheetDialogFragment() {
@@ -42,6 +43,8 @@ class AddUpdateTaskFragmentDialog : BottomSheetDialogFragment() {
     private lateinit var subTask: SubTask
     private var selectedCategoryPosition = 0
 
+    @Inject
+    lateinit var reminderPreferences: SharedPreferences
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -71,6 +74,8 @@ class AddUpdateTaskFragmentDialog : BottomSheetDialogFragment() {
     private fun setVisibility() {
         if (args.navigateFromSubtask) {
             binding.categoryMenu.visibility = View.GONE
+            binding.endLayout.visibility = View.GONE
+            binding.startLayout.visibility = View.GONE
         } else {
             binding.txtRename.filters = arrayOf<InputFilter>(LengthFilter(40))
         }
@@ -114,11 +119,11 @@ class AddUpdateTaskFragmentDialog : BottomSheetDialogFragment() {
                     val taskReminder = task.reminder
                     binding.txtReminder.isSelected = taskReminder != null
                     if (taskReminder != null) {
-                        binding.txtReminder.text = DateUtil.getReminderDateTime(taskReminder)
+                        binding.txtReminder.text = DateUtil.getDate(taskReminder)
                         val diff = DateUtil.getTimeDiff(taskReminder)
                         binding.txtReminder.background = ContextCompat.getDrawable(
                             requireContext(),
-                            R.drawable.background_reminder
+                            R.drawable.background_round
                         )
                         if (diff < 0) {
                             binding.txtReminder.setTextColor(
@@ -141,11 +146,11 @@ class AddUpdateTaskFragmentDialog : BottomSheetDialogFragment() {
                     val taskReminder = subTask.reminder
                     binding.txtReminder.isSelected = taskReminder != null
                     if (taskReminder != null) {
-                        binding.txtReminder.text = DateUtil.getReminderDateTime(taskReminder)
+                        binding.txtReminder.text = DateUtil.getDate(taskReminder)
                         val diff = DateUtil.getTimeDiff(taskReminder)
                         binding.txtReminder.background = ContextCompat.getDrawable(
                             requireContext(),
-                            R.drawable.background_reminder
+                            R.drawable.background_round
                         )
                         if (diff < 0) {
                             binding.txtReminder.setTextColor(
@@ -160,6 +165,7 @@ class AddUpdateTaskFragmentDialog : BottomSheetDialogFragment() {
                         binding.txtReminder.background = null
                     }
                 } else {
+                    subTask = SubTask(id = args.taskId, subTitle = "", sId = 0)
                     task = taskViewModel.getById(args.taskId)
                 }
             }
@@ -193,9 +199,27 @@ class AddUpdateTaskFragmentDialog : BottomSheetDialogFragment() {
                         title = binding.txtRename.toTrimString(),
                         isImp = binding.cbImpTask.isChecked
                     )
-                    task = showReminder(requireActivity(), binding.txtReminder, task)
+                    requireActivity().setDateTime { calendar, time ->
+                        binding.txtReminder.text = time
+                        AppUtil.setupReminderData(
+                            requireContext(),
+                            task,
+                            calendar,
+                            reminderPreferences
+                        )
+                        task.reminder = calendar.timeInMillis
+                    }
                 } else {
-                    subTask = showSubTaskReminder(requireActivity(), binding.txtReminder, subTask)
+                    requireActivity().setDateTime { calendar, time ->
+                        binding.txtReminder.text = time
+                        AppUtil.setupReminderData(
+                            requireContext(),
+                            subTask,
+                            calendar,
+                            reminderPreferences
+                        )
+                        subTask.reminder = calendar.timeInMillis
+                    }
                 }
             }
         }
@@ -210,7 +234,7 @@ class AddUpdateTaskFragmentDialog : BottomSheetDialogFragment() {
             datePickerDialog.show(childFragmentManager, "DATE_PICKER")
             datePickerDialog.addOnPositiveButtonClickListener {
                 binding.etStartDate.setText(DateUtil.getDate(it))
-                task = Task(id=0,title= binding.txtRename.text.toString(),startDate = it)
+                task = Task(id = 0, title = binding.txtRename.text.toString(), startDate = it)
             }
         }
         binding.etEndDate.setOnClickListener {
@@ -240,9 +264,8 @@ class AddUpdateTaskFragmentDialog : BottomSheetDialogFragment() {
                         id = 0,
                         title = binding.txtRename.toTrimString(),
                         isImp = binding.cbImpTask.isChecked,
-                        startDate = task.startDate ?: System.currentTimeMillis(),
-                        color = TaskApp.categoryTypes[selectedCategoryPosition].order,
-                        endDate = task.endDate
+                        startDate = System.currentTimeMillis(),
+                        color = TaskApp.categoryTypes[selectedCategoryPosition].order
                     )
                 }
                 taskViewModel.insert(task)

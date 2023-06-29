@@ -5,7 +5,7 @@ object AppConstants {
     const val NOTIFICATION_CHANNEL_ID = "com.lahsuak.apps.mytask.notificationID"
     const val DATE_FORMAT = "dd MMM, yy"
     const val TIME_FORMAT = "hh:mm a"
-    const val REMINDER_DATE_TIME_FORMAT = "dd MMM, yyyy hh:mm a"
+    const val REMINDER_DATE_TIME_FORMAT = "dd MMM, yy hh:mm a"
     const val TOOLBAR_DATE_TIME_FORMAT = "E, dd LLLL"
     const val MAIL_TO = "mailto:"
     const val MARKET_PLACE_HOLDER = "market://details?id="

@@ -50,7 +50,6 @@
     <string name="reminder">अनुस्मारक</string>
     <string name="add_task_by_speak">बोलकर कार्य जोड़ें</string>
     <string name="save">सहेजें</string>
-    <string name="cancel_timer">टाइमर रद्द करें</string>
     <string name="overdue">अतिदेय</string>
 
     <string name="mark_as_completed">पूर्ण के रूप में चिह्नित करें</string>
@@ -122,10 +121,10 @@
     <string name="feedback_from_app">%s, %s से प्रतिक्रिया</string>
     <string name="add_task_or_subtask">नया कार्य या उपकार्य जोड़ें</string>
 
-    <string name="name">नाम</string>
-    <string name="name_desc">नाम विवरण</string>
-    <string name="date">दिनांक</string>
-    <string name="date_desc">दिनांक विवरण</string>
-    <string name="category">श्रेणी</string>
-    <string name="category_desc">श्रेणी विवरण</string>
+    <string name="name">नाम ⬇</string>
+    <string name="name_desc">नाम ⬆</string>
+    <string name="date">दिनांक ⬇</string>
+    <string name="date_desc">दिनांक ⬆</string>
+    <string name="category">श्रेणी ⬇</string>
+    <string name="category_desc">श्रेणी ⬆</string>
 </resources>

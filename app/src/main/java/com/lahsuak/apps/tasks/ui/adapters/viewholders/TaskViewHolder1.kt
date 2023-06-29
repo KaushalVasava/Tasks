@@ -1,10 +1,8 @@
 package com.lahsuak.apps.tasks.ui.adapters.viewholders
 
-import android.annotation.SuppressLint
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.Paint
-import android.os.Build
 import android.text.util.Linkify
 import android.util.TypedValue
 import androidx.core.content.ContextCompat
@@ -31,7 +29,7 @@ class TaskViewHolder1(
     private val adapter: TaskAdapter,
     private val binding: TaskItemBinding,
     private val listener: TaskAdapter.TaskListener,
-    private val selectionListener: SelectionListener,
+    private val selectionListener: SelectionListener
 ) : RecyclerView.ViewHolder(binding.root) {
     companion object {
         const val OPEN_ROTATION_ANGLE = 0F
@@ -52,17 +50,18 @@ class TaskViewHolder1(
                     listener.setExpandCollapseState(position, txtSubtask.isVisible)
                 }
             }
-            root.setOnClickListener {
+            itemView.setOnClickListener {
                 val position = adapterPosition
                 if (position != RecyclerView.NO_POSITION) {
                     val task = adapter.currentList[position]
-                    binding.root.transitionName = task.title
+                    itemView.transitionName = task.title
                     if (selectionListener.getActionModeStatus()) {
-                        root.strokeWidth = if (!selectionListener.getItemStatus(position))
-                            5
-                        else {
-                            0
-                        }
+                        root.strokeWidth =
+                            if (!selectionListener.getItemStatus(position))
+                                5
+                            else {
+                                0
+                            }
                     }
                     listener.onItemClicked(task, position, root)
                 }
@@ -85,16 +84,17 @@ class TaskViewHolder1(
                     }
                 }
             }
-            root.setOnLongClickListener {
+            itemView.setOnLongClickListener {
                 val position = adapterPosition
                 if (position != RecyclerView.NO_POSITION) {
                     listener.onAnyItemLongClicked(position)
                     if (!selectionListener.getSelectedItemEmpty()) {
-                        root.strokeWidth = if (selectionListener.getItemStatus(position)) {
-                            5
-                        } else {
-                            0
-                        }
+                        root.strokeWidth =
+                            if (selectionListener.getItemStatus(position)) {
+                                5
+                            } else {
+                                0
+                            }
                     }
                 }
                 return@setOnLongClickListener true
@@ -104,7 +104,7 @@ class TaskViewHolder1(
 
     fun bind(task: Task) {
         binding.apply {
-            val context = root.context
+            val context = binding.root.context
             val prefManager = PreferenceManager.getDefaultSharedPreferences(context)
             val progress = prefManager.getBoolean(TASK_PROGRESS_KEY, false)
             val showReminder = prefManager.getBoolean(SHOW_REMINDER_KEY, true)
@@ -114,19 +114,21 @@ class TaskViewHolder1(
             txtTitle.text = task.title
             Linkify.addLinks(txtTitle, Linkify.ALL)
             txtTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, txtSize)
-            endDateLayout.isVisible = task.endDate != null
-//            task.endDate?.let {
-//                txtEndDate.text = DateUtil.getDate(it)
-//            }
-            txtDate.text = DateUtil.getDateRange(task.startDate?:System.currentTimeMillis(), task.endDate)
-
-//            task.startDate?.let {
-//                txtDate.text = DateUtil.getDate(it)
-//            }
+            txtDate.text =
+                DateUtil.getDateRange(task.startDate ?: System.currentTimeMillis(), task.endDate)
             val color = TaskApp.categoryTypes[task.color].color
             imgCategory.setColorFilter(color)
             progressBar.progressTintList = ColorStateList.valueOf(color)
-            dateLayout.setCardBackgroundColor(color)
+            txtDate.isSelected =
+                if (task.endDate != null && DateUtil.getTimeDiff(task.endDate!!) < 0) {
+                    txtDate.text = context.getString(R.string.overdue)
+                    txtDate.setTextColor(context.getAttribute(R.attr.colorError))
+                    dateLayout.setCardBackgroundColor(null)
+                    false
+                } else {
+                    dateLayout.setCardBackgroundColor(color)
+                    true
+                }
             txtReminder.backgroundTintList = ColorStateList.valueOf(color)
             txtReminder.setTextColor(Color.BLACK)
             txtReminder.setDrawableColor(Color.BLACK)
@@ -187,7 +189,7 @@ class TaskViewHolder1(
                     txtReminder.setTextColor(context.getAttribute(R.attr.colorError))
                     context.getString(R.string.overdue)
                 } else {
-                    DateUtil.getReminderDateTime(taskReminder)
+                    DateUtil.getDate(taskReminder)
                 }
             }
             val isProgressVisible =

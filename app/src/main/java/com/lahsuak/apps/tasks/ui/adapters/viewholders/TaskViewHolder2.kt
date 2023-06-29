@@ -190,7 +190,7 @@ class TaskViewHolder2(
                     txtReminder.setTextColor(context.getAttribute(R.attr.colorError))
                     context.getString(R.string.overdue)
                 } else {
-                    DateUtil.getReminderDateTime(taskReminder)
+                    DateUtil.getDate(taskReminder)
                 }
             }
             val isProgressVisible =

@@ -54,7 +54,6 @@
     <string name="reminder">Reminder</string>
     <string name="add_task_by_speak">Add task by speaking</string>
     <string name="save">Save</string>
-    <string name="cancel_timer">Cancel timer</string>
     <string name="overdue">Overdue</string>
 
     <string name="mark_as_completed">Mark as completed</string>
@@ -127,12 +126,12 @@
     <string name="made_in_india" translatable="false">Made with ❤️ in India \uD83C\uDDEE\uD83C\uDDF3</string>
 
     <!--    sort type-->
-    <string name="name">Name</string>
-    <string name="name_desc">Name desc</string>
-    <string name="date" >Date</string>
-    <string name="date_desc">Date desc</string>
-    <string name="category">Category</string>
-    <string name="category_desc">Category desc</string>
+    <string name="name">Name ⬇</string>
+    <string name="name_desc">Name ⬆</string>
+    <string name="date" >Date ⬇</string>
+    <string name="date_desc">Date ⬆</string>
+    <string name="category">Category ⬇</string>
+    <string name="category_desc">Category ⬆</string>
     <string name="start_date">Start date</string>
     <string name="end_date">End date</string>
     <string name="select_project_end_date">Select project end date</string>

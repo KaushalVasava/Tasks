@@ -14,7 +14,6 @@ import android.os.Build
 import android.provider.Settings
 import android.speech.RecognizerIntent
 import android.util.TypedValue
-import android.view.View
 import android.widget.TextView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.annotation.ColorRes
@@ -199,7 +198,7 @@ object AppUtil {
         }
     }
 
-    fun  showReminder(activity: FragmentActivity, timerTxt: TextView, task: Task): Task {
+    fun FragmentActivity.setDateTime(doWork: (calendar: Calendar, time: String) -> Unit) {
         val mCalendar = Calendar.getInstance()
         val formatter = SimpleDateFormat(AppConstants.TIME_FORMAT, Locale.getDefault())
         var hour = formatter.format(mCalendar.time).substring(0, 2).trim().toInt()
@@ -207,16 +206,14 @@ object AppUtil {
 
         val isAm = formatter.format(mCalendar.time).substring(6).trim().lowercase()
 
-        if (isAm == activity.getString(R.string.pm_format))
+        if (isAm == getString(R.string.pm_format))
             hour += 12
 
         val materialTimePicker: MaterialTimePicker = MaterialTimePicker.Builder()
-            .setTitleText(activity.getString(R.string.set_time))
+            .setTitleText(getString(R.string.set_time))
             .setHour(hour)
             .setMinute(min)
             .build()
-
-        //DATE PICKER LOGIC
         val dateListener =
             DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
                 mCalendar.set(Calendar.YEAR, year)
@@ -224,8 +221,8 @@ object AppUtil {
                 mCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
 
                 materialTimePicker.show(
-                    activity.supportFragmentManager,
-                    activity.getString(R.string.set_time)
+                    supportFragmentManager,
+                    getString(R.string.set_time)
                 )
                 // dialog update the TextView accordingly
                 materialTimePicker.addOnPositiveButtonClickListener {
@@ -240,179 +237,81 @@ object AppUtil {
                         DateFormat.MEDIUM,
                         DateFormat.SHORT
                     ).format(mCalendar.time)
-
-
-                    timerTxt.text = time
-//                    binding.btnCancelReminder.visibility = View.VISIBLE
-                    val sharedPref =
-                        activity.getSharedPreferences(
-                            AppConstants.REMINDER_DATA,
-                            Context.MODE_PRIVATE
-                        ).edit()
-                    BootReceiver.timeList.add(
-                        Reminder(
-                            mCalendar.timeInMillis,
-                            task.id.toString() + AppConstants.SEPARATOR + task.isDone.toString(),
-                            task.title
-                        )
-                    )
-                    val json = GsonBuilder().create().toJson(BootReceiver.timeList)
-                    sharedPref.apply {
-                        putString(AppConstants.REMINDER_KEY, json)
-                        apply()
-                    }
-
-                    timerTxt.apply {
-                        setTextDrawableColor(activity.baseContext, R.color.black)
-                        text = time
-                        background =
-                            ContextCompat.getDrawable(activity, R.drawable.background_reminder)
-                        isSelected = true
-                    }
-
-                    val intent = Intent(activity.baseContext, AlarmReceiver::class.java).apply {
-                        putExtra(AppConstants.TASK_KEY, "${task.id}${AppConstants.SEPARATOR}${task.isDone}")
-                        putExtra(AppConstants.TASK_TITLE, task.title)
-                        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                    }
-                    val pendingIntentFlag =
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                            PendingIntent.FLAG_IMMUTABLE
-                        } else {
-                            0
-                        }
-                    val pendingIntent = PendingIntent.getBroadcast(
-                        activity.baseContext,
-                        System.currentTimeMillis().toInt(),
-                        intent,
-                        pendingIntentFlag
-                    )
-
-                    val alarmManager =
-                        activity.getSystemService(AppCompatActivity.ALARM_SERVICE) as AlarmManager
-                    alarmManager.setExact(
-                        AlarmManager.RTC_WAKEUP,
-                        mCalendar.timeInMillis,
-                        pendingIntent
-                    )
-                    val diff = DateUtil.getTimeDiff(mCalendar.timeInMillis)
-//                    if (diff < 0) {
-//                        binding.txtReminder.setTextColor(activity.getAttribute(R.attr.colorError))
-//                    }
-//                    binding.reminderLayout.background = ContextCompat.getDrawable(
-//                        activity.baseContext,
-//                        R.drawable.background_progress
-//                    )
-//                    binding.txtReminder.isSelected = true
-//                    binding.imgReminder.setColorFilter(activity.getAttribute(R.attr.colorOnSurface))
-                    task.reminder = mCalendar.timeInMillis
+                    doWork(mCalendar, time)
                 }
             }
         val datePickerDialog = DatePickerDialog(
-            activity,
+            this,
             dateListener,
             mCalendar.get(Calendar.YEAR),
             mCalendar.get(Calendar.MONTH),
             mCalendar.get(Calendar.DAY_OF_MONTH)
         )
         datePickerDialog.show()
-        return task
     }
 
-    fun showSubTaskReminder(
-        activity: FragmentActivity,
-        timerTxt: TextView,
-        subTask: SubTask
-    ): SubTask {
-
-        val mCalendar = Calendar.getInstance()
-        val formatter = SimpleDateFormat(AppConstants.TIME_FORMAT, Locale.getDefault())
-        var hour = formatter.format(mCalendar.time).substring(0, 2).trim().toInt()
-        val min = formatter.format(mCalendar.time).substring(3, 5).trim().toInt()
-
-        val isAm = formatter.format(mCalendar.time).substring(6).trim().lowercase()
-
-        /** PLEASE ADD TRANSLATION FOR ALL LANGUAGES*/
-        if (isAm == activity.getString(R.string.pm_format))
-            hour += 12
-
-        val materialTimePicker: MaterialTimePicker = MaterialTimePicker.Builder()
-            .setTitleText(activity.getString(R.string.set_time))
-            .setHour(hour)
-            .setMinute(min)
-            .build()
-
-        //DATE PICKER LOGIC
-        val dateListener =
-            DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
-                mCalendar.set(Calendar.YEAR, year)
-                mCalendar.set(Calendar.MONTH, monthOfYear)
-                mCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
-
-                materialTimePicker.show(
-                    activity.supportFragmentManager,
-                    activity.getString(R.string.set_time)
+    inline fun <reified M> setupReminderData(
+        context: Context,
+        data: M,
+        calendar: Calendar,
+        reminderPreferences: SharedPreferences
+    ) {
+        val intent = when (data) {
+            is Task -> {
+                BootReceiver.timeList.add(
+                    Reminder(
+                        calendar.timeInMillis,
+                        data.id.toString() + AppConstants.SEPARATOR + data.isDone.toString(),
+                        data.title
+                    )
                 )
-                // dialog update the TextView accordingly
-                materialTimePicker.addOnPositiveButtonClickListener {
-                    val pickedHour: Int = materialTimePicker.hour
-                    val pickedMinute: Int = materialTimePicker.minute
-
-                    mCalendar.set(Calendar.HOUR_OF_DAY, pickedHour)
-                    mCalendar.set(Calendar.MINUTE, pickedMinute)
-                    mCalendar.set(Calendar.SECOND, 0)
-
-                    val time = DateFormat.getDateTimeInstance(
-                        DateFormat.MEDIUM,
-                        DateFormat.SHORT
-                    ).format(mCalendar.time)
-
-                    timerTxt.apply {
-                        setTextDrawableColor(activity.baseContext, R.color.black)
-                        text = time
-                        background =
-                            ContextCompat.getDrawable(activity, R.drawable.background_reminder)
-                        isSelected = true
-                    }
-
-                    val intent = Intent(activity.baseContext, AlarmReceiver::class.java).apply {
-                        putExtra(AppConstants.TASK_KEY, subTask.id.toString())
-                        putExtra(AppConstants.TASK_TITLE, subTask.subTitle)
-                        putExtra(AppConstants.TASK_STATUS, subTask.isDone)
-                        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                    }
-                    val pendingIntentFlag =
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                            PendingIntent.FLAG_IMMUTABLE
-                        } else {
-                            0
-                        }
-                    val pendingIntent = PendingIntent.getBroadcast(
-                        activity.baseContext,
-                        System.currentTimeMillis().toInt(),
-                        intent,
-                        pendingIntentFlag
+                val json = GsonBuilder().create().toJson(BootReceiver.timeList)
+                reminderPreferences.edit().apply {
+                    putString(AppConstants.REMINDER_KEY, json)
+                    apply()
+                }
+                Intent(context, AlarmReceiver::class.java).apply {
+                    putExtra(
+                        AppConstants.TASK_KEY,
+                        "${data.id}${AppConstants.SEPARATOR}${data.isDone}"
                     )
-
-                    val alarmManager =
-                        activity.getSystemService(AppCompatActivity.ALARM_SERVICE) as AlarmManager
-                    alarmManager.setExact(
-                        AlarmManager.RTC_WAKEUP,
-                        mCalendar.timeInMillis,
-                        pendingIntent
-                    )
-                    subTask.reminder = mCalendar.timeInMillis
+                    putExtra(AppConstants.TASK_TITLE, data.title)
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 }
             }
-        val datePickerDialog = DatePickerDialog(
-            activity,
-            dateListener,
-            mCalendar.get(Calendar.YEAR),
-            mCalendar.get(Calendar.MONTH),
-            mCalendar.get(Calendar.DAY_OF_MONTH)
+
+            is SubTask -> {
+                Intent(context, AlarmReceiver::class.java).apply {
+                    putExtra(AppConstants.TASK_KEY, data.id.toString())
+                    putExtra(AppConstants.TASK_TITLE, data.subTitle)
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                }
+            }
+
+            else -> {
+                throw IllegalArgumentException()
+            }
+        }
+        val pendingIntentFlag =
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                PendingIntent.FLAG_IMMUTABLE
+            } else {
+                0
+            }
+        val pendingIntent = PendingIntent.getBroadcast(
+            context,
+            System.currentTimeMillis().toInt(),
+            intent,
+            pendingIntentFlag
         )
-        datePickerDialog.show()
-        return subTask
+
+        val alarmManager =
+            context.getSystemService(AppCompatActivity.ALARM_SERVICE) as AlarmManager
+        alarmManager.setExact(
+            AlarmManager.RTC_WAKEUP,
+            calendar.timeInMillis,
+            pendingIntent
+        )
     }
 
     @SuppressLint("QueryPermissionsNeeded")

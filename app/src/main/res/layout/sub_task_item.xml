@@ -15,11 +15,11 @@
 
         <TextView
             android:id="@+id/txt_reminder"
-            style="@style/SubTitle"
+            style="@style/SubTitle.Bold"
             android:layout_width="wrap_content"
             android:layout_marginTop="4dp"
             android:layout_marginEnd="8dp"
-            android:background="@drawable/background_reminder"
+            android:background="@drawable/background_round"
             android:drawablePadding="2dp"
             android:elevation="4dp"
             android:paddingHorizontal="4dp"

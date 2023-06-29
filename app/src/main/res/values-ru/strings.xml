@@ -50,7 +50,6 @@
     <string name="reminder">Напоминание</string>
     <string name="add_task_by_speak">Добавить задачу, произнеся речь</string>
     <string name="save">Сохранить</string>
-    <string name="cancel_timer">Отменить таймер</string>
     <string name="overdue">Просрочено</string>
 
     <string name="mark_as_completed">Отметить как выполненное</string>

@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.WindowInsetsControllerCompat
@@ -12,6 +13,7 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.preference.PreferenceManager
 import com.lahsuak.apps.tasks.R
+import com.lahsuak.apps.tasks.TaskApp
 import com.lahsuak.apps.tasks.TaskApp.Companion.mylang
 import com.lahsuak.apps.tasks.databinding.ActivityMainBinding
 import com.lahsuak.apps.tasks.util.AppConstants.LANGUAGE_SHARED_PREFERENCE

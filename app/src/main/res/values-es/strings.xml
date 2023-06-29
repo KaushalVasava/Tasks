@@ -51,7 +51,6 @@
     <string name="reminder">Recordatorio</string>
     <string name="add_task_by_speak">Añadir tarea hablando</string>
     <string name="save">Guardar</string>
-    <string name="cancel_timer">Cancelar temporizador</string>
     <string name="overdue">Retrasado</string>
 
     <string name="mark_as_completed">Marcar como completado</string>

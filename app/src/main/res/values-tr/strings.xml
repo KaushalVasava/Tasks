@@ -51,7 +51,6 @@
     <string name="reminder">Hatırlatıcı</string>
     <string name="add_task_by_speak">Konuşarak görev ekleyin</string>
     <string name="save">Kaydet</string>
-    <string name="cancel_timer">Zamanlayıcıyı iptal et</string>
     <string name="overdue">Gecikti</string>
 
     <string name="mark_as_completed">Tamamlandı olarak işaretle</string>

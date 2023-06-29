@@ -51,7 +51,6 @@
     <string name="reminder">Promemoria</string>
     <string name="add_task_by_speak">Aggiungi attività parlando</string>
     <string name="save">Salva</string>
-    <string name="cancel_timer">Annulla timer</string>
     <string name="overdue">Scaduto</string>
 
     <string name="mark_as_completed">Segna come completato</string>

@@ -51,7 +51,6 @@
     <string name="reminder">提醒</string>
     <string name="add_task_by_speak">語音添加任務</string>
     <string name="save">保存</string>
-    <string name="cancel_timer">取消定時器</string>
     <string name="overdue">過期</string>
 
     <string name="mark_as_completed">標記為已完成</string>

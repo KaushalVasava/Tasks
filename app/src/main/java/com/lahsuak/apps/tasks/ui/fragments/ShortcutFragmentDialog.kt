@@ -1,5 +1,6 @@
 package com.lahsuak.apps.tasks.ui.fragments
 
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -16,8 +17,10 @@ import com.lahsuak.apps.tasks.R
 import com.lahsuak.apps.tasks.databinding.DialogAddUpdateTaskBinding
 import com.lahsuak.apps.tasks.util.AppConstants
 import com.lahsuak.apps.tasks.util.AppUtil
+import com.lahsuak.apps.tasks.util.AppUtil.setDateTime
 import com.lahsuak.apps.tasks.util.toTrimString
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class ShortcutFragmentDialog : BottomSheetDialogFragment() {
@@ -28,7 +31,8 @@ class ShortcutFragmentDialog : BottomSheetDialogFragment() {
     private val args: ShortcutFragmentDialogArgs by navArgs()
     private val model: TaskViewModel by viewModels()
     private lateinit var task: Task
-
+    @Inject
+    lateinit var reminderPreferences: SharedPreferences
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
@@ -70,7 +74,16 @@ class ShortcutFragmentDialog : BottomSheetDialogFragment() {
                     startDate = System.currentTimeMillis()
                 )
             }
-            task = AppUtil.showReminder(requireActivity(), binding.txtReminder, task)
+            requireActivity().setDateTime {calendar,time->
+                binding.txtReminder.text = time
+                AppUtil.setupReminderData(
+                    requireContext(),
+                    task,
+                    calendar,
+                    reminderPreferences
+                )
+                task.reminder = calendar.timeInMillis
+            }
         }
         binding.btnSave.setOnClickListener {
             if (args.taskId == -1) {

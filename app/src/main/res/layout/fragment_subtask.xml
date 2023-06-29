@@ -10,40 +10,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/start_layout"
-            style="@style/InputTextLayout"
-            android:layout_marginEnd="8dp"
-            android:layout_marginTop="8dp"
-            app:layout_constraintEnd_toStartOf="@id/end_layout"
-            app:layout_constraintStart_toStartOf="@id/search_view"
-            app:layout_constraintTop_toBottomOf="@id/btn_share"
-            app:startIconDrawable="@drawable/ic_calendar_small">
-
-            <com.google.android.material.textfield.TextInputEditText
-                style="@style/InputEditTextLayout"
-                android:hint="@string/start_date"
-                android:inputType="date"
-                android:id="@+id/et_start_date"
-                />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/end_layout"
-            style="@style/InputTextLayout"
-            android:layout_marginStart="8dp"
-            app:layout_constraintEnd_toEndOf="@id/search_view"
-            app:layout_constraintStart_toEndOf="@id/start_layout"
-            app:layout_constraintTop_toTopOf="@id/start_layout"
-            app:startIconDrawable="@drawable/ic_calendar_small">
-
-            <com.google.android.material.textfield.TextInputEditText
-                style="@style/InputEditTextLayout"
-                android:hint="@string/end_date"
-                android:inputType="date"
-                android:id="@+id/et_end_date" />
-        </com.google.android.material.textfield.TextInputLayout>
-
         <ImageView
             android:id="@+id/btn_back"
             style="@style/IconButton"
@@ -87,190 +53,260 @@
             app:layout_constraintStart_toEndOf="@id/txt_title"
             app:layout_constraintTop_toTopOf="@id/txt_title" />
 
-        <ProgressBar
-            android:id="@+id/progress_bar"
-            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        <androidx.constraintlayout.helper.widget.Flow
+            android:id="@+id/flow"
             android:layout_width="0dp"
-            android:layout_height="20dp"
-            android:layout_margin="16dp"
+            android:layout_height="0dp"
+            app:flow_maxElementsWrap="1"
             android:layout_marginTop="8dp"
-            android:progressDrawable="@drawable/background_progress"
+            app:constraint_referenced_ids="top_layout,bottom_layout"
+            app:flow_horizontalStyle="packed"
+            app:flow_verticalStyle="spread_inside"
+            app:flow_wrapMode="chain"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/txt_title" />
 
-        <TextView
-            android:id="@+id/txt_task_progress"
-            style="@style/SubTitle"
-            android:background="@android:color/transparent"
-            android:gravity="center"
-            android:textSize="14sp"
-            app:layout_constraintBottom_toBottomOf="@id/progress_bar"
-            app:layout_constraintEnd_toEndOf="@id/progress_bar"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="@id/progress_bar"
-            app:layout_constraintTop_toTopOf="@id/progress_bar"
-            app:layout_constraintVertical_bias="1.0"
-            tools:text="0/0 subtasks completed" />
-
-        <androidx.appcompat.widget.SearchView
-            android:id="@+id/search_view"
-            style="@style/SearchView"
-            android:layout_marginTop="8dp"
-            app:layout_constraintEnd_toEndOf="@id/btn_settings"
-            app:layout_constraintStart_toStartOf="@id/btn_back"
-            app:layout_constraintTop_toBottomOf="@id/progress_bar"
-            app:queryHint="@string/search_subtask" />
-
-        <com.google.android.material.chip.ChipGroup
-            android:id="@+id/task_group"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            app:layout_constraintEnd_toEndOf="@id/btn_share"
-            app:layout_constraintTop_toBottomOf="@id/start_layout"
-            app:singleSelection="true">
-
-            <com.google.android.material.chip.Chip
-                android:id="@+id/task_active"
-                style="@style/Widget.Material3.Chip.Suggestion.Elevated"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:checked="true"
-                android:text="@string/active"
-                android:textColor="@color/chip_text_selector"
-                app:chipBackgroundColor="@color/chip_selector"
-                app:chipStrokeColor="@android:color/transparent" />
-
-            <com.google.android.material.chip.Chip
-                android:id="@+id/task_done"
-                style="@style/Widget.Material3.Chip.Suggestion.Elevated"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/done"
-                android:textColor="@color/chip_text_selector"
-                app:chipBackgroundColor="@color/chip_selector"
-                app:chipStrokeColor="@android:color/transparent" />
-
-        </com.google.android.material.chip.ChipGroup>
-
-        <TextView
-            android:id="@+id/txt_sort"
-            style="@style/SubTitle"
-            android:text="@string/sorting_option"
-            android:textSize="14sp"
-            app:layout_constraintBottom_toBottomOf="@id/btn_share"
-            app:layout_constraintStart_toStartOf="@id/search_view"
-            app:layout_constraintTop_toTopOf="@id/btn_share" />
-
-        <Spinner
-            android:id="@+id/sort_menu"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/top_layout"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:spinnerMode="dropdown"
-            app:layout_constraintBottom_toBottomOf="@id/txt_sort"
-            app:layout_constraintEnd_toStartOf="@id/btn_share"
-            app:layout_constraintStart_toEndOf="@id/txt_sort"
-            app:layout_constraintTop_toTopOf="@id/txt_sort" />
+            app:layout_constraintVertical_bias="0"
+            android:layout_height="wrap_content">
 
-        <CheckBox
-            android:id="@+id/cb_task_completed"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            android:gravity="start|center_vertical"
-            android:minWidth="24dp"
-            android:minHeight="24dp"
-            android:text="@string/mark_as_completed"
-            android:textSize="12sp"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="@id/task_group"
-            app:layout_constraintEnd_toStartOf="@id/task_group"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/task_group" />
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/start_layout"
+                style="@style/InputTextLayout"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                app:layout_constraintEnd_toStartOf="@id/end_layout"
+                app:layout_constraintStart_toStartOf="@id/search_view"
+                app:layout_constraintTop_toBottomOf="@id/btn_share"
+                app:startIconDrawable="@drawable/ic_calendar_small">
 
-        <LinearLayout
-            android:id="@+id/reminder_layout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingVertical="5dp"
-            app:layout_constraintBottom_toBottomOf="@id/task_group"
-            app:layout_constraintStart_toStartOf="@id/search_view"
-            app:layout_constraintTop_toTopOf="@id/task_group">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_start_date"
+                    style="@style/InputEditTextLayout"
+                    android:textSize="11sp"
+                    android:hint="@string/start_date"
+                    android:inputType="date" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <ImageView
-                android:id="@+id/img_reminder"
-                style="@style/IconButton"
-                android:layout_gravity="center_vertical"
-                android:layout_marginEnd="2dp"
-                android:contentDescription="@string/reminder"
-                android:padding="0dp"
-                app:tint="?colorOnSurface"
-                android:src="@drawable/ic_reminder" />
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/end_layout"
+                style="@style/InputTextLayout"
+                android:layout_marginStart="8dp"
+                app:layout_constraintEnd_toEndOf="@id/search_view"
+                app:layout_constraintStart_toEndOf="@id/start_layout"
+                app:layout_constraintTop_toTopOf="@id/start_layout"
+                app:startIconDrawable="@drawable/ic_calendar_small">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_end_date"
+                    android:textSize="11sp"
+                    style="@style/InputEditTextLayout"
+                    android:hint="@string/end_date"
+                    android:inputType="date" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <ProgressBar
+                android:id="@+id/progress_bar"
+                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                android:layout_width="0dp"
+                android:layout_height="20dp"
+                android:layout_marginHorizontal="16dp"
+                android:progressDrawable="@drawable/background_progress"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/txt_reminder"
+                android:id="@+id/txt_task_progress"
                 style="@style/SubTitle"
+                android:background="@android:color/transparent"
+                android:gravity="center"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="@id/progress_bar"
+                app:layout_constraintEnd_toEndOf="@id/progress_bar"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@id/progress_bar"
+                app:layout_constraintTop_toTopOf="@id/progress_bar"
+                app:layout_constraintVertical_bias="1.0"
+                tools:text="0/0 subtasks completed" />
+
+            <androidx.appcompat.widget.SearchView
+                android:id="@+id/search_view"
+                style="@style/SearchView"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/progress_bar"
+                app:queryHint="@string/search_subtask" />
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/task_group"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:layout_constraintEnd_toEndOf="@id/btn_share"
+                app:layout_constraintTop_toBottomOf="@id/start_layout"
+                app:singleSelection="true">
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/task_active"
+                    style="@style/Widget.Material3.Chip.Suggestion.Elevated"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="@string/active"
+                    android:textColor="@color/chip_text_selector"
+                    app:chipBackgroundColor="@color/chip_selector"
+                    app:chipStrokeColor="@android:color/transparent" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/task_done"
+                    style="@style/Widget.Material3.Chip.Suggestion.Elevated"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/done"
+                    android:textColor="@color/chip_text_selector"
+                    app:chipBackgroundColor="@color/chip_selector"
+                    app:chipStrokeColor="@android:color/transparent" />
+
+            </com.google.android.material.chip.ChipGroup>
+
+            <TextView
+                android:id="@+id/txt_sort"
+                style="@style/SubTitle"
+                android:text="@string/sorting_option"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="@id/btn_share"
+                app:layout_constraintStart_toStartOf="@id/search_view"
+                app:layout_constraintTop_toTopOf="@id/btn_share" />
+
+            <Spinner
+                android:id="@+id/sort_menu"
+                style="@style/Spinner"
+                app:layout_constraintBottom_toBottomOf="@id/txt_sort"
+                app:layout_constraintEnd_toStartOf="@id/btn_share"
+                app:layout_constraintStart_toEndOf="@id/txt_sort"
+                app:layout_constraintTop_toTopOf="@id/txt_sort" />
+
+            <CheckBox
+                android:id="@+id/cb_task_completed"
                 android:layout_width="0dp"
-                android:layout_gravity="center"
-                android:layout_weight="1"
-                android:paddingHorizontal="2dp"
-                android:text="@string/add_date_time"
-                android:textColor="@color/reminder_selector"
-                android:textSize="12sp" />
-
-            <ImageView
-                android:id="@+id/btn_cancel_reminder"
-                style="@style/IconButton"
-                android:contentDescription="@string/cancel_reminder"
-                android:padding="0dp"
-                android:src="@drawable/ic_cancel"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:gravity="start|center_vertical"
+                android:minWidth="24dp"
+                android:minHeight="24dp"
+                android:text="@string/mark_as_completed"
+                android:textSize="12sp"
                 android:visibility="gone"
-                app:tint="?colorOnSurface"
-                tools:visibility="visible" />
-        </LinearLayout>
+                app:layout_constraintBottom_toBottomOf="@id/task_group"
+                app:layout_constraintEnd_toStartOf="@id/task_group"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/task_group" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_share"
-            style="@style/Widget.Material3.Button.ElevatedButton.Icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:drawablePadding="4dp"
-            android:gravity="center"
-            android:text="@string/share"
-            app:icon="@drawable/ic_share"
-            app:layout_constraintEnd_toEndOf="@id/search_view"
-            app:layout_constraintTop_toBottomOf="@id/search_view" />
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/reminder_layout"
+                style="@style/CircularCardView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="@id/task_group"
+                app:layout_constraintStart_toStartOf="@id/search_view"
+                app:layout_constraintTop_toTopOf="@id/task_group">
 
-        <TextView
-            android:id="@+id/btn_create_new_task"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:padding="5dp"
-            android:text="@string/create_new_sub_task"
-            app:drawableTopCompat="@drawable/ic_add_task"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/search_view" />
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingVertical="5dp">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/sub_task_recycler_view"
+                    <ImageView
+                        android:id="@+id/img_reminder"
+                        style="@style/IconButton"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginEnd="2dp"
+                        android:contentDescription="@string/reminder"
+                        android:padding="0dp"
+                        android:src="@drawable/ic_reminder"
+                        app:tint="?colorOnSurface" />
+
+                    <TextView
+                        android:id="@+id/txt_reminder"
+                        style="@style/SubTitle"
+                        android:layout_width="0dp"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:paddingHorizontal="2dp"
+                        android:text="@string/add_date_time"
+                        android:textColor="@color/reminder_selector"
+                        android:textSize="12sp" />
+
+                    <ImageView
+                        android:id="@+id/btn_cancel_reminder"
+                        style="@style/IconButton"
+                        android:contentDescription="@string/cancel_reminder"
+                        android:padding="0dp"
+                        android:src="@drawable/ic_cancel"
+                        android:visibility="gone"
+                        app:tint="?colorOnSurface"
+                        tools:visibility="visible" />
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_share"
+                style="@style/Widget.Material3.Button.ElevatedButton.Icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:drawablePadding="4dp"
+                android:gravity="center"
+                android:text="@string/share"
+                app:icon="@drawable/ic_share"
+                app:layout_constraintEnd_toEndOf="@id/search_view"
+                app:layout_constraintTop_toBottomOf="@id/search_view" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/bottom_layout"
             android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:clipToPadding="false"
-            android:paddingHorizontal="8dp"
-            android:visibility="gone"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/task_group"
-            tools:listitem="@layout/sub_task_item"
-            tools:visibility="visible" />
+            android:layout_height="0dp">
+
+            <TextView
+                android:id="@+id/btn_create_new_task"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="5dp"
+                android:text="@string/create_new_sub_task"
+                app:drawableTopCompat="@drawable/ic_add_task"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/sub_task_recycler_view"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:clipToPadding="false"
+                android:paddingHorizontal="8dp"
+                android:visibility="gone"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:listitem="@layout/sub_task_item"
+                tools:visibility="visible" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton

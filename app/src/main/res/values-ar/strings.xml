@@ -48,7 +48,6 @@
     <string name="reminder"> تذكير </string>
     <string name="add_task_by_speak"> أضف مهمة عن طريق التحدث </string>
     <string name="save"> حفظ </string>
-    <string name="cancel_timer"> إلغاء المؤقت </string>
     <string name="overdue"> متأخر </string>
 
     <string name="mark_as_completed"> وضع علامة كمكتملة </string>
