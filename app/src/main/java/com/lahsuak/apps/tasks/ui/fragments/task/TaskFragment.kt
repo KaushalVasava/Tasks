@@ -148,7 +148,7 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
                 binding.flow.setMaxElementsWrap(1)
             }
         }
-        if (TaskApp.counter == MAX_COUNTER_FOR_MORE_APPS || TaskApp.counter == 0) {
+        if (TaskApp.counter % MAX_COUNTER_FOR_MORE_APPS == 0) {
             viewLifecycleOwner.lifecycleScope.launch {
                 binding.txtMoreApps.isVisible = true
                 binding.btnMoreApps.isVisible = true
@@ -312,7 +312,7 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
             navController.navigate(R.id.action_taskFragment_to_overviewFragment)
         }
         binding.btnMoreApps.setOnClickListener {
-            AppUtil.moreApp(requireContext())
+            AppUtil.openWebsite(context, AppConstants.WEBSITE)
         }
         setSortMenu()
         setVisibilityOfTasks()

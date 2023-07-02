@@ -118,7 +118,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
             true
         }
         prefMoreApp?.setOnPreferenceClickListener {
-            moreApp(requireContext())
+            AppUtil.openWebsite(context, AppConstants.WEBSITE)
             true
         }
         prefRating?.setOnPreferenceClickListener {
