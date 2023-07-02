@@ -9,9 +9,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingTop="0dp"
-        android:paddingBottom="4dp">
+        android:layout_height="match_parent">
 
         <TextView
             android:id="@+id/txt_reminder"
@@ -19,9 +17,9 @@
             android:layout_width="wrap_content"
             android:layout_marginTop="4dp"
             android:layout_marginEnd="8dp"
+            android:layout_marginBottom="4dp"
             android:background="@drawable/background_round"
             android:drawablePadding="2dp"
-            android:elevation="4dp"
             android:paddingHorizontal="4dp"
             android:textColor="@color/reminder_selector"
             android:visibility="gone"
@@ -49,8 +47,10 @@
             style="@style/CircularCardView"
             android:layout_width="wrap_content"
             android:layout_marginEnd="8dp"
+            android:layout_marginBottom="4dp"
             app:cardBackgroundColor="@color/light_blue"
             app:cardCornerRadius="8dp"
+            app:cardElevation="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/txt_title"
