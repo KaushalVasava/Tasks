@@ -120,4 +120,25 @@
     <string name="back">Terug</string>
     <string name="feedback_from_app">Feedback van %s, %s</string>
     <string name="add_task_or_subtask">Nieuwe taak of subtaak toevoegen</string>
+
+    <string name="name">Naam ⬇</string>
+    <string name="name_desc">Naam ⬆</string>
+    <string name="date" >Datum ⬇</string>
+    <string name="date_desc">Datum ⬆</string>
+    <string name="category">Categorie ⬇</string>
+    <string name="category_desc">Categorie ⬆</string>
+    <string name="start_date">Startdatum</string>
+    <string name="end_date">Einddatum</string>
+    <string name="select_project_end_date">Selecteer de einddatum van het project</string>
+    <string name="select_project_start_date">Startdatum project selecteren</string>
+    <string name="no_notification">Nog geen meldingen</string>
+    <string name="notifications">Meldingen</string>
+    <string name="sort_by_old_to_new">Oud naar nieuw</string>
+    <string name="pending">Taken in behandeling <b>%d</b></string>
+    <string name="completed">Voltooide taken <b>%d</b></string>
+
+    <string name="overview">Overzicht</string>
+    <string name="good_morning">Goedemorgen</string>
+    <string name="notification_daily_desc">Je taken zijn in behandeling, je moet ze snel afmaken</string>
+    <string name="show_voice_to_add_task_option">Toon stem om taakoptie toe te voegen</string>
 </resources>

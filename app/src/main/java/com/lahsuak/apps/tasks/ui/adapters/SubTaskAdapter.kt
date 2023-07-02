@@ -37,21 +37,20 @@ class SubTaskAdapter(
         }
     }
 
-    interface SubTaskListener {
-        fun onItemClicked(subTask: SubTask, position: Int)
-        fun onDeleteClicked(subTask: SubTask)
-        fun onCheckBoxClicked(subTask: SubTask, taskCompleted: Boolean)
-        fun onAnyItemLongClicked(position: Int)
-        fun getColor(): Int
-
-        fun cancelReminderClicked(subTask: SubTask, timerTxt: TextView)
-    }
-
     class DiffCallback : DiffUtil.ItemCallback<SubTask>() {
         override fun areItemsTheSame(oldItem: SubTask, newItem: SubTask) =
             oldItem.id == newItem.id
 
         override fun areContentsTheSame(oldItem: SubTask, newItem: SubTask) =
             oldItem == newItem
+    }
+
+    interface SubTaskListener {
+        fun onItemClicked(subTask: SubTask, position: Int)
+        fun onDeleteClicked(subTask: SubTask)
+        fun onCheckBoxClicked(subTask: SubTask, taskCompleted: Boolean)
+        fun onAnyItemLongClicked(position: Int)
+        fun getColor(): Int
+        fun cancelReminderClicked(subTask: SubTask, timerTxt: TextView)
     }
 }

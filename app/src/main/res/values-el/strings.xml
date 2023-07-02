@@ -120,4 +120,25 @@
     <string name="back">Πίσω</string>
     <string name="feedback_from_app">Σχόλια από %s, %s</string>
     <string name="add_task_or_subtask">Προσθήκη νέας εργασίας ή δευτερεύουσας εργασίας</string>
+
+    <string name="name">Όνομα ⬇</string>
+    <string name="name_desc">Όνομα ⬆</string>
+    <string name="date" >Ημερομηνία ⬇</string>
+    <string name="date_desc">Ημερομηνία ⬆</string>
+    <string name="category">Κατηγορία ⬇</string>
+    <string name="category_desc">Κατηγορία ⬆</string>
+    <string name="start_date">Ημερομηνία έναρξης</string>
+    <string name="end_date">Ημερομηνία λήξης</string>
+    <string name="select_project_end_date">Επιλέξτε την ημερομηνία λήξης του έργου</string>
+    <string name="select_project_start_date">Επιλογή ημερομηνίας έναρξης έργου</string>
+    <string name="no_notification">Δεν υπάρχουν ακόμη ειδοποιήσεις</string>
+    <string name="notifications">Ειδοποιήσεις</string>
+    <string name="sort_by_old_to_new">Παλιό σε νέο</string>
+    <string name="pending">Εργασίες σε εκκρεμότητα <b>%d</b></string>
+    <string name="completed">Ολοκληρωμένες εργασίες <b>%d</b></string>
+
+    <string name="overview">Επισκόπηση</string>
+    <string name="good_morning">Καλημέρα</string>
+    <string name="notification_daily_desc">Οι εργασίες σας εκκρεμούν, πρέπει να τις ολοκληρώσετε γρήγορα</string>
+    <string name="show_voice_to_add_task_option">Εμφάνιση επιλογής φωνής για προσθήκη εργασίας</string>
 </resources>

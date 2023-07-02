@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.fragments.SubTaskFragment">
+    tools:context=".ui.fragments.subtask.SubTaskFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -24,7 +24,7 @@
 
         <TextView
             android:id="@+id/txt_title"
-            style="@style/Title.BOLD"
+            style="@style/Title.Bold"
             android:layout_height="48dp"
             android:layout_marginHorizontal="8dp"
             android:layout_marginTop="8dp"
@@ -57,10 +57,10 @@
             android:id="@+id/flow"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            app:flow_maxElementsWrap="1"
             android:layout_marginTop="8dp"
             app:constraint_referenced_ids="top_layout,bottom_layout"
             app:flow_horizontalStyle="packed"
+            app:flow_maxElementsWrap="1"
             app:flow_verticalStyle="spread_inside"
             app:flow_wrapMode="chain"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -71,8 +71,8 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/top_layout"
             android:layout_width="0dp"
-            app:layout_constraintVertical_bias="0"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            app:layout_constraintVertical_bias="0">
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/start_layout"
@@ -87,9 +87,9 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/et_start_date"
                     style="@style/InputEditTextLayout"
-                    android:textSize="11sp"
                     android:hint="@string/start_date"
-                    android:inputType="date" />
+                    android:inputType="none"
+                    android:textSize="11sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -103,10 +103,10 @@
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/et_end_date"
-                    android:textSize="11sp"
                     style="@style/InputEditTextLayout"
                     android:hint="@string/end_date"
-                    android:inputType="date" />
+                    android:inputType="none"
+                    android:textSize="11sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <ProgressBar

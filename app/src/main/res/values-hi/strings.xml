@@ -23,7 +23,6 @@
     <string name="attachment_summary_on">आने वाले ईमेल के लिए अटैचमेंट अपने आप डाउनलोड करें</string>
     <string name="attachment_summary_off">मैन्युअल रूप से अनुरोध किए जाने पर ही अटैचमेंट डाउनलोड करें</string>
 
-
     <string name="feedback_text">फ़ीडबैक भेजें, अगर ऐप क्रैश हो रहा है \'ऐप डेटा साफ़ करें\' या इसे एक ईमेल भेजें</string>
     <string name="rating_text">इस ऐप को पसंद करते हैं? हमें Google Play Store में बताएं कि हम इसे और बेहतर कैसे बना सकते हैं</string>
     <string name="more_app_text">अन्य ऐप्स देखें</string>
@@ -127,4 +126,17 @@
     <string name="date_desc">दिनांक ⬆</string>
     <string name="category">श्रेणी ⬇</string>
     <string name="category_desc">श्रेणी ⬆</string>
+    <string name="start_date">प्रारंभ तिथि</string>
+    <string name="end_date">अंतिम तिथि</string>
+    <string name="select_project_end_date">प्रोजेक्ट समाप्ति तिथि चुनें</string>
+    <string name="select_project_start_date">प्रोजेक्ट प्रारंभ तिथि चुनें</string>
+    <string name="no_notification">अभी तक कोई सूचना नहीं</string>
+    <string name="notifications">नोटिफिकेशन</string>
+    <string name="sort_by_old_to_new">पुराने से नया</string>
+    <string name="pending">लंबित कार्य <b>%d</b></string>
+    <string name="completed">पूर्ण कार्य <b>%d</b></string>
+    <string name="overview">अवलोकन</string>
+    <string name="good_morning">सुप्रभात</string>
+    <string name="notification_daily_desc">आपके कार्य लंबित हैं, आपको उन्हें जल्दी से पूरा करना होगा</string>
+    <string name='show_voice_to_add_task_option'>कार्य विकल्प जोड़ने के लिए आवाज दिखाएं</string>
 </resources>

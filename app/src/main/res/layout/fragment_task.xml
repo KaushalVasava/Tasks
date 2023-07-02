@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.fragments.TaskFragment">
+    tools:context=".ui.fragments.task.TaskFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -14,15 +14,26 @@
 
         <TextView
             android:id="@+id/txt_title"
-            style="@style/Title.BOLD"
+            style="@style/Title.Bold"
             android:layout_height="48dp"
             android:layout_marginHorizontal="16dp"
             android:layout_marginTop="8dp"
             android:textSize="24sp"
-            app:layout_constraintEnd_toStartOf="@id/btn_settings"
+            app:layout_constraintEnd_toStartOf="@id/btn_notification"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Date today" />
+
+        <ImageView
+            android:id="@+id/btn_notification"
+            style="@style/IconButton"
+            android:contentDescription="@string/notifications"
+            android:padding="8dp"
+            android:src="@drawable/ic_reminder"
+            app:layout_constraintBottom_toBottomOf="@id/txt_title"
+            app:layout_constraintEnd_toStartOf="@id/btn_settings"
+            app:layout_constraintStart_toEndOf="@id/txt_title"
+            app:layout_constraintTop_toTopOf="@id/txt_title" />
 
         <ImageView
             android:id="@+id/btn_settings"
@@ -33,8 +44,32 @@
             android:src="@drawable/ic_settings"
             app:layout_constraintBottom_toBottomOf="@id/txt_title"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/txt_title"
+            app:layout_constraintStart_toEndOf="@id/btn_notification"
             app:layout_constraintTop_toTopOf="@id/txt_title" />
+
+        <TextView
+            android:id="@+id/txt_more_apps"
+            style="@style/Title"
+            android:textColor="?colorPrimary"
+            android:text="@string/more_app_text"
+            android:textSize="16sp"
+            android:visibility="gone"
+            app:layout_constraintEnd_toStartOf="@id/btn_more_apps"
+            app:layout_constraintStart_toStartOf="@id/txt_title"
+            app:layout_constraintTop_toBottomOf="@id/txt_title"
+            tools:visibility="visible" />
+
+        <Button
+            android:id="@+id/btn_more_apps"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/more_apps"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/txt_more_apps"
+            app:layout_constraintEnd_toEndOf="@id/btn_settings"
+            app:layout_constraintStart_toEndOf="@id/txt_more_apps"
+            app:layout_constraintTop_toTopOf="@id/txt_more_apps"
+            tools:visibility="visible" />
 
         <androidx.constraintlayout.helper.widget.Flow
             android:id="@+id/flow"
@@ -49,7 +84,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/txt_title" />
+            app:layout_constraintTop_toBottomOf="@id/btn_more_apps" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/top_layout"
@@ -64,6 +99,7 @@
                 android:layout_height="20dp"
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="8dp"
+                android:background="?selectableItemBackground"
                 android:progress="30"
                 android:progressDrawable="@drawable/background_progress"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -146,8 +182,8 @@
             <Spinner
                 android:id="@+id/sort_menu"
                 style="@style/Spinner"
-                app:layout_constraintEnd_toStartOf="@id/btn_view"
                 app:layout_constraintBottom_toBottomOf="@id/txt_sort"
+                app:layout_constraintEnd_toStartOf="@id/btn_view"
                 app:layout_constraintStart_toEndOf="@id/txt_sort"
                 app:layout_constraintTop_toTopOf="@id/txt_sort" />
         </androidx.constraintlayout.widget.ConstraintLayout>

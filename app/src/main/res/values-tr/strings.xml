@@ -121,4 +121,25 @@
     <string name="back">Geri</string>
     <string name="feedback_from_app">%s, %s\'den geri bildirim</string>
     <string name="add_task_or_subtask">Yeni görev veya alt görev ekle</string>
+
+    <string name="name">Ad ⬇</string>
+    <string name="name_desc">Ad ⬆</string>
+    <string name="date" >Tarih ⬇</string>
+    <string name="date_desc">Tarih ⬆</string>
+    <string name="category">Kategori ⬇</string>
+    <string name="category_desc">Kategori ⬆</string>
+    <string name="start_date">Başlangıç tarihi</string>
+    <string name="end_date">Bitiş tarihi</string>
+    <string name="select_project_end_date">Proje bitiş tarihini seçin</string>
+    <string name="select_project_start_date">Proje başlangıç tarihini seçin</string>
+    <string name="no_notification">Henüz bildirim yok</string>
+    <string name="notifications">Bildirimler</string>
+    <string name="sort_by_old_to_new">Eskiden yeniye</string>
+    <string name="pending">Bekleyen görevler <b>%d</b></string>
+    <string name="completed">Tamamlanan görevler <b>%d</b></string>
+
+    <string name="overview">Genel Bakış</string>
+    <string name="good_morning">Günaydın</string>
+    <string name="notification_daily_desc">Görevleriniz beklemede, onları hızlı bir şekilde bitirmeniz gerekiyor</string>
+    <string name="show_voice_to_add_task_option">Görev seçeneği eklemek için sesi göster</string>
 </resources>

@@ -26,7 +26,7 @@
 
     <string name="feedback_text">Send feedback, If the app keeps crashing \'Clear app data\' or send it an Email</string>
     <string name="rating_text">Love this app? Let us know in Google Play Store how we can make it even better</string>
-    <string name="more_app_text">Check out other apps</string>
+    <string name="more_app_text">Click here to see my other apps</string>
     <string name="share_text">Share the app with your friends and family</string>
     <string name="developer">Developer</string>
     <string name="developer_name">Kaushal Vasava</string>
@@ -125,6 +125,8 @@
     <string name="add_task_or_subtask">Add new task or subtask</string>
     <string name="made_in_india" translatable="false">Made with ❤️ in India \uD83C\uDDEE\uD83C\uDDF3</string>
 
+    <string name="percentage" translatable="false">%d %%</string>
+
     <!--    sort type-->
     <string name="name">Name ⬇</string>
     <string name="name_desc">Name ⬆</string>
@@ -136,4 +138,14 @@
     <string name="end_date">End date</string>
     <string name="select_project_end_date">Select project end date</string>
     <string name="select_project_start_date">Select project start date</string>
+    <string name="no_notification">No notifications yet</string>
+    <string name="notifications">Notifications</string>
+    <string name="sort_by_old_to_new">Old to new</string>
+    <string name="pending">Pending tasks <b>%d</b></string>
+    <string name="completed">Completed tasks <b>%d</b></string>
+
+    <string name="overview">Overview</string>
+    <string name="good_morning">Good morning</string>
+    <string name="notification_daily_desc">Your tasks are pending, You have to finish it quickly</string>
+    <string name="show_voice_to_add_task_option">Show voice to add task option</string>
 </resources>

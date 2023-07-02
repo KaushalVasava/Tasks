@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/taskFragment"
-        android:name="com.lahsuak.apps.tasks.ui.fragments.TaskFragment"
+        android:name="com.lahsuak.apps.tasks.ui.fragments.task.TaskFragment"
         android:label=""
         tools:layout="@layout/fragment_task">
 
@@ -32,10 +32,24 @@
                 android:name="subTaskId"
                 android:defaultValue="-1" />
         </action>
+        <action
+            android:id="@+id/action_taskFragment_to_notificationFragment"
+            app:destination="@id/notificationFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_taskFragment_to_overviewFragment"
+            app:destination="@id/overviewFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/subTaskFragment"
-        android:name="com.lahsuak.apps.tasks.ui.fragments.SubTaskFragment"
+        android:name="com.lahsuak.apps.tasks.ui.fragments.subtask.SubTaskFragment"
         android:label=""
         tools:layout="@layout/fragment_subtask">
         <argument
@@ -48,9 +62,13 @@
             android:name="sharedText"
             app:argType="string"
             app:nullable="true" />
+        <argument
+            android:name="isNotification"
+            app:argType="com.lahsuak.apps.tasks.data.model.Notification"
+            app:nullable="true" />
         <deepLink
             android:id="@+id/deepLink"
-            app:uri="myapp://kmv.com/editFragment/{task}{isSharedSubtask}{sharedText}" />
+            app:uri="myapp://kmv.com/editFragment/{task}{isSharedSubtask}{sharedText}{isNotification}" />
         <action
             android:id="@+id/action_subTaskFragment_to_renameFragmentDialog"
             app:destination="@id/renameFragmentDialog"
@@ -68,14 +86,14 @@
     </fragment>
     <dialog
         android:id="@+id/deleteAllCompletedDialogFragment"
-        android:name="com.lahsuak.apps.tasks.ui.fragments.DeleteAllCompletedDialogFragment"
+        android:name="com.lahsuak.apps.tasks.ui.fragments.dialog.DeleteAllCompletedDialogFragment"
         android:label="DeleteAllCompletedDialogFragment" />
     <action
         android:id="@+id/action_global_deleteAllCompletedDialogFragment"
         app:destination="@id/deleteAllCompletedDialogFragment" />
     <dialog
         android:id="@+id/deleteAllCompletedDialogFragment2"
-        android:name="com.lahsuak.apps.tasks.ui.fragments.DeleteAllCompletedDialogFragment2"
+        android:name="com.lahsuak.apps.tasks.ui.fragments.dialog.DeleteAllCompletedDialogFragment2"
         android:label="DeleteAllCompletedDialogFragment2">
         <argument
             android:name="taskID"
@@ -86,11 +104,11 @@
         app:destination="@id/deleteAllCompletedDialogFragment2" />
     <fragment
         android:id="@+id/settingsFragment"
-        android:name="com.lahsuak.apps.tasks.ui.fragments.SettingsFragment"
+        android:name="com.lahsuak.apps.tasks.ui.fragments.settings.SettingsFragment"
         android:label="@string/settings" />
     <dialog
         android:id="@+id/renameFragmentDialog"
-        android:name="com.lahsuak.apps.tasks.ui.fragments.AddUpdateTaskFragmentDialog"
+        android:name="com.lahsuak.apps.tasks.ui.fragments.dialog.AddUpdateTaskFragmentDialog"
         android:label="RenameFragmentDialog"
         tools:layout="@layout/dialog_add_update_task">
         <argument
@@ -112,7 +130,7 @@
     </dialog>
     <dialog
         android:id="@+id/shortcutFragmentDialog"
-        android:name="com.lahsuak.apps.tasks.ui.fragments.ShortcutFragmentDialog"
+        android:name="com.lahsuak.apps.tasks.ui.fragments.dialog.ShortcutFragmentDialog"
         android:label="ShortcutFragmentDialog"
         tools:layout="@layout/dialog_add_update_task">
         <argument
@@ -131,4 +149,17 @@
     <action
         android:id="@+id/action_global_shortcutFragmentDialog"
         app:destination="@id/shortcutFragmentDialog" />
+    <fragment
+        android:id="@+id/notificationFragment"
+        android:name="com.lahsuak.apps.tasks.ui.fragments.notification.NotificationFragment"
+        android:label="@string/notifications"
+        tools:layout="@layout/fragment_notification">
+        <action
+            android:id="@+id/action_notificationFragment_to_subTaskFragment"
+            app:destination="@id/subTaskFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/overviewFragment"
+        android:name="com.lahsuak.apps.tasks.ui.fragments.overview.OverviewFragment"
+        android:label="@string/overview" />
 </navigation>

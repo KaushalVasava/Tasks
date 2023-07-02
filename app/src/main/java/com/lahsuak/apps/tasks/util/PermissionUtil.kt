@@ -13,7 +13,7 @@ object PermissionUtil {
     inline fun checkAndLaunchPermission(
         fragment: Fragment?,
         permissions: Array<String>,
-        permissionLauncher: ActivityResultLauncher<String>, // changed from array of string to string
+        permissionLauncher: ActivityResultLauncher<Array<String>>, // changed from array of string to string
         showRationaleUi: (permission: String) -> Unit,
         lazyBlock: () -> Unit
     ) {
@@ -39,7 +39,7 @@ object PermissionUtil {
                 // You can directly ask for the permission.
                 // The registered ActivityResultCallback gets the result of this request.
                 permissionLauncher.launch(
-                    permissions.toString()
+                    permissions
                 )
             }
         }

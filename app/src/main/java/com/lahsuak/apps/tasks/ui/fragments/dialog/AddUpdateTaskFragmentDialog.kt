@@ -1,4 +1,4 @@
-package com.lahsuak.apps.tasks.ui.fragments
+package com.lahsuak.apps.tasks.ui.fragments.dialog
 
 import android.os.Bundle
 import android.text.InputFilter
@@ -12,7 +12,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.google.android.material.datepicker.MaterialDatePicker
 import com.lahsuak.apps.tasks.R
 import com.lahsuak.apps.tasks.TaskApp
 import com.lahsuak.apps.tasks.data.model.SubTask
@@ -22,7 +21,7 @@ import com.lahsuak.apps.tasks.ui.adapters.CategoryAdapter
 import com.lahsuak.apps.tasks.ui.viewmodel.SubTaskViewModel
 import com.lahsuak.apps.tasks.ui.viewmodel.TaskViewModel
 import com.lahsuak.apps.tasks.util.*
-import com.lahsuak.apps.tasks.util.AppConstants.REM_KEY
+import com.lahsuak.apps.tasks.util.AppConstants.SharedPreference.REM_KEY
 import com.lahsuak.apps.tasks.util.AppUtil.setClipboard
 import com.lahsuak.apps.tasks.util.AppUtil.setDateTime
 import dagger.hilt.android.AndroidEntryPoint
@@ -121,18 +120,19 @@ class AddUpdateTaskFragmentDialog : BottomSheetDialogFragment() {
                             requireContext(),
                             R.drawable.background_round
                         )
-                        if (diff < 0) {
-                            binding.txtReminder.setTextColor(
-                                requireContext().getAttribute(R.attr.colorError)
-                            )
+                        val attrId = if (diff < 0) {
+                            com.google.android.material.R.attr.colorError
                         } else {
-                            binding.txtReminder.setTextColor(
-                                requireContext().getAttribute(R.attr.colorOnSurface)
-                            )
+                            com.google.android.material.R.attr.colorOnSurface
                         }
+                        binding.txtReminder.setTextColor(requireContext().getAttribute(attrId))
                     } else {
                         binding.txtReminder.background = null
                     }
+                } else {
+                    val startDate = System.currentTimeMillis()
+                    binding.etStartDate.setText(DateUtil.getDate(startDate))
+                    task = Task(id = 0, "", startDate = startDate)
                 }
             } else {
                 task = taskViewModel.getById(args.taskId)
@@ -151,11 +151,11 @@ class AddUpdateTaskFragmentDialog : BottomSheetDialogFragment() {
                         )
                         if (diff < 0) {
                             binding.txtReminder.setTextColor(
-                                requireContext().getAttribute(R.attr.colorError)
+                                requireContext().getAttribute(com.google.android.material.R.attr.colorError)
                             )
                         } else {
                             binding.txtReminder.setTextColor(
-                                requireContext().getAttribute(R.attr.colorOnSurface)
+                                requireContext().getAttribute(com.google.android.material.R.attr.colorOnSurface)
                             )
                         }
                     } else {
@@ -195,9 +195,9 @@ class AddUpdateTaskFragmentDialog : BottomSheetDialogFragment() {
                         title = binding.txtRename.toTrimString(),
                         isImp = binding.cbImpTask.isChecked
                     )
-                    requireActivity().setDateTime { calendar, time ->
+                    setDateTime(requireActivity()) { calendar, time ->
                         binding.txtReminder.text = time
-                        AppUtil.setupReminderData(
+                        AppUtil.setReminderWorkRequest(
                             requireContext(),
                             task.title,
                             task,
@@ -206,9 +206,9 @@ class AddUpdateTaskFragmentDialog : BottomSheetDialogFragment() {
                         task.reminder = calendar.timeInMillis
                     }
                 } else {
-                    requireActivity().setDateTime { calendar, time ->
+                    setDateTime(requireActivity()) { calendar, time ->
                         binding.txtReminder.text = time
-                        AppUtil.setupReminderData(
+                        AppUtil.setReminderWorkRequest(
                             requireContext(),
                             task.title,
                             subTask,
@@ -221,31 +221,21 @@ class AddUpdateTaskFragmentDialog : BottomSheetDialogFragment() {
         }
 
         binding.etStartDate.setOnClickListener {
-            val datePickerDialog = MaterialDatePicker
-                .Builder
-                .datePicker()
-                .setTitleText(getString(R.string.select_project_start_date))
-                .build()
-
-            datePickerDialog.show(childFragmentManager, "DATE_PICKER")
-            datePickerDialog.addOnPositiveButtonClickListener {
-                binding.etStartDate.setText(DateUtil.getDate(it))
-                task = Task(id = 0, title = binding.txtRename.text.toString(), startDate = it)
+            setDateTime(requireActivity()) { calendar, time ->
+                binding.etStartDate.setText(time)
+                task = Task(
+                    id = 0,
+                    title = binding.txtRename.text.toString(),
+                    startDate = calendar.timeInMillis
+                )
             }
         }
         binding.etEndDate.setOnClickListener {
-            val datePickerDialog = MaterialDatePicker
-                .Builder
-                .datePicker()
-                .setTitleText(getString(R.string.select_project_end_date))
-                .build()
-
-            datePickerDialog.show(childFragmentManager, "DATE_PICKER")
-            datePickerDialog.addOnPositiveButtonClickListener {
-                binding.etEndDate.setText(DateUtil.getDate(it))
+            setDateTime(requireActivity()) { calendar, time ->
+                binding.etEndDate.setText(time)
                 if (binding.etStartDate.text.isNullOrEmpty().not()) {
-                    task = task.copy(endDate = it)
-                    subTaskViewModel.update(task)
+                    task = task.copy(endDate = calendar.timeInMillis)
+                    taskViewModel.update(task)
                 }
             }
         }
@@ -260,7 +250,8 @@ class AddUpdateTaskFragmentDialog : BottomSheetDialogFragment() {
                         id = 0,
                         title = binding.txtRename.toTrimString(),
                         isImp = binding.cbImpTask.isChecked,
-                        startDate = System.currentTimeMillis(),
+                        startDate = task.startDate,
+                        endDate = task.endDate,
                         color = TaskApp.categoryTypes[selectedCategoryPosition].order
                     )
                 }

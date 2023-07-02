@@ -20,6 +20,16 @@ object DateUtil {
         return sdf.format(date)
     }
 
+    fun getDateForOverview(date: Long): String {
+        val sdf = SimpleDateFormat(AppConstants.DATE_FORMAT, Locale.getDefault())
+        return sdf.format(date)
+    }
+
+    fun getTime(date: Long): String {
+        val sdf = SimpleDateFormat(AppConstants.TIME_FORMAT, Locale.getDefault())
+        return sdf.format(date)
+    }
+
     fun getDateRange(date1: Long, date2: Long?): String {
         val sdf = SimpleDateFormat(AppConstants.REMINDER_DATE_TIME_FORMAT, Locale.getDefault())
         val d1 = sdf.format(date1)

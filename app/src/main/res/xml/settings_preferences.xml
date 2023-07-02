@@ -24,7 +24,7 @@
             app:key="show_voice_task_button"
             app:summaryOff="@string/disable"
             app:summaryOn="@string/enable"
-            app:title="Show voice to add task option" />
+            app:title="@string/show_voice_to_add_task_option" />
         <SwitchPreference
             app:defaultValue="false"
             app:iconSpaceReserved="false"

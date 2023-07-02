@@ -121,4 +121,25 @@
     <string name="back">Indietro</string>
     <string name="feedback_from_app">Feedback da %s, %s</string>
     <string name="add_task_or_subtask">Aggiungi nuova attività o sottoattività</string>
+
+    <string name="name">Nome ⬇</string>
+    <string name="name_desc">Nome ⬆</string>
+    <string name="date" >Data ⬇</string>
+    <string name="date_desc">Data ⬆</string>
+    <string name="category">Categoria ⬇</string>
+    <string name="category_desc">Categoria ⬆</string>
+    <string name="start_date">Data di inizio</string>
+    <string name="end_date">Data di fine</string>
+    <string name="select_project_end_date">Seleziona la data di fine del progetto</string>
+    <string name="select_project_start_date">Seleziona la data di inizio del progetto</string>
+    <string name="no_notification">Ancora nessuna notifica</string>
+    <string name="notifications">Notifiche</string>
+    <string name="sort_by_old_to_new">Da vecchio a nuovo</string>
+    <string name="pending">Attività in sospeso <b>%d</b></string>
+    <string name="completed">Attività completate <b>%d</b></string>
+
+    <string name="overview">Panoramica</string>
+    <string name="good_morning">Buongiorno</string>
+    <string name="notification_daily_desc">Le tue attività sono in sospeso, devi completarle in fretta</string>
+    <string name="show_voice_to_add_task_option">Mostra l\'opzione voce per aggiungere attività</string>
 </resources>

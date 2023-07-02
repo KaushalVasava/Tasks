@@ -15,11 +15,11 @@ import com.lahsuak.apps.tasks.TaskApp
 import com.lahsuak.apps.tasks.data.model.Task
 import com.lahsuak.apps.tasks.databinding.TaskItemBinding
 import com.lahsuak.apps.tasks.ui.adapters.TaskAdapter
-import com.lahsuak.apps.tasks.util.AppConstants.FONT_SIZE_KEY
-import com.lahsuak.apps.tasks.util.AppConstants.INITIAL_FONT_SIZE
-import com.lahsuak.apps.tasks.util.AppConstants.SHOW_REMINDER_KEY
-import com.lahsuak.apps.tasks.util.AppConstants.SHOW_SUBTASK_KEY
-import com.lahsuak.apps.tasks.util.AppConstants.TASK_PROGRESS_KEY
+import com.lahsuak.apps.tasks.util.AppConstants.SharedPreference.FONT_SIZE_KEY
+import com.lahsuak.apps.tasks.util.AppConstants.SharedPreference.INITIAL_FONT_SIZE
+import com.lahsuak.apps.tasks.util.AppConstants.SharedPreference.SHOW_REMINDER_KEY
+import com.lahsuak.apps.tasks.util.AppConstants.SharedPreference.SHOW_SUBTASK_KEY
+import com.lahsuak.apps.tasks.util.AppConstants.SharedPreference.TASK_PROGRESS_KEY
 import com.lahsuak.apps.tasks.util.DateUtil
 import com.lahsuak.apps.tasks.util.SelectionListener
 import com.lahsuak.apps.tasks.util.getAttribute
@@ -110,7 +110,8 @@ class TaskViewHolder1(
             val showReminder = prefManager.getBoolean(SHOW_REMINDER_KEY, true)
             val showSubTask = prefManager.getBoolean(SHOW_SUBTASK_KEY, true)
             val prefMgr = PreferenceManager.getDefaultSharedPreferences(context)
-            val txtSize = prefMgr.getString(FONT_SIZE_KEY, INITIAL_FONT_SIZE)!!.toFloat()
+            val txtSize =
+                prefMgr.getString(FONT_SIZE_KEY, INITIAL_FONT_SIZE)!!.toFloat()
             txtTitle.text = task.title
             Linkify.addLinks(txtTitle, Linkify.ALL)
             txtTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, txtSize)
@@ -118,11 +119,11 @@ class TaskViewHolder1(
                 DateUtil.getDateRange(task.startDate ?: System.currentTimeMillis(), task.endDate)
             val color = TaskApp.categoryTypes[task.color].color
             imgCategory.setColorFilter(color)
-            progressBar.progressTintList = ColorStateList.valueOf(color)
+            progressLayout.progressBar.progressTintList = ColorStateList.valueOf(color)
             txtDate.isSelected =
                 if (task.endDate != null && DateUtil.getTimeDiff(task.endDate!!) < 0) {
                     txtDate.text = context.getString(R.string.overdue)
-                    txtDate.setTextColor(context.getAttribute(R.attr.colorError))
+                    txtDate.setTextColor(context.getAttribute(com.google.android.material.R.attr.colorError))
                     dateLayout.setCardBackgroundColor(null)
                     false
                 } else {
@@ -136,12 +137,8 @@ class TaskViewHolder1(
             drawable?.setTint(color)
             if (showSubTask) {
                 imgMore.isVisible = task.subTaskList?.isNotEmpty() == true
-                txtSubtask.isVisible = if (task.subTaskList != null) {
-                    txtSubtask.text = task.subTaskList
-                    true
-                } else {
-                    false
-                }
+                txtSubtask.text = task.subTaskList
+                txtSubtask.isVisible = task.subTaskList.isNullOrEmpty().not()
             }
             val position = adapterPosition
             //action mode
@@ -186,7 +183,7 @@ class TaskViewHolder1(
                 val min = DateUtil.getTimeDiff(taskReminder)
                 txtReminder.isSelected = min > 0
                 txtReminder.text = if (min < 0) {
-                    txtReminder.setTextColor(context.getAttribute(R.attr.colorError))
+                    txtReminder.setTextColor(context.getAttribute(com.google.android.material.R.attr.colorError))
                     context.getString(R.string.overdue)
                 } else {
                     DateUtil.getDate(taskReminder)
@@ -194,18 +191,18 @@ class TaskViewHolder1(
             }
             val isProgressVisible =
                 if (progress && task.progress != -1f) {
-                    progressBar.background =
+                    progressLayout.progressBar.background =
                         ContextCompat.getDrawable(context, R.drawable.background_progress)
-                    progressBar.progress = task.progress.toInt()
-                    val taskPrs = "${task.progress.toInt()} %"
-                    taskProgress.text = taskPrs
+                    progressLayout.progressBar.progress = task.progress.toInt()
+                    progressLayout.txtTaskProgress.text =
+                        String.format(context.getString(R.string.percentage), task.progress.toInt())
                     true
                 } else {
-                    progressBar.background = null
+                    progressLayout.progressBar.background = null
                     false
                 }
-            progressBar.isVisible = isProgressVisible
-            taskProgress.isVisible = isProgressVisible
+            progressLayout.progressBar.isVisible = isProgressVisible
+            progressLayout.txtTaskProgress.isVisible = isProgressVisible
         }
     }
 }

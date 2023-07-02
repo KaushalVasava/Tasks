@@ -118,4 +118,24 @@
     <string name="back"> للخلف </string>
     <string name="feedback_from_app"> تعليقات من٪ s،٪ s </string>
     <string name="add_task_or_subtask"> إضافة مهمة أو مهمة فرعية جديدة </string>
+    <string name = "name"> الاسم ⬇ </string>
+    <string name = "name_desc"> الاسم ⬆ </string>
+    <string name = "date"> التاريخ ⬇ </string>
+    <string name = "date_desc"> التاريخ ⬆ </string>
+    <string name = "category"> الفئة ⬇ </string>
+    <string name = "category_desc"> الفئة ⬆ </string>
+    <string name = "start_date"> تاريخ البدء </string>
+    <string name = "end_date"> تاريخ الانتهاء </string>
+    <string name = "select_project_end_date"> حدد تاريخ انتهاء المشروع </string>
+    <string name = "select_project_start_date"> حدد تاريخ بدء المشروع </string>
+    <string name = "no_notification"> لا توجد إشعارات بعد </string>
+    <string name = "notifications"> الإخطارات </string>
+    <string name = "sort_by_old_to_new"> قديم إلى جديد </string>
+    <string name = "pending"> المهام المعلقة <b>٪ d </b> </string>
+    <string name = "completed"> المهام المكتملة <b>٪ d </b> </string>
+
+    <string name = "overview"> نظرة عامة </string>
+    <string name = "good_morning"> صباح الخير </string>
+    <string name = "notification_daily_desc"> مهامك معلقة ، عليك إنهاءها بسرعة </string>
+    <string name = "show_voice_to_add_task_option"> إظهار الصوت لإضافة خيار مهمة </string>
 </resources>

@@ -1,4 +1,4 @@
-package com.lahsuak.apps.tasks.ui.fragments
+package com.lahsuak.apps.tasks.ui.fragments.task
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -23,6 +23,7 @@ import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
 import androidx.core.view.doOnLayout
 import androidx.core.view.doOnPreDraw
+import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -57,14 +58,17 @@ import com.lahsuak.apps.tasks.ui.MainActivity.Companion.shareTxt
 import com.lahsuak.apps.tasks.ui.adapters.TaskAdapter
 import com.lahsuak.apps.tasks.ui.viewmodel.TaskViewModel
 import com.lahsuak.apps.tasks.util.*
-import com.lahsuak.apps.tasks.util.AppConstants.REM_KEY
+import com.lahsuak.apps.tasks.util.AppConstants.MAX_COUNTER_FOR_MORE_APPS
+import com.lahsuak.apps.tasks.util.AppConstants.MORE_APPS_DELAY
+import com.lahsuak.apps.tasks.util.AppConstants.SharedPreference.REM_KEY
+import com.lahsuak.apps.tasks.util.AppConstants.SharedPreference.SHOW_VOICE_TASK_KEY
 import com.lahsuak.apps.tasks.util.AppConstants.UPDATE_REQUEST_CODE
 import com.lahsuak.apps.tasks.util.AppUtil.speakToAddTask
 import com.lahsuak.apps.tasks.util.AppUtil.unsafeLazy
 import dagger.hilt.android.AndroidEntryPoint
 import hotchemi.android.rate.AppRate
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
-import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -110,12 +114,15 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
         }
     private val permissionResultLauncher =
         registerForActivityResult(
-            ActivityResultContracts.RequestPermission()
-        ) { isGranted ->
-            if (!isGranted)
+            ActivityResultContracts.RequestMultiplePermissions()
+        ) { permissions ->
+            if (permissions.all { it.value }) {
+                /* no-op */
+            } else {
                 context.toast {
                     getString(R.string.user_cancelled_the_operation)
                 }
+            }
         }
 
     override fun onCreateView(
@@ -134,18 +141,27 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        (activity as AppCompatActivity).supportActionBar?.hide()
         binding.root.doOnLayout {
-            if (binding.root.measuredHeight > binding.root.measuredWidth) {
-                binding.flow.setMaxElementsWrap(1)
-            } else {
+            if (requireContext().isTabletOrLandscape()) {
                 binding.flow.setMaxElementsWrap(2)
+            } else {
+                binding.flow.setMaxElementsWrap(1)
             }
         }
+        if (TaskApp.counter == MAX_COUNTER_FOR_MORE_APPS || TaskApp.counter == 0) {
+            viewLifecycleOwner.lifecycleScope.launch {
+                binding.txtMoreApps.isVisible = true
+                binding.btnMoreApps.isVisible = true
+                delay(MORE_APPS_DELAY)
+                binding.txtMoreApps.isGone = true
+                binding.btnMoreApps.isGone = true
+            }
+        }
+        TaskApp.counter++
         binding.txtTitle.text = DateUtil.getToolbarDateTime(System.currentTimeMillis())
         val prefManager = PreferenceManager.getDefaultSharedPreferences(requireContext())
         binding.btnVoiceTask.isVisible =
-            prefManager.getBoolean(AppConstants.SHOW_VOICE_TASK_KEY, true)
+            prefManager.getBoolean(SHOW_VOICE_TASK_KEY, true)
         checkPermission()
         initView()
         showRateDialog()
@@ -167,27 +183,15 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
     }
 
     private fun initView() {
-        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            viewModel.preferencesFlow.collectLatest {
-                if (TaskApp.firstTime) {
-                    val tempType = viewType
-                    viewType = it.viewType
-                    isLayoutChange = tempType != viewType
-                } else {
-                    viewType = it.viewType
-                }
-                if (isLayoutChange) {
-                    binding.taskRecyclerView.layoutManager = if (viewType) {
-                        binding.btnView.setImageResource(R.drawable.ic_list_view)
-                        StaggeredGridLayoutManager(2, RecyclerView.VERTICAL)
-                    } else {
-                        binding.btnView.setImageResource(R.drawable.ic_grid_view)
-                        LinearLayoutManager(requireContext())
-                    }
-                    binding.taskRecyclerView.adapter = taskAdapter
-                }
-                TaskApp.firstTime = false
+        viewModel.preferencesFlow.asLiveData().observe(viewLifecycleOwner) {
+            binding.taskRecyclerView.layoutManager = if (viewType) {
+                binding.btnView.setImageResource(R.drawable.ic_list_view)
+                StaggeredGridLayoutManager(2, RecyclerView.VERTICAL)
+            } else {
+                binding.btnView.setImageResource(R.drawable.ic_grid_view)
+                LinearLayoutManager(requireContext())
             }
+            binding.taskRecyclerView.adapter = taskAdapter
         }
         binding.taskRecyclerView.apply {
             setHasFixedSize(true)
@@ -210,7 +214,7 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
             dialog.dismiss()
             shareTxt = null
         }
-        viewModel.tasksFlow.asLiveData().observe(viewLifecycleOwner) { list ->
+        viewModel.tasksFlow.observe(viewLifecycleOwner) { list ->
             if (shareTxt != null) {
                 val adapter: ArrayAdapter<*> = ArrayAdapter<Any?>(
                     requireContext(),
@@ -239,7 +243,8 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
                     val action = TaskFragmentDirections.actionTaskFragmentToSubTaskFragment(
                         list[selectedPosition].copy(isDone = false),
                         true,
-                        shareTxt!!
+                        shareTxt!!,
+                        null
                     )
                     navController.navigate(action)
                     shareTxt = null
@@ -299,6 +304,15 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
             val action =
                 TaskFragmentDirections.actionTaskFragmentToSettingsFragment()
             navController.navigate(action)
+        }
+        binding.btnNotification.setOnClickListener {
+            navController.navigate(R.id.action_taskFragment_to_notificationFragment)
+        }
+        binding.progressBar.setOnClickListener {
+            navController.navigate(R.id.action_taskFragment_to_overviewFragment)
+        }
+        binding.btnMoreApps.setOnClickListener {
+            AppUtil.moreApp(requireContext())
         }
         setSortMenu()
         setVisibilityOfTasks()
@@ -451,7 +465,7 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
                         ContextCompat.getColor(requireContext(), R.color.red)
                     )
                     .addSwipeRightBackgroundColor(
-                        requireContext().getAttribute(R.attr.colorPrimary)
+                        requireContext().getAttribute(com.google.android.material.R.attr.colorPrimary)
                     )
                     .addSwipeLeftActionIcon(R.drawable.ic_delete)
                     .addSwipeRightActionIcon(R.drawable.ic_pin)
@@ -473,54 +487,50 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
     }
 
     private fun setTaskEventCollector() {
-        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            viewModel.tasksEvent.collect { event ->
-                when (event) {
-                    is TaskEvent.ShowUndoDeleteTaskMessage -> {
-                        Snackbar.make(
-                            requireView(),
-                            getString(R.string.task_deleted),
-                            Snackbar.LENGTH_LONG
-                        )
-                            .setAction(getString(R.string.undo)) {
-                                viewModel.onUndoDeleteClick(event.task)
-                            }.show()
-                    }
+        viewModel.tasksEvent.asLiveData().observe(viewLifecycleOwner) { event ->
+            when (event) {
+                is TaskEvent.ShowUndoDeleteTaskMessage -> {
+                    Snackbar.make(
+                        requireView(),
+                        getString(R.string.task_deleted),
+                        Snackbar.LENGTH_LONG
+                    )
+                        .setAction(getString(R.string.undo)) {
+                            viewModel.onUndoDeleteClick(event.task)
+                        }.show()
+                }
 
-                    TaskEvent.NavigateToAllCompletedScreen -> {
-                        val action =
-                            TaskFragmentDirections.actionGlobalDeleteAllCompletedDialogFragment()
-                        navController.navigate(action)
-                    }
+                TaskEvent.NavigateToAllCompletedScreen -> {
+                    val action =
+                        TaskFragmentDirections.actionGlobalDeleteAllCompletedDialogFragment()
+                    navController.navigate(action)
                 }
             }
         }
     }
 
     private fun setTaskObserver() {
-        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            viewModel.tasksFlow.collectLatest {
-                val data = if (binding.taskChipActive.isChecked) {
-                    it.filter { task ->
-                        !task.isDone
-                    }
-                } else {
-                    it.filter { task ->
-                        task.isDone
-                    }
+        viewModel.tasksFlow.observe(viewLifecycleOwner) {
+            val data = if (binding.taskChipActive.isChecked) {
+                it.filter { task ->
+                    !task.isDone
                 }
-                taskAdapter.submitList(data)
-                if (openTaskItems.isEmpty()) {
-                    data.forEachIndexed { index, _ ->
-                        openTaskItems.add(index, false)
-                    }
+            } else {
+                it.filter { task ->
+                    task.isDone
+                }
+            }
+            taskAdapter.submitList(data)
+            if (openTaskItems.isEmpty()) {
+                data.forEachIndexed { index, _ ->
+                    openTaskItems.add(index, false)
                 }
             }
         }
     }
 
     private fun setCompletedTaskObserver() {
-        viewModel.tasksFlow2.asLiveData().observe(viewLifecycleOwner) {
+        viewModel.tasksFlow2.observe(viewLifecycleOwner) {
             val count = it.count { task -> task.isDone }
             val hasTasks = it.isNotEmpty()
             binding.btnCreateNewTask.isVisible = !hasTasks
@@ -567,6 +577,7 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
                 TaskFragmentDirections.actionTaskFragmentToSubTaskFragment(
                     task,
                     false,
+                    null,
                     null
                 )
             val extras = FragmentNavigatorExtras(
@@ -701,7 +712,7 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
     private fun setViewVisibility(isVisible: Boolean) {
         val prefManager = PreferenceManager.getDefaultSharedPreferences(requireContext())
         binding.btnVoiceTask.isVisible = !isVisible &&
-                prefManager.getBoolean(AppConstants.SHOW_VOICE_TASK_KEY, true)
+                prefManager.getBoolean(SHOW_VOICE_TASK_KEY, true)
         binding.btnAddTask.isVisible = !isVisible
         binding.sortMenu.isVisible = !isVisible
         binding.taskChipGroup.isVisible = !isVisible
@@ -795,14 +806,6 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
         }
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        if (searchView != null)
-            searchView!!.setOnQueryTextListener(null)
-        shareTxt = null
-        isWidgetClick = false
-        _binding = null
-    }
 
     override fun getActionModeStatus(): Boolean {
         return actionModeEnable
@@ -871,6 +874,15 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
                     String.format(getString(R.string.task_selected), counter, selectedItem?.size)
             }
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        if (searchView != null)
+            searchView!!.setOnQueryTextListener(null)
+        shareTxt = null
+        isWidgetClick = false
+        _binding = null
     }
 
     companion object {

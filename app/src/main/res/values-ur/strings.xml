@@ -121,4 +121,25 @@
     <string name = "back"> پیچھے</string>
     <string name="feedback_from_app">%s، %s کی طرف سے تاثرات</string>
     <string name="add_task_or_subtask">نیا کام یا ذیلی کام شامل کریں</string>
+
+    <string name="name">نام ⬇</string>
+    <string name="name_desc">نام ⬆</string>
+    <string name="date">تاریخ ⬇</string>
+    <string name="date_desc">تاریخ ⬆</string>
+    <string name="category">زمرہ ⬇</string>
+    <string name="category_desc">زمرہ ⬆</string>
+    <string name = "start_date"> آغاز کی تاریخ</string>
+    <string name = "end_date">اختتام کی تاریخ</string>
+    <string name="select_project_end_date">منتخب کریں پراجیکٹ کی اختتامی تاریخ</string>
+    <string name="select_project_start_date">منتخب کریں پراجیکٹ شروع ہونے کی تاریخ</string>
+    <string name="no_notification">ابھی تک کوئی اطلاع نہیں ہے</string>
+    <string name="notifications">اطلاعات</string>
+    <string name="sort_by_old_to_new">پرانا سے نیا</string>
+    <string name="pending">زیر التواء کام <b>%d</b></string>
+    <string name="completed">مکمل کام <b>%d</b></string>
+
+    <string name = "overview"> مجموعی جائزہ</string>
+    <string name = "good_morning">گڈ مارننگ</string>
+    <string name="notification_daily_desc">آپ کے کام زیر التواء ہیں، آپ کو انہیں جلدی سے مکمل کرنا ہوگا</string>
+    <string name="show_voice_to_add_task_option">ٹاسک آپشن شامل کرنے کے لیے آواز دکھائیں</string>
 </resources>

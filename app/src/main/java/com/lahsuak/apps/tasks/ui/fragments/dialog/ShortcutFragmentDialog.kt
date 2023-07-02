@@ -1,4 +1,4 @@
-package com.lahsuak.apps.tasks.ui.fragments
+package com.lahsuak.apps.tasks.ui.fragments.dialog
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -29,27 +29,22 @@ class ShortcutFragmentDialog : BottomSheetDialogFragment() {
     private val args: ShortcutFragmentDialogArgs by navArgs()
     private val model: TaskViewModel by viewModels()
     private lateinit var task: Task
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-
         _binding = DialogAddUpdateTaskBinding.inflate(layoutInflater)
-        @Suppress(AppConstants.DEPRECATION)
-        if (dialog!!.window != null) {
-            dialog!!.window!!.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
-        }
 
         viewLifecycleOwner.lifecycleScope.launch {
             if (args.taskId != -1)
                 task = model.getById(args.taskId)
         }
-
+        @Suppress(AppConstants.DEPRECATION)
+        if (dialog!!.window != null) {
+            dialog!!.window!!.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
+        }
         binding.txtRename.requestFocus()
         binding.cbImpTask.setOnCheckedChangeListener { _, isChecked ->
             binding.cbImpTask.isChecked = isChecked
@@ -70,9 +65,9 @@ class ShortcutFragmentDialog : BottomSheetDialogFragment() {
                     startDate = System.currentTimeMillis()
                 )
             }
-            requireActivity().setDateTime {calendar,time->
+            setDateTime(requireActivity()) { calendar, time ->
                 binding.txtReminder.text = time
-                AppUtil.setupReminderData(
+                AppUtil.setReminderWorkRequest(
                     requireContext(),
                     task.title,
                     task,
@@ -108,5 +103,10 @@ class ShortcutFragmentDialog : BottomSheetDialogFragment() {
             dismiss()
         }
         return binding.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

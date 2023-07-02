@@ -26,4 +26,4 @@
 -keep class * extends androidx.fragment.app.Fragment{}
 -keep class com.lahsuak.apps.tasks.data.model.** { *; }
 -keep class com.lahsuak.apps.tasks.util.AppConstants
--keep class com.lahsuak.apps.tasks.ui.fragments.SettingsFragment
+-keep class com.lahsuak.apps.tasks.ui.fragments.settings.SettingsFragment

@@ -37,7 +37,6 @@
                 android:resource="@xml/shortcuts" />
         </activity>
 
-        <receiver android:name="com.lahsuak.apps.tasks.receiver.AlarmReceiver" />
         <receiver
             android:name="com.lahsuak.apps.tasks.ui.widget.TaskWidget"
             android:exported="true">
@@ -48,16 +47,6 @@
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/example_appwidget_info" />
-        </receiver>
-        <receiver
-            android:name="com.lahsuak.apps.tasks.receiver.BootReceiver"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
         </receiver>
     </application>
 

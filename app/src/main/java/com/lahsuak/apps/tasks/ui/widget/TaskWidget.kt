@@ -8,7 +8,7 @@ import android.widget.RemoteViews
 import androidx.navigation.NavDeepLinkBuilder
 import com.lahsuak.apps.tasks.R
 import com.lahsuak.apps.tasks.ui.MainActivity
-import com.lahsuak.apps.tasks.ui.fragments.AddUpdateTaskFragmentDialogArgs
+import com.lahsuak.apps.tasks.ui.fragments.dialog.AddUpdateTaskFragmentDialogArgs
 
 class TaskWidget : AppWidgetProvider() {
 
@@ -19,7 +19,6 @@ class TaskWidget : AppWidgetProvider() {
     ) {
         for (appWidgetId in appWidgetIds!!) {
             val intent = Intent(context, MainActivity::class.java)
-            //intent.putExtra("key", true)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
 
             val pendingIntent = NavDeepLinkBuilder(context!!)

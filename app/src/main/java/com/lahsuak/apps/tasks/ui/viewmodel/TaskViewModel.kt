@@ -5,6 +5,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asFlow
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.lahsuak.apps.tasks.R
 import com.lahsuak.apps.tasks.data.PreferenceManager
@@ -47,7 +48,7 @@ class TaskViewModel @Inject constructor(
             filterPreferences.sortOrder,
             filterPreferences.hideCompleted
         )
-    }
+    }.asLiveData()
 
     val tasksFlow2 = combine(
         searchQuery.asFlow(), preferencesFlow
@@ -55,7 +56,7 @@ class TaskViewModel @Inject constructor(
         Pair(query, filterPreferences)
     }.flatMapLatest { (query, filterPreferences) ->
         repository.getAllTasks(query, filterPreferences.sortOrder, false).distinctUntilChanged()
-    }
+    }.asLiveData()
 
     fun onSortOrderSelected(sortOrder: SortOrder, context: Context) = viewModelScope.launch {
         preferenceManager.updateSortOrder(sortOrder, context)

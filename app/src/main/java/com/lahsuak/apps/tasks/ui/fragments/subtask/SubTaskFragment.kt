@@ -1,4 +1,4 @@
-package com.lahsuak.apps.tasks.ui.fragments
+package com.lahsuak.apps.tasks.ui.fragments.subtask
 
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -45,15 +45,15 @@ import com.lahsuak.apps.tasks.data.model.Task
 import com.lahsuak.apps.tasks.databinding.FragmentSubtaskBinding
 import com.lahsuak.apps.tasks.model.SubTaskEvent
 import com.lahsuak.apps.tasks.ui.adapters.SubTaskAdapter
-import com.lahsuak.apps.tasks.ui.fragments.TaskFragment.Companion.TOTAL_PROGRESS_VALUE
+import com.lahsuak.apps.tasks.ui.fragments.task.TaskFragment.Companion.TOTAL_PROGRESS_VALUE
+import com.lahsuak.apps.tasks.ui.viewmodel.NotificationViewModel
 import com.lahsuak.apps.tasks.ui.viewmodel.SubTaskViewModel
 import com.lahsuak.apps.tasks.util.*
 import com.lahsuak.apps.tasks.util.AppConstants.SEARCH_INITIAL_VALUE
+import com.lahsuak.apps.tasks.util.AppConstants.SharedPreference.SHOW_VOICE_TASK_KEY
 import com.lahsuak.apps.tasks.util.AppUtil.setDateTime
-import com.lahsuak.apps.tasks.util.AppUtil.unsafeLazy
 import dagger.hilt.android.AndroidEntryPoint
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.util.*
@@ -67,8 +67,9 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
         get() = _binding!!
 
     private val subTaskViewModel: SubTaskViewModel by viewModels()
+    private val notificationViewModel: NotificationViewModel by viewModels()
     private val args: SubTaskFragmentArgs by navArgs()
-    private val navController: NavController by unsafeLazy {
+    private val navController: NavController by lazy {
         findNavController()
     }
     private val subTaskAdapter: SubTaskAdapter by lazy {
@@ -108,7 +109,7 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
             drawingViewId = R.id.my_container
             duration = resources.getInteger(R.integer.reply_motion_duration_large).toLong()
             scrimColor = Color.TRANSPARENT
-            setAllContainerColors(requireContext().getAttribute(R.attr.colorSurface))
+            setAllContainerColors(requireContext().getAttribute(com.google.android.material.R.attr.colorSurface))
         }
     }
 
@@ -125,12 +126,14 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        (activity as AppCompatActivity).supportActionBar?.hide()
+        if (args.isNotification != null) {
+            notificationViewModel.insert(args.isNotification!!)
+        }
         binding.root.doOnLayout {
-            if (binding.root.measuredHeight > binding.root.measuredWidth) {
-                binding.flow.setMaxElementsWrap(1)
-            } else {
+            if (requireContext().isTabletOrLandscape()) {
                 binding.flow.setMaxElementsWrap(2)
+            } else {
+                binding.flow.setMaxElementsWrap(1)
             }
         }
         task = args.task
@@ -179,18 +182,15 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
         setColors(TaskApp.categoryTypes[task.color].color)
         val prefManager = PreferenceManager.getDefaultSharedPreferences(requireContext())
         binding.btnVoiceTask.isVisible =
-            prefManager.getBoolean(AppConstants.SHOW_VOICE_TASK_KEY, true)
-        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            val tempViewType = subTaskViewModel.preferencesFlow.first().viewType
-            if (tempViewType != viewType) {
-                binding.subTaskRecyclerView.layoutManager =
-                    if (viewType) {
-                        StaggeredGridLayoutManager(2, RecyclerView.VERTICAL)
-                    } else {
-                        LinearLayoutManager(requireContext())
-                    }
-                viewType = tempViewType
-            }
+            prefManager.getBoolean(SHOW_VOICE_TASK_KEY, true)
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewType = subTaskViewModel.preferencesFlow.first().viewType
+            binding.subTaskRecyclerView.layoutManager =
+                if (viewType) {
+                    StaggeredGridLayoutManager(2, RecyclerView.VERTICAL)
+                } else {
+                    LinearLayoutManager(requireContext())
+                }
         }
         binding.subTaskRecyclerView.apply {
             setHasFixedSize(true)
@@ -199,19 +199,17 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
     }
 
     private fun setSubTaskObserver() {
-        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            subTaskViewModel.subTasks.collectLatest { //this is for adapter
-                val data = if (binding.taskChipActive.isChecked) {
-                    it.filter { task ->
-                        !task.isDone
-                    }
-                } else {
-                    it.filter { task ->
-                        task.isDone
-                    }
+        subTaskViewModel.subTasks.asLiveData().observe(viewLifecycleOwner) { //this is for adapter
+            val data = if (binding.taskChipActive.isChecked) {
+                it.filter { task ->
+                    !task.isDone
                 }
-                subTaskAdapter.submitList(data)
+            } else {
+                it.filter { task ->
+                    task.isDone
+                }
             }
+            subTaskAdapter.submitList(data)
         }
     }
 
@@ -239,9 +237,9 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
             AppUtil.speakToAddTask(requireActivity(), speakLauncher)
         }
         binding.reminderLayout.setOnClickListener {
-            requireActivity().setDateTime { calendar, time ->
+            setDateTime(requireActivity()) { calendar, time ->
                 binding.txtReminder.text = time
-                AppUtil.setupReminderData(
+                AppUtil.setReminderWorkRequest(
                     requireContext(),
                     task.title,
                     task,
@@ -249,7 +247,7 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
                 )
                 val diff = DateUtil.getTimeDiff(calendar.timeInMillis)
                 if (diff < 0) {
-                    binding.txtReminder.setTextColor(requireContext().getAttribute(R.attr.colorError))
+                    binding.txtReminder.setTextColor(requireContext().getAttribute(com.google.android.material.R.attr.colorError))
                 }
                 binding.txtReminder.isSelected = true
                 task.reminder = calendar.timeInMillis
@@ -280,13 +278,13 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
             subTaskViewModel.shareTask(requireContext(), getAllText())
         }
         binding.etStartDate.setOnClickListener {
-            requireActivity().setDateTime { calendar, time ->
+            setDateTime(requireActivity()) { calendar, time ->
                 binding.etStartDate.setText(time)
                 task = task.copy(startDate = calendar.timeInMillis)
             }
         }
         binding.etEndDate.setOnClickListener {
-            requireActivity().setDateTime { calendar, time ->
+            setDateTime(requireActivity()) { calendar, time ->
                 binding.etEndDate.setText(time)
                 if (binding.etStartDate.text.isNullOrEmpty().not()) {
                     task = task.copy(endDate = calendar.timeInMillis)
@@ -381,16 +379,16 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
     private fun setChipColor(isEnable: Boolean, color: Int) {
         if (isEnable) {
             binding.taskChipActive.chipBackgroundColor = ColorStateList.valueOf(color)
-            binding.taskChipActive.setTextColor(requireContext().getAttribute(R.attr.colorSurface))
+            binding.taskChipActive.setTextColor(requireContext().getAttribute(com.google.android.material.R.attr.colorSurface))
             binding.taskChipDone.chipBackgroundColor =
-                ColorStateList.valueOf(requireContext().getAttribute(R.attr.colorSurfaceVariant))
-            binding.taskChipDone.setTextColor(requireContext().getAttribute(R.attr.colorOnSurface))
+                ColorStateList.valueOf(requireContext().getAttribute(com.google.android.material.R.attr.colorSurfaceVariant))
+            binding.taskChipDone.setTextColor(requireContext().getAttribute(com.google.android.material.R.attr.colorOnSurface))
         } else {
             binding.taskChipDone.chipBackgroundColor = ColorStateList.valueOf(color)
-            binding.taskChipDone.setTextColor(requireContext().getAttribute(R.attr.colorSurface))
+            binding.taskChipDone.setTextColor(requireContext().getAttribute(com.google.android.material.R.attr.colorSurface))
             binding.taskChipActive.chipBackgroundColor =
-                ColorStateList.valueOf(requireContext().getAttribute(R.attr.colorSurfaceVariant))
-            binding.taskChipActive.setTextColor(requireContext().getAttribute(R.attr.colorOnSurface))
+                ColorStateList.valueOf(requireContext().getAttribute(com.google.android.material.R.attr.colorSurfaceVariant))
+            binding.taskChipActive.setTextColor(requireContext().getAttribute(com.google.android.material.R.attr.colorOnSurface))
         }
     }
 
@@ -404,7 +402,7 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
                     binding.txtReminder.text = DateUtil.getDate(taskReminder)
                     binding.txtReminder.isSelected = true
                     if (diff < 0) {
-                        binding.txtReminder.setTextColor(requireContext().getAttribute(R.attr.colorError))
+                        binding.txtReminder.setTextColor(requireContext().getAttribute(com.google.android.material.R.attr.colorError))
                     }
                     true
                 } else {
@@ -453,9 +451,9 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
                     actionState,
                     isCurrentlyActive
                 )
-                    .addSwipeLeftBackgroundColor(requireContext().getAttribute(R.attr.colorError))
+                    .addSwipeLeftBackgroundColor(requireContext().getAttribute(com.google.android.material.R.attr.colorError))
                     .addSwipeLeftActionIcon(R.drawable.ic_delete)
-                    .addSwipeRightBackgroundColor(requireContext().getAttribute(R.attr.colorPrimary))
+                    .addSwipeRightBackgroundColor(requireContext().getAttribute(com.google.android.material.R.attr.colorPrimary))
                     .addSwipeRightActionIcon(R.drawable.ic_pin)
                     .addSwipeRightLabel(getString(R.string.important_task))
                     .addSwipeLeftLabel(getString(R.string.delete))
@@ -492,27 +490,25 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
     }
 
     private fun subTaskEventCollector() {
-        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            subTaskViewModel.subTasksEvent.collect { event ->
-                when (event) {
-                    is SubTaskEvent.ShowUndoDeleteTaskMessage -> {
-                        Snackbar.make(
-                            requireView(),
-                            getString(R.string.task_deleted),
-                            Snackbar.LENGTH_LONG
-                        )
-                            .setAction(getString(R.string.undo)) {
-                                subTaskViewModel.onUndoDeleteClick(event.subTask)
-                            }.show()
-                    }
+        subTaskViewModel.subTasksEvent.asLiveData().observe(viewLifecycleOwner) { event ->
+            when (event) {
+                is SubTaskEvent.ShowUndoDeleteTaskMessage -> {
+                    Snackbar.make(
+                        requireView(),
+                        getString(R.string.task_deleted),
+                        Snackbar.LENGTH_LONG
+                    )
+                        .setAction(getString(R.string.undo)) {
+                            subTaskViewModel.onUndoDeleteClick(event.subTask)
+                        }.show()
+                }
 
-                    SubTaskEvent.NavigateToAllCompletedScreen -> {
-                        val action =
-                            SubTaskFragmentDirections.actionGlobalDeleteAllCompletedDialogFragment2(
-                                task.id
-                            )
-                        navController.navigate(action)
-                    }
+                SubTaskEvent.NavigateToAllCompletedScreen -> {
+                    val action =
+                        SubTaskFragmentDirections.actionGlobalDeleteAllCompletedDialogFragment2(
+                            task.id
+                        )
+                    navController.navigate(action)
                 }
             }
         }
@@ -721,7 +717,7 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
     private fun setViewVisibility(isVisible: Boolean) {
         val prefManager = PreferenceManager.getDefaultSharedPreferences(requireContext())
         binding.btnVoiceTask.isVisible = !isVisible &&
-                prefManager.getBoolean(AppConstants.SHOW_VOICE_TASK_KEY, true)
+                prefManager.getBoolean(SHOW_VOICE_TASK_KEY, true)
         binding.btnAddTask.isVisible = !isVisible
         binding.sortMenu.isVisible = !isVisible
         binding.taskChipGroup.isVisible = !isVisible
@@ -787,17 +783,6 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
         subTaskViewModel.update(task)
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        if (binding.progressBar.progress == TOTAL_PROGRESS_VALUE) {
-            binding.cbTaskCompleted.isChecked = true
-            task.isDone = true
-            subTaskViewModel.update(task)
-        }
-        searchView?.setOnQueryTextListener(null)
-        _binding = null
-    }
-
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.apply {
@@ -831,6 +816,17 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
                     String.format(getString(R.string.task_selected), counter, selectedItem?.size)
             }
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        if (binding.progressBar.progress == TOTAL_PROGRESS_VALUE) {
+            binding.cbTaskCompleted.isChecked = true
+            task.isDone = true
+            subTaskViewModel.update(task)
+        }
+        searchView?.setOnQueryTextListener(null)
+        _binding = null
     }
 
     companion object {

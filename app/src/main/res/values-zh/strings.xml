@@ -121,4 +121,25 @@
     <string name="back">返回</string>
     <string name="feedback_from_app">来自 %s，%s 的反馈</string>
     <string name="add_task_or_subtask">添加新任务或子任务</string>
+
+    <string name="name">姓名 ⬇</string>
+    <string name="name_desc">名称 ⬆</string>
+    <string name="date" >日期 ⬇</string>
+    <string name="date_desc">日期 ⬆</string>
+    <string name="category">类别 ⬇</string>
+    <string name="category_desc">类别 ⬆</string>
+    <string name="start_date">开始日期</string>
+    <string name="end_date">结束日期</string>
+    <string name="select_project_end_date">选择项目结束日期</string>
+    <string name="select_project_start_date">选择项目开始日期</string>
+    <string name="no_notification">尚无通知</string>
+    <string name="notifications">通知</string>
+    <string name="sort_by_old_to_new">从旧到新</string>
+    <string name="pending">待处理任务 <b>%d</b></string>
+    <string name="completed">已完成的任务 <b>%d</b></string>
+
+    <string name="overview">概述</string>
+    <string name="good_morning">早上好</string>
+    <string name="notification_daily_desc">您的任务正在等待处理，您必须尽快完成</string>
+    <string name="show_voice_to_add_task_option">显示语音以添加任务选项</string>
 </resources>

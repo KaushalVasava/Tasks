@@ -4,7 +4,9 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Build
@@ -13,10 +15,51 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.navigation.NavDeepLinkBuilder
 import com.lahsuak.apps.tasks.R
+import com.lahsuak.apps.tasks.data.model.Notification
 import com.lahsuak.apps.tasks.data.model.Task
-import com.lahsuak.apps.tasks.ui.fragments.SubTaskFragmentArgs
+import com.lahsuak.apps.tasks.ui.MainActivity
+import com.lahsuak.apps.tasks.ui.fragments.subtask.SubTaskFragmentArgs
 
 object NotificationUtil {
+    @SuppressLint("MissingPermission")
+    fun createNotificationDaily(
+        context: Context,
+        title: String,
+        msg: String
+    ) {
+        createNotificationChannel(
+            context,
+            AppConstants.NOTIFICATION_DAILY_CHANNEL_ID,
+            AppConstants.NOTIFICATION_DAILY_CHANNEL_NAME,
+            AppConstants.NOTIFICATION_DAILY_CHANNEL_DESCRIPTION
+        )
+        val defaultAction = Intent(context, MainActivity::class.java)
+            .setAction(Intent.ACTION_DEFAULT)
+            .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+
+        val notification =
+            NotificationCompat.Builder(context, AppConstants.NOTIFICATION_DAILY_CHANNEL_ID)
+                .setSmallIcon(R.drawable.ic_reminder)
+                .setContentTitle(title)
+                .setContentText(msg)
+                .setAutoCancel(true)
+                .setContentIntent(
+                    PendingIntent.getActivity(
+                        context,
+                        0,
+                        defaultAction,
+                        PendingIntent.FLAG_UPDATE_CURRENT.toImmutableFlag()
+                    )
+                )
+                .setDefaults(NotificationCompat.DEFAULT_ALL)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .build()
+
+        if (isPermissionGranted(context)) {
+            NotificationManagerCompat.from(context).notify(1, notification)
+        }
+    }
+
     @SuppressLint("MissingPermission")
     fun createNotification(
         context: Context,
@@ -25,9 +68,14 @@ object NotificationUtil {
         parentTitle: String?,
         isDone: Boolean,
         startDate: Long,
-        endDate: Long,
+        endDate: Long
     ) {
-        createNotificationChannel(context)
+        createNotificationChannel(
+            context,
+            AppConstants.NOTIFICATION_CHANNEL_ID,
+            AppConstants.NOTIFICATION_CHANNEL_NAME,
+            AppConstants.NOTIFICATION_CHANNEL_DESCRIPTION
+        )
         val task = if (parentTitle != null) {
             Task(id = id, title = parentTitle)
         } else {
@@ -39,7 +87,8 @@ object NotificationUtil {
             .setDestination(R.id.subTaskFragment)
             .setArguments(
                 SubTaskFragmentArgs.Builder(
-                    task, false, null
+                    task, false, null,
+                    Notification(id = 0, id, title, System.currentTimeMillis())
                 ).build().toBundle()
             )
             .createPendingIntent()
@@ -58,14 +107,19 @@ object NotificationUtil {
         }
     }
 
-    private fun createNotificationChannel(context: Context) {
+    private fun createNotificationChannel(
+        context: Context,
+        id: String,
+        name: String,
+        desc: String
+    ) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
-                AppConstants.NOTIFICATION_CHANNEL_ID,
-                AppConstants.NOTIFICATION_CHANNEL_NAME,
+                id,
+                name,
                 NotificationManager.IMPORTANCE_DEFAULT
             ).apply {
-                description = AppConstants.NOTIFICATION_CHANNEL_DESCRIPTION
+                description = desc
             }
             val notificationManager =
                 context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -82,5 +136,9 @@ object NotificationUtil {
         } else {
             true
         }
+    }
+
+    private fun Int.toImmutableFlag(): Int {
+        return PendingIntent.FLAG_IMMUTABLE or this
     }
 }

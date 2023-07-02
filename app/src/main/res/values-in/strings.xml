@@ -120,4 +120,25 @@
     <string name="back">Retour</string>
     <string name="feedback_from_app">Commentaires de %s, %s</string>
     <string name="add_task_or_subtask">Tambahkan tugas atau subtugas baru</string>
+
+    <string name="name">Nama ⬇</string>
+    <string name="name_desc">Nama ⬆</string>
+    <string name="date">Tanggal ⬇</string>
+    <string name="date_desc">Tanggal ⬆</string>
+    <string name="category">Kategori ⬇</string>
+    <string name="category_desc">Kategori ⬆</string>
+    <string name="start_date">Tanggal mulai</string>
+    <string name="end_date">Tanggal akhir</string>
+    <string name="select_project_end_date">Pilih tanggal akhir proyek</string>
+    <string name="select_project_start_date">Pilih tanggal mulai proyek</string>
+    <string name="no_notification">Belum ada notifikasi</string>
+    <string name="notifications">Pemberitahuan</string>
+    <string name="sort_by_old_to_new">Lama ke baru</string>
+    <string name="pending">Tugas yang tertunda <b>%d</b></string>
+    <string name="completed">Menyelesaikan tugas <b>%d</b></string>
+
+    <string name="overview">Ikhtisar</string>
+    <string name="good_morning">Selamat pagi</string>
+    <string name="notification_daily_desc">Tugas Anda tertunda, Anda harus menyelesaikannya dengan cepat</string>
+    <string name="show_voice_to_add_task_option">Tampilkan suara untuk menambahkan opsi tugas</string>
 </resources>

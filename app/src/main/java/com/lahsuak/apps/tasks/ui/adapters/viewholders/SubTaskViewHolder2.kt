@@ -15,7 +15,9 @@ import com.lahsuak.apps.tasks.R
 import com.lahsuak.apps.tasks.data.model.SubTask
 import com.lahsuak.apps.tasks.databinding.SubTaskItemGridBinding
 import com.lahsuak.apps.tasks.ui.adapters.SubTaskAdapter
-import com.lahsuak.apps.tasks.util.AppConstants
+import com.lahsuak.apps.tasks.util.AppConstants.SharedPreference.FONT_SIZE_KEY
+import com.lahsuak.apps.tasks.util.AppConstants.SharedPreference.INITIAL_FONT_SIZE
+import com.lahsuak.apps.tasks.util.AppConstants.SharedPreference.SHOW_REMINDER_KEY
 import com.lahsuak.apps.tasks.util.DateUtil
 import com.lahsuak.apps.tasks.util.SelectionListener
 import com.lahsuak.apps.tasks.util.setDrawableColor
@@ -94,9 +96,8 @@ class SubTaskViewHolder2(
             val context = root.context
             val prefMgr = PreferenceManager.getDefaultSharedPreferences(context)
             val txtSize =
-                prefMgr.getString(AppConstants.FONT_SIZE_KEY, AppConstants.INITIAL_FONT_SIZE)!!
-                    .toFloat()
-            val showReminder = prefMgr.getBoolean(AppConstants.SHOW_REMINDER_KEY, true)
+                prefMgr.getString(FONT_SIZE_KEY, INITIAL_FONT_SIZE)!!.toFloat()
+            val showReminder = prefMgr.getBoolean(SHOW_REMINDER_KEY, true)
 
             txtTitle.text = subTask.subTitle
             Linkify.addLinks(txtTitle, Linkify.ALL)

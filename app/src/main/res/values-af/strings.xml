@@ -121,10 +121,24 @@
     <string name="back">Terug</string>
     <string name="feedback_from_app">Terugvoer van %s, %s</string>
     <string name="add_task_or_subtask">Voeg nuwe taak of subtaak by</string>
-    <string name="name">Naam</string>
-    <string name="name_desc">Naambeskrywing</string>
-    <string name="date" >Datum</string>
-    <string name="date_desc">Datumbeskrywing</string>
-    <string name="category">Kategorie</string>
-    <string name="category_desc">Kategoriebeskrywing</string>
+
+    <string name="name">Naam ⬇</string>
+    <string name="name_desc">Naam ⬆</string>
+    <string name="date" >Datum ⬇</string>
+    <string name="date_desc">Datum ⬆</string>
+    <string name="category">Kategorie ⬇</string>
+    <string name="category_desc">Kategorie ⬆</string>
+    <string name="start_date">Begindatum</string>
+    <string name="end_date">Einddatum</string>
+    <string name="select_project_end_date">Kies projek einddatum</string>
+    <string name="select_project_start_date">Kies projekbegindatum</string>
+    <string name="no_notification">Nog geen kennisgewings nie</string>
+    <string name="notifications">Kennisgewings</string>
+    <string name="sort_by_old_to_new">Oud na nuut</string>
+    <string name="pending">Hangende take <b>%d</b></string>
+    <string name="completed">Voltooide take <b>%d</b></string>
+    <string name="overview">Oorsig</string>
+    <string name="good_morning">Goeie môre</string>
+    <string name="notification_daily_desc">Jou take is hangende, jy moet dit vinnig voltooi</string>
+    <string name="show_voice_to_add_task_option">Wys stem om taak by te voeg</string>
 </resources>

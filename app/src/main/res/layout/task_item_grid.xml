@@ -4,13 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/CircularCardView"
     android:layout_width="match_parent"
-    android:layout_margin="8dp"
-    app:cardCornerRadius="16dp"
+    android:layout_margin="4dp"
     app:strokeColor="?colorPrimary">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:paddingTop="0dp"
+        android:paddingBottom="4dp">
 
         <ImageView
             android:id="@+id/img_category"
@@ -84,32 +85,16 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
-        <ProgressBar
-            android:id="@+id/progress_bar"
-            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        <include
+            android:id="@+id/progress_layout"
+            layout="@layout/task_progress_layout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
-            android:elevation="4dp"
-            android:progress="20"
-            android:progressDrawable="@drawable/background_progress"
-            android:visibility="visible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@id/txt_title"
             app:layout_constraintTop_toBottomOf="@id/txt_subtask" />
-
-        <TextView
-            android:id="@+id/task_progress"
-            style="@style/SubTitle"
-            android:elevation="4dp"
-            android:gravity="center"
-            android:textSize="11sp"
-            app:layout_constraintBottom_toBottomOf="@id/progress_bar"
-            app:layout_constraintEnd_toEndOf="@id/progress_bar"
-            app:layout_constraintStart_toStartOf="@id/progress_bar"
-            app:layout_constraintTop_toTopOf="@id/progress_bar"
-            tools:text="0/0 subtasks completed" />
 
         <ImageView
             android:id="@+id/img_more"
@@ -120,7 +105,7 @@
             android:contentDescription="@string/more"
             android:padding="0dp"
             android:src="@drawable/ic_expand_more"
-            app:layout_constraintBottom_toTopOf="@id/progress_bar"
+            app:layout_constraintBottom_toTopOf="@id/progress_layout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/btn_delete"
             app:layout_constraintVertical_bias="0" />
@@ -129,7 +114,7 @@
             android:id="@+id/txt_subtask"
             style="@style/SubTitle"
             android:layout_marginEnd="8dp"
-            app:layout_constraintBottom_toTopOf="@id/progress_bar"
+            app:layout_constraintBottom_toTopOf="@id/progress_layout"
             app:layout_constraintEnd_toStartOf="@id/img_more"
             app:layout_constraintStart_toStartOf="@id/txt_title"
             app:layout_constraintTop_toBottomOf="@id/txt_title" />
@@ -138,10 +123,8 @@
             android:id="@+id/txt_reminder"
             style="@style/SubTitle.Bold"
             android:layout_marginEnd="8dp"
-            android:layout_marginBottom="4dp"
             android:background="@drawable/background_round"
             android:drawablePadding="2dp"
-            android:elevation="4dp"
             android:gravity="center"
             android:paddingHorizontal="4dp"
             android:paddingVertical="1dp"
@@ -161,7 +144,6 @@
             android:layout_marginEnd="8dp"
             android:background="@drawable/background_date"
             android:drawablePadding="2dp"
-            android:elevation="4dp"
             android:gravity="center"
             android:maxLines="3"
             android:paddingHorizontal="4dp"
@@ -170,7 +152,7 @@
             app:layout_constraintBottom_toTopOf="@id/txt_reminder"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@id/txt_title"
-            app:layout_constraintTop_toBottomOf="@id/progress_bar"
+            app:layout_constraintTop_toBottomOf="@id/progress_layout"
             tools:text="30,July 2022" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>

@@ -14,7 +14,7 @@
 
         <TextView
             android:id="@+id/dialog_title"
-            style="@style/Title.BOLD"
+            style="@style/Title.Bold"
             android:gravity="center"
             android:text="@string/add_task_or_subtask"
             app:layout_constraintEnd_toEndOf="parent"
@@ -38,19 +38,10 @@
             style="@style/Title"
             android:gravity="center"
             android:text="@string/or"
-            app:layout_constraintBottom_toTopOf="@id/title"
+            app:layout_constraintBottom_toTopOf="@id/txt_task_select"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/btn_new_task" />
-
-        <TextView
-            android:id="@+id/title"
-            style="@style/Title"
-            android:text="@string/please_select_task"
-            app:layout_constraintBottom_toTopOf="@id/task_picker"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/txt_or" />
 
         <View
             android:layout_width="400dp"
@@ -69,16 +60,13 @@
             android:textSize="16sp"
             app:layout_constraintBottom_toTopOf="@id/btn_cancel"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/title" />
+            app:layout_constraintTop_toBottomOf="@id/txt_or" />
 
         <Spinner
             android:id="@+id/task_picker"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="20dp"
+            style="@style/Spinner"
+            android:layout_marginVertical="16dp"
             android:padding="5dp"
-            android:spinnerMode="dropdown"
             app:layout_constraintBottom_toBottomOf="@id/txt_task_select"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/txt_task_select"

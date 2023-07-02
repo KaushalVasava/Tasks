@@ -22,6 +22,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.widget.TextViewCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.workDataOf
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -35,11 +36,12 @@ import com.lahsuak.apps.tasks.util.AppConstants.MAIL_TO
 import com.lahsuak.apps.tasks.util.AppConstants.MARKET_PLACE_HOLDER
 import com.lahsuak.apps.tasks.util.AppConstants.SHARE_FORMAT
 import com.lahsuak.apps.tasks.util.AppUtil.UNDERSCORE
+import com.lahsuak.apps.tasks.util.worker.NotificationWorker
+import com.lahsuak.apps.tasks.util.worker.ReminderWorker
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
-
 
 object AppUtil {
     private const val COPY_TAG = "Copied Text"
@@ -77,22 +79,6 @@ object AppUtil {
         val item = abc?.getItemAt(0)
         return item?.text.toString()
     }
-
-//    fun createNotification(context: Context) {
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//
-//            val notificationChannel =
-//                NotificationChannel(
-//                    NOTIFICATION_CHANNEL_ID,
-//                    NOTIFICATION_CHANNEL_NAME,
-//                    NotificationManager.IMPORTANCE_DEFAULT
-//                )
-//            notificationChannel.description = DESCRIPTION
-//
-//            val notificationManager = context.getSystemService(NotificationManager::class.java)
-//            notificationManager.createNotificationChannel(notificationChannel)
-//        }
-//    }
 
     //settings methods
     fun moreApp(context: Context) {
@@ -195,7 +181,10 @@ object AppUtil {
         }
     }
 
-    fun FragmentActivity.setDateTime(doWork: (calendar: Calendar, time: String) -> Unit) {
+    fun setDateTime(
+        activity: FragmentActivity,
+        doWork: (calendar: Calendar, time: String) -> Unit
+    ) {
         val mCalendar = Calendar.getInstance()
         val formatter = SimpleDateFormat(AppConstants.TIME_FORMAT, Locale.getDefault())
         var hour = formatter.format(mCalendar.time).substring(0, 2).trim().toInt()
@@ -203,11 +192,11 @@ object AppUtil {
 
         val isAm = formatter.format(mCalendar.time).substring(6).trim().lowercase()
 
-        if (isAm == getString(R.string.pm_format))
+        if (isAm == activity.getString(R.string.pm_format))
             hour += 12
 
         val materialTimePicker: MaterialTimePicker = MaterialTimePicker.Builder()
-            .setTitleText(getString(R.string.set_time))
+            .setTitleText(activity.getString(R.string.set_time))
             .setHour(hour)
             .setMinute(min)
             .build()
@@ -218,8 +207,8 @@ object AppUtil {
                 mCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
 
                 materialTimePicker.show(
-                    supportFragmentManager,
-                    getString(R.string.set_time)
+                    activity.supportFragmentManager,
+                    activity.getString(R.string.set_time)
                 )
                 // dialog update the TextView accordingly
                 materialTimePicker.addOnPositiveButtonClickListener {
@@ -238,7 +227,7 @@ object AppUtil {
                 }
             }
         val datePickerDialog = DatePickerDialog(
-            this,
+            activity,
             dateListener,
             mCalendar.get(Calendar.YEAR),
             mCalendar.get(Calendar.MONTH),
@@ -273,15 +262,33 @@ object AppUtil {
         WorkManager.getInstance(context).enqueue(myWorkRequest)
     }
 
-    inline fun <reified M> setupReminderData(
+    fun createNotificationWorkRequest(
+        delay: Long,
+        context: Context,
+        title: String,
+        message: String,
+    ) {
+        val myWorkRequest = PeriodicWorkRequestBuilder<NotificationWorker>(24, TimeUnit.HOURS)
+            .setInitialDelay(delay, TimeUnit.HOURS)
+            .setInputData(
+                workDataOf(
+                    AppConstants.WorkManager.DAILY_TITLE_KEY to title,
+                    AppConstants.WorkManager.DAILY_MSG_KEY to message
+                )
+            )
+            .build()
+        WorkManager.getInstance(context).enqueue(
+            myWorkRequest
+        )
+    }
+
+    inline fun <reified M> setReminderWorkRequest(
         context: Context,
         title: String,
         data: M,
         calendar: Calendar
     ) {
         val todayDateTime = Calendar.getInstance()
-
-        // 8
         val delayInSeconds =
             (calendar.timeInMillis / 1000L) - (todayDateTime.timeInMillis / 1000L)
         when (data) {
@@ -305,7 +312,7 @@ object AppUtil {
                     data.subTitle,
                     title,
                     data.isDone,
-                    data.dateTime?:System.currentTimeMillis(),
+                    data.dateTime ?: System.currentTimeMillis(),
                     null,
                     delayInSeconds
                 )
@@ -315,26 +322,6 @@ object AppUtil {
                 throw IllegalArgumentException()
             }
         }
-//        val pendingIntentFlag =
-//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//                PendingIntent.FLAG_IMMUTABLE
-//            } else {
-//                0
-//            }
-//        val pendingIntent = PendingIntent.getBroadcast(
-//            context,
-//            System.currentTimeMillis().toInt(),
-//            intent,
-//            pendingIntentFlag
-//        )
-
-//        val alarmManager =
-//            context.getSystemService(AppCompatActivity.ALARM_SERVICE) as AlarmManager
-//        alarmManager.setExact(
-//            AlarmManager.RTC_WAKEUP,
-//            calendar.timeInMillis,
-//            pendingIntent
-//        )
     }
 
     @SuppressLint("QueryPermissionsNeeded")
@@ -428,4 +415,12 @@ fun String.toCamelCase(): String {
 
 fun Context.isItLightMode(): Boolean {
     return this.resources.configuration.uiMode == Configuration.UI_MODE_NIGHT_NO
+}
+
+fun Context.getSizeInDp(): Float {
+    return resources.displayMetrics.widthPixels / resources.displayMetrics.density
+}
+
+fun Context.isTabletOrLandscape(): Boolean {
+    return getSizeInDp() >= resources.displayMetrics.densityDpi
 }

@@ -72,6 +72,15 @@
         <item name="cornerFamily">rounded</item>
     </style>
 
+    <style name="ImageViewStyleCircular">
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay.App.CircleImageView</item>
+    </style>
+
+    <style name="ShapeAppearanceOverlay.App.CircleImageView" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
+
     <style name="Title">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
@@ -79,7 +88,7 @@
         <item name="android:textColor">?attr/colorOnSurface</item>
     </style>
 
-    <style name="Title.BOLD" parent="Title">
+    <style name="Title.Bold" parent="Title">
         <item name="android:textStyle">bold</item>
     </style>
 
