@@ -8,71 +8,107 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <ImageView
-            android:id="@+id/btn_back"
-            style="@style/IconButton"
-            android:layout_marginStart="16dp"
-            android:background="?actionBarItemBackground"
-            android:contentDescription="@string/back"
-            android:padding="8dp"
-            android:src="@drawable/ic_back"
-            app:layout_constraintBottom_toBottomOf="@id/txt_title"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/txt_title" />
-
-        <TextView
-            android:id="@+id/txt_title"
-            style="@style/Title.Bold"
-            android:layout_height="48dp"
-            android:layout_marginHorizontal="8dp"
-            android:layout_marginTop="8dp"
-            android:gravity="center_vertical"
-            android:maxLines="2"
-            android:paddingVertical="8dp"
-            android:textSize="24sp"
-            app:autoSizeMaxTextSize="24sp"
-            app:autoSizeMinTextSize="12sp"
-            app:autoSizeStepGranularity="0.5sp"
-            app:autoSizeTextType="uniform"
-            app:layout_constraintEnd_toStartOf="@id/btn_settings"
-            app:layout_constraintStart_toEndOf="@id/btn_back"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="Task name" />
-
-        <ImageView
-            android:id="@+id/btn_settings"
-            style="@style/IconButton"
-            android:layout_marginEnd="16dp"
-            android:contentDescription="@string/settings"
-            android:padding="8dp"
-            android:src="@drawable/ic_settings"
-            app:layout_constraintBottom_toBottomOf="@id/txt_title"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/txt_title"
-            app:layout_constraintTop_toTopOf="@id/txt_title" />
+        android:layout_height="match_parent"
+        app:layout_anchorGravity="center">
 
         <androidx.constraintlayout.helper.widget.Flow
             android:id="@+id/flow"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_marginTop="8dp"
             app:constraint_referenced_ids="top_layout,bottom_layout"
             app:flow_horizontalStyle="packed"
             app:flow_maxElementsWrap="1"
-            app:flow_verticalStyle="spread_inside"
+            app:flow_verticalStyle="packed"
             app:flow_wrapMode="chain"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/txt_title" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/top_layout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_constraintVertical_bias="0">
+
+            <ImageView
+                android:id="@+id/btn_back"
+                style="@style/IconButton"
+                android:layout_marginStart="16dp"
+                android:background="?actionBarItemBackground"
+                android:contentDescription="@string/back"
+                android:padding="8dp"
+                android:src="@drawable/ic_back"
+                app:layout_constraintBottom_toBottomOf="@id/txt_title"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/txt_title" />
+
+            <TextView
+                android:id="@+id/txt_title"
+                style="@style/Title.Bold"
+                android:layout_height="48dp"
+                android:layout_marginHorizontal="8dp"
+                android:layout_marginTop="8dp"
+                android:gravity="center_vertical"
+                android:maxLines="2"
+                android:paddingVertical="8dp"
+                android:textSize="24sp"
+                app:autoSizeMaxTextSize="24sp"
+                app:autoSizeMinTextSize="12sp"
+                app:autoSizeStepGranularity="0.5sp"
+                app:autoSizeTextType="uniform"
+                app:layout_constraintEnd_toStartOf="@id/btn_settings"
+                app:layout_constraintStart_toEndOf="@id/btn_back"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Task name" />
+
+            <ImageView
+                android:id="@+id/btn_settings"
+                style="@style/IconButton"
+                android:layout_marginEnd="16dp"
+                android:contentDescription="@string/settings"
+                android:padding="8dp"
+                android:src="@drawable/ic_settings"
+                app:layout_constraintBottom_toBottomOf="@id/txt_title"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/txt_title"
+                app:layout_constraintTop_toTopOf="@id/txt_title" />
+
+            <ProgressBar
+                android:id="@+id/progress_bar"
+                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                android:layout_width="0dp"
+                android:layout_height="20dp"
+                android:layout_marginHorizontal="16dp"
+                android:progressDrawable="@drawable/background_progress"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/txt_title" />
+
+            <TextView
+                android:id="@+id/txt_task_progress"
+                style="@style/SubTitle"
+                android:background="@android:color/transparent"
+                android:gravity="center"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="@id/progress_bar"
+                app:layout_constraintEnd_toEndOf="@id/progress_bar"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@id/progress_bar"
+                app:layout_constraintTop_toTopOf="@id/progress_bar"
+                app:layout_constraintVertical_bias="1.0"
+                tools:text="0/0 subtasks completed" />
+
+            <androidx.appcompat.widget.SearchView
+                android:id="@+id/search_view"
+                style="@style/SearchView"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/progress_bar"
+                app:queryHint="@string/search_subtask" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/start_layout"
@@ -108,41 +144,6 @@
                     android:inputType="none"
                     android:textSize="11sp" />
             </com.google.android.material.textfield.TextInputLayout>
-
-            <ProgressBar
-                android:id="@+id/progress_bar"
-                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-                android:layout_width="0dp"
-                android:layout_height="20dp"
-                android:layout_marginHorizontal="16dp"
-                android:progressDrawable="@drawable/background_progress"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/txt_task_progress"
-                style="@style/SubTitle"
-                android:background="@android:color/transparent"
-                android:gravity="center"
-                android:textSize="14sp"
-                app:layout_constraintBottom_toBottomOf="@id/progress_bar"
-                app:layout_constraintEnd_toEndOf="@id/progress_bar"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="@id/progress_bar"
-                app:layout_constraintTop_toTopOf="@id/progress_bar"
-                app:layout_constraintVertical_bias="1.0"
-                tools:text="0/0 subtasks completed" />
-
-            <androidx.appcompat.widget.SearchView
-                android:id="@+id/search_view"
-                style="@style/SearchView"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="8dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/progress_bar"
-                app:queryHint="@string/search_subtask" />
 
             <com.google.android.material.chip.ChipGroup
                 android:id="@+id/task_chip_group"
@@ -276,15 +277,17 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/bottom_layout"
             android:layout_width="0dp"
-            android:layout_height="0dp">
+            android:layout_height="0dp"
+            app:layout_constraintVertical_bias="0">
 
             <TextView
                 android:id="@+id/btn_create_new_task"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:padding="5dp"
                 android:text="@string/create_new_sub_task"
+                android:visibility="gone"
                 app:drawableTopCompat="@drawable/ic_add_task"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -297,40 +300,48 @@
                 android:layout_height="0dp"
                 android:clipToPadding="false"
                 android:paddingHorizontal="8dp"
-                android:visibility="gone"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:listitem="@layout/sub_task_item"
-                tools:visibility="visible" />
+                tools:listitem="@layout/sub_task_item" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/btn_add_task"
-        style="@style/FloatingActionButton"
-        android:layout_gravity="bottom|end"
-        android:contentDescription="@string/add_task"
-        android:src="@drawable/ic_add"
-        app:tint="?attr/colorOnPrimary" />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="16dp">
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/btn_voice_task"
-        style="@style/FloatingActionButton"
-        android:layout_gravity="bottom|start"
-        android:contentDescription="@string/add_task"
-        android:src="@drawable/ic_mic"
-        app:tint="?attr/colorOnPrimary" />
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/btn_add_task"
+            style="@style/FloatingActionButton"
+            android:contentDescription="@string/add_task"
+            android:src="@drawable/ic_add"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/btn_delete_all"
-        style="@style/FloatingActionButton"
-        android:layout_gravity="bottom|center_horizontal"
-        android:contentDescription="@string/add_task_by_speak"
-        android:src="@drawable/ic_delete"
-        android:visibility="gone"
-        app:tint="?android:colorBackground" />
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/btn_voice_task"
+            style="@style/FloatingActionButton"
+            android:contentDescription="@string/add_task"
+            android:src="@drawable/ic_mic"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/btn_delete_all"
+            style="@style/FloatingActionButton"
+            android:contentDescription="@string/add_task_by_speak"
+            android:src="@drawable/ic_delete"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="?android:colorBackground"
+            tools:visibility="visible" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

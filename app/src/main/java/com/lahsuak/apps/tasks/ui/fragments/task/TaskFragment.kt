@@ -1,7 +1,6 @@
 package com.lahsuak.apps.tasks.ui.fragments.task
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
 import android.app.Dialog
@@ -129,14 +128,14 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         super.onCreateView(inflater, container, savedInstanceState)
         _binding = FragmentTaskBinding.inflate(inflater, container, false)
         selectedItem = null
         val animation =
             TransitionInflater.from(requireContext()).inflateTransition(android.R.transition.move)
         sharedElementEnterTransition = animation
-        return _binding?.root
+        return _binding!!.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -312,7 +311,7 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
             navController.navigate(R.id.action_taskFragment_to_overviewFragment)
         }
         binding.btnMoreApps.setOnClickListener {
-            AppUtil.openWebsite(context, AppConstants.WEBSITE)
+           AppUtil.openMoreApp(requireContext())
         }
         setSortMenu()
         setVisibilityOfTasks()
@@ -626,7 +625,6 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
             return false
         }
 
-        @SuppressLint("NotifyDataSetChanged")
         override fun onActionItemClicked(
             mode: ActionMode?,
             item: MenuItem?,
@@ -649,13 +647,13 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
                     isSelectAll = if (!isSelectAll) {
                         item.setIcon(R.drawable.ic_select_all_on)
                         for (i in 0 until taskAdapter.currentList.size)
-                            selectedItem!![i]
+                            selectedItem!![i] = true
                         counter = taskAdapter.currentList.size
                         true
                     } else {
                         item.setIcon(R.drawable.ic_select_all)
                         for (i in 0 until taskAdapter.currentList.size)
-                            !selectedItem!![i]
+                            selectedItem!![i] = false
                         counter = 0
                         false
                     }
@@ -665,7 +663,7 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
                             counter,
                             taskAdapter.itemCount
                         )
-                    taskAdapter.notifyDataSetChanged()
+                    taskAdapter.notifyItemRangeChanged(0,taskAdapter.itemCount)
                     true
                 }
 

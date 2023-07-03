@@ -25,8 +25,6 @@ import com.lahsuak.apps.tasks.util.AppConstants.THEME_KEY
 import com.lahsuak.apps.tasks.util.AppUtil
 import com.lahsuak.apps.tasks.util.AppUtil.appRating
 import com.lahsuak.apps.tasks.util.AppUtil.getLanguage
-import com.lahsuak.apps.tasks.util.AppUtil.moreApp
-import com.lahsuak.apps.tasks.util.AppUtil.sendFeedbackMail
 import com.lahsuak.apps.tasks.util.AppUtil.shareApp
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
@@ -110,7 +108,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
             true
         }
         prefFeedback?.setOnPreferenceClickListener {
-            sendFeedbackMail(requireContext())
+            AppUtil.openWebsite(context, AppConstants.WEBSITE)
             true
         }
         prefShare?.setOnPreferenceClickListener {
@@ -118,7 +116,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
             true
         }
         prefMoreApp?.setOnPreferenceClickListener {
-            AppUtil.openWebsite(context, AppConstants.WEBSITE)
+            AppUtil.openMoreApp(requireContext())
             true
         }
         prefRating?.setOnPreferenceClickListener {

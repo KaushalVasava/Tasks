@@ -4,6 +4,7 @@ import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.Paint
 import android.text.util.Linkify
+import android.util.Log
 import android.util.TypedValue
 import androidx.core.content.ContextCompat
 import androidx.core.view.isInvisible
@@ -153,14 +154,14 @@ class TaskViewHolder1(
                         }
                     } else {
                         if (!selectionListener.getSelectedItemEmpty()) {
-                            root.strokeWidth =
-                                if (!selectionListener.getItemStatus(position)) {
-                                    selectionListener.setItemStatus(false, position)
-                                    0
-                                } else {
-                                    selectionListener.setItemStatus(true, position)
-                                    5
-                                }
+                            Log.d("TAG", "bind: ${selectionListener.getItemStatus(position)}")
+                            if (!selectionListener.getItemStatus(position)) {
+                                selectionListener.setItemStatus(false, position)
+                                root.strokeWidth = 0
+                            } else {
+                                selectionListener.setItemStatus(true, position)
+                                root.strokeWidth = 5
+                            }
                         }
                     }
                 }

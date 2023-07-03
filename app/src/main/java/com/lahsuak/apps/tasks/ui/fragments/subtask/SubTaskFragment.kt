@@ -277,6 +277,9 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
         binding.btnShare.setOnClickListener {
             subTaskViewModel.shareTask(requireContext(), getAllText())
         }
+        binding.progressBar.setOnClickListener {
+            navController.navigate(R.id.action_subTaskFragment_to_overviewFragment)
+        }
         binding.etStartDate.setOnClickListener {
             setDateTime(requireActivity()) { calendar, time ->
                 binding.etStartDate.setText(time)
@@ -497,8 +500,7 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
                         requireView(),
                         getString(R.string.task_deleted),
                         Snackbar.LENGTH_LONG
-                    )
-                        .setAction(getString(R.string.undo)) {
+                    ).setAction(getString(R.string.undo)) {
                             subTaskViewModel.onUndoDeleteClick(event.subTask)
                         }.show()
                 }
@@ -515,7 +517,8 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
     }
 
     private fun addNewTask() {
-        val action = SubTaskFragmentDirections.actionSubTaskFragmentToRenameFragmentDialog(
+        val action =
+            SubTaskFragmentDirections.actionSubTaskFragmentToRenameFragmentDialog(
             true,
             task.id,
             null, -1
@@ -573,7 +576,8 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
         if (subTask.isDone) {
             subTaskViewModel.showDeleteDialog(requireContext(), subTask)
         } else {
-            val action = SubTaskFragmentDirections.actionSubTaskFragmentToRenameFragmentDialog(
+            val action =
+                SubTaskFragmentDirections.actionSubTaskFragmentToRenameFragmentDialog(
                 true,
                 task.id,
                 subTask.subTitle,
@@ -627,13 +631,13 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
                         if (!isSelectedAll) {
                             item.setIcon(R.drawable.ic_select_all_on)
                             for (i in 0 until subTaskAdapter.currentList.size)
-                                selectedItem!![i]
+                                selectedItem!![i] = true
                             counter = subTaskAdapter.currentList.size
                             true
                         } else {
                             item.setIcon(R.drawable.ic_select_all)
                             for (i in 0 until subTaskAdapter.currentList.size)
-                                !selectedItem!![i]
+                                selectedItem!![i] = false
                             counter = 0
                             false
                         }
@@ -719,12 +723,7 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
         binding.btnVoiceTask.isVisible = !isVisible &&
                 prefManager.getBoolean(SHOW_VOICE_TASK_KEY, true)
         binding.btnAddTask.isVisible = !isVisible
-        binding.sortMenu.isVisible = !isVisible
-        binding.taskChipGroup.isVisible = !isVisible
-        binding.reminderLayout.isVisible = !isVisible
-        binding.searchView.isVisible = !isVisible
-        binding.txtSort.isVisible = !isVisible
-        binding.btnShare.isVisible = !isVisible
+        binding.topLayout.isVisible = !isVisible
     }
 
     private fun onActionMode(isActionModeOn: Boolean) {

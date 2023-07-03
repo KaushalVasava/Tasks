@@ -69,7 +69,7 @@ class OverviewFragment : Fragment(R.layout.fragment_overview) {
             overviewAdapter.submitList(selectedTasks)
         }
         selectedDate?.let {
-            binding.dateView.setDate(it)
+            binding.dateView.date = it
         }
         addTaskObserver()
     }

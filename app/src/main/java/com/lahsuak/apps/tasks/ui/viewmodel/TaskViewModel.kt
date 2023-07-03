@@ -47,7 +47,7 @@ class TaskViewModel @Inject constructor(
             query,
             filterPreferences.sortOrder,
             filterPreferences.hideCompleted
-        )
+        ).distinctUntilChanged()
     }.asLiveData()
 
     val tasksFlow2 = combine(

@@ -81,7 +81,7 @@ object AppUtil {
     }
 
     //settings methods
-    fun moreApp(context: Context) {
+    fun openMoreApp(context: Context) {
         try {
             context.startActivity(
                 Intent(Intent.ACTION_VIEW, Uri.parse(context.getString(R.string.market_string)))
@@ -123,31 +123,6 @@ object AppUtil {
             context.toast {
                 context.getString(R.string.something_went_wrong)
             }
-        }
-    }
-
-    fun sendFeedbackMail(context: Context) {
-        try {
-            val emailIntent = Intent(Intent.ACTION_SENDTO).apply {
-                data = Uri.parse(MAIL_TO) // only email apps should handle this
-                putExtra(Intent.EXTRA_EMAIL, arrayOf(context.getString(R.string.feedback_email)))
-                val info =
-                    Build.MODEL + COMMA_SEPARATOR + Build.MANUFACTURER + Build.VERSION.SDK_INT
-                putExtra(Intent.EXTRA_TEXT, context.getString(R.string.write_suggestions))
-                putExtra(
-                    Intent.EXTRA_SUBJECT,
-                    String.format(
-                        context.getString(
-                            R.string.feedback_from_app
-                        ),
-                        context.getString(R.string.app_name),
-                        info
-                    )
-                )
-            }
-            context.startActivity(emailIntent)
-        } catch (e: Exception) {
-            e.logError()
         }
     }
 
