@@ -12,6 +12,7 @@ import com.lahsuak.apps.tasks.data.model.Notification
 import com.lahsuak.apps.tasks.databinding.FragmentNotificationBinding
 import com.lahsuak.apps.tasks.ui.viewmodel.NotificationViewModel
 import com.lahsuak.apps.tasks.ui.viewmodel.TaskViewModel
+import com.lahsuak.apps.tasks.util.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -21,9 +22,9 @@ import kotlinx.coroutines.withContext
 class NotificationFragment : Fragment(R.layout.fragment_notification),
     NotificationAdapter.ItemClickListener {
 
-    private var _binding: FragmentNotificationBinding? = null
-    private val binding get() = _binding!!
-
+    private val binding: FragmentNotificationBinding by viewBinding {
+        FragmentNotificationBinding.bind(it)
+    }
     private val viewModel: NotificationViewModel by viewModels()
     private val taskViewModel: TaskViewModel by viewModels()
     private val notificationAdapter: NotificationAdapter by lazy {
@@ -42,7 +43,6 @@ class NotificationFragment : Fragment(R.layout.fragment_notification),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        _binding = FragmentNotificationBinding.bind(view)
         binding.notificationRecyclerView.apply {
             setHasFixedSize(true)
             adapter = notificationAdapter

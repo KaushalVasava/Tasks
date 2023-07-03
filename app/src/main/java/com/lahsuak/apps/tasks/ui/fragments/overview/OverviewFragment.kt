@@ -13,14 +13,17 @@ import com.lahsuak.apps.tasks.ui.adapters.OverviewAdapter
 import com.lahsuak.apps.tasks.ui.viewmodel.TaskViewModel
 import com.lahsuak.apps.tasks.util.DateUtil
 import com.lahsuak.apps.tasks.util.isTabletOrLandscape
+import com.lahsuak.apps.tasks.util.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.Calendar
 
 @AndroidEntryPoint
 class OverviewFragment : Fragment(R.layout.fragment_overview) {
 
-    private var _binding: FragmentOverviewBinding? = null
-    private val binding get() = _binding!!
+    private val binding: FragmentOverviewBinding by viewBinding {
+        FragmentOverviewBinding.bind(it)
+    }
+
     private val taskViewModel: TaskViewModel by viewModels()
     private val overviewAdapter: OverviewAdapter by lazy {
         OverviewAdapter()
@@ -48,8 +51,6 @@ class OverviewFragment : Fragment(R.layout.fragment_overview) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        _binding = FragmentOverviewBinding.bind(view)
-
         binding.root.doOnLayout {
             if (requireContext().isTabletOrLandscape()) {
                 binding.flow.setMaxElementsWrap(2)
@@ -79,7 +80,7 @@ class OverviewFragment : Fragment(R.layout.fragment_overview) {
             selectedDate = Calendar.getInstance().timeInMillis
             DateUtil.getDateForOverview(Calendar.getInstance().timeInMillis)
         } else {
-            DateUtil.getDateForOverview(selectedDate?:calendar.timeInMillis)
+            DateUtil.getDateForOverview(selectedDate ?: calendar.timeInMillis)
         }
         return list.filter {
             val taskDate = DateUtil.getDateForOverview(it.startDate!!)
@@ -130,10 +131,5 @@ class OverviewFragment : Fragment(R.layout.fragment_overview) {
                 }
             )
         }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 }

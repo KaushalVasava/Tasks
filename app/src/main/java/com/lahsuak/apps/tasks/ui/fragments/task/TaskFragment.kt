@@ -72,9 +72,10 @@ import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener, SelectionListener {
-    private var _binding: FragmentTaskBinding? = null
-    private val binding: FragmentTaskBinding
-        get() = _binding!!
+
+    private val binding: FragmentTaskBinding by viewBinding {
+        FragmentTaskBinding.bind(it)
+    }
     private val navController: NavController by unsafeLazy {
         findNavController()
     }
@@ -124,22 +125,12 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
             }
         }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        super.onCreateView(inflater, container, savedInstanceState)
-        _binding = FragmentTaskBinding.inflate(inflater, container, false)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         selectedItem = null
         val animation =
             TransitionInflater.from(requireContext()).inflateTransition(android.R.transition.move)
         sharedElementEnterTransition = animation
-        return _binding!!.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
         binding.root.doOnLayout {
             if (requireContext().isTabletOrLandscape()) {
                 binding.flow.setMaxElementsWrap(2)
@@ -311,7 +302,7 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
             navController.navigate(R.id.action_taskFragment_to_overviewFragment)
         }
         binding.btnMoreApps.setOnClickListener {
-           AppUtil.openMoreApp(requireContext())
+            AppUtil.openMoreApp(requireContext())
         }
         setSortMenu()
         setVisibilityOfTasks()
@@ -663,7 +654,7 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
                             counter,
                             taskAdapter.itemCount
                         )
-                    taskAdapter.notifyItemRangeChanged(0,taskAdapter.itemCount)
+                    taskAdapter.notifyItemRangeChanged(0, taskAdapter.itemCount)
                     true
                 }
 
@@ -880,7 +871,6 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
             searchView!!.setOnQueryTextListener(null)
         shareTxt = null
         isWidgetClick = false
-        _binding = null
     }
 
     companion object {

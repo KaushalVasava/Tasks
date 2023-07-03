@@ -43,6 +43,7 @@ import com.lahsuak.apps.tasks.data.SortOrder
 import com.lahsuak.apps.tasks.data.model.SubTask
 import com.lahsuak.apps.tasks.data.model.Task
 import com.lahsuak.apps.tasks.databinding.FragmentSubtaskBinding
+import com.lahsuak.apps.tasks.databinding.FragmentTaskBinding
 import com.lahsuak.apps.tasks.model.SubTaskEvent
 import com.lahsuak.apps.tasks.ui.adapters.SubTaskAdapter
 import com.lahsuak.apps.tasks.ui.fragments.task.TaskFragment.Companion.TOTAL_PROGRESS_VALUE
@@ -62,9 +63,9 @@ import java.util.*
 class SubTaskFragment : Fragment(R.layout.fragment_subtask),
     SubTaskAdapter.SubTaskListener, SelectionListener {
 
-    private var _binding: FragmentSubtaskBinding? = null
-    private val binding: FragmentSubtaskBinding
-        get() = _binding!!
+    private val binding: FragmentSubtaskBinding by viewBinding {
+        FragmentSubtaskBinding.bind(it)
+    }
 
     private val subTaskViewModel: SubTaskViewModel by viewModels()
     private val notificationViewModel: NotificationViewModel by viewModels()
@@ -113,19 +114,9 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        super.onCreateView(inflater, container, savedInstanceState)
-        _binding = FragmentSubtaskBinding.inflate(inflater, container, false)
-        selectedItem = null
-        return _binding?.root
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        selectedItem = null
         if (args.isNotification != null) {
             notificationViewModel.insert(args.isNotification!!)
         }
@@ -501,8 +492,8 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
                         getString(R.string.task_deleted),
                         Snackbar.LENGTH_LONG
                     ).setAction(getString(R.string.undo)) {
-                            subTaskViewModel.onUndoDeleteClick(event.subTask)
-                        }.show()
+                        subTaskViewModel.onUndoDeleteClick(event.subTask)
+                    }.show()
                 }
 
                 SubTaskEvent.NavigateToAllCompletedScreen -> {
@@ -519,10 +510,10 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
     private fun addNewTask() {
         val action =
             SubTaskFragmentDirections.actionSubTaskFragmentToRenameFragmentDialog(
-            true,
-            task.id,
-            null, -1
-        )
+                true,
+                task.id,
+                null, -1
+            )
         navController.navigate(action)
     }
 
@@ -578,11 +569,11 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
         } else {
             val action =
                 SubTaskFragmentDirections.actionSubTaskFragmentToRenameFragmentDialog(
-                true,
-                task.id,
-                subTask.subTitle,
-                subTask.sId
-            )
+                    true,
+                    task.id,
+                    subTask.subTitle,
+                    subTask.sId
+                )
             navController.navigate(action)
         }
     }
@@ -825,7 +816,6 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
             subTaskViewModel.update(task)
         }
         searchView?.setOnQueryTextListener(null)
-        _binding = null
     }
 
     companion object {

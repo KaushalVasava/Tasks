@@ -33,12 +33,18 @@ class AddUpdateTaskFragmentDialog : BottomSheetDialogFragment() {
     private var _binding: DialogAddUpdateTaskBinding? = null
     private val binding: DialogAddUpdateTaskBinding
         get() = _binding!!
+
     private val args: AddUpdateTaskFragmentDialogArgs by navArgs()
     private val taskViewModel: TaskViewModel by viewModels()
     private val subTaskViewModel: SubTaskViewModel by viewModels()
     private lateinit var task: Task
     private lateinit var subTask: SubTask
     private var selectedCategoryPosition = 0
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
