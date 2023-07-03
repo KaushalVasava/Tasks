@@ -124,7 +124,7 @@
 
     <string name="name">姓名 ⬇</string>
     <string name="name_desc">名称 ⬆</string>
-    <string name="date" >日期 ⬇</string>
+    <string name="date">日期 ⬇</string>
     <string name="date_desc">日期 ⬆</string>
     <string name="category">类别 ⬇</string>
     <string name="category_desc">类别 ⬆</string>
@@ -139,7 +139,7 @@
     <string name="completed">已完成的任务 <b>%d</b></string>
 
     <string name="overview">概述</string>
-    <string name="good_morning">早上好</string>
+    <string name="good_morning">亲爱的你好</string>
     <string name="notification_daily_desc">您的任务正在等待处理，您必须尽快完成</string>
     <string name="show_voice_to_add_task_option">显示语音以添加任务选项</string>
 </resources>

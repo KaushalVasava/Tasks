@@ -138,7 +138,7 @@
     <string name="completed">Menyelesaikan tugas <b>%d</b></string>
 
     <string name="overview">Ikhtisar</string>
-    <string name="good_morning">Selamat pagi</string>
+    <string name="good_morning">Halo sayang</string>
     <string name="notification_daily_desc">Tugas Anda tertunda, Anda harus menyelesaikannya dengan cepat</string>
     <string name="show_voice_to_add_task_option">Tampilkan suara untuk menambahkan opsi tugas</string>
 </resources>

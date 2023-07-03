@@ -138,7 +138,7 @@
     <string name="completed">Tarefas concluídas <b>%d</b></string>
 
     <string name="overview">Visão geral</string>
-    <string name="good_morning">Bom dia</string>
+    <string name="good_morning">Olá querida</string>
     <string name="notification_daily_desc">Suas tarefas estão pendentes, você deve finalizá-las rapidamente</string>
     <string name="show_voice_to_add_task_option">Mostrar voz para adicionar opção de tarefa</string>
 </resources>

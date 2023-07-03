@@ -329,6 +329,7 @@
             style="@style/FloatingActionButton"
             android:contentDescription="@string/add_task"
             android:src="@drawable/ic_mic"
+            app:tint="?android:colorBackground"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 

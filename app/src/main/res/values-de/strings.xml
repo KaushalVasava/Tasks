@@ -139,7 +139,7 @@
     <string name="completed">Abgeschlossene Aufgaben <b>%d</b></string>
 
     <string name="overview">Übersicht</string>
-    <string name="good_morning">Guten Morgen</string>
+    <string name="good_morning">Hallo Schatz</string>
     <string name="notification_daily_desc">Ihre Aufgaben stehen noch aus, Sie müssen sie schnell erledigen</string>
     <string name="show_voice_to_add_task_option">Option „Stimme zum Hinzufügen einer Aufgabe anzeigen“</string>
 </resources>

@@ -139,7 +139,7 @@
     <string name="completed">Attività completate <b>%d</b></string>
 
     <string name="overview">Panoramica</string>
-    <string name="good_morning">Buongiorno</string>
+    <string name="good_morning">Ciao cara</string>
     <string name="notification_daily_desc">Le tue attività sono in sospeso, devi completarle in fretta</string>
     <string name="show_voice_to_add_task_option">Mostra l\'opzione voce per aggiungere attività</string>
 </resources>

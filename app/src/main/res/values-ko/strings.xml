@@ -136,7 +136,7 @@
     <string name="completed">완료된 작업 <b>%d</b></string>
 
     <string name="overview">개요</string>
-    <string name="good_morning">안녕하세요</string>
+    <string name="good_morning">안녕하세요.</string>
     <string name="notification_daily_desc">작업이 대기 중입니다. 빨리 완료해야 합니다</string>
     <string name="show_voice_to_add_task_option">작업 옵션 추가를 위한 음성 표시</string>
 </resources>

@@ -138,7 +138,7 @@
     <string name="completed">Выполненные задачи <b>%d</b></string>
 
     <string name="overview">Обзор</string>
-    <string name="good_morning">Доброе утро</string>
+    <string name="good_morning">Привет, дорогая</string>
     <string name="notification_daily_desc">Ваши задачи находятся на рассмотрении, вы должны закончить их быстро</string>
     <string name="show_voice_to_add_task_option">Показать голос для добавления опции задачи</string>
 </resources>

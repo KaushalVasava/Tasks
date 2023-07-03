@@ -139,7 +139,7 @@
     <string name="completed">مکمل کام <b>%d</b></string>
 
     <string name = "overview"> مجموعی جائزہ</string>
-    <string name = "good_morning">گڈ مارننگ</string>
+    <string name="good_morning">ہیلو عزیز</string>
     <string name="notification_daily_desc">آپ کے کام زیر التواء ہیں، آپ کو انہیں جلدی سے مکمل کرنا ہوگا</string>
     <string name="show_voice_to_add_task_option">ٹاسک آپشن شامل کرنے کے لیے آواز دکھائیں</string>
 </resources>

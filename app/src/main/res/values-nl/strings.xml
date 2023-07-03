@@ -138,7 +138,7 @@
     <string name="completed">Voltooide taken <b>%d</b></string>
 
     <string name="overview">Overzicht</string>
-    <string name="good_morning">Goedemorgen</string>
+    <string name="good_morning">Hallo schat</string>
     <string name="notification_daily_desc">Je taken zijn in behandeling, je moet ze snel afmaken</string>
     <string name="show_voice_to_add_task_option">Toon stem om taakoptie toe te voegen</string>
 </resources>

@@ -136,7 +136,7 @@
     <string name="completed">完了したタスク <b>%d</b></string>
 
     <string name="overview">概要</string>
-    <string name="good_morning">おはようございます</string>
+    <string name="good_morning">こんにちは</string>
     <string name="notification_daily_desc">タスクは保留中です。すぐに完了する必要があります</string>
     <string name="show_voice_to_add_task_option">タスク オプションを追加するための音声を表示</string>
 </resources>

@@ -138,7 +138,7 @@
     <string name="pending">Hangende take <b>%d</b></string>
     <string name="completed">Voltooide take <b>%d</b></string>
     <string name="overview">Oorsig</string>
-    <string name="good_morning">Goeie môre</string>
+    <string name="good_morning">Hallo liewe</string>
     <string name="notification_daily_desc">Jou take is hangende, jy moet dit vinnig voltooi</string>
     <string name="show_voice_to_add_task_option">Wys stem om taak by te voeg</string>
 </resources>

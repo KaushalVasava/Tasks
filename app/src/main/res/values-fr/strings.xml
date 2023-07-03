@@ -124,7 +124,7 @@
 
     <string name="name">Nom ⬇</string>
     <string name="name_desc">Nom ⬆</string>
-    <string name="date" >Date ⬇</string>
+    <string name="date">Date ⬇</string>
     <string name="date_desc">Date ⬆</string>
     <string name="category">Catégorie ⬇</string>
     <string name="category_desc">Catégorie ⬆</string>
@@ -139,7 +139,7 @@
     <string name="completed">Tâches terminées <b>%d</b></string>
 
     <string name="overview">Aperçu</string>
-    <string name="good_morning">Bonjour</string>
+    <string name="good_morning">Bonjour mon cher</string>
     <string name="notification_daily_desc">Vos tâches sont en attente, vous devez les terminer rapidement</string>
     <string name="show_voice_to_add_task_option">Afficher la voix pour ajouter l\'option de tâche</string>
 </resources>

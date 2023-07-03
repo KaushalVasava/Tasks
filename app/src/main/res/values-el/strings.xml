@@ -138,7 +138,7 @@
     <string name="completed">Ολοκληρωμένες εργασίες <b>%d</b></string>
 
     <string name="overview">Επισκόπηση</string>
-    <string name="good_morning">Καλημέρα</string>
+    <string name="good_morning">Γεια σου αγαπητέ</string>
     <string name="notification_daily_desc">Οι εργασίες σας εκκρεμούν, πρέπει να τις ολοκληρώσετε γρήγορα</string>
     <string name="show_voice_to_add_task_option">Εμφάνιση επιλογής φωνής για προσθήκη εργασίας</string>
 </resources>

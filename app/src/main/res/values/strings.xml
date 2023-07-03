@@ -145,7 +145,7 @@
     <string name="completed">Completed tasks <b>%d</b></string>
 
     <string name="overview">Overview</string>
-    <string name="good_morning">Good morning</string>
+    <string name="good_morning">Hello dear</string>
     <string name="notification_daily_desc">Your tasks are pending, You have to finish it quickly</string>
     <string name="show_voice_to_add_task_option">Show voice to add task option</string>
 </resources>

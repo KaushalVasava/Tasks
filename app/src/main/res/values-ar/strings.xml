@@ -135,7 +135,7 @@
     <string name = "completed"> المهام المكتملة <b>٪ d </b> </string>
 
     <string name = "overview"> نظرة عامة </string>
-    <string name = "good_morning"> صباح الخير </string>
+    <string name = "good_morning"> مرحبًا عزيزي </string>
     <string name = "notification_daily_desc"> مهامك معلقة ، عليك إنهاءها بسرعة </string>
     <string name = "show_voice_to_add_task_option"> إظهار الصوت لإضافة خيار مهمة </string>
 </resources>

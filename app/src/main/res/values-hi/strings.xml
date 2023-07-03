@@ -136,7 +136,7 @@
     <string name="pending">लंबित कार्य <b>%d</b></string>
     <string name="completed">पूर्ण कार्य <b>%d</b></string>
     <string name="overview">अवलोकन</string>
-    <string name="good_morning">सुप्रभात</string>
+    <string name="good_morning">नमस्कार प्रिय</string>
     <string name="notification_daily_desc">आपके कार्य लंबित हैं, आपको उन्हें जल्दी से पूरा करना होगा</string>
     <string name='show_voice_to_add_task_option'>कार्य विकल्प जोड़ने के लिए आवाज दिखाएं</string>
 </resources>

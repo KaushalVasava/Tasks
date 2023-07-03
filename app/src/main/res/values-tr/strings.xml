@@ -139,7 +139,7 @@
     <string name="completed">Tamamlanan görevler <b>%d</b></string>
 
     <string name="overview">Genel Bakış</string>
-    <string name="good_morning">Günaydın</string>
+    <string name="good_morning">Merhaba canım</string>
     <string name="notification_daily_desc">Görevleriniz beklemede, onları hızlı bir şekilde bitirmeniz gerekiyor</string>
     <string name="show_voice_to_add_task_option">Görev seçeneği eklemek için sesi göster</string>
 </resources>
