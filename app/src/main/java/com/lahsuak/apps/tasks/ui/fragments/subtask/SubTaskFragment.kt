@@ -808,14 +808,14 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
         }
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
+    override fun onStop() {
         if (binding.progressBar.progress == TOTAL_PROGRESS_VALUE) {
             binding.cbTaskCompleted.isChecked = true
             task.isDone = true
             subTaskViewModel.update(task)
         }
         searchView?.setOnQueryTextListener(null)
+        super.onStop()
     }
 
     companion object {

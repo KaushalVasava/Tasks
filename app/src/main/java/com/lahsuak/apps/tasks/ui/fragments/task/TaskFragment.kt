@@ -174,6 +174,7 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
 
     private fun initView() {
         viewModel.preferencesFlow.asLiveData().observe(viewLifecycleOwner) {
+            viewType = it.viewType
             binding.taskRecyclerView.layoutManager = if (viewType) {
                 binding.btnView.setImageResource(R.drawable.ic_list_view)
                 StaggeredGridLayoutManager(2, RecyclerView.VERTICAL)
@@ -300,6 +301,12 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
         }
         binding.progressBar.setOnClickListener {
             navController.navigate(R.id.action_taskFragment_to_overviewFragment)
+        }
+        binding.txtMoreApps.setOnClickListener {
+            AppUtil.openMoreApp(requireContext())
+        }
+        binding.imgApps.setOnClickListener {
+            AppUtil.openMoreApp(requireContext())
         }
         binding.btnMoreApps.setOnClickListener {
             AppUtil.openMoreApp(requireContext())
@@ -830,7 +837,6 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
         super.onSaveInstanceState(outState)
         outState.apply {
             putBoolean(VIEW_TYPE_BUNDLE_KEY, viewType)
-            putBoolean(LAYOUT_CHANGE_BUNDLE_KEY, isLayoutChange)
             putInt(COUNTER_BUNDLE_KEY, counter)
             putBoolean(IS_IN_ACTION_MODE_BUNDLE_KEY, actionModeEnable)
             putBoolean(IS_SELECT_ALL_BUNDLE_KEY, isSelectAll)
@@ -844,7 +850,6 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
         super.onViewStateRestored(savedInstanceState)
         savedInstanceState?.let {
             viewType = it.getBoolean(VIEW_TYPE_BUNDLE_KEY)
-            isLayoutChange = it.getBoolean(LAYOUT_CHANGE_BUNDLE_KEY)
             counter = it.getInt(COUNTER_BUNDLE_KEY, counter)
             actionModeEnable = it.getBoolean(IS_IN_ACTION_MODE_BUNDLE_KEY)
             isSelectAll = it.getBoolean(IS_SELECT_ALL_BUNDLE_KEY)
@@ -865,8 +870,8 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
         }
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
+    override fun onDestroy() {
+        super.onDestroy()
         if (searchView != null)
             searchView!!.setOnQueryTextListener(null)
         shareTxt = null
@@ -881,7 +886,6 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
         private const val SELECTED_ITEMS_BUNDLE_KEY = "task_selected_items_bundle_key"
         private const val OPEN_TASK_ITEMS_BUNDLE_KEY = "selected_items_bundle_key"
         private const val TASKS_STATUS_BUNDLE_KEY = "tasks_status_bundle_key"
-        private const val LAYOUT_CHANGE_BUNDLE_KEY = "layout_change_bundle_key"
         const val TOTAL_PROGRESS_VALUE = 100
     }
 }
