@@ -274,7 +274,7 @@ object AppUtil {
                     data.title,
                     null,
                     data.isDone,
-                    data.startDate!!,
+                    data.startDate ?: System.currentTimeMillis(),
                     data.endDate,
                     delayInSeconds
                 )

@@ -271,18 +271,22 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
         binding.progressBar.setOnClickListener {
             navController.navigate(R.id.action_subTaskFragment_to_overviewFragment)
         }
-        binding.etStartDate.setOnClickListener {
-            setDateTime(requireActivity()) { calendar, time ->
-                binding.etStartDate.setText(time)
-                task = task.copy(startDate = calendar.timeInMillis)
+        binding.etStartDate.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                setDateTime(requireActivity()) { calendar, time ->
+                    binding.etStartDate.setText(time)
+                    task = task.copy(startDate = calendar.timeInMillis)
+                }
             }
         }
-        binding.etEndDate.setOnClickListener {
-            setDateTime(requireActivity()) { calendar, time ->
-                binding.etEndDate.setText(time)
-                if (binding.etStartDate.text.isNullOrEmpty().not()) {
-                    task = task.copy(endDate = calendar.timeInMillis)
-                    subTaskViewModel.update(task)
+        binding.etEndDate.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                setDateTime(requireActivity()) { calendar, time ->
+                    binding.etEndDate.setText(time)
+                    if (binding.etStartDate.text.isNullOrEmpty().not()) {
+                        task = task.copy(endDate = calendar.timeInMillis)
+                        subTaskViewModel.update(task)
+                    }
                 }
             }
         }

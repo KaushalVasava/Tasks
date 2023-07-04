@@ -196,8 +196,7 @@ class AddUpdateTaskFragmentDialog : BottomSheetDialogFragment() {
             }
             if (binding.txtReminder.text == getString(R.string.add_date_time)) {
                 if (!args.navigateFromSubtask) {
-                    task = Task(
-                        id = 0,
+                    task = task.copy(
                         title = binding.txtRename.toTrimString(),
                         isImp = binding.cbImpTask.isChecked
                     )
@@ -226,22 +225,26 @@ class AddUpdateTaskFragmentDialog : BottomSheetDialogFragment() {
             }
         }
 
-        binding.etStartDate.setOnClickListener {
-            setDateTime(requireActivity()) { calendar, time ->
-                binding.etStartDate.setText(time)
-                task = Task(
-                    id = 0,
-                    title = binding.txtRename.text.toString(),
-                    startDate = calendar.timeInMillis
-                )
+        binding.etStartDate.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                setDateTime(requireActivity()) { calendar, time ->
+                    binding.etStartDate.setText(time)
+                    task = Task(
+                        id = 0,
+                        title = binding.txtRename.text.toString(),
+                        startDate = calendar.timeInMillis
+                    )
+                }
             }
         }
-        binding.etEndDate.setOnClickListener {
-            setDateTime(requireActivity()) { calendar, time ->
-                binding.etEndDate.setText(time)
-                if (binding.etStartDate.text.isNullOrEmpty().not()) {
-                    task = task.copy(endDate = calendar.timeInMillis)
-                    taskViewModel.update(task)
+        binding.etEndDate.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                setDateTime(requireActivity()) { calendar, time ->
+                    binding.etEndDate.setText(time)
+                    if (binding.etStartDate.text.isNullOrEmpty().not()) {
+                        task = task.copy(endDate = calendar.timeInMillis)
+                        taskViewModel.update(task)
+                    }
                 }
             }
         }

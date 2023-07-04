@@ -207,6 +207,12 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
         }
         viewModel.tasksFlow.observe(viewLifecycleOwner) { list ->
             if (shareTxt != null) {
+
+                taskSelectionBinding.txtOr.isVisible = list.isNotEmpty()
+                taskSelectionBinding.txtTaskSelect.isVisible = list.isNotEmpty()
+                taskSelectionBinding.taskPicker.isVisible = list.isNotEmpty()
+                taskSelectionBinding.btnSet.isVisible = list.isNotEmpty()
+
                 val adapter: ArrayAdapter<*> = ArrayAdapter<Any?>(
                     requireContext(),
                     android.R.layout.simple_spinner_dropdown_item, list.map { it.title }
@@ -231,12 +237,13 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
                     }
                 dialog.show()
                 taskSelectionBinding.btnSet.setOnClickListener {
-                    val action = TaskFragmentDirections.actionTaskFragmentToSubTaskFragment(
-                        list[selectedPosition].copy(isDone = false),
-                        true,
-                        shareTxt!!,
-                        null
-                    )
+                    val action =
+                        TaskFragmentDirections.actionTaskFragmentToSubTaskFragment(
+                            list[selectedPosition].copy(isDone = false),
+                            true,
+                            shareTxt!!,
+                            null
+                        )
                     navController.navigate(action)
                     shareTxt = null
                     dialog.dismiss()
@@ -870,12 +877,12 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onStop() {
         if (searchView != null)
             searchView!!.setOnQueryTextListener(null)
         shareTxt = null
         isWidgetClick = false
+        super.onStop()
     }
 
     companion object {
