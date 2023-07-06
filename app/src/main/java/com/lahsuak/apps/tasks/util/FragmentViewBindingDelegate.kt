@@ -3,7 +3,6 @@ package com.lahsuak.apps.tasks.util
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.DefaultLifecycleObserver
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.viewbinding.ViewBinding
@@ -50,9 +49,10 @@ class FragmentViewBindingDelegate<T : ViewBinding>(
         }
 
         val lifecycle = fragment.viewLifecycleOwner.lifecycle
-        if (!lifecycle.currentState.isAtLeast(Lifecycle.State.INITIALIZED)) {
-            throw IllegalStateException("Should not attempt to get bindings when Fragment views are destroyed.")
-        }
+//        if (!lifecycle.currentState.isAtLeast(Lifecycle.State.INITIALIZED)) {
+//            Log.d("TAG", "getValue: Should not attempt to get bindings when Fragment views are destroyed.")
+//            throw IllegalStateException("Should not attempt to get bindings when Fragment views are destroyed.")
+//        }
 
         return viewBindingFactory(thisRef.requireView()).also { this.binding = it }
     }

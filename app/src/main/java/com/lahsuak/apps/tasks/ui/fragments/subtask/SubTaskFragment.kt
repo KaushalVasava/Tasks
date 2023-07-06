@@ -43,7 +43,6 @@ import com.lahsuak.apps.tasks.data.SortOrder
 import com.lahsuak.apps.tasks.data.model.SubTask
 import com.lahsuak.apps.tasks.data.model.Task
 import com.lahsuak.apps.tasks.databinding.FragmentSubtaskBinding
-import com.lahsuak.apps.tasks.databinding.FragmentTaskBinding
 import com.lahsuak.apps.tasks.model.SubTaskEvent
 import com.lahsuak.apps.tasks.ui.adapters.SubTaskAdapter
 import com.lahsuak.apps.tasks.ui.fragments.task.TaskFragment.Companion.TOTAL_PROGRESS_VALUE
@@ -812,14 +811,14 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
         }
     }
 
-    override fun onStop() {
+    override fun onDestroyView() {
         if (binding.progressBar.progress == TOTAL_PROGRESS_VALUE) {
             binding.cbTaskCompleted.isChecked = true
             task.isDone = true
             subTaskViewModel.update(task)
         }
         searchView?.setOnQueryTextListener(null)
-        super.onStop()
+        super.onDestroyView()
     }
 
     companion object {

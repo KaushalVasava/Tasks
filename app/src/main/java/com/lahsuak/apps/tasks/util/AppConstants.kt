@@ -16,7 +16,6 @@ object AppConstants {
     const val DATE_FORMAT = "dd MM, yy"
     const val REMINDER_DATE_TIME_FORMAT = "dd MMM, yy hh:mm a"
     const val TOOLBAR_DATE_TIME_FORMAT = "E, dd LLLL"
-    const val MAIL_TO = "mailto:"
     const val MARKET_PLACE_HOLDER = "market://details?id="
     const val SHARE_FORMAT = "text/plain"
     const val SORT_ORDER = "sort_order"

@@ -19,12 +19,9 @@
     <!-- Sync Preferences -->
     <string name="sync_title">Sync email periodically</string>
     <string name="attachment_title">Download incoming attachments</string>
-    <string name="attachment_summary_on">Automatically download attachments for incoming emails
-    </string>
+    <string name="attachment_summary_on">Automatically download attachments for incoming emails</string>
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
-
-
-    <string name="feedback_text">Send feedback, If the app keeps crashing \'Clear app data\' or send it an Email</string>
+    <string name="feedback_text">Send feedback on Instagram, Twitter or on mail, If the app keeps crashing \'Clear app data\' from the App settings</string>
     <string name="rating_text">Love this app? Let us know in Google Play Store how we can make it even better</string>
     <string name="more_app_text">Click here to see my other apps</string>
     <string name="share_text">Share the app with your friends and family</string>
@@ -36,7 +33,6 @@
     <string name="market_string" translatable="false">market://search?q=pub:Kaushal Vasava</string>
     <string name="market_developer_string" translatable="false">http://play.google.com/store/apps/developer?id=Kaushal Vasava</string>
     <string name="play_store_share" translatable="false">https://play.google.com/store/apps/details?id=</string>
-    <string name="feedback_email" translatable="false">kaushalvasava.app.feedback@gmail.com</string>
     <string name="contact_support">Contact Support</string>
     <string name="rating">Rate the app</string>
     <string name="more_apps">More Apps</string>

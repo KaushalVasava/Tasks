@@ -30,11 +30,6 @@ class ShortcutFragmentDialog : BottomSheetDialogFragment() {
     private val model: TaskViewModel by viewModels()
     private lateinit var task: Task
 
-    override fun onDestroy() {
-        super.onDestroy()
-        _binding = null
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -111,7 +106,7 @@ class ShortcutFragmentDialog : BottomSheetDialogFragment() {
     }
 
     override fun onDestroyView() {
-        super.onDestroyView()
         _binding = null
+        super.onDestroyView()
     }
 }

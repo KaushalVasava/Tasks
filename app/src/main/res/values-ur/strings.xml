@@ -23,8 +23,6 @@
     <string name="attachment_summary_on">آنے والی ای میلز کے لیے خودکار طور پر منسلکات ڈاؤن لوڈ کریں
     </string>
     <string name="attachment_summary_off">صرف منسلکات ڈاؤن لوڈ کریں جب دستی طور پر درخواست کی جائے</string>
-
-
     <string name="feedback_text">فیڈ بیک بھیجیں، اگر ایپ کریش ہوتی رہتی ہے \'ایپ ڈیٹا کو صاف کریں\' یا اسے ای میل بھیجیں</string>
     <string name="rating_text">یہ ایپ پسند ہے؟ ہمیں Google Play Store میں بتائیں کہ ہم اسے اور بھی بہتر کیسے بنا سکتے ہیں</string>
     <string name="more_app_text">دیگر ایپس کو چیک کریں</string>

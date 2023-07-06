@@ -41,9 +41,9 @@ class AddUpdateTaskFragmentDialog : BottomSheetDialogFragment() {
     private lateinit var subTask: SubTask
     private var selectedCategoryPosition = 0
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
         _binding = null
+        super.onDestroyView()
     }
 
     override fun onCreateView(

@@ -877,12 +877,12 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
         }
     }
 
-    override fun onStop() {
+    override fun onDestroyView() {
         if (searchView != null)
             searchView!!.setOnQueryTextListener(null)
         shareTxt = null
         isWidgetClick = false
-        super.onStop()
+        super.onDestroyView()
     }
 
     companion object {

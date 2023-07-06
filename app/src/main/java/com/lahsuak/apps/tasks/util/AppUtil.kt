@@ -32,7 +32,6 @@ import com.lahsuak.apps.tasks.R
 import com.lahsuak.apps.tasks.TaskApp
 import com.lahsuak.apps.tasks.data.model.SubTask
 import com.lahsuak.apps.tasks.data.model.Task
-import com.lahsuak.apps.tasks.util.AppConstants.MAIL_TO
 import com.lahsuak.apps.tasks.util.AppConstants.MARKET_PLACE_HOLDER
 import com.lahsuak.apps.tasks.util.AppConstants.SHARE_FORMAT
 import com.lahsuak.apps.tasks.util.AppUtil.UNDERSCORE
@@ -45,7 +44,6 @@ import java.util.concurrent.TimeUnit
 
 object AppUtil {
     private const val COPY_TAG = "Copied Text"
-    private const val COMMA_SEPARATOR = ","
     const val UNDERSCORE = "_"
     fun <T> unsafeLazy(initializer: () -> T): Lazy<T> {
         return lazy(LazyThreadSafetyMode.NONE, initializer)
