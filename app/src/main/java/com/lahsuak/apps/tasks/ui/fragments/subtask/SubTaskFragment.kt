@@ -127,6 +127,7 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
             }
         }
         task = args.task
+        restoreData(savedInstanceState)
         initView()
         subTaskViewModel.taskId.value = task.id
         handleReminder()
@@ -173,6 +174,10 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
         val prefManager = PreferenceManager.getDefaultSharedPreferences(requireContext())
         binding.btnVoiceTask.isVisible =
             prefManager.getBoolean(SHOW_VOICE_TASK_KEY, true)
+        setView()
+    }
+
+    private fun setView() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewType = subTaskViewModel.preferencesFlow.first().viewType
             binding.subTaskRecyclerView.layoutManager =
@@ -181,10 +186,10 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
                 } else {
                     LinearLayoutManager(requireContext())
                 }
-        }
-        binding.subTaskRecyclerView.apply {
-            setHasFixedSize(true)
-            adapter = subTaskAdapter
+            binding.subTaskRecyclerView.apply {
+                setHasFixedSize(true)
+                adapter = subTaskAdapter
+            }
         }
     }
 
@@ -788,8 +793,7 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
         }
     }
 
-    override fun onViewStateRestored(savedInstanceState: Bundle?) {
-        super.onViewStateRestored(savedInstanceState)
+    private fun restoreData(savedInstanceState: Bundle?) {
         savedInstanceState?.let {
             viewType = it.getBoolean(VIEW_TYPE_BUNDLE_KEY)
             counter = it.getInt(COUNTER_BUNDLE_KEY, counter)

@@ -26,8 +26,10 @@ import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.NavDirections
 import androidx.navigation.fragment.FragmentNavigatorExtras
@@ -67,8 +69,11 @@ import com.lahsuak.apps.tasks.util.AppUtil.unsafeLazy
 import dagger.hilt.android.AndroidEntryPoint
 import hotchemi.android.rate.AppRate
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @AndroidEntryPoint
 class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener, SelectionListener {
@@ -140,6 +145,7 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
         }
         if (TaskApp.counter % MAX_COUNTER_FOR_MORE_APPS == 0) {
             viewLifecycleOwner.lifecycleScope.launch {
+                delay(MORE_APPS_DELAY / 2)
                 binding.txtMoreApps.isVisible = true
                 binding.btnMoreApps.isVisible = true
                 delay(MORE_APPS_DELAY)
@@ -148,6 +154,7 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
             }
         }
         TaskApp.counter++
+        restoreData(savedInstanceState)
         binding.txtTitle.text = DateUtil.getToolbarDateTime(System.currentTimeMillis())
         val prefManager = PreferenceManager.getDefaultSharedPreferences(requireContext())
         binding.btnVoiceTask.isVisible =
@@ -173,20 +180,25 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
     }
 
     private fun initView() {
-        viewModel.preferencesFlow.asLiveData().observe(viewLifecycleOwner) {
-            viewType = it.viewType
-            binding.taskRecyclerView.layoutManager = if (viewType) {
-                binding.btnView.setImageResource(R.drawable.ic_list_view)
-                StaggeredGridLayoutManager(2, RecyclerView.VERTICAL)
-            } else {
-                binding.btnView.setImageResource(R.drawable.ic_grid_view)
-                LinearLayoutManager(requireContext())
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.preferencesFlow.collectLatest {
+                    viewType = it.viewType
+                    binding.taskRecyclerView.layoutManager = if (viewType) {
+                        binding.btnView.setImageResource(R.drawable.ic_list_view)
+                        StaggeredGridLayoutManager(2, RecyclerView.VERTICAL)
+                    } else {
+                        binding.btnView.setImageResource(R.drawable.ic_grid_view)
+                        LinearLayoutManager(requireContext())
+                    }
+                    withContext(Dispatchers.Main) {
+                        binding.taskRecyclerView.apply {
+                            setHasFixedSize(true)
+                            adapter = taskAdapter
+                        }
+                    }
+                }
             }
-            binding.taskRecyclerView.adapter = taskAdapter
-        }
-        binding.taskRecyclerView.apply {
-            setHasFixedSize(true)
-            adapter = taskAdapter
         }
     }
 
@@ -853,8 +865,7 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
         }
     }
 
-    override fun onViewStateRestored(savedInstanceState: Bundle?) {
-        super.onViewStateRestored(savedInstanceState)
+    private fun restoreData(savedInstanceState: Bundle?) {
         savedInstanceState?.let {
             viewType = it.getBoolean(VIEW_TYPE_BUNDLE_KEY)
             counter = it.getInt(COUNTER_BUNDLE_KEY, counter)
@@ -876,6 +887,7 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
             }
         }
     }
+
 
     override fun onDestroyView() {
         if (searchView != null)

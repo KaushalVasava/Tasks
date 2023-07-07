@@ -253,7 +253,7 @@ class AddUpdateTaskFragmentDialog : BottomSheetDialogFragment() {
     private fun saveData() {
         if (args.taskId == -1 && !args.navigateFromSubtask) {
             //new task
-            if (!binding.txtRename.text.isNullOrEmpty()) {
+            if (binding.txtRename.text?.trim().isNullOrEmpty().not()) {
                 if (binding.txtReminder.text == getString(R.string.add_date_time)) {
                     task = Task(
                         id = 0,
@@ -263,8 +263,22 @@ class AddUpdateTaskFragmentDialog : BottomSheetDialogFragment() {
                         endDate = task.endDate,
                         color = TaskApp.categoryTypes[selectedCategoryPosition].order
                     )
+                } else {
+                    task = Task(
+                        id = 0,
+                        title = binding.txtRename.toTrimString(),
+                        isImp = binding.cbImpTask.isChecked,
+                        startDate = task.startDate,
+                        endDate = task.endDate,
+                        reminder = task.reminder,
+                        color = TaskApp.categoryTypes[selectedCategoryPosition].order
+                    )
                 }
                 taskViewModel.insert(task)
+            } else {
+                context.toast {
+                    getString(R.string.empty_task)
+                }
             }
         } else if (args.taskId != -1 && args.subTaskId == -1 && args.navigateFromSubtask) {
             //new subtask

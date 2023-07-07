@@ -86,6 +86,7 @@
         style="@style/InputTextLayout"
         android:layout_marginHorizontal="8dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/start_layout"
         app:layout_constraintStart_toEndOf="@id/start_layout"
         app:layout_constraintTop_toTopOf="@id/start_layout"
         app:startIconDrawable="@drawable/ic_calendar_small">
@@ -113,16 +114,14 @@
         app:layout_constraintStart_toStartOf="@id/title_layout"
         app:layout_constraintTop_toBottomOf="@id/start_layout" />
 
-    <TextView
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_save"
-        style="@style/SubTitle"
-        android:layout_margin="10dp"
-        android:background="?attr/selectableItemBackground"
-        android:elevation="8dp"
-        android:gravity="center"
+        style="@style/Widget.Material3.Button.Icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="10dp"
         android:text="@string/save"
-        app:drawableStartCompat="@drawable/ic_save"
-        app:drawableTint="?attr/colorPrimary"
+        app:icon="@drawable/ic_save"
         app:layout_constraintBottom_toBottomOf="@id/txt_reminder"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/txt_reminder" />

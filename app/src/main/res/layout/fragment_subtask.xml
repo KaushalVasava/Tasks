@@ -105,10 +105,13 @@
                 style="@style/SearchView"
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="8dp"
+                android:focusable="false"
+                android:focusedByDefault="false"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/progress_bar"
-                app:queryHint="@string/search_subtask" />
+                app:queryHint="@string/search_subtask"
+                tools:targetApi="o" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/start_layout"
@@ -122,10 +125,13 @@
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/et_start_date"
+                    android:focusable="false"
+                    android:focusedByDefault="false"
                     style="@style/InputEditTextLayout"
                     android:hint="@string/start_date"
                     android:inputType="none"
-                    android:textSize="11sp" />
+                    android:textSize="11sp"
+                    tools:targetApi="o" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -141,8 +147,11 @@
                     android:id="@+id/et_end_date"
                     style="@style/InputEditTextLayout"
                     android:hint="@string/end_date"
+                    android:focusable="false"
+                    android:focusedByDefault="false"
                     android:inputType="none"
-                    android:textSize="11sp" />
+                    android:textSize="11sp"
+                    tools:targetApi="o" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.chip.ChipGroup
@@ -300,7 +309,6 @@
                 android:layout_height="0dp"
                 android:clipToPadding="false"
                 android:paddingHorizontal="8dp"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -329,9 +337,9 @@
             style="@style/FloatingActionButton"
             android:contentDescription="@string/add_task"
             android:src="@drawable/ic_mic"
-            app:tint="?android:colorBackground"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="?android:colorBackground" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/btn_delete_all"
