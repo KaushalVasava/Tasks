@@ -734,6 +734,8 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
         binding.btnView.isVisible = !isVisible
         binding.searchView.isVisible = !isVisible
         binding.txtSort.isVisible = !isVisible
+        binding.progressBar.isVisible = !isVisible
+        binding.txtTaskProgress.isVisible = !isVisible
     }
 
     private fun onActionMode(isActionModeOn: Boolean) {
