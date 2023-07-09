@@ -17,6 +17,6 @@ data class Task(
     @ColumnInfo(name = "progress") var progress: Float = -1f,
     @ColumnInfo(name = "subtask") var subTaskList: String? = null,
     @ColumnInfo(name = "color") val color: Int = 0,
-    @ColumnInfo(name = "date") var startDate: Long? = null,
+    @ColumnInfo(name = "start_date") var startDate: Long? = null,
     @ColumnInfo(name = "endDate") var endDate: Long? = null
 ) : Parcelable

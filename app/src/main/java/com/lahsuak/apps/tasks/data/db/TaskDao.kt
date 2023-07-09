@@ -42,7 +42,7 @@ interface TaskDao {
     //date DESC
     @Query(
         "SELECT * FROM task_table WHERE (status!= :hideCompleted OR status = 0) " +
-                "AND title LIKE '%' || :searchQuery || '%' ORDER BY importance DESC, date ASC"
+                "AND title LIKE '%' || :searchQuery || '%' ORDER BY importance DESC, start_date ASC"
     )
     fun getAllTaskByDate(
         searchQuery: String,
@@ -51,7 +51,7 @@ interface TaskDao {
 
     @Query(
         "SELECT * FROM task_table WHERE (status!= :hideCompleted OR status = 0) " +
-                "AND title LIKE '%' || :searchQuery || '%' ORDER BY importance DESC, date DESC"
+                "AND title LIKE '%' || :searchQuery || '%' ORDER BY importance DESC, start_date DESC"
     )
     fun getAllTaskByDateDesc(
         searchQuery: String,

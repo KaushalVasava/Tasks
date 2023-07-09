@@ -67,6 +67,7 @@ class OverviewFragment : Fragment(R.layout.fragment_overview) {
             calendar.set(year, month, dayOfMonth)
             selectedDate = calendar.timeInMillis
             val selectedTasks = getTasksByDate(taskList, false)
+            binding.txtEmpty.isVisible = selectedTasks.isEmpty()
             overviewAdapter.submitList(selectedTasks)
         }
         selectedDate?.let {
@@ -118,6 +119,7 @@ class OverviewFragment : Fragment(R.layout.fragment_overview) {
                 getTasksByDate(tasks, false)
             }
             overviewAdapter.submitList(selectedTasks)
+            binding.txtEmpty.isVisible = selectedTasks.isEmpty()
             binding.txtPending.text = String.format(
                 getString(R.string.pending),
                 tasks.count {

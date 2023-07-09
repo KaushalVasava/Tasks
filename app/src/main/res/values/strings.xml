@@ -144,4 +144,5 @@
     <string name="good_morning">Hello dear</string>
     <string name="notification_daily_desc">Your tasks are pending, You have to finish it quickly</string>
     <string name="show_voice_to_add_task_option">Show voice to add task option</string>
+    <string name="task_not_completed_yet">The task has not been completed yet</string>
 </resources>

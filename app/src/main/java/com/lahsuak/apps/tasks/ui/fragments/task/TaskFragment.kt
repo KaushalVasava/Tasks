@@ -536,6 +536,9 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
                     task.isDone
                 }
             }
+            binding.txtEmpty.isVisible = data.none { task ->
+                task.isDone
+            } && binding.taskChipDone.isChecked && it.isNotEmpty()
             taskAdapter.submitList(data)
             if (openTaskItems.isEmpty()) {
                 data.forEachIndexed { index, _ ->

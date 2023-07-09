@@ -204,6 +204,9 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
                     task.isDone
                 }
             }
+            binding.txtEmpty.isVisible = data.none { task ->
+                task.isDone
+            } && binding.taskChipDone.isChecked && it.isNotEmpty()
             subTaskAdapter.submitList(data)
         }
     }

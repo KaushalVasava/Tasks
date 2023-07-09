@@ -32,7 +32,18 @@ object AppModule {
     fun provideTodoDatabase(app: Application): TaskDatabase {
         val migration1To2 = object : Migration(1, 2) {
             override fun migrate(database: SupportSQLiteDatabase) {
-                database.execSQL("ALTER TABLE task_table RENAME COLUMN date TO startDate")
+//                database.execSQL("ALTER TABLE task_table RENAME COLUMN date TO startDate")
+                database.execSQL(
+                    "CREATE TABLE IF NOT EXISTS `task_temporary` (" +
+                            "`id` INTEGER NOT NULL, `title` TEXT NOT NULL, `status` INTEGER NOT NULL, `importance` INTEGER NOT NULL," +
+                            "`reminder` INTEGER,`progress` REAL NOT NULL, `subtask` TEXT,`color` INTEGER NOT NULL,`startDate` INTEGER, PRIMARY KEY(`id`))"
+                )
+                database.execSQL(
+                    "INSERT INTO task_temporary(id, title, status, importance, reminder, progress, subtask, color, startDate)" +
+                            " SELECT id, title, status, importance, reminder, progress, subtask, color, date FROM task_table"
+                )
+                database.execSQL("DROP TABLE task_table")
+                database.execSQL("ALTER TABLE task_temporary RENAME TO task_table")
                 database.execSQL("ALTER TABLE task_table ADD COLUMN endDate INTEGER")
             }
         }
@@ -52,10 +63,10 @@ object AppModule {
                 database.execSQL(
                     "CREATE TABLE IF NOT EXISTS `task_temporary` (" +
                             "`id` INTEGER NOT NULL, `title` TEXT NOT NULL, `status` INTEGER NOT NULL, `importance` INTEGER NOT NULL," +
-                            "`reminder` INTEGER,`progress` REAL NOT NULL, `subtask` TEXT,`color` INTEGER NOT NULL,`date` INTEGER, `endDate` INTEGER, PRIMARY KEY(`id`))"
+                            "`reminder` INTEGER,`progress` REAL NOT NULL, `subtask` TEXT,`color` INTEGER NOT NULL,`start_date` INTEGER, `endDate` INTEGER, PRIMARY KEY(`id`))"
                 )
                 database.execSQL(
-                    "INSERT INTO task_temporary(id, title, status, importance, reminder, progress, subtask, color,date, endDate)" +
+                    "INSERT INTO task_temporary(id, title, status, importance, reminder, progress, subtask, color, start_date, endDate)" +
                             " SELECT id, title, status, importance, reminder, progress, subtask, color, startDate, endDate FROM task_table"
                 )
                 database.execSQL("DROP TABLE task_table")
