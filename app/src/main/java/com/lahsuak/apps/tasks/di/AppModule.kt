@@ -32,7 +32,7 @@ object AppModule {
     fun provideTodoDatabase(app: Application): TaskDatabase {
         val migration1To2 = object : Migration(1, 2) {
             override fun migrate(database: SupportSQLiteDatabase) {
-                database.execSQL("ALTER TABLE task_table RENAME COLUMN date to startDate")
+                database.execSQL("ALTER TABLE task_table RENAME COLUMN date TO startDate")
                 database.execSQL("ALTER TABLE task_table ADD COLUMN endDate INTEGER")
             }
         }
@@ -44,6 +44,25 @@ object AppModule {
                 )
             }
         }
+        val migration3To4 =  object : Migration(3, 4) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                // this above android 10
+//                database.execSQL("ALTER TABLE task_table RENAME COLUMN startDate TO date")
+               // this for all versions
+                database.execSQL(
+                    "CREATE TABLE IF NOT EXISTS `task_temporary` (" +
+                            "`id` INTEGER NOT NULL, `title` TEXT NOT NULL, `status` INTEGER NOT NULL, `importance` INTEGER NOT NULL," +
+                            "`reminder` INTEGER,`progress` REAL NOT NULL, `subtask` TEXT,`color` INTEGER NOT NULL,`date` INTEGER, `endDate` INTEGER, PRIMARY KEY(`id`))"
+                )
+                database.execSQL(
+                    "INSERT INTO task_temporary(id, title, status, importance, reminder, progress, subtask, color,date, endDate)" +
+                            " SELECT id, title, status, importance, reminder, progress, subtask, color, startDate, endDate FROM task_table"
+                )
+                database.execSQL("DROP TABLE task_table")
+                database.execSQL("ALTER TABLE task_temporary RENAME TO task_table")
+
+            }
+        }
         return Room.databaseBuilder(
             app,
             TaskDatabase::class.java,
@@ -51,6 +70,7 @@ object AppModule {
         )
             .addMigrations(migration1To2)
             .addMigrations(migration2To3)
+            .addMigrations(migration3To4)
 //            .fallbackToDestructiveMigration()
             .build()
     }
@@ -81,11 +101,6 @@ object AppModule {
             Context.MODE_PRIVATE
         )
 
-//    @Singleton
-//    @Provides
-//    fun provideDailyNotification(sharedPref: SharedPreferences) =
-//        sharedPref.getBoolean(AppConstants.SharedPreference.DAILY_NOTIFICATION_KEY, false)
-
     @Provides
     @Singleton
     @Named(AppConstants.SharedPreference.LANGUAGE_SHARED_PREFERENCE)
@@ -94,15 +109,6 @@ object AppModule {
             AppConstants.SharedPreference.DAILY_NOTIFICATION,
             Context.MODE_PRIVATE
         )
-
-//    @Singleton
-//    @Provides
-//    fun provideLanguage(sharedPref: SharedPreferences) =
-//        sharedPref.getBoolean(AppConstants.SharedPreference.LANGUAGE_SHARED_PREFERENCE_KEY, false)
-//    @Singleton
-//    @Provides
-//    fun provideLanguageTag(sharedPref: SharedPreferences) =
-//        sharedPref.getBoolean(AppConstants.SharedPreference.LANGUAGE_SHARED_PREFERENCE_LANGUAGE_KEY, false)
 }
 
 @Retention(AnnotationRetention.RUNTIME)

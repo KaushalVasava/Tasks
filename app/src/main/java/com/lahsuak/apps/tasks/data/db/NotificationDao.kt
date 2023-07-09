@@ -1,10 +1,7 @@
 package com.lahsuak.apps.tasks.data.db
 
 import androidx.room.*
-import com.lahsuak.apps.tasks.data.SortOrder
 import com.lahsuak.apps.tasks.data.model.Notification
-import com.lahsuak.apps.tasks.data.model.SubTask
-import com.lahsuak.apps.tasks.data.model.Task
 import kotlinx.coroutines.flow.Flow
 
 @Dao
