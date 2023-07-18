@@ -36,6 +36,7 @@ object AppConstants {
     const val DEPRECATION = "deprecation"
     const val MAX_COUNTER_FOR_MORE_APPS = 5
     const val MORE_APPS_DELAY = 10000L
+    const val INVALID_ID = -1
 
     // Preferences key
     object SharedPreference {

@@ -5,7 +5,6 @@
     android:id="@+id/dialog_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:transitionGroup="true"
     tools:context=".ui.fragments.dialog.AddUpdateTaskFragmentDialog">
 
     <com.google.android.material.textfield.TextInputLayout
@@ -77,7 +76,7 @@
             android:id="@+id/et_start_date"
             style="@style/InputEditTextLayout"
             android:hint="@string/start_date"
-            android:inputType="none"
+            android:inputType="datetime"
             android:textSize="11sp" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -95,7 +94,7 @@
             android:id="@+id/et_end_date"
             style="@style/InputEditTextLayout"
             android:hint="@string/end_date"
-            android:inputType="none"
+            android:inputType="datetime"
             android:textSize="11sp" />
     </com.google.android.material.textfield.TextInputLayout>
 

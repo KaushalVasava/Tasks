@@ -9,7 +9,7 @@
         android:id="@+id/progress_bar"
         style="@style/Widget.AppCompat.ProgressBar.Horizontal"
         android:layout_width="0dp"
-        android:layout_height="15dp"
+        android:layout_height="wrap_content"
         android:progress="30"
         android:progressDrawable="@drawable/background_progress"
         app:layout_constraintEnd_toEndOf="parent"

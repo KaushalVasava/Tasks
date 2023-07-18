@@ -45,10 +45,10 @@ import com.lahsuak.apps.tasks.data.model.Task
 import com.lahsuak.apps.tasks.databinding.FragmentSubtaskBinding
 import com.lahsuak.apps.tasks.model.SubTaskEvent
 import com.lahsuak.apps.tasks.ui.adapters.SubTaskAdapter
-import com.lahsuak.apps.tasks.ui.fragments.task.TaskFragment.Companion.TOTAL_PROGRESS_VALUE
 import com.lahsuak.apps.tasks.ui.viewmodel.NotificationViewModel
 import com.lahsuak.apps.tasks.ui.viewmodel.SubTaskViewModel
 import com.lahsuak.apps.tasks.util.*
+import com.lahsuak.apps.tasks.util.AppConstants.INVALID_ID
 import com.lahsuak.apps.tasks.util.AppConstants.SEARCH_INITIAL_VALUE
 import com.lahsuak.apps.tasks.util.AppConstants.SharedPreference.SHOW_VOICE_TASK_KEY
 import com.lahsuak.apps.tasks.util.AppUtil.setDateTime
@@ -127,6 +127,9 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
             }
         }
         task = args.task
+        subTaskViewModel.taskId.value = task.id
+        val prefManager = PreferenceManager.getDefaultSharedPreferences(requireContext())
+        binding.btnVoiceTask.isVisible = prefManager.getBoolean(SHOW_VOICE_TASK_KEY, true)
         restoreData(savedInstanceState)
         initView()
         subTaskViewModel.taskId.value = task.id
@@ -136,7 +139,7 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
                 true,
                 task.id,
                 args.sharedText,
-                -1,
+                INVALID_ID,
             )
             navController.navigate(action)
         }
@@ -171,9 +174,6 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
         binding.root.setBackgroundColor(AppUtil.getTransparentColor(task.color))
         binding.txtTitle.text = task.title
         setColors(TaskApp.categoryTypes[task.color].color)
-        val prefManager = PreferenceManager.getDefaultSharedPreferences(requireContext())
-        binding.btnVoiceTask.isVisible =
-            prefManager.getBoolean(SHOW_VOICE_TASK_KEY, true)
         setView()
     }
 
@@ -342,8 +342,10 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
     }
 
     private fun setButtonVisibility(isVisible: Boolean) {
+        val prefManager = PreferenceManager.getDefaultSharedPreferences(requireContext())
+        binding.btnVoiceTask.isVisible = isVisible &&
+                prefManager.getBoolean(SHOW_VOICE_TASK_KEY, true)
         binding.btnAddTask.isVisible = isVisible
-        binding.btnVoiceTask.isVisible = isVisible
         binding.btnDeleteAll.isVisible = !isVisible
     }
 
@@ -523,7 +525,7 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
             SubTaskFragmentDirections.actionSubTaskFragmentToRenameFragmentDialog(
                 true,
                 task.id,
-                null, -1
+                null, INVALID_ID
             )
         navController.navigate(action)
     }
@@ -540,10 +542,10 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
         var sendtxt: String?
         sendtxt = FIRST
         if (subTaskAdapter.currentList.isNotEmpty()) {
-            sendtxt += subTaskAdapter.currentList.first().subTitle//subTaskAdapter.currentList[0].subTitle
+            sendtxt += subTaskAdapter.currentList.first().subTitle
         }
-        for (i in 1 until subTaskAdapter.currentList.size) {//subTaskAdapter.currentList.size) {
-            sendtxt += "\n${i + 1}. " + subTaskAdapter.currentList[i].subTitle//subTaskAdapter.currentList[i].subTitle
+        for (i in 1 until subTaskAdapter.currentList.size) {
+            sendtxt += "\n${i + 1}. " + subTaskAdapter.currentList[i].subTitle
         }
         if (sendtxt == FIRST) {
             sendtxt = null
@@ -726,6 +728,7 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
                 prefManager.getBoolean(SHOW_VOICE_TASK_KEY, true)
         binding.btnAddTask.isVisible = !isVisible
         binding.topLayout.isVisible = !isVisible
+        binding.dummyView.isVisible = isVisible
     }
 
     private fun onActionMode(isActionModeOn: Boolean) {
@@ -819,11 +822,6 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
     }
 
     override fun onDestroyView() {
-        if (binding.progressBar.progress == TOTAL_PROGRESS_VALUE) {
-            binding.cbTaskCompleted.isChecked = true
-            task.isDone = true
-            subTaskViewModel.update(task)
-        }
         searchView?.setOnQueryTextListener(null)
         super.onDestroyView()
     }

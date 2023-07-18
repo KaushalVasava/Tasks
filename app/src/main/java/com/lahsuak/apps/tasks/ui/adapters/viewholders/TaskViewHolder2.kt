@@ -42,8 +42,10 @@ class TaskViewHolder2(
                     else {
                         TaskViewHolder1.CLOSE_ROTATION_ANGLE
                     }
-                    txtSubtask.isVisible = !txtSubtask.isVisible
-                    listener.setExpandCollapseState(position, txtSubtask.isVisible)
+                    if(txtSubtask.text.isNullOrEmpty().not()) {
+                        txtSubtask.isVisible = !txtSubtask.isVisible
+                        listener.setExpandCollapseState(position, txtSubtask.isVisible)
+                    }
                 }
             }
             root.setOnClickListener {

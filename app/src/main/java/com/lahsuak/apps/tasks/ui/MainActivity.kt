@@ -21,7 +21,6 @@ import com.lahsuak.apps.tasks.util.AppConstants.SharedPreference.LANGUAGE_SHARED
 import com.lahsuak.apps.tasks.util.AppConstants.THEME_DEFAULT
 import com.lahsuak.apps.tasks.util.AppConstants.THEME_KEY
 import com.lahsuak.apps.tasks.util.AppUtil.getLanguage
-import com.lahsuak.apps.tasks.util.AppUtil.setClipboard
 import com.lahsuak.apps.tasks.util.RuntimeLocaleChanger
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -59,7 +58,7 @@ class MainActivity : AppCompatActivity() {
         setTheme(R.style.Theme_Tasks)
         _binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
+        setSupportActionBar(binding.toolbar)
         val sp = PreferenceManager.getDefaultSharedPreferences(this)
         val selectedTheme = sp.getString(THEME_KEY, THEME_DEFAULT)!!.toInt()
 
@@ -77,17 +76,8 @@ class MainActivity : AppCompatActivity() {
             true
         WindowInsetsControllerCompat(window, window.decorView).isAppearanceLightNavigationBars =
             true
-        setSupportActionBar(binding.toolbar)
-
-        binding.toolbar.setOnLongClickListener {
-            if (navController.currentDestination?.id == R.id.subTaskFragment) {
-                setClipboard(this, binding.toolbar.title.toString())
-            }
-            true
-        }
-
         val navHostFragment =
-            (supportFragmentManager.findFragmentById(R.id.my_container) as NavHostFragment)
+            supportFragmentManager.findFragmentById(R.id.my_container) as NavHostFragment
         navController = navHostFragment.navController
         addDestinationChangeListener()
         setupActionBarWithNavController(navController)

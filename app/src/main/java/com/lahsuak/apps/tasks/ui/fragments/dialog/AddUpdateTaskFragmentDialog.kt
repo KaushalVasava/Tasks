@@ -21,6 +21,7 @@ import com.lahsuak.apps.tasks.ui.adapters.CategoryAdapter
 import com.lahsuak.apps.tasks.ui.viewmodel.SubTaskViewModel
 import com.lahsuak.apps.tasks.ui.viewmodel.TaskViewModel
 import com.lahsuak.apps.tasks.util.*
+import com.lahsuak.apps.tasks.util.AppConstants.INVALID_ID
 import com.lahsuak.apps.tasks.util.AppConstants.SharedPreference.REM_KEY
 import com.lahsuak.apps.tasks.util.AppUtil.setClipboard
 import com.lahsuak.apps.tasks.util.AppUtil.setDateTime
@@ -59,8 +60,8 @@ class AddUpdateTaskFragmentDialog : BottomSheetDialogFragment() {
             behavior.applyCommonBottomSheetBehaviour()
             behavior.isDraggable = false // for make it's scrollable
         }
-        if (!args.takTitle.isNullOrEmpty()) {
-            binding.txtRename.setText(args.takTitle)
+        if (!args.taskTitle.isNullOrEmpty()) {
+            binding.txtRename.setText(args.taskTitle)
         }
         binding.txtRename.requestFocus()
         binding.txtRename.post {
@@ -105,7 +106,7 @@ class AddUpdateTaskFragmentDialog : BottomSheetDialogFragment() {
     private fun setPrefetchData() {
         viewLifecycleOwner.lifecycleScope.launch {
             if (!args.navigateFromSubtask) {
-                if (args.taskId != -1) {
+                if (args.taskId != INVALID_ID) {
                     task = taskViewModel.getById(args.taskId)
                     task.startDate?.let {
                         binding.etStartDate.setText(DateUtil.getDate(it))
@@ -142,10 +143,14 @@ class AddUpdateTaskFragmentDialog : BottomSheetDialogFragment() {
                 }
             } else {
                 task = taskViewModel.getById(args.taskId)
-                if (args.subTaskId != -1) {
+                if (args.subTaskId != INVALID_ID) {
                     subTask = subTaskViewModel.getBySubTaskId(args.subTaskId)
                     binding.cbImpTask.isChecked = subTask.isImportant
                     binding.txtRename.setText(subTask.subTitle)
+                    binding.txtRename.requestFocus()
+                    binding.txtRename.post {
+                        binding.txtRename.setSelection(binding.txtRename.text?.length ?: 0)
+                    }
                     val taskReminder = subTask.reminder
                     binding.txtReminder.isSelected = taskReminder != null
                     if (taskReminder != null) {
@@ -251,7 +256,7 @@ class AddUpdateTaskFragmentDialog : BottomSheetDialogFragment() {
     }
 
     private fun saveData() {
-        if (args.taskId == -1 && !args.navigateFromSubtask) {
+        if (args.taskId == INVALID_ID && !args.navigateFromSubtask) {
             //new task
             if (binding.txtRename.text?.trim().isNullOrEmpty().not()) {
                 if (binding.txtReminder.text == getString(R.string.add_date_time)) {
@@ -280,18 +285,36 @@ class AddUpdateTaskFragmentDialog : BottomSheetDialogFragment() {
                     getString(R.string.empty_task)
                 }
             }
-        } else if (args.taskId != -1 && args.subTaskId == -1 && args.navigateFromSubtask) {
+        } else if (args.taskId != INVALID_ID && args.subTaskId == INVALID_ID && args.navigateFromSubtask) {
             //new subtask
-            subTask = SubTask(
-                id = args.taskId,
-                subTitle = binding.txtRename.toTrimString(),
-                isDone = false,
-                isImportant = binding.cbImpTask.isChecked,
-                sId = 0,
-                dateTime = System.currentTimeMillis()
-            )
-            subTaskViewModel.insertSubTask(subTask)
-            subTaskViewModel.update(task.copy(startDate = System.currentTimeMillis()))
+            if (binding.txtRename.text?.trim().isNullOrEmpty().not()) {
+                if (binding.txtReminder.text == getString(R.string.add_date_time)) {
+                    subTask = SubTask(
+                        id = args.taskId,
+                        subTitle = binding.txtRename.toTrimString(),
+                        isDone = false,
+                        isImportant = binding.cbImpTask.isChecked,
+                        sId = 0,
+                        dateTime = System.currentTimeMillis()
+                    )
+                } else {
+                    subTask = SubTask(
+                        id = args.taskId,
+                        subTitle = binding.txtRename.toTrimString(),
+                        isDone = false,
+                        isImportant = binding.cbImpTask.isChecked,
+                        sId = 0,
+                        dateTime = System.currentTimeMillis(),
+                        reminder = subTask.reminder
+                    )
+                }
+                subTaskViewModel.insertSubTask(subTask)
+                subTaskViewModel.update(task.copy(startDate = System.currentTimeMillis()))
+            } else {
+                context.toast {
+                    getString(R.string.empty_task)
+                }
+            }
         } else {
             if (binding.txtRename.text?.trim().isNullOrEmpty().not()) {
                 if (!args.navigateFromSubtask) {

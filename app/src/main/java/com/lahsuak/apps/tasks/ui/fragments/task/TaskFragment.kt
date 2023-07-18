@@ -3,7 +3,6 @@ package com.lahsuak.apps.tasks.ui.fragments.task
 import android.Manifest
 import android.app.Activity
 import android.app.AlertDialog
-import android.app.Dialog
 import android.content.Intent
 import android.content.IntentSender
 import android.graphics.Canvas
@@ -31,7 +30,6 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
-import androidx.navigation.NavDirections
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.preference.PreferenceManager
@@ -39,6 +37,7 @@ import androidx.recyclerview.widget.*
 import androidx.transition.TransitionInflater
 import androidx.transition.TransitionManager
 import com.google.android.material.card.MaterialCardView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.MaterialElevationScale
 import com.google.android.play.core.appupdate.AppUpdateManager
@@ -59,6 +58,7 @@ import com.lahsuak.apps.tasks.ui.MainActivity.Companion.shareTxt
 import com.lahsuak.apps.tasks.ui.adapters.TaskAdapter
 import com.lahsuak.apps.tasks.ui.viewmodel.TaskViewModel
 import com.lahsuak.apps.tasks.util.*
+import com.lahsuak.apps.tasks.util.AppConstants.INVALID_ID
 import com.lahsuak.apps.tasks.util.AppConstants.MAX_COUNTER_FOR_MORE_APPS
 import com.lahsuak.apps.tasks.util.AppConstants.MORE_APPS_DELAY
 import com.lahsuak.apps.tasks.util.AppConstants.SharedPreference.REM_KEY
@@ -154,11 +154,14 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
             }
         }
         TaskApp.counter++
-        restoreData(savedInstanceState)
-        binding.txtTitle.text = DateUtil.getToolbarDateTime(System.currentTimeMillis())
         val prefManager = PreferenceManager.getDefaultSharedPreferences(requireContext())
         binding.btnVoiceTask.isVisible =
-            prefManager.getBoolean(SHOW_VOICE_TASK_KEY, true)
+            prefManager.getBoolean(
+                SHOW_VOICE_TASK_KEY,
+                true
+            ) && binding.taskChipActive.isChecked == true
+        restoreData(savedInstanceState)
+        binding.txtTitle.text = DateUtil.getToolbarDateTime(System.currentTimeMillis())
         checkPermission()
         initView()
         showRateDialog()
@@ -203,28 +206,18 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
     }
 
     private fun showTitleSelectionDialog() {
-        val dialog = Dialog(requireContext())
+        val dialogBuilder = MaterialAlertDialogBuilder(requireContext())
         val taskSelectionBinding =
             TaskSelectionDialogBinding.inflate(LayoutInflater.from(requireContext()))
-        dialog.setContentView(taskSelectionBinding.root)
-        dialog.window?.setLayout(
-            ViewGroup.LayoutParams.WRAP_CONTENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT
-        )
-        dialog.setCancelable(false)
-        taskSelectionBinding.btnNewTask.setOnClickListener {
-            addNewTask(shareTxt)
-            dialog.dismiss()
-            shareTxt = null
-        }
+        dialogBuilder.setView(taskSelectionBinding.root)
+        dialogBuilder.setCancelable(false)
+
         viewModel.tasksFlow.observe(viewLifecycleOwner) { list ->
             if (shareTxt != null) {
 
                 taskSelectionBinding.txtOr.isVisible = list.isNotEmpty()
                 taskSelectionBinding.txtTaskSelect.isVisible = list.isNotEmpty()
                 taskSelectionBinding.taskPicker.isVisible = list.isNotEmpty()
-                taskSelectionBinding.btnSet.isVisible = list.isNotEmpty()
-
                 val adapter: ArrayAdapter<*> = ArrayAdapter<Any?>(
                     requireContext(),
                     android.R.layout.simple_spinner_dropdown_item, list.map { it.title }
@@ -247,8 +240,7 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
 
                         override fun onNothingSelected(adapterView: AdapterView<*>?) {}
                     }
-                dialog.show()
-                taskSelectionBinding.btnSet.setOnClickListener {
+                dialogBuilder.setPositiveButton(getString(R.string.save)) { dialog, _ ->
                     val action =
                         TaskFragmentDirections.actionTaskFragmentToSubTaskFragment(
                             list[selectedPosition].copy(isDone = false),
@@ -260,8 +252,14 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
                     shareTxt = null
                     dialog.dismiss()
                 }
-                taskSelectionBinding.btnCancel.setOnClickListener {
+                dialogBuilder.setNegativeButton(getString(R.string.cancel)) { dialog, _ ->
                     dialog.dismiss()
+                }
+                val alertDialog = dialogBuilder.show()
+                taskSelectionBinding.btnNewTask.setOnClickListener {
+                    addNewTask(shareTxt)
+                    alertDialog.dismiss()
+                    shareTxt = null
                 }
             }
         }
@@ -385,9 +383,11 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
     }
 
     private fun setButtonVisibility(isVisible: Boolean) {
-        binding.btnAddTask.isVisible = isVisible
-        binding.btnVoiceTask.isVisible = isVisible
+        val prefManager = PreferenceManager.getDefaultSharedPreferences(requireContext())
+        binding.btnVoiceTask.isVisible = isVisible &&
+                prefManager.getBoolean(SHOW_VOICE_TASK_KEY, true)
         binding.btnDeleteAll.isVisible = !isVisible
+        binding.btnAddTask.isVisible = isVisible
     }
 
     private fun setVisibilityOfTasks() {
@@ -567,7 +567,7 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
         val action =
             TaskFragmentDirections.actionTaskFragmentToRenameFragmentDialog(
                 false,
-                -1,
+                INVALID_ID,
                 shareText
             )
         navController.navigate(action)
@@ -592,7 +592,7 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
             reenterTransition = MaterialElevationScale(true).apply {
                 duration = resources.getInteger(R.integer.reply_motion_duration_large).toLong()
             }
-            val directions: NavDirections =
+            val action =
                 TaskFragmentDirections.actionTaskFragmentToSubTaskFragment(
                     task,
                     false,
@@ -602,7 +602,7 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
             val extras = FragmentNavigatorExtras(
                 cardView to task.title
             )
-            navController.navigate(directions, extras)
+            navController.navigate(action, extras)
         }
     }
 

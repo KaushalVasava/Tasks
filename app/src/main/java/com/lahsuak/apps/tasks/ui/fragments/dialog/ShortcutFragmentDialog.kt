@@ -14,6 +14,7 @@ import com.lahsuak.apps.tasks.data.model.Task
 import com.lahsuak.apps.tasks.databinding.DialogAddUpdateTaskBinding
 import com.lahsuak.apps.tasks.ui.viewmodel.TaskViewModel
 import com.lahsuak.apps.tasks.util.AppConstants
+import com.lahsuak.apps.tasks.util.AppConstants.INVALID_ID
 import com.lahsuak.apps.tasks.util.AppUtil
 import com.lahsuak.apps.tasks.util.AppUtil.setDateTime
 import com.lahsuak.apps.tasks.util.toTrimString
@@ -77,7 +78,7 @@ class ShortcutFragmentDialog : BottomSheetDialogFragment() {
             }
         }
         binding.btnSave.setOnClickListener {
-            if (args.taskId == -1) {
+            if (args.taskId == INVALID_ID) {
                 if (!binding.txtRename.text.isNullOrEmpty()) {
                     if (binding.txtReminder.text == getString(R.string.add_date_time)) {
                         task = Task(

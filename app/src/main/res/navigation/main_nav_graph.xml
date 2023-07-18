@@ -125,7 +125,7 @@
             android:name="task_id"
             app:argType="integer" />
         <argument
-            android:name="tak_title"
+            android:name="task_title"
             app:argType="string"
             app:nullable="true" />
         <argument
@@ -133,7 +133,7 @@
             app:argType="integer" />
         <deepLink
             android:id="@+id/deepLink"
-            app:uri="myapp://kmv.com/rename/{navigate_from_subtask}{task_id}{tak_title}{subTaskId}" />
+            app:uri="myapp://kmv.com/rename/{navigate_from_subtask}{task_id}{task_title}{subTaskId}" />
     </dialog>
     <dialog
         android:id="@+id/shortcutFragmentDialog"
