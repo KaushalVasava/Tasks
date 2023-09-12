@@ -6,6 +6,7 @@ import androidx.core.view.doOnLayout
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.asLiveData
 import com.lahsuak.apps.tasks.R
 import com.lahsuak.apps.tasks.data.model.Task
 import com.lahsuak.apps.tasks.databinding.FragmentOverviewBinding
@@ -97,7 +98,7 @@ class OverviewFragment : Fragment(R.layout.fragment_overview) {
 //            binding.btnCategory4,
 //            binding.btnCategory5,
 //        )
-        taskViewModel.tasksFlow.observe(viewLifecycleOwner) { tasks ->
+        taskViewModel.tasksFlow.asLiveData().observe(viewLifecycleOwner) { tasks ->
             binding.txtEmpty.isVisible = tasks.isEmpty()
             taskList.addAll(tasks)
 //            val categoryMap = taskList.groupBy {

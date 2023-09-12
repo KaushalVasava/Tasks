@@ -89,7 +89,7 @@ class AddUpdateTaskFragmentDialog : BottomSheetDialogFragment() {
         binding.categoryMenu.onItemSelectedListener =
             object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(
-                    parent: AdapterView<*>?, view: View?, pos: Int, id: Long
+                    parent: AdapterView<*>?, view: View?, pos: Int, id: Long,
                 ) {
                     if (selectedCategoryPosition != pos) {
                         selectedCategoryPosition = pos
@@ -107,7 +107,9 @@ class AddUpdateTaskFragmentDialog : BottomSheetDialogFragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             if (!args.navigateFromSubtask) {
                 if (args.taskId != INVALID_ID) {
-                    task = taskViewModel.getById(args.taskId)
+                    taskViewModel.getById(args.taskId)
+                    //todo Cause NULL POINTER EXCEPTION
+                    task = taskViewModel.taskFlow.value!!
                     task.startDate?.let {
                         binding.etStartDate.setText(DateUtil.getDate(it))
                     }
@@ -142,9 +144,13 @@ class AddUpdateTaskFragmentDialog : BottomSheetDialogFragment() {
                     task = Task(id = 0, "", startDate = startDate)
                 }
             } else {
-                task = taskViewModel.getById(args.taskId)
+                taskViewModel.getById(args.taskId)
+                //todo Cause NULL POINTER EXCEPTION
+                task = taskViewModel.taskFlow.value!!
+
                 if (args.subTaskId != INVALID_ID) {
-                    subTask = subTaskViewModel.getBySubTaskId(args.subTaskId)
+                    subTaskViewModel.getBySubTaskId(args.subTaskId)
+                    subTask = subTaskViewModel.subTaskFlow.value!!
                     binding.cbImpTask.isChecked = subTask.isImportant
                     binding.txtRename.setText(subTask.subTitle)
                     binding.txtRename.requestFocus()

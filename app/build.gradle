@@ -8,21 +8,29 @@ plugins {
 }
 
 android {
-    compileSdk 33
-    buildToolsVersion "30.0.3"
+    compileSdk 34
     namespace "com.lahsuak.apps.tasks"
     defaultConfig {
         applicationId "com.lahsuak.apps.tasks"
         minSdk 21
-        targetSdk 33
+        targetSdk 34
         versionCode 13
         versionName "1.0.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildFeatures {
-        viewBinding true
+        viewBinding = true
         buildConfig = true
+        compose = true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion '1.4.5'
+    }
+    packagingOptions {
+        resources {
+            excludes += '/META-INF/{AL2.0,LGPL2.1}'
+        }
     }
     bundle {
         language {
@@ -30,7 +38,7 @@ android {
         }
     }
     // Specifies one flavor dimension.
-    flavorDimensions "version"
+    flavorDimensions = ["version"]
     productFlavors {
         dev {
             // Assigns this product flavor to the "version" flavor dimension.
@@ -106,4 +114,17 @@ dependencies {
     implementation 'com.github.hotchemi:android-rate:1.0.1'
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.10'
 
+    def compose_version = "1.4.5"
+    // compose dependency
+    implementation 'androidx.activity:activity-compose:1.7.2'
+    implementation "androidx.compose.ui:ui:$compose_version"
+    implementation "androidx.compose.ui:ui-tooling-preview:$compose_version"
+    implementation 'androidx.compose.material3:material3:1.2.0-alpha02'
+
+    androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
+    debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
+    debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_version"
+    implementation "androidx.navigation:navigation-compose:2.6.0"
+    implementation 'androidx.browser:browser:1.6.0'
+    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1"
 }

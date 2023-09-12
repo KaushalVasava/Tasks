@@ -18,6 +18,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ActionMode
 import androidx.appcompat.widget.SearchView
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.core.content.ContextCompat
 import androidx.core.view.doOnLayout
 import androidx.core.view.doOnPreDraw
@@ -30,6 +32,7 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.preference.PreferenceManager
@@ -56,6 +59,7 @@ import com.lahsuak.apps.tasks.model.TaskEvent
 import com.lahsuak.apps.tasks.ui.MainActivity.Companion.isWidgetClick
 import com.lahsuak.apps.tasks.ui.MainActivity.Companion.shareTxt
 import com.lahsuak.apps.tasks.ui.adapters.TaskAdapter
+import com.lahsuak.apps.tasks.ui.screens.TaskScreen
 import com.lahsuak.apps.tasks.ui.viewmodel.TaskViewModel
 import com.lahsuak.apps.tasks.util.*
 import com.lahsuak.apps.tasks.util.AppConstants.INVALID_ID
@@ -132,6 +136,16 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding.composeView.setContent {
+            val tasks by viewModel.tasksFlow.collectAsState(initial = emptyList())
+            TaskScreen(
+                tasks,
+                navController = rememberNavController(),
+                onSearchChange = {},
+                onItemImpSwipe = {},
+                onDeleteAllCompletedTask = {},
+            ) { _, _ -> }
+        }
         selectedItem = null
         val animation =
             TransitionInflater.from(requireContext()).inflateTransition(android.R.transition.move)
@@ -146,8 +160,8 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
         if (TaskApp.counter % MAX_COUNTER_FOR_MORE_APPS == 0) {
             viewLifecycleOwner.lifecycleScope.launch {
                 delay(MORE_APPS_DELAY / 2)
-                binding.txtMoreApps.isVisible = true
-                binding.btnMoreApps.isVisible = true
+//                binding.txtMoreApps.isVisible = true
+//                binding.btnMoreApps.isVisible = true
                 delay(MORE_APPS_DELAY)
                 binding.txtMoreApps.isGone = true
                 binding.btnMoreApps.isGone = true
@@ -212,7 +226,7 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
         dialogBuilder.setView(taskSelectionBinding.root)
         dialogBuilder.setCancelable(false)
 
-        viewModel.tasksFlow.observe(viewLifecycleOwner) { list ->
+        viewModel.tasksFlow.asLiveData().observe(viewLifecycleOwner) { list ->
             if (shareTxt != null) {
 
                 taskSelectionBinding.txtOr.isVisible = list.isNotEmpty()
@@ -233,7 +247,7 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
                             parent: AdapterView<*>?,
                             view: View?,
                             position: Int,
-                            id: Long
+                            id: Long,
                         ) {
                             selectedPosition = position
                         }
@@ -365,7 +379,7 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
                     parent: AdapterView<*>?,
                     view: View?,
                     pos: Int,
-                    id: Long
+                    id: Long,
                 ) {
                     if (selectedSortPosition != pos) {
                         selectedSortPosition = pos
@@ -526,7 +540,7 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
     }
 
     private fun setTaskObserver() {
-        viewModel.tasksFlow.observe(viewLifecycleOwner) {
+        viewModel.tasksFlow.asLiveData().observe(viewLifecycleOwner) {
             val data = if (binding.taskChipActive.isChecked) {
                 it.filter { task ->
                     !task.isDone
@@ -545,6 +559,7 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
                     openTaskItems.add(index, false)
                 }
             }
+            binding.taskRecyclerView.isVisible = false
         }
     }
 
@@ -553,9 +568,9 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
             val count = it.count { task -> task.isDone }
             val hasTasks = it.isNotEmpty()
             binding.btnCreateNewTask.isVisible = !hasTasks
-            binding.taskRecyclerView.isVisible = hasTasks
-            binding.txtTaskProgress.isVisible = hasTasks
-            binding.progressBar.isVisible = hasTasks
+//            binding.taskRecyclerView.isVisible = hasTasks
+//            binding.txtTaskProgress.isVisible = hasTasks
+//            binding.progressBar.isVisible = hasTasks
             binding.taskChipGroup.isVisible = hasTasks && !actionModeEnable
             val value = (count.toFloat() / it.size.toFloat()) * TOTAL_PROGRESS_VALUE
             binding.progressBar.progress = value.toInt()

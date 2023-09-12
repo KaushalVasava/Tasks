@@ -40,7 +40,9 @@ class ShortcutFragmentDialog : BottomSheetDialogFragment() {
 
         viewLifecycleOwner.lifecycleScope.launch {
             if (args.taskId != -1)
-                task = model.getById(args.taskId)
+                model.getById(args.taskId)
+            //todo Cause NULL POINTER EXCEPTION
+            task = model.taskFlow.value!!
         }
         @Suppress(AppConstants.DEPRECATION)
         if (dialog?.window != null) {

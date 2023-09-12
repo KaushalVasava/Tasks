@@ -5,6 +5,7 @@ import android.view.View
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.lahsuak.apps.tasks.R
@@ -60,7 +61,7 @@ class NotificationFragment : Fragment(R.layout.fragment_notification),
     }
 
     private fun addNotificationsObserver() {
-        viewModel.notifications.observe(viewLifecycleOwner) {
+        viewModel.notifications.asLiveData().observe(viewLifecycleOwner) {
             val isEmpty = it.isEmpty()
             binding.txtEmptyNotification.isVisible = isEmpty
             binding.notificationRecyclerView.isVisible = !isEmpty
@@ -71,7 +72,9 @@ class NotificationFragment : Fragment(R.layout.fragment_notification),
 
     override fun onItemClicked(notification: Notification) {
         viewLifecycleOwner.lifecycleScope.launch {
-            val task = taskViewModel.getById(notification.taskId)
+            taskViewModel.getById(notification.taskId)
+            //todo Cause NULL POINTER EXCEPTION
+            val task = taskViewModel.taskFlow.value!!
             withContext(Dispatchers.Main) {
                 val action =
                     NotificationFragmentDirections.actionNotificationFragmentToSubTaskFragment(

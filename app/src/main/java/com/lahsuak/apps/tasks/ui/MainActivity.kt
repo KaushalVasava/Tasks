@@ -5,16 +5,28 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.os.Bundle
+import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.compose.foundation.background
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.ui.Modifier
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.preference.PreferenceManager
 import com.lahsuak.apps.tasks.R
 import com.lahsuak.apps.tasks.TaskApp.Companion.mylang
 import com.lahsuak.apps.tasks.databinding.ActivityMainBinding
+import com.lahsuak.apps.tasks.ui.navigation.TaskNavHost
+import com.lahsuak.apps.tasks.ui.theme.TaskAppTheme
+import com.lahsuak.apps.tasks.ui.viewmodel.NotificationViewModel
+import com.lahsuak.apps.tasks.ui.viewmodel.SubTaskViewModel
+import com.lahsuak.apps.tasks.ui.viewmodel.TaskViewModel
 import com.lahsuak.apps.tasks.util.AppConstants.SHARE_FORMAT
 import com.lahsuak.apps.tasks.util.AppConstants.SharedPreference.LANGUAGE_SHARED_PREFERENCE
 import com.lahsuak.apps.tasks.util.AppConstants.SharedPreference.LANGUAGE_SHARED_PREFERENCE_LANGUAGE_KEY
@@ -33,6 +45,10 @@ class MainActivity : AppCompatActivity() {
         get() = _binding!!
     private lateinit var navController: NavController
     private lateinit var listener: NavController.OnDestinationChangedListener
+
+    private val taskViewModel: TaskViewModel by viewModels()
+    private val subTaskViewModel: SubTaskViewModel by viewModels()
+    private val notificationViewModel: NotificationViewModel by viewModels()
 
     @Inject
     @Named(LANGUAGE_SHARED_PREFERENCE)
@@ -58,6 +74,18 @@ class MainActivity : AppCompatActivity() {
         setTheme(R.style.Theme_Tasks)
         _binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        setContent {
+            TaskAppTheme {
+                Surface(Modifier.background(MaterialTheme.colorScheme.background)) {
+                    TaskNavHost(
+                        taskViewModel,
+                        subTaskViewModel,
+                        notificationViewModel,
+                        rememberNavController()
+                    )
+                }
+            }
+        }
         setSupportActionBar(binding.toolbar)
         val sp = PreferenceManager.getDefaultSharedPreferences(this)
         val selectedTheme = sp.getString(THEME_KEY, THEME_DEFAULT)!!.toInt()

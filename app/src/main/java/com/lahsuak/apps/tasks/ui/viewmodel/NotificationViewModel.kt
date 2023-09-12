@@ -18,7 +18,7 @@ class NotificationViewModel @Inject constructor(
     private var isAscOrder = false
 
     private val _notifications = repository.getAllNotifications(isAscOrder)
-    val notifications = _notifications.asLiveData()
+    val notifications = _notifications
 
     fun setOrder(isAsc: Boolean) {
         isAscOrder = isAsc

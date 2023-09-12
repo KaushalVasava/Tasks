@@ -18,7 +18,10 @@ import com.lahsuak.apps.tasks.util.AppConstants.SEARCH_QUERY
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
@@ -33,6 +36,9 @@ class TaskViewModel @Inject constructor(
     private val preferenceManager: PreferenceManager,
     state: SavedStateHandle,
 ) : ViewModel() {
+    private val _taskFlow = MutableStateFlow<Task?>(null)
+    val taskFlow
+        get() = _taskFlow.asStateFlow()
     val searchQuery = state.getLiveData(SEARCH_QUERY, SEARCH_INITIAL_VALUE)
     val preferencesFlow = preferenceManager.preferencesFlow
     private val taskEventChannel = Channel<TaskEvent>()
@@ -47,8 +53,8 @@ class TaskViewModel @Inject constructor(
             query,
             filterPreferences.sortOrder,
             filterPreferences.hideCompleted
-        ).distinctUntilChanged()
-    }.asLiveData()
+        )
+    }
 
     val tasksFlow2 = combine(
         searchQuery.asFlow(), preferencesFlow
@@ -100,8 +106,14 @@ class TaskViewModel @Inject constructor(
         repository.deleteTask(task)
     }
 
-    suspend fun getById(id: Int): Task {
-        return repository.getById(id)
+    fun getById(id: Int) {
+        viewModelScope.launch {
+            _taskFlow.value = repository.getById(id)
+        }
+    }
+
+    fun resetTaskValue(){
+        _taskFlow.value = null
     }
 
     suspend fun deleteAllTasks() = viewModelScope.launch(Dispatchers.IO) {

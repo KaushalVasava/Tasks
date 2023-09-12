@@ -33,8 +33,11 @@ import javax.inject.Inject
 class SubTaskViewModel @Inject constructor(
     private val repository: TaskRepository,
     private val preferenceManager: PreferenceManager,
-    state: SavedStateHandle
+    state: SavedStateHandle,
 ) : ViewModel() {
+    private val _subTaskFlow = MutableStateFlow<SubTask?>(null)
+    val subTaskFlow
+        get() = _subTaskFlow.asStateFlow()
     val searchQuery = state.getLiveData(SEARCH_QUERY, SEARCH_INITIAL_VALUE)
     val taskId = state.getLiveData(TASK_ID, 0)
 
@@ -112,9 +115,16 @@ class SubTaskViewModel @Inject constructor(
         repository.deleteAllSubTasks(id)
     }
 
-    suspend fun getBySubTaskId(id: Int): SubTask {
-        return repository.getBySubTaskId(id)
+    fun getBySubTaskId(id: Int){
+        viewModelScope.launch {
+            _subTaskFlow.value = repository.getBySubTaskId(id)
+        }
     }
+
+    fun resetSubTaskValue(){
+        _subTaskFlow.value = null
+    }
+
 
     fun update(task: Task) = viewModelScope.launch(Dispatchers.IO) {
         repository.updateTask(task)
@@ -122,7 +132,7 @@ class SubTaskViewModel @Inject constructor(
 
     fun showDeleteDialog(
         context: Context,
-        subTask: SubTask
+        subTask: SubTask,
     ) {
         AlertDialog.Builder(context)
             .setTitle(context.getString(R.string.delete))
@@ -154,7 +164,7 @@ class SubTaskViewModel @Inject constructor(
     fun cancelReminder(
         activity: FragmentActivity,
         task: Task,
-        timerTxt: TextView
+        timerTxt: TextView,
     ) {
         timerTxt.isSelected = true
         timerTxt.text = activity.getString(R.string.add_date_time)
@@ -169,7 +179,7 @@ class SubTaskViewModel @Inject constructor(
         activity: FragmentActivity,
         subTask: SubTask,
         timerTxt: TextView,
-        task: Task
+        task: Task,
     ) {
         timerTxt.isSelected = true
         timerTxt.text = activity.getString(R.string.add_date_time)
