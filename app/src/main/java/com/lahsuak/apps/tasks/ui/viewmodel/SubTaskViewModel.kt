@@ -188,4 +188,8 @@ class SubTaskViewModel @Inject constructor(
         update(task.copy(startDate = System.currentTimeMillis()))
         activity.baseContext.toast { activity.getString(R.string.cancel_reminder) }
     }
+
+    fun setSubTask(subTask: SubTask){
+        _subTaskFlow.value = subTask
+    }
 }

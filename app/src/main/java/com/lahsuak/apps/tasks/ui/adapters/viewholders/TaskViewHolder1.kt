@@ -192,13 +192,13 @@ class TaskViewHolder1(
 
     fun bind(task: Task) {
         binding.composeView.setContent {
-            TaskItem(task = task, onItemClick = {
+            TaskItem(task = task,isListViewEnable = false, onImpSwipe = {}, onItemClick = {
                 val position = adapterPosition
                 if (position != RecyclerView.NO_POSITION) {
                     itemView.transitionName = task.title
                     listener.onItemClicked(task, position, binding.root)
                 }
-            }, onImpSwipe = {}) {}
+            }, onCompletedTask = {}) {}
         }
     }
 }

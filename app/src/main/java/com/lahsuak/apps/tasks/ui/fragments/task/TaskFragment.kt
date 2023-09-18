@@ -140,9 +140,11 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
             val tasks by viewModel.tasksFlow.collectAsState(initial = emptyList())
             TaskScreen(
                 tasks,
+                isListView = false,
                 navController = rememberNavController(),
                 onSearchChange = {},
                 onItemImpSwipe = {},
+                onCheckedChange = {},
                 onDeleteAllCompletedTask = {},
             ) { _, _ -> }
         }

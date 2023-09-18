@@ -1,6 +1,7 @@
 package com.lahsuak.apps.tasks.ui.viewmodel
 
 import android.content.Context
+import android.util.Log
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -20,8 +21,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
@@ -37,13 +40,11 @@ class TaskViewModel @Inject constructor(
     state: SavedStateHandle,
 ) : ViewModel() {
     private val _taskFlow = MutableStateFlow<Task?>(null)
-    val taskFlow
-        get() = _taskFlow.asStateFlow()
+    val taskFlow get() = _taskFlow.asStateFlow()
     val searchQuery = state.getLiveData(SEARCH_QUERY, SEARCH_INITIAL_VALUE)
     val preferencesFlow = preferenceManager.preferencesFlow
     private val taskEventChannel = Channel<TaskEvent>()
     val tasksEvent = taskEventChannel.receiveAsFlow()
-
     val tasksFlow = combine(
         searchQuery.asFlow(), preferencesFlow
     ) { query, filterPreferences ->
@@ -54,7 +55,7 @@ class TaskViewModel @Inject constructor(
             filterPreferences.sortOrder,
             filterPreferences.hideCompleted
         )
-    }
+    }.distinctUntilChanged()
 
     val tasksFlow2 = combine(
         searchQuery.asFlow(), preferencesFlow
@@ -112,7 +113,7 @@ class TaskViewModel @Inject constructor(
         }
     }
 
-    fun resetTaskValue(){
+    fun resetTaskValue() {
         _taskFlow.value = null
     }
 
@@ -134,5 +135,9 @@ class TaskViewModel @Inject constructor(
             .setNegativeButton(context.getString(R.string.cancel)) { dialog, _ ->
                 dialog.dismiss()
             }.show()
+    }
+
+    fun setTask(task: Task){
+        _taskFlow.value = task
     }
 }
