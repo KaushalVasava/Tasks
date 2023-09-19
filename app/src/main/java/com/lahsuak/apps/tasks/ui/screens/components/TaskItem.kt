@@ -49,6 +49,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
@@ -121,7 +122,7 @@ fun TaskItem(
                         if (task.isImp) {
                             Icon(
                                 painter = painterResource(id = R.drawable.ic_pin),
-                                contentDescription = "Important",
+                                contentDescription = stringResource(id = R.string.important_task),
                                 modifier = Modifier
                                     .size(24.dp)
                                     .align(Alignment.TopStart)
@@ -214,7 +215,8 @@ fun TaskItem(
                                     ) {
                                         Icon(
                                             painterResource(id = R.drawable.ic_calendar_small),
-                                            contentDescription = null
+                                            contentDescription = null,
+                                            tint = Color.Black
                                         )
                                         Spacer(
                                             Modifier
@@ -224,9 +226,9 @@ fun TaskItem(
                                         Text(
                                             DateUtil.getDateRange(task.startDate!!, task.endDate),
                                             fontSize = 10.sp,
+                                            color = Color.Black
                                         )
                                     }
-//                                    Log.d("TAG", "TaskItem: ${task.progress} and ${task.title}")
                                     AnimatedVisibility(task.progress != -1f) {
                                         CircularProgressStatus(
                                             progress = task.progress,
@@ -237,7 +239,7 @@ fun TaskItem(
                                     }
                                     Icon(
                                         painterResource(R.drawable.ic_copy),
-                                        "copy",
+                                        stringResource(id = R.string.copy_text),
                                         modifier = Modifier
                                             .clip(CircleShape)
                                             .clickable {

@@ -59,6 +59,7 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -74,30 +75,20 @@ import androidx.navigation.compose.rememberNavController
 import com.lahsuak.apps.tasks.R
 import com.lahsuak.apps.tasks.data.FilterPreferences
 import com.lahsuak.apps.tasks.data.SortOrder
-import com.lahsuak.apps.tasks.data.model.Task
 import com.lahsuak.apps.tasks.ui.navigation.NavigationItem
 import com.lahsuak.apps.tasks.ui.screens.components.ChipGroup
 import com.lahsuak.apps.tasks.ui.screens.components.LinearProgressStatus
 import com.lahsuak.apps.tasks.ui.screens.components.TaskItem
 import com.lahsuak.apps.tasks.ui.viewmodel.TaskViewModel
 import com.lahsuak.apps.tasks.util.DateUtil
-import com.lahsuak.apps.tasks.util.demo.getDemoTaskData
-import com.lahsuak.apps.tasks.util.toCamelCase
 import com.lahsuak.apps.tasks.util.toSortForm
 import kotlin.random.Random
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun TaskScreen(
-    preference: FilterPreferences,
-    tasks: List<Task>,
     navController: NavController,
-    onSearchChange: (String) -> Unit,
-    onItemImpSwipe: (Task) -> Unit,
-    onCheckedChange: (Task) -> Unit,
-    onSortChange: (SortOrder) -> Unit,
-    onDeleteAllCompletedTask: () -> Unit,
-    onTaskClick: (Task, Boolean) -> Unit,
+    taskViewModel: TaskViewModel,
 ) {
     var searchQuery by rememberSaveable {
         mutableStateOf("")
@@ -110,9 +101,18 @@ fun TaskScreen(
     var isTaskDone by rememberSaveable {
         mutableStateOf(false)
     }
+
+    val tasks by taskViewModel.tasksFlow.collectAsState(initial = emptyList())
+    val preference by taskViewModel.preferencesFlow.collectAsState(
+        initial = FilterPreferences(
+            sortOrder = SortOrder.BY_NAME, hideCompleted = false, viewType = false
+        )
+    )
     var isListViewEnable by rememberSaveable {
         mutableStateOf(preference.viewType)
     }
+    val context = LocalContext.current
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -170,7 +170,8 @@ fun TaskScreen(
                 AnimatedVisibility(visible = isTaskDone) {
                     FloatingActionButton(
                         onClick = {
-                            onDeleteAllCompletedTask()
+                            taskViewModel.onDeleteAllCompletedClick()
+//                            onDeleteAllCompletedTask()
                         },
                     ) {
                         Icon(
@@ -205,7 +206,7 @@ fun TaskScreen(
                         searchQuery = searchQuery,
                         onQueryChange = {
                             searchQuery = it
-                            onSearchChange(it)
+                            taskViewModel.searchQuery.value = it
                         },
                         isListViewEnable = isListViewEnable,
                         onViewChange = {
@@ -216,7 +217,7 @@ fun TaskScreen(
                         },
                         status = status,
                         onSortChange = {
-                            onSortChange(it)
+                            taskViewModel.onSortOrderSelected(it, context)
                         },
                         sortOrder = preference.sortOrder,
                         Modifier.fillMaxWidth()
@@ -234,21 +235,21 @@ fun TaskScreen(
                             task = task,
                             isListViewEnable,
                             onImpSwipe = { isImp ->
-                                onItemImpSwipe(task.copy(isImp = isImp))
+                                taskViewModel.update(task.copy(isImp = isImp))
                             },
                             onItemClick = {
-                                onTaskClick(task, false)
+                                taskViewModel.setTask(task)
                                 navController.navigate("${NavigationItem.SubTask.route}/${task.id}")
                             },
                             onCompletedTask = { isCompleted ->
-                                onCheckedChange(task.copy(isDone = isCompleted))
+                                taskViewModel.update(task.copy(isDone = isCompleted))
                             }
                         ) { isDone ->
                             if (isDone) {
-                                onTaskClick(task, true)
+                                taskViewModel.delete(task)
                                 navController.popBackStack()
                             } else {
-                                onTaskClick(task, false)
+                                taskViewModel.setTask(task)
                                 navController.navigate("${NavigationItem.AddUpdateTask.route}?taskId=${task.id}/false")
                             }
                         }
@@ -279,7 +280,7 @@ fun TaskScreen(
                         },
                         status = status,
                         onSortChange = {
-                            onSortChange(it)
+                            taskViewModel.onSortOrderSelected(it, context)
                         },
                         sortOrder = preference.sortOrder,
                         Modifier.fillMaxWidth()
@@ -301,21 +302,21 @@ fun TaskScreen(
                             task = task,
                             isListViewEnable,
                             onImpSwipe = { isImp ->
-                                onItemImpSwipe(task.copy(isImp = isImp))
+                                taskViewModel.update(task.copy(isImp = isImp))
                             },
                             onItemClick = {
-                                onTaskClick(task, false)
+                                taskViewModel.setTask(task)
                                 navController.navigate("${NavigationItem.SubTask.route}/${task.id}")
                             },
                             onCompletedTask = { isCompleted ->
-                                onCheckedChange(task.copy(isDone = isCompleted))
+                                taskViewModel.update(task.copy(isDone = isCompleted))
                             }
                         ) { isDone ->
                             if (isDone) {
-                                onTaskClick(task, true)
+                                taskViewModel.delete(task)
                                 navController.popBackStack()
                             } else {
-                                onTaskClick(task, false)
+                                taskViewModel.setTask(task)
                                 navController.navigate("${NavigationItem.AddUpdateTask.route}?taskId=${task.id}/false")
                             }
                         }
@@ -499,24 +500,13 @@ fun HeaderContent(
 @Composable
 fun PreviewTaskScreen() {
     val taskViewModel: TaskViewModel = viewModel()
-    val preference = taskViewModel.preferencesFlow.collectAsState(
-        initial = FilterPreferences(
-            sortOrder = SortOrder.BY_NAME, hideCompleted = false, viewType = false
-        )
-    )
+
     MaterialTheme {
         Surface(Modifier.background(MaterialTheme.colorScheme.background)) {
             TaskScreen(
-                preference.value,
-                tasks = getDemoTaskData(),
                 navController = rememberNavController(),
-                onSearchChange = {},
-                onItemImpSwipe = {},
-                onCheckedChange = {},
-                onSortChange = {},
-                onDeleteAllCompletedTask = {}
-            ) { _, _ ->
-            }
+                taskViewModel = taskViewModel
+            )
         }
     }
 }

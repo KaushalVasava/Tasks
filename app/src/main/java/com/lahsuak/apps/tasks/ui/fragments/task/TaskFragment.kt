@@ -138,22 +138,10 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.composeView.setContent {
-            val tasks by viewModel.tasksFlow.collectAsState(initial = emptyList())
-            val preference = viewModel.preferencesFlow.collectAsState(
-                initial = FilterPreferences(
-                    sortOrder = SortOrder.BY_NAME, hideCompleted = false, viewType = false
-                )
-            )
             TaskScreen(
-                preference.value,
-                tasks,
                 navController = rememberNavController(),
-                onSearchChange = {},
-                onItemImpSwipe = {},
-                onCheckedChange = {},
-                onSortChange = {},
-                onDeleteAllCompletedTask = {},
-            ) { _, _ -> }
+                taskViewModel = viewModel
+            )
         }
         selectedItem = null
         val animation =

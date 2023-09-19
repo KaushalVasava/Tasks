@@ -2,7 +2,6 @@ package com.lahsuak.apps.tasks.ui.screens
 
 import android.content.res.Configuration.UI_MODE_NIGHT_NO
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -13,8 +12,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
@@ -29,8 +26,9 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -49,24 +47,35 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.lahsuak.apps.tasks.R
 import com.lahsuak.apps.tasks.TaskApp
-import com.lahsuak.apps.tasks.data.model.SubTask
 import com.lahsuak.apps.tasks.data.model.Task
-import com.lahsuak.apps.tasks.ui.MainActivity
 import com.lahsuak.apps.tasks.ui.theme.TaskAppTheme
+import com.lahsuak.apps.tasks.ui.viewmodel.TaskViewModel
 import com.lahsuak.apps.tasks.util.AppUtil
 import com.lahsuak.apps.tasks.util.DateUtil
 
 @Composable
 fun AddUpdateTaskScreen(
-    task: Task?,
     navController: NavController,
-    onAddTask: (Task) -> Unit,
-    onEditTask: (Task) -> Unit,
+    taskViewModel: TaskViewModel,
+    isNewTask: Boolean,
+    taskId: String?,
 ) {
+    if (!isNewTask && taskId != null) {
+        LaunchedEffect(key1 = taskId) {
+            taskViewModel.getById(taskId.toInt())
+        }
+    }
+    val task = if (isNewTask) {
+        null
+    } else {
+        val t by taskViewModel.taskFlow.collectAsState()
+        t
+    }
     val activity = LocalContext.current
     var text by rememberSaveable {
         mutableStateOf(task?.title ?: "")
@@ -174,7 +183,8 @@ fun AddUpdateTaskScreen(
         Row(
             Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 8.dp).semantics (mergeDescendants = true){  },
+                .padding(horizontal = 8.dp)
+                .semantics(mergeDescendants = true) { },
             horizontalArrangement = Arrangement.SpaceAround
         ) {
             OutlinedTextField(
@@ -273,7 +283,8 @@ fun AddUpdateTaskScreen(
                             it.name == mSelectedText
                         }
                     )
-                    onEditTask(updateTask)
+                    taskViewModel.update(updateTask)
+                    taskViewModel.resetTaskValue()
                 } else {
                     val newTask = Task(
                         id = 0,
@@ -285,7 +296,8 @@ fun AddUpdateTaskScreen(
                             it.name == mSelectedText
                         }
                     )
-                    onAddTask(newTask)
+                    taskViewModel.insert(newTask)
+                    taskViewModel.resetTaskValue()
                 }
                 navController.popBackStack()
             }) {
@@ -304,14 +316,15 @@ fun AddUpdateTaskScreen(
 @Preview(uiMode = UI_MODE_NIGHT_YES)
 @Composable
 fun PreviewAddUpdateTaskScreen() {
+    val taskViewModel: TaskViewModel = viewModel()
     TaskAppTheme {
         Surface(Modifier.background(MaterialTheme.colorScheme.background)) {
             AddUpdateTaskScreen(
-                null,
                 navController = rememberNavController(),
-                onAddTask = {}
-            ) {
-            }
+                taskViewModel,
+                false,
+                null
+            )
         }
     }
 }

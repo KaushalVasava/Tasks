@@ -75,13 +75,14 @@ class MainActivity : AppCompatActivity() {
         _binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setContent {
+            val navController = rememberNavController()
             TaskAppTheme {
                 Surface(Modifier.background(MaterialTheme.colorScheme.background)) {
                     TaskNavHost(
                         taskViewModel,
                         subTaskViewModel,
                         notificationViewModel,
-                        rememberNavController()
+                        navController
                     )
                 }
             }

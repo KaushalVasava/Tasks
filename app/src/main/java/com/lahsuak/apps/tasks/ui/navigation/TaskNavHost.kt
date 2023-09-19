@@ -1,21 +1,19 @@
 package com.lahsuak.apps.tasks.ui.navigation
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.material3.CircularProgressIndicator
+import android.util.Log
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.lahsuak.apps.tasks.data.FilterPreferences
-import com.lahsuak.apps.tasks.data.SortOrder
 import com.lahsuak.apps.tasks.ui.screens.AddUpdateSubTaskScreen
 import com.lahsuak.apps.tasks.ui.screens.AddUpdateTaskScreen
 import com.lahsuak.apps.tasks.ui.screens.NotificationScreen
@@ -41,39 +39,11 @@ fun TaskNavHost(
         startDestination = NavigationItem.Task.route
     ) {
         composable(NavigationItem.Task.route) {
-            val tasks by taskViewModel.tasksFlow.collectAsState(initial = emptyList())
-            val preference = taskViewModel.preferencesFlow.collectAsState(
-                initial = FilterPreferences(
-                    sortOrder = SortOrder.BY_NAME, hideCompleted = false, viewType = false
-                )
-            )
-            val context = LocalContext.current
+            Log.d("TAG", "TaskNavHost:")
             TaskScreen(
-                preference = preference.value,
-                tasks = tasks,
-                navController = navController,
-                onSearchChange = { query ->
-                    taskViewModel.searchQuery.value = query
-                },
-                onCheckedChange = {
-                    taskViewModel.update(it)
-                },
-                onItemImpSwipe = { task ->
-                    taskViewModel.update(task)
-                },
-                onSortChange = {
-                    taskViewModel.onSortOrderSelected(it, context)
-                },
-                onDeleteAllCompletedTask = {
-                    taskViewModel.onDeleteAllCompletedClick()
-                },
-            ) { task, isDone ->
-                if (isDone) {
-                    taskViewModel.delete(task)
-                } else {
-                    taskViewModel.setTask(task)
-                }
-            }
+                navController,
+                taskViewModel
+            )
         }
         composable("${NavigationItem.SubTask.route}/{taskId}",
             arguments = listOf(
@@ -84,45 +54,12 @@ fun TaskNavHost(
         ) { backStackEntry ->
             val taskId = backStackEntry.arguments?.getInt("taskId")
             if (taskId != null) {
-                LaunchedEffect(key1 = { taskId }) {
-                    taskViewModel.getById(taskId)
-                }
-                val task by taskViewModel.taskFlow.collectAsState()
-                if (task != null) {
-                    subTaskViewModel.taskId.value = task!!.id
-                    val subTasks by subTaskViewModel.subTasks.collectAsState(initial = emptyList())
-                    SubTaskScreen(
-                        task!!,
-                        subtasks = subTasks,
-                        navController = navController,
-                        onSearchChange = {
-                            subTaskViewModel.searchQuery.value = it
-                        },
-                        onItemImpSwipe = {
-                            subTaskViewModel.updateSubTask(it)
-                        },
-                        onCheckedChange = { st ->
-                            subTaskViewModel.updateSubTask(st)
-                        },
-                        onDeleteAllCompletedTask = {
-                            subTaskViewModel.onDeleteAllCompletedClick()
-                        },
-                        onBackClick = { updatedTask ->
-                            val progress =
-                                subTasks.filter { it.isDone }.size.toFloat() / subTasks.size.toFloat()
-                            taskViewModel.update(updatedTask.copy(progress = progress))
-                        }
-                    ) { subtask, isDone ->
-                        if (isDone)
-                            subTaskViewModel.deleteSubTask(subtask)
-                        else
-                            subTaskViewModel.setSubTask(subtask)
-                    }
-                } else {
-                    Box(contentAlignment = Alignment.Center) {
-                        CircularProgressIndicator()
-                    }
-                }
+                SubTaskScreen(
+                    taskId,
+                    navController,
+                    subTaskViewModel,
+                    taskViewModel
+                )
             }
         }
         composable(NavigationItem.Setting.route) {
@@ -144,27 +81,12 @@ fun TaskNavHost(
         ) { navBackStackEntry ->
             val taskId = navBackStackEntry.arguments?.getString("taskId")
             val isNewTask = navBackStackEntry.arguments?.getBoolean("isNewTask") ?: true
-            if (!isNewTask && taskId != null) {
-                LaunchedEffect(key1 = taskId) {
-                    taskViewModel.getById(taskId.toInt())
-                }
-            }
             AddUpdateTaskScreen(
-                if (isNewTask) {
-                    null
-                } else {
-                    val task by taskViewModel.taskFlow.collectAsState()
-                    task
-                },
                 navController,
-                onAddTask = {
-                    taskViewModel.insert(it)
-                    taskViewModel.resetTaskValue()
-                }
-            ) {
-                taskViewModel.update(it)
-                taskViewModel.resetTaskValue()
-            }
+                taskViewModel,
+                isNewTask,
+                taskId
+            )
         }
         composable("${NavigationItem.AddUpdateSubTask.route}?subTaskId={subTaskId}/{taskId}/{isNewTask}",
             arguments = listOf(
@@ -184,30 +106,13 @@ fun TaskNavHost(
             val subTaskId = navBackStackEntry.arguments?.getString("subTaskId")
             val taskId = navBackStackEntry.arguments?.getString("taskId")
             val isNewTask = navBackStackEntry.arguments?.getBoolean("isNewTask") ?: true
-
-
-            if (!isNewTask && subTaskId != null) {
-                LaunchedEffect(key1 = subTaskId) {
-                    subTaskViewModel.getBySubTaskId(subTaskId.toInt())
-                }
-            }
             AddUpdateSubTaskScreen(
                 taskId!!.toInt(),
-                if (isNewTask) {
-                    null
-                } else {
-                    val subTask by subTaskViewModel.subTaskFlow.collectAsState()
-                    subTask
-                },
+                subTaskId,
+                isNewTask,
                 navController,
-                onAddSubTask = {
-                    subTaskViewModel.insertSubTask(it)
-                    subTaskViewModel.resetSubTaskValue()
-                }
-            ) {
-                subTaskViewModel.updateSubTask(it)
-                subTaskViewModel.resetSubTaskValue()
-            }
+                subTaskViewModel
+            )
         }
         composable(NavigationItem.Notification.route) {
             val notifications by notificationViewModel.notifications.collectAsState(

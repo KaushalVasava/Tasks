@@ -2,7 +2,6 @@ package com.lahsuak.apps.tasks.ui.screens
 
 import android.content.res.Configuration.UI_MODE_NIGHT_NO
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -21,6 +20,8 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -32,24 +33,36 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.lahsuak.apps.tasks.R
 import com.lahsuak.apps.tasks.data.model.SubTask
-import com.lahsuak.apps.tasks.data.model.Task
 import com.lahsuak.apps.tasks.ui.MainActivity
 import com.lahsuak.apps.tasks.ui.theme.TaskAppTheme
+import com.lahsuak.apps.tasks.ui.viewmodel.SubTaskViewModel
 import com.lahsuak.apps.tasks.util.AppUtil
 import com.lahsuak.apps.tasks.util.DateUtil
 
 @Composable
 fun AddUpdateSubTaskScreen(
     taskId: Int,
-    subTask: SubTask?,
+    subTaskId: String?,
+    isNewTask: Boolean,
     navController: NavController,
-    onAddSubTask: (SubTask) -> Unit,
-    onEditSubTask: (SubTask) -> Unit,
+    subTaskViewModel: SubTaskViewModel,
 ) {
+    if (!isNewTask && subTaskId != null) {
+        LaunchedEffect(key1 = subTaskId) {
+            subTaskViewModel.getBySubTaskId(subTaskId.toInt())
+        }
+    }
+    val subTask = if (isNewTask) {
+        null
+    } else {
+        val st by subTaskViewModel.subTaskFlow.collectAsState()
+        st
+    }
     val activity = LocalContext.current
     var text by rememberSaveable {
         mutableStateOf(
@@ -65,7 +78,10 @@ fun AddUpdateSubTaskScreen(
         mutableStateOf(null)
     }
 
-    Column(Modifier.fillMaxWidth().padding(vertical = 8.dp)) {
+    Column(
+        Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp)) {
         OutlinedTextField(
             value = text,
             onValueChange = {
@@ -142,13 +158,14 @@ fun AddUpdateSubTaskScreen(
             }
             Button(onClick = {
                 if (subTask != null) {
-                    val updateSubTask = subTask.copy(
+                    val newTask = subTask.copy(
                         subTitle = text,
                         isImportant = isImp,
                         dateTime = System.currentTimeMillis(),
                         reminder = reminder
                     )
-                    onEditSubTask(updateSubTask)
+                    subTaskViewModel.updateSubTask(newTask)
+                    subTaskViewModel.resetSubTaskValue()
                 } else {
                     val newTask = SubTask(
                         id = taskId,
@@ -158,7 +175,8 @@ fun AddUpdateSubTaskScreen(
                         dateTime = System.currentTimeMillis(),
                         reminder = reminder
                     )
-                    onAddSubTask(newTask)
+                    subTaskViewModel.insertSubTask(newTask)
+                    subTaskViewModel.resetSubTaskValue()
                 }
                 navController.popBackStack()
             }) {
@@ -177,14 +195,17 @@ fun AddUpdateSubTaskScreen(
 @Preview(uiMode = UI_MODE_NIGHT_YES)
 @Composable
 fun PreviewAddUpdateSubTaskScreen() {
+    val subTaskViewModel: SubTaskViewModel = viewModel()
+
     TaskAppTheme {
         Surface(Modifier.background(MaterialTheme.colorScheme.background)) {
-            AddUpdateTaskScreen(
-                null,
+            AddUpdateSubTaskScreen(
                 navController = rememberNavController(),
-                onAddTask = {}
-            ) {
-            }
+                taskId = 0,
+                subTaskId = null,
+                isNewTask = false,
+                subTaskViewModel = subTaskViewModel
+            )
         }
     }
 }
