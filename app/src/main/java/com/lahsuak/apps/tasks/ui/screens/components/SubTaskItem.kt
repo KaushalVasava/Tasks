@@ -1,6 +1,7 @@
 package com.lahsuak.apps.tasks.ui.screens.components
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeOut
@@ -53,6 +54,8 @@ fun SubTaskItem(
     onCompletedTask: (Boolean) -> Unit,
     onEditIconClick: (Boolean) -> Unit,
 ) {
+//    Log.d("TAG", "SubTaskItem: ${subTask.isDone} and ${subTask.subTitle}")
+
     var isChecked by rememberSaveable {
         mutableStateOf(subTask.isDone)
     }

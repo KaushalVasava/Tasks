@@ -18,6 +18,7 @@ import android.widget.TextView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.annotation.ColorRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.ui.res.stringResource
 import androidx.core.content.ContextCompat
 import androidx.core.widget.TextViewCompat
 import androidx.fragment.app.FragmentActivity
@@ -32,6 +33,7 @@ import com.lahsuak.apps.tasks.R
 import com.lahsuak.apps.tasks.TaskApp
 import com.lahsuak.apps.tasks.data.model.SubTask
 import com.lahsuak.apps.tasks.data.model.Task
+import com.lahsuak.apps.tasks.ui.MainActivity
 import com.lahsuak.apps.tasks.util.AppConstants.MARKET_PLACE_HOLDER
 import com.lahsuak.apps.tasks.util.AppConstants.SHARE_FORMAT
 import com.lahsuak.apps.tasks.util.AppUtil.UNDERSCORE
@@ -209,6 +211,61 @@ object AppUtil {
         datePickerDialog.show()
     }
 
+    fun setDateTimeCompose(
+        context: Context,
+        doWork: (calendar: Calendar, time: String) -> Unit
+    ) {
+        val activity = MainActivity()
+        val mCalendar = Calendar.getInstance()
+        val formatter = SimpleDateFormat(AppConstants.TIME_FORMAT, Locale.getDefault())
+        var hour = formatter.format(mCalendar.time).substring(0, 2).trim().toInt()
+        val min = formatter.format(mCalendar.time).substring(3, 5).trim().toInt()
+
+        val isAm = formatter.format(mCalendar.time).substring(6).trim().lowercase()
+
+        if (isAm == context.getString(R.string.pm_format))
+            hour += 12
+
+        val materialTimePicker: MaterialTimePicker = MaterialTimePicker.Builder()
+            .setTitleText(context.getString(R.string.set_time))
+            .setHour(hour)
+            .setMinute(min)
+            .build()
+        val dateListener =
+            DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
+                mCalendar.set(Calendar.YEAR, year)
+                mCalendar.set(Calendar.MONTH, monthOfYear)
+                mCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+
+                materialTimePicker.show(
+                    activity.supportFragmentManager,
+                    context.getString(R.string.set_time)
+                )
+                // dialog update the TextView accordingly
+                materialTimePicker.addOnPositiveButtonClickListener {
+                    val pickedHour: Int = materialTimePicker.hour
+                    val pickedMinute: Int = materialTimePicker.minute
+
+                    mCalendar.set(Calendar.HOUR_OF_DAY, pickedHour)
+                    mCalendar.set(Calendar.MINUTE, pickedMinute)
+                    mCalendar.set(Calendar.SECOND, 0)
+
+                    val time = DateFormat.getDateTimeInstance(
+                        DateFormat.MEDIUM,
+                        DateFormat.SHORT
+                    ).format(mCalendar.time)
+                    doWork(mCalendar, time)
+                }
+            }
+        val datePickerDialog = DatePickerDialog(
+            activity,
+            dateListener,
+            mCalendar.get(Calendar.YEAR),
+            mCalendar.get(Calendar.MONTH),
+            mCalendar.get(Calendar.DAY_OF_MONTH)
+        )
+        datePickerDialog.show()
+    }
     fun createWorkRequest(
         context: Context,
         id: Int,

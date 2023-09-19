@@ -223,9 +223,9 @@ fun AddUpdateTaskScreen(
                 .fillMaxWidth()
                 .padding(8.dp)
         ) {
-            val mainActivity = MainActivity()
+            val context = LocalContext.current
             TextButton(onClick = {
-                AppUtil.setDateTime(mainActivity) { calendar, time ->
+                AppUtil.setDateTimeCompose(context) { calendar, _ ->
 
                     if (task != null) {
                         AppUtil.setReminderWorkRequest(

@@ -51,6 +51,7 @@ import com.google.android.play.core.install.model.InstallStatus
 import com.google.android.play.core.install.model.UpdateAvailability
 import com.lahsuak.apps.tasks.R
 import com.lahsuak.apps.tasks.TaskApp
+import com.lahsuak.apps.tasks.data.FilterPreferences
 import com.lahsuak.apps.tasks.data.SortOrder
 import com.lahsuak.apps.tasks.data.model.Task
 import com.lahsuak.apps.tasks.databinding.FragmentTaskBinding
@@ -138,13 +139,19 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
         super.onViewCreated(view, savedInstanceState)
         binding.composeView.setContent {
             val tasks by viewModel.tasksFlow.collectAsState(initial = emptyList())
+            val preference = viewModel.preferencesFlow.collectAsState(
+                initial = FilterPreferences(
+                    sortOrder = SortOrder.BY_NAME, hideCompleted = false, viewType = false
+                )
+            )
             TaskScreen(
+                preference.value,
                 tasks,
-                isListView = false,
                 navController = rememberNavController(),
                 onSearchChange = {},
                 onItemImpSwipe = {},
                 onCheckedChange = {},
+                onSortChange = {},
                 onDeleteAllCompletedTask = {},
             ) { _, _ -> }
         }

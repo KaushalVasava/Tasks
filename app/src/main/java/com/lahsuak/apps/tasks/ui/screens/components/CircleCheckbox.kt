@@ -12,7 +12,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import com.lahsuak.apps.tasks.R
 
 @Composable
 fun CircleCheckbox(
@@ -22,8 +24,12 @@ fun CircleCheckbox(
     enabled: Boolean = true,
 ) {
     val color = MaterialTheme.colorScheme
-    val imageVector = if (checked) Icons.Filled.CheckCircle else Icons.Default.FavoriteBorder
-    val tint = if (checked) color.primary.copy(alpha = 0.8f) else color.onSurface.copy(alpha = 0.8f)
+    val icon =
+        if (checked) painterResource(id = R.drawable.ic_checked)
+        else painterResource(id = R.drawable.ic_unchecked)
+    val tint =
+        if (checked) color.primary.copy(alpha = 0.8f)
+        else color.onSurface.copy(alpha = 0.8f)
     val background = if (checked) color.surface else Color.Transparent
 
     IconButton(
@@ -32,7 +38,8 @@ fun CircleCheckbox(
         enabled = enabled
     ) {
         Icon(
-            imageVector = imageVector, tint = tint,
+            icon,
+            tint = tint,
             modifier = Modifier.background(background, shape = CircleShape),
             contentDescription = "checkbox"
         )

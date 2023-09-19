@@ -1,6 +1,5 @@
 package com.lahsuak.apps.tasks.ui.navigation
 
-import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
@@ -9,11 +8,14 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.lahsuak.apps.tasks.data.FilterPreferences
+import com.lahsuak.apps.tasks.data.SortOrder
 import com.lahsuak.apps.tasks.ui.screens.AddUpdateSubTaskScreen
 import com.lahsuak.apps.tasks.ui.screens.AddUpdateTaskScreen
 import com.lahsuak.apps.tasks.ui.screens.NotificationScreen
@@ -40,10 +42,16 @@ fun TaskNavHost(
     ) {
         composable(NavigationItem.Task.route) {
             val tasks by taskViewModel.tasksFlow.collectAsState(initial = emptyList())
+            val preference = taskViewModel.preferencesFlow.collectAsState(
+                initial = FilterPreferences(
+                    sortOrder = SortOrder.BY_NAME, hideCompleted = false, viewType = false
+                )
+            )
+            val context = LocalContext.current
             TaskScreen(
+                preference = preference.value,
                 tasks = tasks,
                 navController = navController,
-                isListView = false,
                 onSearchChange = { query ->
                     taskViewModel.searchQuery.value = query
                 },
@@ -52,6 +60,9 @@ fun TaskNavHost(
                 },
                 onItemImpSwipe = { task ->
                     taskViewModel.update(task)
+                },
+                onSortChange = {
+                    taskViewModel.onSortOrderSelected(it, context)
                 },
                 onDeleteAllCompletedTask = {
                     taskViewModel.onDeleteAllCompletedClick()
@@ -90,23 +101,22 @@ fun TaskNavHost(
                         onItemImpSwipe = {
                             subTaskViewModel.updateSubTask(it)
                         },
-                        onCheckedChange = { isCompleted, taskProgress ->
-                            subTaskViewModel.updateSubTask(isCompleted)
-                            Log.d("TAG", "TaskNavHost: #progress $taskProgress")
-                            taskViewModel.update(task!!.copy(progress = taskProgress))
+                        onCheckedChange = { st ->
+                            subTaskViewModel.updateSubTask(st)
                         },
                         onDeleteAllCompletedTask = {
                             subTaskViewModel.onDeleteAllCompletedClick()
                         },
-                        onBackClick = {
-                            taskViewModel.update(it)
+                        onBackClick = { updatedTask ->
+                            val progress =
+                                subTasks.filter { it.isDone }.size.toFloat() / subTasks.size.toFloat()
+                            taskViewModel.update(updatedTask.copy(progress = progress))
                         }
                     ) { subtask, isDone ->
                         if (isDone)
                             subTaskViewModel.deleteSubTask(subtask)
                         else
                             subTaskViewModel.setSubTask(subtask)
-//                            subTaskViewModel.updateSubTask(subtask)
                     }
                 } else {
                     Box(contentAlignment = Alignment.Center) {
@@ -125,7 +135,6 @@ fun TaskNavHost(
             arguments = listOf(
                 navArgument("taskId") {
                     type = NavType.StringType
-                    defaultValue = null
                     nullable = true
                 },
                 navArgument("isNewTask") {

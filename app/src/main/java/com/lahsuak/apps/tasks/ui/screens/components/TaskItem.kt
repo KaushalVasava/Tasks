@@ -1,5 +1,6 @@
 package com.lahsuak.apps.tasks.ui.screens.components
 
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeOut
@@ -16,6 +17,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -121,6 +123,7 @@ fun TaskItem(
                                 painter = painterResource(id = R.drawable.ic_pin),
                                 contentDescription = "Important",
                                 modifier = Modifier
+                                    .size(24.dp)
                                     .align(Alignment.TopStart)
                                     .padding(top = 8.dp, start = 4.dp)
                             )
@@ -223,6 +226,7 @@ fun TaskItem(
                                             fontSize = 10.sp,
                                         )
                                     }
+//                                    Log.d("TAG", "TaskItem: ${task.progress} and ${task.title}")
                                     AnimatedVisibility(task.progress != -1f) {
                                         CircularProgressStatus(
                                             progress = task.progress,

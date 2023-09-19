@@ -81,7 +81,7 @@ fun SubTaskScreen(
     navController: NavController,
     onSearchChange: (String) -> Unit,
     onItemImpSwipe: (SubTask) -> Unit,
-    onCheckedChange: (SubTask, Float) -> Unit,
+    onCheckedChange: (SubTask) -> Unit,
     onDeleteAllCompletedTask: () -> Unit,
     onBackClick: (Task) -> Unit,
     onTaskClick: (SubTask, Boolean) -> Unit,
@@ -230,9 +230,7 @@ fun SubTaskScreen(
                         )
                     },
                     onCompletedTask = { isCompleted ->
-                        val progress =
-                            subtasks.filter { it.isDone }.size.toFloat() / subtasks.size.toFloat()
-                        onCheckedChange(subtask.copy(isDone = isCompleted), progress)
+                        onCheckedChange(subtask.copy(isDone = isCompleted))
                     }
                 ) { isDone ->
                     if (isDone) {
@@ -258,7 +256,7 @@ fun PreviewSubTaskScreen() {
                 navController = rememberNavController(),
                 onSearchChange = {},
                 onItemImpSwipe = {},
-                onCheckedChange = {_,_->},
+                onCheckedChange = {},
                 onDeleteAllCompletedTask = {},
                 onBackClick = {}
             ) { _, _ ->

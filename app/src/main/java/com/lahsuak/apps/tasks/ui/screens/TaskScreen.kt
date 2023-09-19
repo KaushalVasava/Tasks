@@ -37,7 +37,6 @@ import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SearchBar
@@ -45,6 +44,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
@@ -58,6 +58,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -67,26 +68,34 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.lahsuak.apps.tasks.R
+import com.lahsuak.apps.tasks.data.FilterPreferences
+import com.lahsuak.apps.tasks.data.SortOrder
 import com.lahsuak.apps.tasks.data.model.Task
 import com.lahsuak.apps.tasks.ui.navigation.NavigationItem
 import com.lahsuak.apps.tasks.ui.screens.components.ChipGroup
+import com.lahsuak.apps.tasks.ui.screens.components.LinearProgressStatus
 import com.lahsuak.apps.tasks.ui.screens.components.TaskItem
+import com.lahsuak.apps.tasks.ui.viewmodel.TaskViewModel
 import com.lahsuak.apps.tasks.util.DateUtil
 import com.lahsuak.apps.tasks.util.demo.getDemoTaskData
+import com.lahsuak.apps.tasks.util.toCamelCase
+import com.lahsuak.apps.tasks.util.toSortForm
 import kotlin.random.Random
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun TaskScreen(
+    preference: FilterPreferences,
     tasks: List<Task>,
     navController: NavController,
-    isListView: Boolean,
     onSearchChange: (String) -> Unit,
     onItemImpSwipe: (Task) -> Unit,
     onCheckedChange: (Task) -> Unit,
+    onSortChange: (SortOrder) -> Unit,
     onDeleteAllCompletedTask: () -> Unit,
     onTaskClick: (Task, Boolean) -> Unit,
 ) {
@@ -102,7 +111,7 @@ fun TaskScreen(
         mutableStateOf(false)
     }
     var isListViewEnable by rememberSaveable {
-        mutableStateOf(isListView)
+        mutableStateOf(preference.viewType)
     }
     Scaffold(
         topBar = {
@@ -191,6 +200,8 @@ fun TaskScreen(
             ) {
                 item {
                     HeaderContent(
+                        tasks.filter { it.isDone }.size,
+                        tasks.size,
                         searchQuery = searchQuery,
                         onQueryChange = {
                             searchQuery = it
@@ -204,6 +215,10 @@ fun TaskScreen(
                             isTaskDone = it
                         },
                         status = status,
+                        onSortChange = {
+                            onSortChange(it)
+                        },
+                        sortOrder = preference.sortOrder,
                         Modifier.fillMaxWidth()
                     )
                 }
@@ -249,6 +264,8 @@ fun TaskScreen(
             ) {
                 item(span = StaggeredGridItemSpan.FullLine) {
                     HeaderContent(
+                        tasks.filter { it.isDone }.size,
+                        tasks.size,
                         searchQuery = searchQuery,
                         onQueryChange = {
                             searchQuery = it
@@ -261,6 +278,10 @@ fun TaskScreen(
                             isTaskDone = it
                         },
                         status = status,
+                        onSortChange = {
+                            onSortChange(it)
+                        },
+                        sortOrder = preference.sortOrder,
                         Modifier.fillMaxWidth()
                     )
                 }
@@ -309,12 +330,16 @@ fun TaskScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HeaderContent(
+    completedTask: Int,
+    totalTask: Int,
     searchQuery: String,
     onQueryChange: (String) -> Unit,
     isListViewEnable: Boolean,
     onViewChange: (Boolean) -> Unit,
     onStatusChange: (Boolean) -> Unit,
     status: List<String>,
+    onSortChange: (SortOrder) -> Unit,
+    sortOrder: SortOrder,
     modifier: Modifier = Modifier,
 ) {
     val sorts = listOf(
@@ -328,29 +353,31 @@ fun HeaderContent(
     val sortTypes by remember {
         mutableStateOf(sorts)
     }
+    val d = sorts.indexOfFirst {
+        it.contains(sortOrder.name.toSortForm())
+    }
     var selectedStatusIndex by rememberSaveable {
-        mutableIntStateOf(0)
+        mutableIntStateOf(d)
     }
     var isDropDownExpanded by rememberSaveable {
         mutableStateOf(false)
     }
     var mSelectedText by remember {
-        mutableStateOf(sortTypes[0])
+        mutableStateOf("Name")//sortTypes[0])
     }
     var mTextFieldSize by remember { mutableStateOf(Size.Zero) }
     val icon = if (isDropDownExpanded)
         Icons.Filled.KeyboardArrowUp
     else
         Icons.Filled.KeyboardArrowDown
+    val width = LocalConfiguration.current.screenWidthDp.dp
     Column(modifier) {
-        LinearProgressIndicator(
-            progress = 0.40f,
-            trackColor = MaterialTheme.colorScheme.surface,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(16.dp)
-                .padding(horizontal = 8.dp)
-                .clip(RoundedCornerShape(8.dp))
+        LinearProgressStatus(
+            completedTask,
+            totalTask,
+            trackColor = MaterialTheme.colorScheme.surfaceVariant,
+            width = width,
+            height = 24.dp
         )
         Row(
             Modifier.fillMaxWidth(),
@@ -391,9 +418,9 @@ fun HeaderContent(
                 }) {
                     Icon(
                         if (isListViewEnable)
-                            painterResource(id = R.drawable.ic_grid_view)
+                            painterResource(id = R.drawable.ic_list_view)
                         else
-                            painterResource(id = R.drawable.ic_list_view),
+                            painterResource(id = R.drawable.ic_grid_view),
                         contentDescription = "layout view changer"
                     )
                 }
@@ -443,12 +470,13 @@ fun HeaderContent(
                     modifier = Modifier.width(with(LocalDensity.current)
                     { mTextFieldSize.width.toDp() })
                 ) {
-                    sortTypes.forEach { type ->
+                    sortTypes.forEachIndexed { index, type ->
                         DropdownMenuItem(
                             text = {
                                 Text(text = type)
                             },
                             onClick = {
+                                onSortChange(SortOrder.getOrder(index))
                                 mSelectedText = type
                                 isDropDownExpanded = false
                             }
@@ -470,15 +498,22 @@ fun HeaderContent(
 @Preview
 @Composable
 fun PreviewTaskScreen() {
+    val taskViewModel: TaskViewModel = viewModel()
+    val preference = taskViewModel.preferencesFlow.collectAsState(
+        initial = FilterPreferences(
+            sortOrder = SortOrder.BY_NAME, hideCompleted = false, viewType = false
+        )
+    )
     MaterialTheme {
         Surface(Modifier.background(MaterialTheme.colorScheme.background)) {
             TaskScreen(
+                preference.value,
                 tasks = getDemoTaskData(),
                 navController = rememberNavController(),
-                isListView = false,
                 onSearchChange = {},
                 onItemImpSwipe = {},
                 onCheckedChange = {},
+                onSortChange = {},
                 onDeleteAllCompletedTask = {}
             ) { _, _ ->
             }
