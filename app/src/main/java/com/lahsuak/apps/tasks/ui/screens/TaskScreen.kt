@@ -1,5 +1,6 @@
 package com.lahsuak.apps.tasks.ui.screens
 
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -22,7 +23,6 @@ import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridItemSpan
 import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.KeyboardArrowDown
@@ -33,6 +33,7 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -40,23 +41,28 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SearchBar
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
@@ -82,6 +88,7 @@ import com.lahsuak.apps.tasks.ui.screens.components.TaskItem
 import com.lahsuak.apps.tasks.ui.viewmodel.TaskViewModel
 import com.lahsuak.apps.tasks.util.DateUtil
 import com.lahsuak.apps.tasks.util.toSortForm
+import kotlinx.coroutines.launch
 import kotlin.random.Random
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
@@ -90,11 +97,15 @@ fun TaskScreen(
     navController: NavController,
     taskViewModel: TaskViewModel,
 ) {
+    val tasks by taskViewModel.tasksFlow.collectAsState(initial = emptyList())
+    val preference by taskViewModel.preferencesFlow.collectAsState(
+        initial = FilterPreferences(
+            sortOrder = SortOrder.BY_NAME, hideCompleted = false, viewType = false
+        )
+    )
     var searchQuery by rememberSaveable {
         mutableStateOf("")
     }
-    val lazyColumnState = rememberLazyListState()
-
     val status = remember {
         mutableStateListOf("Active", "Done")
     }
@@ -102,16 +113,22 @@ fun TaskScreen(
         mutableStateOf(false)
     }
 
-    val tasks by taskViewModel.tasksFlow.collectAsState(initial = emptyList())
-    val preference by taskViewModel.preferencesFlow.collectAsState(
-        initial = FilterPreferences(
-            sortOrder = SortOrder.BY_NAME, hideCompleted = false, viewType = false
-        )
-    )
+    val lazyListState = rememberLazyListState()
+
+    val isFabExtended by remember {
+        derivedStateOf {
+            lazyListState.firstVisibleItemIndex != 0
+        }
+    }
     var isListViewEnable by rememberSaveable {
         mutableStateOf(preference.viewType)
     }
     val context = LocalContext.current
+
+    val snackBarHostState = remember {
+        SnackbarHostState()
+    }
+    val scope = rememberCoroutineScope()
 
     Scaffold(
         topBar = {
@@ -171,7 +188,6 @@ fun TaskScreen(
                     FloatingActionButton(
                         onClick = {
                             taskViewModel.onDeleteAllCompletedClick()
-//                            onDeleteAllCompletedTask()
                         },
                     ) {
                         Icon(
@@ -181,21 +197,40 @@ fun TaskScreen(
                     }
                 }
                 AnimatedVisibility(visible = !isTaskDone) {
-                    FloatingActionButton(onClick = {
-                        navController.navigate("${NavigationItem.AddUpdateTask.route}?taskId=null/true")
-                    }) {
-                        Icon(
-                            Icons.Default.Add,
-                            contentDescription = stringResource(id = R.string.add_task)
+                    if (isFabExtended) {
+                        ExtendedFloatingActionButton(
+                            onClick = {
+                                navController.navigate("${NavigationItem.AddUpdateTask.route}?taskId=null/true")
+                            }, text = {
+                                Text("Add task")
+                            },
+                            icon = {
+                                Icon(
+                                    painterResource(id = R.drawable.ic_create),
+                                    contentDescription = stringResource(id = R.string.add_task)
+                                )
+                            }
                         )
+                    } else {
+                        FloatingActionButton(onClick = {
+                            navController.navigate("${NavigationItem.AddUpdateTask.route}?taskId=null/true")
+                        }) {
+                            Icon(
+                                painterResource(id = R.drawable.ic_create),
+                                contentDescription = stringResource(id = R.string.add_task)
+                            )
+                        }
                     }
                 }
             }
+        },
+        snackbarHost = {
+            SnackbarHost(snackBarHostState)
         }
     ) { paddingValue ->
         if (!isListViewEnable) {
             LazyColumn(
-                state = lazyColumnState,
+                state = lazyListState,
                 modifier = Modifier.padding(paddingValue),
                 contentPadding = PaddingValues(horizontal = 8.dp)
             ) {
@@ -210,7 +245,8 @@ fun TaskScreen(
                         },
                         isListViewEnable = isListViewEnable,
                         onViewChange = {
-                            isListViewEnable = it
+                            if (tasks.size > 1)
+                                isListViewEnable = it
                         },
                         onStatusChange = {
                             isTaskDone = it
@@ -220,6 +256,9 @@ fun TaskScreen(
                             taskViewModel.onSortOrderSelected(it, context)
                         },
                         sortOrder = preference.sortOrder,
+                        onProgressBarClick = {
+                            navController.navigate(NavigationItem.Overview.route)
+                        },
                         Modifier.fillMaxWidth()
                     )
                 }
@@ -260,7 +299,7 @@ fun TaskScreen(
         } else {
             LazyVerticalStaggeredGrid(
                 modifier = Modifier.padding(paddingValue),
-                contentPadding = PaddingValues(8.dp),
+                contentPadding = PaddingValues(horizontal = 8.dp),
                 columns = StaggeredGridCells.Fixed(2),
             ) {
                 item(span = StaggeredGridItemSpan.FullLine) {
@@ -270,6 +309,7 @@ fun TaskScreen(
                         searchQuery = searchQuery,
                         onQueryChange = {
                             searchQuery = it
+                            taskViewModel.searchQuery.value = it
                         },
                         isListViewEnable = isListViewEnable,
                         onViewChange = {
@@ -283,7 +323,10 @@ fun TaskScreen(
                             taskViewModel.onSortOrderSelected(it, context)
                         },
                         sortOrder = preference.sortOrder,
-                        Modifier.fillMaxWidth()
+                        onProgressBarClick = {
+                            navController.navigate(NavigationItem.Overview.route)
+                        },
+                        modifier = Modifier.fillMaxWidth()
                     )
                 }
                 items(
@@ -309,12 +352,34 @@ fun TaskScreen(
                                 navController.navigate("${NavigationItem.SubTask.route}/${task.id}")
                             },
                             onCompletedTask = { isCompleted ->
-                                taskViewModel.update(task.copy(isDone = isCompleted))
+                                taskViewModel.update(
+                                    task.copy(
+                                        isDone = isCompleted,
+                                        startDate = System.currentTimeMillis()
+                                    )
+                                )
                             }
                         ) { isDone ->
                             if (isDone) {
-                                taskViewModel.delete(task)
-                                navController.popBackStack()
+                                Log.d("TAG", "TaskScreen: called isDone $isDone")
+                                scope.launch {
+                                    val snackBarResult = snackBarHostState.showSnackbar(
+                                        message = "Task delete",
+                                        actionLabel = "Undo",
+                                        duration = SnackbarDuration.Short
+                                    )
+                                    when (snackBarResult) {
+                                        SnackbarResult.Dismissed -> {
+                                            Log.d("TAG", "TaskScreen: dismissed")
+                                        }
+
+                                        SnackbarResult.ActionPerformed -> {
+                                            Log.d("TAG", "TaskScreen: undo done")
+                                        }
+                                    }
+                                    taskViewModel.delete(task)
+                                }
+                                //navController.popBackStack()
                             } else {
                                 taskViewModel.setTask(task)
                                 navController.navigate("${NavigationItem.AddUpdateTask.route}?taskId=${task.id}/false")
@@ -341,6 +406,7 @@ fun HeaderContent(
     status: List<String>,
     onSortChange: (SortOrder) -> Unit,
     sortOrder: SortOrder,
+    onProgressBarClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val sorts = listOf(
@@ -374,11 +440,14 @@ fun HeaderContent(
     val width = LocalConfiguration.current.screenWidthDp.dp
     Column(modifier) {
         LinearProgressStatus(
-            completedTask,
-            totalTask,
+            modifier = Modifier.clickable {
+                onProgressBarClick()
+            },
+            progress = completedTask.toFloat()/totalTask.toFloat(),
+            text = stringResource(id = R.string.task_progress, completedTask, totalTask),
             trackColor = MaterialTheme.colorScheme.surfaceVariant,
             width = width,
-            height = 24.dp
+            height = 24.dp,
         )
         Row(
             Modifier.fillMaxWidth(),
@@ -407,7 +476,7 @@ fun HeaderContent(
                     }
                 },
                 placeholder = {
-                    Text("Search task", color = Color.Gray)
+                    Text("Search task")
                 },
                 onActiveChange = {},
                 modifier = Modifier.weight(0.9f)

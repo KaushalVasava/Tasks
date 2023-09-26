@@ -16,7 +16,7 @@ object AppConstants {
     const val DATE_FORMAT = "dd MM, yy"
     const val REMINDER_DATE_TIME_FORMAT = "dd MMM, yy hh:mm a"
     const val TOOLBAR_DATE_TIME_FORMAT = "E, dd LLLL"
-    const val MARKET_PLACE_HOLDER = "market://details?id="
+    const val MARKET_PLACE_HOLDER = "market://details?name="
     const val SHARE_FORMAT = "text/plain"
     const val SORT_ORDER = "sort_order"
     const val SORT_ORDER2 = "sort_order2"
@@ -28,8 +28,6 @@ object AppConstants {
     const val SEARCH_QUERY = "searchQuery"
     const val SEARCH_INITIAL_VALUE = ""
     const val TASK_ID = "taskId"
-    const val THEME_KEY = "theme_key"
-    const val THEME_DEFAULT = "-1"
     const val UPDATE_REQUEST_CODE = 123
     const val SEPARATOR = " - "
     const val PACKAGE = "package"
@@ -40,6 +38,10 @@ object AppConstants {
 
     // Preferences key
     object SharedPreference {
+        //theme
+        const val THEME_KEY = "theme_key"
+        const val THEME_DEFAULT = "-1"
+
         //language
         const val LANGUAGE_SHARED_PREFERENCE = "LANGUAGE"
         const val LANGUAGE_SHARED_PREFERENCE_KEY = "selectedLang"

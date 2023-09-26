@@ -1,20 +1,15 @@
 package com.lahsuak.apps.tasks.ui.navigation
 
-import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.fragment.app.FragmentManager
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.lahsuak.apps.tasks.ui.screens.AddUpdateSubTaskScreen
 import com.lahsuak.apps.tasks.ui.screens.AddUpdateTaskScreen
 import com.lahsuak.apps.tasks.ui.screens.NotificationScreen
 import com.lahsuak.apps.tasks.ui.screens.OverviewScreen
@@ -22,6 +17,7 @@ import com.lahsuak.apps.tasks.ui.screens.SettingScreen
 import com.lahsuak.apps.tasks.ui.screens.SubTaskScreen
 import com.lahsuak.apps.tasks.ui.screens.TaskScreen
 import com.lahsuak.apps.tasks.ui.viewmodel.NotificationViewModel
+import com.lahsuak.apps.tasks.ui.viewmodel.SettingViewModel
 import com.lahsuak.apps.tasks.ui.viewmodel.SubTaskViewModel
 import com.lahsuak.apps.tasks.ui.viewmodel.TaskViewModel
 
@@ -30,8 +26,10 @@ fun TaskNavHost(
     taskViewModel: TaskViewModel,
     subTaskViewModel: SubTaskViewModel,
     notificationViewModel: NotificationViewModel,
+    settingViewModel: SettingViewModel,
     navController: NavHostController,
     modifier: Modifier = Modifier,
+    fragmentManager: FragmentManager,
 ) {
     NavHost(
         modifier = modifier,
@@ -39,7 +37,6 @@ fun TaskNavHost(
         startDestination = NavigationItem.Task.route
     ) {
         composable(NavigationItem.Task.route) {
-            Log.d("TAG", "TaskNavHost:")
             TaskScreen(
                 navController,
                 taskViewModel
@@ -63,10 +60,10 @@ fun TaskNavHost(
             }
         }
         composable(NavigationItem.Setting.route) {
-            SettingScreen(navController)
+            SettingScreen(navController, settingViewModel, fragmentManager)
         }
         composable(NavigationItem.Overview.route) {
-            OverviewScreen()
+            OverviewScreen(navController, taskViewModel)
         }
         composable("${NavigationItem.AddUpdateTask.route}?taskId={taskId}/{isNewTask}",
             arguments = listOf(
@@ -88,32 +85,33 @@ fun TaskNavHost(
                 taskId
             )
         }
-        composable("${NavigationItem.AddUpdateSubTask.route}?subTaskId={subTaskId}/{taskId}/{isNewTask}",
-            arguments = listOf(
-                navArgument("subTaskId") {
-                    type = NavType.StringType
-                    nullable = true
-                    defaultValue = null
-                },
-                navArgument("taskId") {
-                    type = NavType.StringType
-                },
-                navArgument("isNewTask") {
-                    type = NavType.BoolType
-                }
-            )
-        ) { navBackStackEntry ->
-            val subTaskId = navBackStackEntry.arguments?.getString("subTaskId")
-            val taskId = navBackStackEntry.arguments?.getString("taskId")
-            val isNewTask = navBackStackEntry.arguments?.getBoolean("isNewTask") ?: true
-            AddUpdateSubTaskScreen(
-                taskId!!.toInt(),
-                subTaskId,
-                isNewTask,
-                navController,
-                subTaskViewModel
-            )
-        }
+//        composable("${NavigationItem.AddUpdateSubTask.route}?subTaskId={subTaskId}/{taskId}/{isNewTask}",
+//            arguments = listOf(
+//                navArgument("subTaskId") {
+//                    type = NavType.StringType
+//                    nullable = true
+//                    defaultValue = null
+//                },
+//                navArgument("taskId") {
+//                    type = NavType.StringType
+//                },
+//                navArgument("isNewTask") {
+//                    type = NavType.BoolType
+//                }
+//            )
+//        ) { navBackStackEntry ->
+//            val subTaskId = navBackStackEntry.arguments?.getString("subTaskId")
+//            val taskId = navBackStackEntry.arguments?.getString("taskId")
+//            val isNewTask = navBackStackEntry.arguments?.getBoolean("isNewTask") ?: true
+//            AddUpdateSubTaskScreen(
+//                taskId!!.toInt(),
+//                subTaskId,
+//                isNewTask,
+//                navController,
+//                subTaskViewModel
+//            ){
+//            }
+//        }
         composable(NavigationItem.Notification.route) {
             val notifications by notificationViewModel.notifications.collectAsState(
                 initial = emptyList()

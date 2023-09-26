@@ -6,12 +6,15 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
@@ -19,16 +22,19 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -36,6 +42,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -52,7 +59,9 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.lahsuak.apps.tasks.R
 import com.lahsuak.apps.tasks.TaskApp
+import com.lahsuak.apps.tasks.data.model.SubTask
 import com.lahsuak.apps.tasks.data.model.Task
+import com.lahsuak.apps.tasks.ui.screens.components.SubTaskItem
 import com.lahsuak.apps.tasks.ui.theme.TaskAppTheme
 import com.lahsuak.apps.tasks.ui.viewmodel.TaskViewModel
 import com.lahsuak.apps.tasks.util.AppUtil
@@ -73,8 +82,8 @@ fun AddUpdateTaskScreen(
     val task = if (isNewTask) {
         null
     } else {
-        val t by taskViewModel.taskFlow.collectAsState()
-        t
+        val tempTask by taskViewModel.taskFlow.collectAsState()
+        tempTask
     }
     val activity = LocalContext.current
     var text by rememberSaveable {
@@ -109,6 +118,12 @@ fun AddUpdateTaskScreen(
     else
         Icons.Filled.KeyboardArrowDown
 
+    val subtasks = remember {
+        mutableStateListOf<String>("")
+    }
+    var subtaskText by remember {
+        mutableStateOf("")
+    }
     Column(Modifier.fillMaxWidth()) {
         Spacer(Modifier.height(8.dp))
         OutlinedTextField(
@@ -236,7 +251,6 @@ fun AddUpdateTaskScreen(
             val context = LocalContext.current
             TextButton(onClick = {
                 AppUtil.setDateTimeCompose(context) { calendar, _ ->
-
                     if (task != null) {
                         AppUtil.setReminderWorkRequest(
                             activity,
@@ -246,7 +260,8 @@ fun AddUpdateTaskScreen(
                         )
 
                         task.reminder = calendar.timeInMillis
-                    } else {
+                    }
+                    else {
                         val newTask = Task(
                             id = 0,
                             title = text,
@@ -281,7 +296,8 @@ fun AddUpdateTaskScreen(
                         reminder = reminder,
                         color = TaskApp.categoryTypes.indexOfFirst {
                             it.name == mSelectedText
-                        }
+                        },
+                        subTaskList = AppUtil.getSubText(subtasks)
                     )
                     taskViewModel.update(updateTask)
                     taskViewModel.resetTaskValue()
@@ -294,7 +310,8 @@ fun AddUpdateTaskScreen(
                         reminder = reminder,
                         color = TaskApp.categoryTypes.indexOfFirst {
                             it.name == mSelectedText
-                        }
+                        },
+                        subTaskList = AppUtil.getSubText(subtasks)
                     )
                     taskViewModel.insert(newTask)
                     taskViewModel.resetTaskValue()
@@ -307,6 +324,59 @@ fun AddUpdateTaskScreen(
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(stringResource(id = R.string.save))
+            }
+        }
+        Spacer(Modifier.height(8.dp))
+        Text(text = "Subtasks", modifier = Modifier.padding(horizontal = 8.dp))
+        LazyColumn(contentPadding = PaddingValues(8.dp)) {
+            item {
+                Row(
+                    Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    TextField(
+                        value = subtaskText,
+                        onValueChange = {
+                            subtaskText = it
+                        },
+                        placeholder = {
+                            Text("Enter subtask")
+                        }
+                    )
+                    FloatingActionButton(onClick = {
+                        if (subtaskText.isNotEmpty()) {
+                            subtasks.add(subtaskText)
+                            subtaskText = ""
+                        } else {
+
+                        }
+                    }) {
+                        Icon(
+                            painter = if (subtaskText.isEmpty())
+                                painterResource(id = R.drawable.ic_edit)
+                            else
+                                painterResource(id = R.drawable.ic_done),
+                            contentDescription = "Add subtask"
+                        )
+                    }
+                }
+            }
+            items(subtasks.filter {
+                it.isNotEmpty()
+            }) {
+                Spacer(modifier = Modifier.height(8.dp))
+                SubTaskItem(
+                    subTask = SubTask(
+                        id = task?.id ?: 0, subTitle = it, isDone = false,
+                        isImportant = false, sId = 0
+                    ),
+                    color = Color(TaskApp.categoryTypes[task?.color ?: 0].color),
+                    isListViewEnable = false,
+                    onImpSwipe = {},
+                    onItemClick = {},
+                    onCompletedTask = {},
+                    onEditIconClick = {}
+                )
             }
         }
     }

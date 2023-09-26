@@ -45,6 +45,7 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 
 object AppUtil {
+    private const val FIRST = "1. "
     private const val COPY_TAG = "Copied Text"
     const val UNDERSCORE = "_"
     fun <T> unsafeLazy(initializer: () -> T): Lazy<T> {
@@ -390,6 +391,22 @@ object AppUtil {
             activity.startActivity(intent)
         }
     }
+
+    fun getSubText(list: List<String>): String? {
+        var sendtxt: String?
+        sendtxt = FIRST
+        if (list.isNotEmpty()) {
+            sendtxt += list.first()
+        }
+        for (i in 1 until list.size) {
+            sendtxt += "\n${i + 1}. " + list[i]
+        }
+        if (sendtxt == FIRST) {
+            sendtxt = null
+        }
+        return sendtxt
+    }
+
 }
 
 fun TextView.setTextDrawableColor(context: Context, colorId: Int) {

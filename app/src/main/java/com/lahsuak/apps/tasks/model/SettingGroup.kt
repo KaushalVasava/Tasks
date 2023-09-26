@@ -10,6 +10,8 @@ data class SettingItemModel(
     @DrawableRes
     val drawableRes: Int,
     val title: String,
+    val key: String,
     val subTitle: String,
     val isEnable: Boolean? = null,
+    val action: (Boolean) -> Unit
 )

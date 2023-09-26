@@ -25,13 +25,14 @@ import com.lahsuak.apps.tasks.databinding.ActivityMainBinding
 import com.lahsuak.apps.tasks.ui.navigation.TaskNavHost
 import com.lahsuak.apps.tasks.ui.theme.TaskAppTheme
 import com.lahsuak.apps.tasks.ui.viewmodel.NotificationViewModel
+import com.lahsuak.apps.tasks.ui.viewmodel.SettingViewModel
 import com.lahsuak.apps.tasks.ui.viewmodel.SubTaskViewModel
 import com.lahsuak.apps.tasks.ui.viewmodel.TaskViewModel
 import com.lahsuak.apps.tasks.util.AppConstants.SHARE_FORMAT
 import com.lahsuak.apps.tasks.util.AppConstants.SharedPreference.LANGUAGE_SHARED_PREFERENCE
 import com.lahsuak.apps.tasks.util.AppConstants.SharedPreference.LANGUAGE_SHARED_PREFERENCE_LANGUAGE_KEY
-import com.lahsuak.apps.tasks.util.AppConstants.THEME_DEFAULT
-import com.lahsuak.apps.tasks.util.AppConstants.THEME_KEY
+import com.lahsuak.apps.tasks.util.AppConstants.SharedPreference.THEME_DEFAULT
+import com.lahsuak.apps.tasks.util.AppConstants.SharedPreference.THEME_KEY
 import com.lahsuak.apps.tasks.util.AppUtil.getLanguage
 import com.lahsuak.apps.tasks.util.RuntimeLocaleChanger
 import dagger.hilt.android.AndroidEntryPoint
@@ -48,6 +49,7 @@ class MainActivity : AppCompatActivity() {
 
     private val taskViewModel: TaskViewModel by viewModels()
     private val subTaskViewModel: SubTaskViewModel by viewModels()
+    private val settingViewModel: SettingViewModel by viewModels()
     private val notificationViewModel: NotificationViewModel by viewModels()
 
     @Inject
@@ -82,34 +84,36 @@ class MainActivity : AppCompatActivity() {
                         taskViewModel,
                         subTaskViewModel,
                         notificationViewModel,
-                        navController
+                        settingViewModel,
+                        navController,
+                        fragmentManager = supportFragmentManager
                     )
                 }
             }
         }
-        setSupportActionBar(binding.toolbar)
-        val sp = PreferenceManager.getDefaultSharedPreferences(this)
-        val selectedTheme = sp.getString(THEME_KEY, THEME_DEFAULT)!!.toInt()
+//        setSupportActionBar(binding.toolbar)
+//        val sp = PreferenceManager.getDefaultSharedPreferences(this)
+//        val selectedTheme = sp.getString(THEME_KEY, THEME_DEFAULT)!!.toInt()
 
-        AppCompatDelegate.setDefaultNightMode(selectedTheme)
-
-        //shared text received from other apps
+//        AppCompatDelegate.setDefaultNightMode(selectedTheme)
+//
+//        //shared text received from other apps
         if (intent?.action == Intent.ACTION_SEND) {
             if (SHARE_FORMAT == intent.type) {
                 shareTxt = intent.getStringExtra(Intent.EXTRA_TEXT)
             }
         }
-
-        //this is for transparent status bar and navigation bar
-        WindowInsetsControllerCompat(window, window.decorView).isAppearanceLightStatusBars =
-            true
-        WindowInsetsControllerCompat(window, window.decorView).isAppearanceLightNavigationBars =
-            true
-        val navHostFragment =
-            supportFragmentManager.findFragmentById(R.id.my_container) as NavHostFragment
-        navController = navHostFragment.navController
-        addDestinationChangeListener()
-        setupActionBarWithNavController(navController)
+//
+//        //this is for transparent status bar and navigation bar
+//        WindowInsetsControllerCompat(window, window.decorView).isAppearanceLightStatusBars =
+//            true
+//        WindowInsetsControllerCompat(window, window.decorView).isAppearanceLightNavigationBars =
+//            true
+//        val navHostFragment =
+//            supportFragmentManager.findFragmentById(R.id.my_container) as NavHostFragment
+//        navController = navHostFragment.navController
+//        addDestinationChangeListener()
+//        setupActionBarWithNavController(navController)
     }
 
     private fun addDestinationChangeListener() {
@@ -133,17 +137,18 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onSupportNavigateUp(): Boolean {
-        return navController.navigateUp() || super.onSupportNavigateUp()
+//        return navController.navigateUp() ||
+            return super.onSupportNavigateUp()
     }
 
     override fun onResume() {
         super.onResume()
-        navController.addOnDestinationChangedListener(listener)
+//        navController.addOnDestinationChangedListener(listener)
     }
 
     override fun onPause() {
         super.onPause()
-        navController.removeOnDestinationChangedListener(listener)
+//        navController.removeOnDestinationChangedListener(listener)
     }
 
     override fun onDestroy() {

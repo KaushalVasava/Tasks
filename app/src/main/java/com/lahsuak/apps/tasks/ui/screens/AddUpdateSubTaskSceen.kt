@@ -51,6 +51,7 @@ fun AddUpdateSubTaskScreen(
     isNewTask: Boolean,
     navController: NavController,
     subTaskViewModel: SubTaskViewModel,
+    onDismiss: () -> Unit
 ) {
     if (!isNewTask && subTaskId != null) {
         LaunchedEffect(key1 = subTaskId) {
@@ -178,7 +179,8 @@ fun AddUpdateSubTaskScreen(
                     subTaskViewModel.insertSubTask(newTask)
                     subTaskViewModel.resetSubTaskValue()
                 }
-                navController.popBackStack()
+//                navController.popBackStack()
+                onDismiss()
             }) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_done),
@@ -205,7 +207,7 @@ fun PreviewAddUpdateSubTaskScreen() {
                 subTaskId = null,
                 isNewTask = false,
                 subTaskViewModel = subTaskViewModel
-            )
+            ){}
         }
     }
 }

@@ -108,15 +108,7 @@ fun TaskItem(
                         .fillMaxWidth()
                         .clickable { onItemClick() }
                         .clip(RoundedCornerShape(8.dp))
-                        .background(MaterialTheme.colorScheme.surfaceVariant)
-                        .drawBehind {
-                            drawLine(
-                                color = color,
-                                start = Offset(0f, 0f),
-                                end = Offset(0f, this.size.height),
-                                strokeWidth = 16.dp.toPx(),
-                            )
-                        }
+                        .background(Color(TaskApp.categoryTypes[task.color].color).copy(alpha = 0.30f))
                 ) {
                     Box {
                         if (task.isImp) {
@@ -280,6 +272,7 @@ fun TaskItem(
             delay(800)
             when (dismissState.dismissDirection) {
                 DismissDirection.EndToStart -> {
+                    Log.d("TAG", "TaskItem: deleted")
                     onEditIconClick(true)
                 }
 

@@ -20,8 +20,7 @@ import com.lahsuak.apps.tasks.util.AppConstants.SharedPreference.LANGUAGE_DEFAUL
 import com.lahsuak.apps.tasks.util.AppConstants.SharedPreference.LANGUAGE_SHARED_PREFERENCE
 import com.lahsuak.apps.tasks.util.AppConstants.SharedPreference.LANGUAGE_SHARED_PREFERENCE_KEY
 import com.lahsuak.apps.tasks.util.AppConstants.SharedPreference.LANGUAGE_SHARED_PREFERENCE_LANGUAGE_KEY
-import com.lahsuak.apps.tasks.util.AppConstants.THEME_DEFAULT
-import com.lahsuak.apps.tasks.util.AppConstants.THEME_KEY
+import com.lahsuak.apps.tasks.util.AppConstants.SharedPreference.THEME_DEFAULT
 import com.lahsuak.apps.tasks.util.AppUtil
 import com.lahsuak.apps.tasks.util.AppUtil.appRating
 import com.lahsuak.apps.tasks.util.AppUtil.getLanguage
@@ -53,7 +52,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.settings_preferences, rootKey)
         val sp = PreferenceManager.getDefaultSharedPreferences(requireContext())
-        selectedTheme = sp.getString(THEME_KEY, THEME_DEFAULT)!!.toInt()
+        selectedTheme = sp.getString(AppConstants.SharedPreference.THEME_KEY, THEME_DEFAULT)!!.toInt()
         val prefFeedback = findPreference<Preference>("feedback")
         val prefShare = findPreference<Preference>("share")
         val prefMoreApp = findPreference<Preference>("more_app")

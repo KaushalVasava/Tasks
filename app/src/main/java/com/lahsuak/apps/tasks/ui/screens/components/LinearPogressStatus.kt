@@ -1,11 +1,8 @@
 package com.lahsuak.apps.tasks.ui.screens.components
 
-import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
-import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -28,33 +25,33 @@ import androidx.compose.ui.unit.sp
 @Composable
 @Preview
 fun LinearProgressStatus(
-    completedTask: Int = 2,
-    totalTask: Int = 5,
+    modifier: Modifier = Modifier,
+    progress: Float = 0f,
     text: String? = "Task completed",
     color: Color = ProgressIndicatorDefaults.linearColor,
     trackColor: Color = ProgressIndicatorDefaults.linearTrackColor,
     width: Dp = 240.dp,
     height: Dp = 16.dp,
 ) {
-    val progress by animateFloatAsState(
-        targetValue = completedTask.toFloat() / totalTask.toFloat(),
+    val animProgress by animateFloatAsState(
+        targetValue = progress,
         label = "animate progress", animationSpec = spring(
             stiffness = Spring.StiffnessVeryLow
         )
     )
     Box(contentAlignment = Alignment.Center) {
         LinearProgressIndicator(
-            progress = progress,
+            progress = animProgress,
             color = color,
             trackColor = trackColor,
             strokeCap = StrokeCap.Round,
-            modifier = Modifier
+            modifier = modifier
                 .size(width, height)
                 .clip(RoundedCornerShape(16.dp))
         )
         if (text != null)
             Text(
-                "$completedTask / $totalTask $text",
+                text,
                 fontWeight = FontWeight.SemiBold,
                 fontSize = 14.sp
             )

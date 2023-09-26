@@ -98,63 +98,63 @@
         app:layout_constraintVertical_bias="0">
 
         <!--        <TextView-->
-        <!--            android:id="@+id/btn_category1"-->
+        <!--            android:name="@+name/btn_category1"-->
         <!--            android:layout_width="0dp"-->
         <!--            android:textColor="@color/black"-->
         <!--            android:layout_height="wrap_content"-->
         <!--            android:background="@drawable/background_category"-->
         <!--            android:gravity="center_horizontal"-->
-        <!--            app:layout_constraintEnd_toStartOf="@id/btn_category2"-->
+        <!--            app:layout_constraintEnd_toStartOf="@name/btn_category2"-->
         <!--            app:layout_constraintStart_toStartOf="parent"-->
         <!--            app:layout_constraintTop_toTopOf="parent"-->
         <!--            tools:text="1" />-->
 
         <!--        <TextView-->
-        <!--            android:id="@+id/btn_category2"-->
+        <!--            android:name="@+name/btn_category2"-->
         <!--            android:layout_width="0dp"-->
         <!--            android:textColor="@color/black"-->
         <!--            android:layout_height="wrap_content"-->
         <!--            android:background="@drawable/background_category"-->
         <!--            android:gravity="center_horizontal"-->
-        <!--            app:layout_constraintEnd_toStartOf="@id/btn_category3"-->
-        <!--            app:layout_constraintStart_toEndOf="@id/btn_category1"-->
-        <!--            app:layout_constraintTop_toTopOf="@id/btn_category1"-->
+        <!--            app:layout_constraintEnd_toStartOf="@name/btn_category3"-->
+        <!--            app:layout_constraintStart_toEndOf="@name/btn_category1"-->
+        <!--            app:layout_constraintTop_toTopOf="@name/btn_category1"-->
         <!--            tools:text="1" />-->
 
         <!--        <TextView-->
-        <!--            android:id="@+id/btn_category3"-->
+        <!--            android:name="@+name/btn_category3"-->
         <!--            android:layout_width="0dp"-->
         <!--            android:textColor="@color/black"-->
         <!--            android:layout_height="wrap_content"-->
         <!--            android:background="@drawable/background_category"-->
         <!--            android:gravity="center_horizontal"-->
-        <!--            app:layout_constraintEnd_toStartOf="@id/btn_category4"-->
-        <!--            app:layout_constraintStart_toEndOf="@id/btn_category2"-->
-        <!--            app:layout_constraintTop_toTopOf="@id/btn_category1"-->
+        <!--            app:layout_constraintEnd_toStartOf="@name/btn_category4"-->
+        <!--            app:layout_constraintStart_toEndOf="@name/btn_category2"-->
+        <!--            app:layout_constraintTop_toTopOf="@name/btn_category1"-->
         <!--            tools:text="1" />-->
 
         <!--        <TextView-->
-        <!--            android:id="@+id/btn_category4"-->
+        <!--            android:name="@+name/btn_category4"-->
         <!--            android:layout_width="0dp"-->
         <!--            android:textColor="@color/black"-->
         <!--            android:layout_height="wrap_content"-->
         <!--            android:background="@drawable/background_category"-->
         <!--            android:gravity="center_horizontal"-->
-        <!--            app:layout_constraintEnd_toStartOf="@id/btn_category5"-->
-        <!--            app:layout_constraintStart_toEndOf="@id/btn_category3"-->
-        <!--            app:layout_constraintTop_toTopOf="@id/btn_category1"-->
+        <!--            app:layout_constraintEnd_toStartOf="@name/btn_category5"-->
+        <!--            app:layout_constraintStart_toEndOf="@name/btn_category3"-->
+        <!--            app:layout_constraintTop_toTopOf="@name/btn_category1"-->
         <!--            tools:text="1" />-->
 
         <!--        <TextView-->
-        <!--            android:id="@+id/btn_category5"-->
+        <!--            android:name="@+name/btn_category5"-->
         <!--            android:layout_width="0dp"-->
         <!--            android:textColor="@color/black"-->
         <!--            android:layout_height="wrap_content"-->
         <!--            android:background="@drawable/background_category"-->
         <!--            android:gravity="center_horizontal"-->
         <!--            app:layout_constraintEnd_toEndOf="parent"-->
-        <!--            app:layout_constraintStart_toEndOf="@id/btn_category4"-->
-        <!--            app:layout_constraintTop_toTopOf="@id/btn_category1"-->
+        <!--            app:layout_constraintStart_toEndOf="@name/btn_category4"-->
+        <!--            app:layout_constraintTop_toTopOf="@name/btn_category1"-->
         <!--            tools:text="1" />-->
 
         <TextView

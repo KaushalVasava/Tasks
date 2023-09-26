@@ -1,7 +1,6 @@
 package com.lahsuak.apps.tasks.ui.screens.components
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeOut
@@ -10,19 +9,22 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.DismissDirection
 import androidx.compose.material3.DismissValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SwipeToDismiss
 import androidx.compose.material3.Text
@@ -36,26 +38,32 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.lahsuak.apps.tasks.R
+import com.lahsuak.apps.tasks.TaskApp
 import com.lahsuak.apps.tasks.data.model.SubTask
+import com.lahsuak.apps.tasks.util.AppUtil
 import com.lahsuak.apps.tasks.util.DateUtil
 import kotlinx.coroutines.delay
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun SubTaskItem(
     subTask: SubTask,
+    color: Color,
+    isListViewEnable: Boolean,
     onImpSwipe: (Boolean) -> Unit,
     onItemClick: () -> Unit,
     onCompletedTask: (Boolean) -> Unit,
     onEditIconClick: (Boolean) -> Unit,
 ) {
-//    Log.d("TAG", "SubTaskItem: ${subTask.isDone} and ${subTask.subTitle}")
-
     var isChecked by rememberSaveable {
         mutableStateOf(subTask.isDone)
     }
@@ -72,6 +80,7 @@ fun SubTaskItem(
     val isImp by rememberSaveable {
         mutableStateOf(subTask.isImportant)
     }
+    val context = LocalContext.current
     AnimatedVisibility(
         show, exit = fadeOut(spring())
     ) {
@@ -86,19 +95,20 @@ fun SubTaskItem(
                         .fillMaxWidth()
                         .clickable { onItemClick() }
                         .clip(RoundedCornerShape(8.dp))
-                        .background(MaterialTheme.colorScheme.surfaceVariant)
+                        .background(color.copy(alpha = 0.30f))
                 ) {
                     Box {
                         if (isImp) {
                             Icon(
                                 painter = painterResource(id = R.drawable.ic_pin),
-                                contentDescription = "Important",
+                                contentDescription = stringResource(id = R.string.important_task),
                                 modifier = Modifier
                                     .align(Alignment.TopStart)
                                     .padding(top = 8.dp, start = 4.dp)
                             )
                         }
-                        Row(Modifier.fillMaxWidth()) {
+                        val modifier = if (isListViewEnable) Modifier.fillMaxWidth() else Modifier
+                        Row(modifier) {
                             CircleCheckbox(
                                 checked = isChecked,
                                 onCheckedChange = {
@@ -107,8 +117,7 @@ fun SubTaskItem(
                                 },
                                 modifier = Modifier.align(Alignment.CenterVertically)
                             )
-                            Column(Modifier.padding(bottom = 8.dp)) {
-                                Spacer(Modifier.height(8.dp))
+                            Column {
                                 Row(
                                     Modifier.fillMaxWidth(),
                                     horizontalArrangement = Arrangement.SpaceBetween
@@ -117,15 +126,80 @@ fun SubTaskItem(
                                         subTask.subTitle,
                                         fontSize = 16.sp,
                                         color = MaterialTheme.colorScheme.onSurface,
+                                        textDecoration = if (isChecked)
+                                            TextDecoration.LineThrough
+                                        else
+                                            TextDecoration.None,
+                                        modifier = Modifier
+                                            .fillMaxWidth(
+                                                if (isListViewEnable) 0.8f else 0.9f
+                                            )
+                                            .padding(top = 8.dp)
                                     )
-                                    Spacer(modifier = Modifier.width(8.dp))
-                                    Column(
-                                        horizontalAlignment = Alignment.End,
-                                        modifier = Modifier.padding(horizontal = 8.dp)
+                                    IconButton(onClick = {
+                                        onEditIconClick(isChecked)
+                                    }, Modifier.widthIn(min = 48.dp)) {
+                                        Icon(
+                                            painter = if (isChecked) {
+                                                painterResource(id = R.drawable.ic_delete)
+                                            } else {
+                                                painterResource(id = R.drawable.ic_edit)
+                                            },
+                                            contentDescription = null
+                                        )
+                                    }
+                                }
+                                Spacer(modifier = Modifier.height(8.dp))
+                                FlowRow(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(end = 8.dp, bottom = 8.dp),
+                                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                                    horizontalArrangement = if (isListViewEnable || subTask.reminder == null)
+                                        Arrangement.SpaceBetween
+                                    else
+                                        Arrangement.SpaceEvenly
+                                ) {
+                                    Row(
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.End,
+                                        modifier = Modifier
+                                            .clip(
+                                                RoundedCornerShape(16.dp)
+                                            )
+                                            .background(color)
+                                            .padding(4.dp)
                                     ) {
+                                        Icon(
+                                            painterResource(id = R.drawable.ic_calendar_small),
+                                            contentDescription = null,
+                                            tint = Color.Black
+                                        )
+                                        Spacer(
+                                            Modifier
+                                                .width(4.dp)
+                                                .align(Alignment.Bottom)
+                                        )
+                                        Text(
+                                            DateUtil.getDate(subTask.dateTime!!),
+                                            fontSize = 10.sp,
+                                            color = Color.Black
+                                        )
+                                    }
+                                    Icon(
+                                        painterResource(R.drawable.ic_copy),
+                                        stringResource(id = R.string.copy_text),
+                                        modifier = Modifier
+                                            .clip(CircleShape)
+                                            .clickable {
+                                                AppUtil.setClipboard(context, subTask.subTitle)
+                                            }
+                                            .padding(4.dp)
+                                    )
+                                    if (subTask.reminder == null) {
                                         Row(
                                             verticalAlignment = Alignment.CenterVertically,
-                                            horizontalArrangement = Arrangement.End,
+                                            horizontalArrangement = Arrangement.Center,
                                             modifier = Modifier.clickable {
                                                 // set reminder
                                             }
@@ -141,46 +215,6 @@ fun SubTaskItem(
                                             )
                                             Text("Reminder", fontSize = 12.sp)
                                         }
-                                        IconButton(onClick = {
-                                            onEditIconClick(isChecked)
-                                        }) {
-                                            Icon(
-                                                painter = if (isChecked) {
-                                                    painterResource(id = R.drawable.ic_delete)
-                                                } else {
-                                                    painterResource(id = R.drawable.ic_edit)
-                                                },
-                                                contentDescription = null,
-                                            )
-                                        }
-                                    }
-                                }
-                                Row(
-                                    Modifier.fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.SpaceBetween
-                                ) {
-                                    LinearProgressIndicator(
-                                        trackColor = MaterialTheme.colorScheme.surface,
-                                        progress = 0.60f, modifier = Modifier
-                                            .clip(RoundedCornerShape(8.dp))
-                                            .height(16.dp)
-                                            .weight(1f)
-                                    )
-                                    Spacer(modifier = Modifier.width(4.dp))
-                                    Row(
-                                        verticalAlignment = Alignment.CenterVertically,
-                                        horizontalArrangement = Arrangement.End,
-                                    ) {
-                                        Icon(
-                                            painterResource(id = R.drawable.ic_calendar_small),
-                                            contentDescription = null
-                                        )
-                                        Spacer(
-                                            Modifier
-                                                .width(4.dp)
-                                                .align(Alignment.Bottom)
-                                        )
-                                        Text(DateUtil.getDate(subTask.dateTime!!), fontSize = 10.sp)
                                     }
                                 }
                             }
@@ -218,5 +252,12 @@ fun SubTaskItemPreview() {
         subTitle = "Hello sfdjkdjksdsjkdsjkdsjkdjsdkdjksd",
         sId = 1
     )
-    SubTaskItem(subTask = task, onImpSwipe = {}, onItemClick = {}, {}) {}
+    SubTaskItem(
+        subTask = task,
+        isListViewEnable = true,
+        onImpSwipe = {},
+        onItemClick = {},
+        onCompletedTask = {},
+        color = Color.White
+    ) {}
 }
