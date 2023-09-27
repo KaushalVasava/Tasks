@@ -17,19 +17,19 @@ import com.lahsuak.apps.tasks.ui.screens.SettingScreen
 import com.lahsuak.apps.tasks.ui.screens.SubTaskScreen
 import com.lahsuak.apps.tasks.ui.screens.TaskScreen
 import com.lahsuak.apps.tasks.ui.viewmodel.NotificationViewModel
-import com.lahsuak.apps.tasks.ui.viewmodel.SettingViewModel
 import com.lahsuak.apps.tasks.ui.viewmodel.SubTaskViewModel
 import com.lahsuak.apps.tasks.ui.viewmodel.TaskViewModel
+import com.lahsuak.apps.tasks.util.WindowSize
 
 @Composable
 fun TaskNavHost(
     taskViewModel: TaskViewModel,
     subTaskViewModel: SubTaskViewModel,
     notificationViewModel: NotificationViewModel,
-    settingViewModel: SettingViewModel,
     navController: NavHostController,
     modifier: Modifier = Modifier,
     fragmentManager: FragmentManager,
+    windowSize: WindowSize
 ) {
     NavHost(
         modifier = modifier,
@@ -39,7 +39,8 @@ fun TaskNavHost(
         composable(NavigationItem.Task.route) {
             TaskScreen(
                 navController,
-                taskViewModel
+                taskViewModel,
+                windowSize
             )
         }
         composable("${NavigationItem.SubTask.route}/{taskId}",
@@ -55,12 +56,13 @@ fun TaskNavHost(
                     taskId,
                     navController,
                     subTaskViewModel,
-                    taskViewModel
+                    taskViewModel,
+                    fragmentManager
                 )
             }
         }
         composable(NavigationItem.Setting.route) {
-            SettingScreen(navController, settingViewModel, fragmentManager)
+            SettingScreen(navController, fragmentManager)
         }
         composable(NavigationItem.Overview.route) {
             OverviewScreen(navController, taskViewModel)
@@ -82,41 +84,15 @@ fun TaskNavHost(
                 navController,
                 taskViewModel,
                 isNewTask,
-                taskId
+                taskId,
+                fragmentManager
             )
         }
-//        composable("${NavigationItem.AddUpdateSubTask.route}?subTaskId={subTaskId}/{taskId}/{isNewTask}",
-//            arguments = listOf(
-//                navArgument("subTaskId") {
-//                    type = NavType.StringType
-//                    nullable = true
-//                    defaultValue = null
-//                },
-//                navArgument("taskId") {
-//                    type = NavType.StringType
-//                },
-//                navArgument("isNewTask") {
-//                    type = NavType.BoolType
-//                }
-//            )
-//        ) { navBackStackEntry ->
-//            val subTaskId = navBackStackEntry.arguments?.getString("subTaskId")
-//            val taskId = navBackStackEntry.arguments?.getString("taskId")
-//            val isNewTask = navBackStackEntry.arguments?.getBoolean("isNewTask") ?: true
-//            AddUpdateSubTaskScreen(
-//                taskId!!.toInt(),
-//                subTaskId,
-//                isNewTask,
-//                navController,
-//                subTaskViewModel
-//            ){
-//            }
-//        }
         composable(NavigationItem.Notification.route) {
             val notifications by notificationViewModel.notifications.collectAsState(
                 initial = emptyList()
             )
-            NotificationScreen(notifications)
+            NotificationScreen(notifications, navController)
         }
     }
 }

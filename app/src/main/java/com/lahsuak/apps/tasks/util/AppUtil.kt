@@ -22,6 +22,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.core.content.ContextCompat
 import androidx.core.widget.TextViewCompat
 import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.FragmentManager
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
@@ -159,7 +160,7 @@ object AppUtil {
 
     fun setDateTime(
         activity: FragmentActivity,
-        doWork: (calendar: Calendar, time: String) -> Unit
+        doWork: (calendar: Calendar, time: String) -> Unit,
     ) {
         val mCalendar = Calendar.getInstance()
         val formatter = SimpleDateFormat(AppConstants.TIME_FORMAT, Locale.getDefault())
@@ -214,9 +215,9 @@ object AppUtil {
 
     fun setDateTimeCompose(
         context: Context,
-        doWork: (calendar: Calendar, time: String) -> Unit
+        supportFragmentManager: FragmentManager,
+        doWork: (calendar: Calendar, time: String) -> Unit,
     ) {
-        val activity = MainActivity()
         val mCalendar = Calendar.getInstance()
         val formatter = SimpleDateFormat(AppConstants.TIME_FORMAT, Locale.getDefault())
         var hour = formatter.format(mCalendar.time).substring(0, 2).trim().toInt()
@@ -239,7 +240,7 @@ object AppUtil {
                 mCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
 
                 materialTimePicker.show(
-                    activity.supportFragmentManager,
+                    supportFragmentManager,
                     context.getString(R.string.set_time)
                 )
                 // dialog update the TextView accordingly
@@ -259,7 +260,7 @@ object AppUtil {
                 }
             }
         val datePickerDialog = DatePickerDialog(
-            activity,
+            context,
             dateListener,
             mCalendar.get(Calendar.YEAR),
             mCalendar.get(Calendar.MONTH),
@@ -267,6 +268,7 @@ object AppUtil {
         )
         datePickerDialog.show()
     }
+
     fun createWorkRequest(
         context: Context,
         id: Int,
@@ -275,7 +277,7 @@ object AppUtil {
         isDone: Boolean,
         startDate: Long,
         endDate: Long?,
-        timeDelayInSeconds: Long
+        timeDelayInSeconds: Long,
     ) {
         val myWorkRequest = OneTimeWorkRequestBuilder<ReminderWorker>()
             .setInitialDelay(timeDelayInSeconds, TimeUnit.SECONDS)
@@ -317,7 +319,7 @@ object AppUtil {
         context: Context,
         title: String,
         data: M,
-        calendar: Calendar
+        calendar: Calendar,
     ) {
         val todayDateTime = Calendar.getInstance()
         val delayInSeconds =
@@ -351,6 +353,23 @@ object AppUtil {
 
             else -> {
                 throw IllegalArgumentException()
+            }
+        }
+    }
+
+    @SuppressLint("QueryPermissionsNeeded")
+    fun speakToAddTaskCompose(context: Context, speakLauncher: ActivityResultLauncher<Intent>) {
+        val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
+        intent.putExtra(
+            RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+            RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
+        )
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
+        if (intent.resolveActivity(context.packageManager) != null) {
+            speakLauncher.launch(intent)
+        } else {
+            context.toast {
+                context.getString(R.string.speech_not_support)
             }
         }
     }

@@ -39,6 +39,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
@@ -79,13 +80,19 @@ fun OverviewScreen(navController: NavController, taskViewModel: TaskViewModel) {
         Modifier
             .fillMaxSize()
     ) {
-        TopAppBar(title = { Text("Overview") }, navigationIcon = {
-            IconButton(onClick = {
-                navController.popBackStack()
-            }) {
-                Icon(Icons.Default.ArrowBack, "back")
+        TopAppBar(
+            title = { Text(stringResource(id = R.string.overview)) },
+            navigationIcon = {
+                IconButton(onClick = {
+                    navController.popBackStack()
+                }) {
+                    Icon(
+                        painterResource(id = R.drawable.ic_back),
+                        stringResource(id = R.string.back)
+                    )
+                }
             }
-        })
+        )
         Row(
             Modifier
                 .fillMaxWidth()
@@ -151,10 +158,12 @@ fun OverviewScreen(navController: NavController, taskViewModel: TaskViewModel) {
 
 @Composable
 fun TaskOverviewItem(task: Task) {
-    Card(modifier = Modifier.padding(4.dp),
+    Card(
+        modifier = Modifier.padding(4.dp),
         colors = CardDefaults.cardColors(
-        containerColor = Color(TaskApp.categoryTypes[task.color].color).copy(alpha = 0.6f)
-    )) {
+            containerColor = Color(TaskApp.categoryTypes[task.color].color).copy(alpha = 0.6f)
+        )
+    ) {
         Column(
             Modifier
                 .fillMaxWidth()

@@ -8,8 +8,8 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.*
 import com.lahsuak.apps.tasks.R
-import com.lahsuak.apps.tasks.data.PreferenceManager
-import com.lahsuak.apps.tasks.data.SortOrder
+import com.lahsuak.apps.tasks.util.preference.PreferenceManager
+import com.lahsuak.apps.tasks.data.model.SortOrder
 import com.lahsuak.apps.tasks.data.model.SubTask
 import com.lahsuak.apps.tasks.data.model.Task
 import com.lahsuak.apps.tasks.data.repository.TaskRepository
@@ -113,6 +113,9 @@ class SubTaskViewModel @Inject constructor(
 
     fun deleteAllSubTasks(id: Int) = viewModelScope.launch(Dispatchers.IO) {
         repository.deleteAllSubTasks(id)
+    }
+    fun deleteAllCompletedSubTasks(id: Int) = viewModelScope.launch(Dispatchers.IO) {
+        repository.deleteAllCompletedSubTask(id)
     }
 
     fun getBySubTaskId(id: Int){

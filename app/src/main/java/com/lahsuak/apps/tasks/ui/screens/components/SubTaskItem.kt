@@ -155,10 +155,8 @@ fun SubTaskItem(
                                         .fillMaxWidth()
                                         .padding(end = 8.dp, bottom = 8.dp),
                                     verticalArrangement = Arrangement.spacedBy(8.dp),
-                                    horizontalArrangement = if (isListViewEnable || subTask.reminder == null)
+                                    horizontalArrangement =
                                         Arrangement.SpaceBetween
-                                    else
-                                        Arrangement.SpaceEvenly
                                 ) {
                                     Row(
                                         verticalAlignment = Alignment.CenterVertically,
@@ -196,13 +194,14 @@ fun SubTaskItem(
                                             }
                                             .padding(4.dp)
                                     )
-                                    if (subTask.reminder == null) {
+                                    if (subTask.reminder != null) {
                                         Row(
                                             verticalAlignment = Alignment.CenterVertically,
                                             horizontalArrangement = Arrangement.Center,
-                                            modifier = Modifier.clickable {
-                                                // set reminder
-                                            }
+                                            modifier = Modifier
+                                                .clip(RoundedCornerShape(16.dp))
+                                                .background(color)
+                                                .padding(4.dp)
                                         ) {
                                             Icon(
                                                 painterResource(id = R.drawable.ic_reminder_small),
@@ -213,7 +212,10 @@ fun SubTaskItem(
                                                     .width(4.dp)
                                                     .align(Alignment.Bottom)
                                             )
-                                            Text("Reminder", fontSize = 12.sp)
+                                            Text(
+                                                DateUtil.getDate(subTask.reminder!!),
+                                                fontSize = 10.sp
+                                            )
                                         }
                                     }
                                 }

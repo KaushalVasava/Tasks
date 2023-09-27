@@ -1,22 +1,19 @@
 package com.lahsuak.apps.tasks.ui.screens
 
-import android.content.res.Configuration.UI_MODE_NIGHT_NO
-import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -24,35 +21,46 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
+import androidx.fragment.app.FragmentManager
 import com.lahsuak.apps.tasks.R
 import com.lahsuak.apps.tasks.data.model.SubTask
-import com.lahsuak.apps.tasks.ui.MainActivity
-import com.lahsuak.apps.tasks.ui.theme.TaskAppTheme
+import com.lahsuak.apps.tasks.ui.screens.components.RoundedOutlinedTextField
 import com.lahsuak.apps.tasks.ui.viewmodel.SubTaskViewModel
 import com.lahsuak.apps.tasks.util.AppUtil
 import com.lahsuak.apps.tasks.util.DateUtil
+import com.lahsuak.apps.tasks.util.toast
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun AddUpdateSubTaskScreen(
     taskId: Int,
     subTaskId: String?,
     isNewTask: Boolean,
-    navController: NavController,
     subTaskViewModel: SubTaskViewModel,
-    onDismiss: () -> Unit
+    fragmentManager: FragmentManager,
+    onDismiss: () -> Unit,
 ) {
+    val keyboard = LocalSoftwareKeyboardController.current
+    val focusRequester = remember { FocusRequester() }
+
+    LaunchedEffect(Unit) {
+        focusRequester.requestFocus()
+        keyboard?.show()
+    }
     if (!isNewTask && subTaskId != null) {
         LaunchedEffect(key1 = subTaskId) {
             subTaskViewModel.getBySubTaskId(subTaskId.toInt())
@@ -64,8 +72,9 @@ fun AddUpdateSubTaskScreen(
         val st by subTaskViewModel.subTaskFlow.collectAsState()
         st
     }
-    val activity = LocalContext.current
-    var text by rememberSaveable {
+
+    val context = LocalContext.current
+    var title by rememberSaveable {
         mutableStateOf(
             subTask?.subTitle ?: ""
         )
@@ -82,16 +91,25 @@ fun AddUpdateSubTaskScreen(
     Column(
         Modifier
             .fillMaxWidth()
-            .padding(vertical = 8.dp)) {
-        OutlinedTextField(
-            value = text,
+            .padding(vertical = 8.dp)
+    ) {
+        RoundedOutlinedTextField(
+            value = title,
             onValueChange = {
-                text = it
+                title = it
             }, placeholder = {
-                Text("Enter title")
+                Text(stringResource(R.string.enter_title))
             },
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+            keyboardActions = KeyboardActions(
+                onDone = {
+                    keyboard?.hide()
+                    focusRequester.freeFocus()
+                }
+            ),
             modifier = Modifier
                 .fillMaxWidth()
+                .focusRequester(focusRequester)
                 .padding(horizontal = 8.dp)
                 .background(MaterialTheme.colorScheme.surfaceVariant),
             trailingIcon = {
@@ -109,105 +127,84 @@ fun AddUpdateSubTaskScreen(
                 Text(stringResource(id = R.string.copy_text))
             }
         }
-        Spacer(modifier = Modifier.height(8.dp))
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(8.dp)
+                .padding(horizontal = 8.dp)
         ) {
-            val mainActivity = MainActivity()
             TextButton(onClick = {
-                AppUtil.setDateTime(mainActivity) { calendar, time ->
+                AppUtil.setDateTimeCompose(context, fragmentManager) { calendar, _ ->
                     if (subTask != null) {
                         AppUtil.setReminderWorkRequest(
-                            activity,
+                            context,
                             subTask.subTitle,
                             subTask,
                             calendar
                         )
                         subTask.reminder = calendar.timeInMillis
                     } else {
-                        val newSubTask = SubTask(
+                        val newTask = SubTask(
                             id = taskId,
                             sId = 0,
-                            subTitle = text,
+                            subTitle = title,
                             isImportant = isImp,
                             reminder = reminder
                         )
                         AppUtil.setReminderWorkRequest(
-                            activity,
-                            newSubTask.subTitle,
-                            newSubTask,
+                            context,
+                            newTask.subTitle,
+                            newTask,
                             calendar
                         )
-                        newSubTask.reminder = calendar.timeInMillis
+                        newTask.reminder = calendar.timeInMillis
                     }
                     reminder = calendar.timeInMillis
                 }
+
             }) {
-                Icon(
-                    painterResource(id = R.drawable.ic_reminder_small),
-                    contentDescription = null
-                )
-                Spacer(modifier = Modifier.width(8.dp))
+                Icon(painterResource(R.drawable.ic_reminder_small), null)
+                Spacer(Modifier.width(8.dp))
                 Text(
                     reminder?.let {
                         DateUtil.getDate(it)
-                    } ?: "Add date/time"
+                    } ?: stringResource(R.string.add_date_time)
                 )
             }
             Button(onClick = {
-                if (subTask != null) {
-                    val newTask = subTask.copy(
-                        subTitle = text,
-                        isImportant = isImp,
-                        dateTime = System.currentTimeMillis(),
-                        reminder = reminder
-                    )
-                    subTaskViewModel.updateSubTask(newTask)
-                    subTaskViewModel.resetSubTaskValue()
+                if (title.isNotEmpty()) {
+                    if (subTask != null) {
+                        val newTask = subTask.copy(
+                            subTitle = title,
+                            isImportant = isImp,
+                            dateTime = System.currentTimeMillis(),
+                            reminder = reminder
+                        )
+                        subTaskViewModel.updateSubTask(newTask)
+                        subTaskViewModel.resetSubTaskValue()
+                    } else {
+                        val newTask = SubTask(
+                            id = taskId,
+                            subTitle = title,
+                            isImportant = isImp,
+                            sId = 0,
+                            dateTime = System.currentTimeMillis(),
+                            reminder = reminder
+                        )
+                        subTaskViewModel.insertSubTask(newTask)
+                        subTaskViewModel.resetSubTaskValue()
+                    }
+                    onDismiss()
                 } else {
-                    val newTask = SubTask(
-                        id = taskId,
-                        subTitle = text,
-                        isImportant = isImp,
-                        sId = 0,
-                        dateTime = System.currentTimeMillis(),
-                        reminder = reminder
-                    )
-                    subTaskViewModel.insertSubTask(newTask)
-                    subTaskViewModel.resetSubTaskValue()
+                    context.toast {
+                        context.getString(R.string.empty_task)
+                    }
                 }
-//                navController.popBackStack()
-                onDismiss()
             }) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_done),
-                    contentDescription = null
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(stringResource(id = R.string.save))
+                Icon(painterResource(R.drawable.ic_done), null)
+                Spacer(Modifier.width(8.dp))
+                Text(stringResource(R.string.save))
             }
-        }
-    }
-}
-
-@Preview(uiMode = UI_MODE_NIGHT_NO)
-@Preview(uiMode = UI_MODE_NIGHT_YES)
-@Composable
-fun PreviewAddUpdateSubTaskScreen() {
-    val subTaskViewModel: SubTaskViewModel = viewModel()
-
-    TaskAppTheme {
-        Surface(Modifier.background(MaterialTheme.colorScheme.background)) {
-            AddUpdateSubTaskScreen(
-                navController = rememberNavController(),
-                taskId = 0,
-                subTaskId = null,
-                isNewTask = false,
-                subTaskViewModel = subTaskViewModel
-            ){}
         }
     }
 }

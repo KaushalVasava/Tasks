@@ -9,8 +9,8 @@ import androidx.lifecycle.asFlow
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.lahsuak.apps.tasks.R
-import com.lahsuak.apps.tasks.data.PreferenceManager
-import com.lahsuak.apps.tasks.data.SortOrder
+import com.lahsuak.apps.tasks.util.preference.PreferenceManager
+import com.lahsuak.apps.tasks.data.model.SortOrder
 import com.lahsuak.apps.tasks.data.model.Task
 import com.lahsuak.apps.tasks.data.repository.TaskRepository
 import com.lahsuak.apps.tasks.model.TaskEvent
@@ -117,8 +117,11 @@ class TaskViewModel @Inject constructor(
         _taskFlow.value = null
     }
 
-    suspend fun deleteAllTasks() = viewModelScope.launch(Dispatchers.IO) {
+    fun deleteAllTasks() = viewModelScope.launch(Dispatchers.IO) {
         repository.deleteAllTasks()
+    }
+    fun deleteCompletedTask() = viewModelScope.launch(Dispatchers.IO) {
+        repository.deleteAllCompletedTask()
     }
 
     fun showDeleteDialog(

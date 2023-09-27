@@ -26,6 +26,7 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.DismissDirection
 import androidx.compose.material3.DismissState
 import androidx.compose.material3.DismissValue
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -42,9 +43,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
@@ -56,9 +55,15 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.preference.PreferenceManager
 import com.lahsuak.apps.tasks.R
 import com.lahsuak.apps.tasks.TaskApp
 import com.lahsuak.apps.tasks.data.model.Task
+import com.lahsuak.apps.tasks.util.AppConstants.SharedPreference.FONT_SIZE_KEY
+import com.lahsuak.apps.tasks.util.AppConstants.SharedPreference.INITIAL_FONT_SIZE
+import com.lahsuak.apps.tasks.util.AppConstants.SharedPreference.SHOW_REMINDER_KEY
+import com.lahsuak.apps.tasks.util.AppConstants.SharedPreference.SHOW_SUBTASK_KEY
+import com.lahsuak.apps.tasks.util.AppConstants.SharedPreference.TASK_PROGRESS_KEY
 import com.lahsuak.apps.tasks.util.AppUtil
 import com.lahsuak.apps.tasks.util.DateUtil
 import kotlinx.coroutines.delay
@@ -77,6 +82,15 @@ fun TaskItem(
         LocalConfiguration.current.screenHeightDp < LocalConfiguration.current.screenWidthDp
     val color = Color(TaskApp.categoryTypes[task.color].color)
     val context = LocalContext.current
+
+    val prefManager = PreferenceManager.getDefaultSharedPreferences(context)
+    val showProgress = prefManager.getBoolean(TASK_PROGRESS_KEY, false)
+    val showReminder = prefManager.getBoolean(SHOW_REMINDER_KEY, true)
+    val showSubTask = prefManager.getBoolean(SHOW_SUBTASK_KEY, true)
+    val prefMgr = PreferenceManager.getDefaultSharedPreferences(context)
+    val titleSize =
+        prefMgr.getString(FONT_SIZE_KEY, INITIAL_FONT_SIZE)!!.toFloat()
+
     var isExpanded by rememberSaveable {
         mutableStateOf(true)
     }
@@ -138,7 +152,7 @@ fun TaskItem(
                                 ) {
                                     Text(
                                         task.title,
-                                        fontSize = 16.sp,
+                                        fontSize = titleSize.sp,
                                         color = MaterialTheme.colorScheme.onSurface,
                                         textDecoration = if (isChecked)
                                             TextDecoration.LineThrough
@@ -171,10 +185,10 @@ fun TaskItem(
                                         }
                                     }
                                 }
-                                task.subTaskList?.let {
+                                if (showSubTask && task.subTaskList != null) {
                                     AnimatedVisibility(visible = isExpanded) {
                                         Text(
-                                            it, fontSize = 12.sp,
+                                            task.subTaskList!!, fontSize = 12.sp,
                                             fontWeight = FontWeight.Light,
                                             color = MaterialTheme.colorScheme.onSurface,
                                             maxLines = if (isExpanded)
@@ -183,25 +197,23 @@ fun TaskItem(
                                             overflow = TextOverflow.Ellipsis
                                         )
                                     }
+                                    Spacer(modifier = Modifier.height(4.dp))
+                                    Divider(color = MaterialTheme.colorScheme.onSurface)
                                 }
-                                Spacer(modifier = Modifier.height(8.dp))
+                                Spacer(modifier = Modifier.height(4.dp))
                                 FlowRow(
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .padding(end = 8.dp, bottom = 8.dp),
+                                    maxItemsInEachRow = if(isLandScape) 4 else 3,
                                     verticalArrangement = Arrangement.spacedBy(8.dp),
-                                    horizontalArrangement = if (isListViewEnable || task.reminder == null)
-                                        Arrangement.SpaceBetween
-                                    else
-                                        Arrangement.SpaceEvenly
+                                    horizontalArrangement = Arrangement.SpaceBetween
                                 ) {
                                     Row(
                                         verticalAlignment = Alignment.CenterVertically,
                                         horizontalArrangement = Arrangement.End,
                                         modifier = Modifier
-                                            .clip(
-                                                RoundedCornerShape(16.dp)
-                                            )
+                                            .clip(RoundedCornerShape(16.dp))
                                             .background(color)
                                             .padding(4.dp)
                                     ) {
@@ -221,7 +233,7 @@ fun TaskItem(
                                             color = Color.Black
                                         )
                                     }
-                                    AnimatedVisibility(task.progress != -1f) {
+                                    AnimatedVisibility(showProgress && task.progress != -1f) {
                                         CircularProgressStatus(
                                             progress = task.progress,
                                             color = color,
@@ -239,24 +251,32 @@ fun TaskItem(
                                             }
                                             .padding(4.dp)
                                     )
-                                    if (task.reminder == null) {
+                                    AnimatedVisibility(showReminder && task.reminder != null) {
                                         Row(
                                             verticalAlignment = Alignment.CenterVertically,
                                             horizontalArrangement = Arrangement.Center,
-                                            modifier = Modifier.clickable {
-                                                // set reminder
-                                            }
+                                            modifier = Modifier
+                                                .clip(
+                                                    RoundedCornerShape(16.dp)
+                                                )
+                                                .background(color)
+                                                .padding(4.dp)
                                         ) {
                                             Icon(
                                                 painterResource(id = R.drawable.ic_reminder_small),
-                                                contentDescription = null
+                                                contentDescription = null,
+                                                tint = Color.Black
                                             )
                                             Spacer(
                                                 Modifier
                                                     .width(4.dp)
                                                     .align(Alignment.Bottom)
                                             )
-                                            Text("Reminder", fontSize = 12.sp)
+                                            Text(
+                                                DateUtil.getDate(task.reminder!!),
+                                                color = Color.Black,
+                                                fontSize = 10.sp
+                                            )
                                         }
                                     }
                                 }
@@ -272,7 +292,6 @@ fun TaskItem(
             delay(800)
             when (dismissState.dismissDirection) {
                 DismissDirection.EndToStart -> {
-                    Log.d("TAG", "TaskItem: deleted")
                     onEditIconClick(true)
                 }
 

@@ -146,4 +146,6 @@
     <string name="show_voice_to_add_task_option">Show voice to add task option</string>
     <string name="task_not_completed_yet">The task has not been completed yet</string>
     <string name="general">General</string>
+    <string name="category_txt">Category</string>
+    <string name="paste">Paste</string>
 </resources>

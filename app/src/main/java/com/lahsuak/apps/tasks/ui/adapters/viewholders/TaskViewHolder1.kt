@@ -192,7 +192,7 @@ class TaskViewHolder1(
 
     fun bind(task: Task) {
         binding.composeView.setContent {
-            TaskItem(task = task,isListViewEnable = false, onImpSwipe = {}, onItemClick = {
+            TaskItem(task = task, isListViewEnable = false, onImpSwipe = {}, onItemClick = {
                 val position = adapterPosition
                 if (position != RecyclerView.NO_POSITION) {
                     itemView.transitionName = task.title

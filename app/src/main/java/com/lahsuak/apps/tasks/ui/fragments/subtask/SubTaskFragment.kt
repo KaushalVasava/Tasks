@@ -39,7 +39,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.MaterialContainerTransform
 import com.lahsuak.apps.tasks.R
 import com.lahsuak.apps.tasks.TaskApp
-import com.lahsuak.apps.tasks.data.SortOrder
+import com.lahsuak.apps.tasks.data.model.SortOrder
 import com.lahsuak.apps.tasks.data.model.SubTask
 import com.lahsuak.apps.tasks.data.model.Task
 import com.lahsuak.apps.tasks.databinding.FragmentSubtaskBinding
@@ -516,6 +516,8 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
                         )
                     navController.navigate(action)
                 }
+
+                else -> {}
             }
         }
     }

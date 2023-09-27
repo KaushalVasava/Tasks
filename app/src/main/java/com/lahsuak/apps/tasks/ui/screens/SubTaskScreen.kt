@@ -1,5 +1,11 @@
 package com.lahsuak.apps.tasks.ui.screens
 
+import android.app.Activity
+import android.speech.RecognizerIntent
+import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -21,9 +27,9 @@ import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridItemSpan
 import androidx.compose.foundation.lazy.staggeredgrid.items
+import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.KeyboardArrowDown
@@ -31,6 +37,7 @@ import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -43,11 +50,15 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SearchBar
-import androidx.compose.material3.Surface
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -59,6 +70,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
@@ -67,26 +79,34 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.fragment.app.FragmentManager
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
+import androidx.preference.PreferenceManager
 import com.lahsuak.apps.tasks.R
 import com.lahsuak.apps.tasks.TaskApp
-import com.lahsuak.apps.tasks.data.FilterPreferences
-import com.lahsuak.apps.tasks.data.SortOrder
+import com.lahsuak.apps.tasks.data.model.SortOrder
+import com.lahsuak.apps.tasks.data.model.SubTask
+import com.lahsuak.apps.tasks.data.model.Task
+import com.lahsuak.apps.tasks.model.SubTaskEvent
 import com.lahsuak.apps.tasks.ui.navigation.NavigationItem
 import com.lahsuak.apps.tasks.ui.screens.components.ChipGroup
 import com.lahsuak.apps.tasks.ui.screens.components.LinearProgressStatus
+import com.lahsuak.apps.tasks.ui.screens.components.RoundedOutlinedTextField
 import com.lahsuak.apps.tasks.ui.screens.components.SubTaskItem
 import com.lahsuak.apps.tasks.ui.viewmodel.SubTaskViewModel
 import com.lahsuak.apps.tasks.ui.viewmodel.TaskViewModel
+import com.lahsuak.apps.tasks.util.AppConstants
 import com.lahsuak.apps.tasks.util.AppUtil
+import com.lahsuak.apps.tasks.util.DateUtil
+import com.lahsuak.apps.tasks.util.preference.FilterPreferences
 import com.lahsuak.apps.tasks.util.toSortForm
 import kotlin.random.Random
 
@@ -97,10 +117,18 @@ fun SubTaskScreen(
     navController: NavController,
     subTaskViewModel: SubTaskViewModel,
     taskViewModel: TaskViewModel,
+    fragmentManager: FragmentManager,
 ) {
+    val prefManager = PreferenceManager.getDefaultSharedPreferences(LocalContext.current)
+    val showVoiceTask =
+        prefManager.getBoolean(AppConstants.SharedPreference.SHOW_VOICE_TASK_KEY, true)
+
+
     val taskState by taskViewModel.taskFlow.collectAsState()
+    val subTaskEvents by subTaskViewModel.subTasksEvent.collectAsState(SubTaskEvent.Initial)
+
     if (taskState != null) {
-        val task = taskState!!
+        var task = taskState!!
         subTaskViewModel.taskId.value = taskId
         val subTasks by subTaskViewModel.subTasks.collectAsState(initial = emptyList())
         val preference by subTaskViewModel.preferencesFlow.collectAsState(
@@ -117,8 +145,10 @@ fun SubTaskScreen(
         var searchQuery by rememberSaveable {
             mutableStateOf("")
         }
+        val active = stringResource(id = R.string.active)
+        val done = stringResource(id = R.string.done)
         val status = remember {
-            mutableStateListOf("Active", "Done")
+            mutableStateListOf(active, done)
         }
         var isSubTaskDone by rememberSaveable {
             mutableStateOf(false)
@@ -130,6 +160,32 @@ fun SubTaskScreen(
         var isBottomSheetOpened by rememberSaveable {
             mutableStateOf(false)
         }
+
+        val speakLauncher = rememberLauncherForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) { result: ActivityResult ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val data = result.data
+                val result1 = data!!.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
+                val subTask = SubTask(
+                    id = taskId,
+                    sId = 0,
+                    subTitle = result1!![0]
+                )
+                subTaskViewModel.insertSubTask(subTask)
+            }
+        }
+
+        var startDate by rememberSaveable {
+            mutableStateOf(task.startDate?.let { DateUtil.getDate(it) } ?: "")
+        }
+        var endDate by rememberSaveable {
+            mutableStateOf(task.endDate?.let { DateUtil.getDate(it) } ?: "")
+        }
+        var reminder by rememberSaveable {
+            mutableStateOf(task.reminder)
+        }
+
         if (isBottomSheetOpened) {
             ModalBottomSheet(
                 sheetState = bottomSheet,
@@ -141,11 +197,117 @@ fun SubTaskScreen(
                     taskId = taskId,
                     subTaskId = subTaskId?.toString(),
                     isNewTask = isSubTaskDone,
-                    navController = navController,
                     subTaskViewModel = subTaskViewModel,
+                    fragmentManager = fragmentManager
                 ) {
                     isBottomSheetOpened = false
                 }
+            }
+        }
+
+        val sorts = listOf(
+            stringResource(R.string.name),
+            stringResource(R.string.date),
+            stringResource(R.string.name_desc),
+            stringResource(R.string.date_desc)
+        )
+        val sortTypes by remember {
+            mutableStateOf(sorts)
+        }
+        var selectedSortIndex by rememberSaveable {
+            mutableIntStateOf(
+                sorts.indexOfFirst {
+                    it.contains(preference.sortOrder.name.toSortForm())
+                }
+            )
+        }
+
+        var isSnackBarShow by rememberSaveable {
+            mutableStateOf(false)
+        }
+        var openDialog by remember { mutableStateOf(false) }
+        val undoMsg = stringResource(R.string.undo)
+        val snackBarMsg = stringResource(R.string.task_deleted)
+        val snackBarHostState = remember {
+            SnackbarHostState()
+        }
+        // below line is to check if the
+        // dialog box is open or not.
+        if (isSnackBarShow) {
+            when (val event = subTaskEvents) {
+                is SubTaskEvent.ShowUndoDeleteTaskMessage -> {
+                    LaunchedEffect(Unit) {
+                        val snackBarResult = snackBarHostState.showSnackbar(
+                            message = snackBarMsg,
+                            actionLabel = undoMsg,
+                            duration = SnackbarDuration.Short
+                        )
+                        when (snackBarResult) {
+                            SnackbarResult.Dismissed -> {
+                                Log.d("TAG", "TaskScreen: dismissed")
+                            }
+
+                            SnackbarResult.ActionPerformed -> {
+                                subTaskViewModel.onUndoDeleteClick(event.subTask)
+                            }
+                        }
+                        isSnackBarShow = false
+                    }
+                }
+
+                SubTaskEvent.NavigateToAllCompletedScreen -> {
+                    if (openDialog) {
+                        // below line is use to
+                        // display a alert dialog.
+                        AlertDialog(
+                            // on dialog dismiss we are setting
+                            // our dialog value to false.
+                            onDismissRequest = { openDialog = false },
+
+                            // below line is use to display title of our dialog
+                            // box and we are setting text color to white.
+                            title = { Text(text = stringResource(id = R.string.confirm_deletion)) },
+
+                            // below line is use to display
+                            // description to our alert dialog.
+                            text = { Text(stringResource(id = R.string.delete_completed_task)) },
+
+                            // in below line we are displaying
+                            // our confirm button.
+                            confirmButton = {
+                                // below line we are adding on click
+                                // listener for our confirm button.
+                                TextButton(
+                                    onClick = {
+                                        openDialog = false
+                                        subTaskViewModel.deleteAllCompletedSubTasks(task.id)
+                                    }
+                                ) {
+                                    // in this line we are adding
+                                    // text for our confirm button.
+                                    Text(stringResource(id = R.string.delete))
+                                }
+                            },
+                            // in below line we are displaying
+                            // our dismiss button.
+                            dismissButton = {
+                                // in below line we are displaying
+                                // our text button
+                                TextButton(
+                                    // adding on click listener for this button
+                                    onClick = {
+                                        openDialog = false
+                                    }
+                                ) {
+                                    // adding text to our button.
+                                    Text(stringResource(id = R.string.cancel))
+                                }
+                            },
+                        )
+                    }
+                }
+
+                SubTaskEvent.Initial -> {}
             }
         }
         Scaffold(
@@ -172,8 +334,8 @@ fun SubTaskScreen(
                             navController.popBackStack()
                         }) {
                             Icon(
-                                painter = painterResource(id = R.drawable.ic_back),
-                                contentDescription = "back"
+                                painterResource(id = R.drawable.ic_back),
+                                stringResource(id = R.string.back)
                             )
                         }
                     },
@@ -211,9 +373,9 @@ fun SubTaskScreen(
                     else
                         Arrangement.SpaceBetween,
                 ) {
-                    AnimatedVisibility(visible = !isSubTaskDone) {
+                    AnimatedVisibility(visible = showVoiceTask && !isSubTaskDone) {
                         FloatingActionButton(onClick = {
-                            navController.navigate(NavigationItem.AddUpdateTask.route)
+                            AppUtil.speakToAddTaskCompose(context, speakLauncher)
                         }) {
                             Icon(
                                 painterResource(R.drawable.ic_mic),
@@ -224,6 +386,7 @@ fun SubTaskScreen(
                     AnimatedVisibility(visible = isSubTaskDone) {
                         FloatingActionButton(onClick = {
                             subTaskViewModel.onDeleteAllCompletedClick()
+                            openDialog = true
                         }) {
                             Icon(
                                 Icons.Default.Delete,
@@ -253,6 +416,59 @@ fun SubTaskScreen(
                 ) {
                     item {
                         SubtaskHeaderContent(
+                            startDate,
+                            onStartDateChange = {
+                                startDate = it
+                            },
+                            endDate,
+                            onEndDateChange = {
+                                endDate = it
+                            },
+                            setStartDate = {
+                                AppUtil.setDateTimeCompose(
+                                    context,
+                                    fragmentManager
+                                ) { calendar, time ->
+                                    startDate = time
+                                    task = task.copy(
+                                        startDate = calendar.timeInMillis
+                                    )
+                                }
+                            },
+                            setEndDate = {
+                                AppUtil.setDateTimeCompose(
+                                    context,
+                                    fragmentManager
+                                ) { calendar, time ->
+                                    endDate = time
+                                    task = task.copy(
+                                        endDate = calendar.timeInMillis
+                                    )
+                                    taskViewModel.update(task)
+                                }
+                            },
+                            shareTask = {
+                                subTaskViewModel.shareTask(
+                                    context,
+                                    AppUtil.getSubText(subTasks.map { it.subTitle })
+                                )
+                            },
+                            reminder = reminder,
+                            onReminderChange = {
+                                AppUtil.setDateTimeCompose(
+                                    context,
+                                    fragmentManager
+                                ) { calendar, _ ->
+                                    AppUtil.setReminderWorkRequest(
+                                        context,
+                                        task.title,
+                                        task,
+                                        calendar
+                                    )
+                                    task.reminder = calendar.timeInMillis
+                                    reminder = calendar.timeInMillis
+                                }
+                            },
                             completedSubTask = subTasks.filter { it.isDone }.size,
                             totalSubTask = subTasks.size,
                             searchQuery = searchQuery,
@@ -270,10 +486,16 @@ fun SubTaskScreen(
                                 isSubTaskDone = it
                             },
                             status = status,
+                            selectedStatusIndex = if (isSubTaskDone) 1 else 0,
+                            sortTypes = sortTypes,
+                            selectedSortIndex = selectedSortIndex,
                             onSortChange = {
-                                taskViewModel.onSortOrderSelected(it, context)
-                            },
-                            sortOrder = preference.sortOrder
+                                selectedSortIndex = it
+                                subTaskViewModel.onSortOrderSelected(
+                                    SortOrder.getOrder(it),
+                                    context
+                                )
+                            }
                         )
                     }
                     items(subTasks.filter { t -> isSubTaskDone == t.isDone }
@@ -290,9 +512,7 @@ fun SubTaskScreen(
                                 isListViewEnable = isListViewEnable,
                                 onItemClick = {
                                     subTaskViewModel.setSubTask(subtask)
-                                    navController.navigate(
-                                        "${NavigationItem.AddUpdateSubTask.route}?subTaskId=${subtask.id}/${task.id}/false"
-                                    )
+                                    isBottomSheetOpened = !isBottomSheetOpened
                                 },
                                 onCompletedTask = { isCompleted ->
                                     subTaskViewModel.updateSubTask(
@@ -303,11 +523,12 @@ fun SubTaskScreen(
                                     )
                                 }
                             ) { isDone ->
-                                if (isDone)
-                                    subTaskViewModel.deleteSubTask(subtask)
-                                else {
+                                if (isDone) {
+                                    subTaskViewModel.onSubTaskSwiped(subtask)
+                                    isSnackBarShow = false
+                                } else {
                                     subTaskViewModel.setSubTask(subtask)
-                                    navController.navigate("${NavigationItem.AddUpdateSubTask.route}?subTaskId=${subtask.id}/${task.id}/false")
+                                    isBottomSheetOpened = !isBottomSheetOpened
                                 }
                             }
                         }
@@ -322,10 +543,63 @@ fun SubTaskScreen(
                 ) {
                     item(span = StaggeredGridItemSpan.FullLine) {
                         SubtaskHeaderContent(
+                            startDate,
+                            onStartDateChange = {
+                                startDate = it
+                            },
+                            endDate,
+                            onEndDateChange = {
+                                endDate = it
+                            },
+                            setStartDate = {
+                                AppUtil.setDateTimeCompose(
+                                    context,
+                                    fragmentManager
+                                ) { calendar, time ->
+                                    startDate = time
+                                    task = task.copy(
+                                        startDate = calendar.timeInMillis
+                                    )
+                                }
+                            },
+                            setEndDate = {
+                                AppUtil.setDateTimeCompose(
+                                    context,
+                                    fragmentManager
+                                ) { calendar, time ->
+                                    endDate = time
+                                    task = task.copy(
+                                        endDate = calendar.timeInMillis
+                                    )
+                                    taskViewModel.update(task)
+                                }
+                            },
+                            shareTask = {
+                                subTaskViewModel.shareTask(
+                                    context,
+                                    AppUtil.getSubText(subTasks.map { it.subTitle })
+                                )
+                            },
+                            reminder = reminder,
+                            onReminderChange = {
+                                AppUtil.setDateTimeCompose(
+                                    context,
+                                    fragmentManager
+                                ) { calendar, _ ->
+                                    AppUtil.setReminderWorkRequest(
+                                        context,
+                                        task.title,
+                                        task,
+                                        calendar
+                                    )
+                                    task.reminder = calendar.timeInMillis
+                                    reminder = calendar.timeInMillis
+                                }
+                            },
                             subTasks.filter { it.isDone }.size,
                             subTasks.size,
-                            color = Color(TaskApp.categoryTypes[task.color].color),
                             searchQuery = searchQuery,
+                            color = Color(TaskApp.categoryTypes[task.color].color),
                             onQueryChange = {
                                 searchQuery = it
                                 subTaskViewModel.searchQuery.value = it
@@ -339,10 +613,16 @@ fun SubTaskScreen(
                                 isSubTaskDone = it
                             },
                             status = status,
+                            selectedStatusIndex = if (isSubTaskDone) 1 else 0,
+                            sortTypes = sortTypes,
+                            selectedSortIndex = selectedSortIndex,
                             onSortChange = {
-                                taskViewModel.onSortOrderSelected(it, context)
+                                selectedSortIndex = it
+                                subTaskViewModel.onSortOrderSelected(
+                                    SortOrder.getOrder(it),
+                                    context
+                                )
                             },
-                            sortOrder = preference.sortOrder,
                             modifier = Modifier.fillMaxWidth()
                         )
                     }
@@ -380,9 +660,10 @@ fun SubTaskScreen(
                                     )
                                 }
                             ) { isDone ->
-                                if (isDone)
-                                    subTaskViewModel.deleteSubTask(subTask)
-                                else {
+                                if (isDone) {
+                                    subTaskViewModel.onSubTaskSwiped(subTask)
+                                    isSnackBarShow = false
+                                } else {
                                     subTaskViewModel.setSubTask(subTask)
                                     navController.navigate("${NavigationItem.AddUpdateSubTask.route}?subTaskId=${subTask.id}/${task.id}/false")
                                 }
@@ -406,6 +687,15 @@ fun SubTaskScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SubtaskHeaderContent(
+    startDate: String,
+    onStartDateChange: (String) -> Unit,
+    endDate: String,
+    onEndDateChange: (String) -> Unit,
+    setStartDate: () -> Unit,
+    setEndDate: () -> Unit,
+    shareTask: () -> Unit,
+    reminder: Long?,
+    onReminderChange: () -> Unit,
     completedSubTask: Int,
     totalSubTask: Int,
     searchQuery: String,
@@ -415,39 +705,21 @@ fun SubtaskHeaderContent(
     onViewChange: (Boolean) -> Unit,
     onStatusChange: (Boolean) -> Unit,
     status: List<String>,
-    onSortChange: (SortOrder) -> Unit,
-    sortOrder: SortOrder,
+    selectedStatusIndex: Int,
+    sortTypes: List<String>,
+    selectedSortIndex: Int,
+    onSortChange: (Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val sorts = listOf(
-        stringResource(R.string.name),
-        stringResource(R.string.date),
-        stringResource(R.string.name_desc),
-        stringResource(R.string.date_desc),
-        stringResource(R.string.category),
-        stringResource(R.string.category_desc)
-    )
-    val sortTypes by remember {
-        mutableStateOf(sorts)
-    }
-    val sort = sorts.indexOfFirst {
-        it.contains(sortOrder.name.toSortForm())
-    }
-    var selectedStatusIndex by rememberSaveable {
-        mutableIntStateOf(sort)
-    }
     var isDropDownExpanded by rememberSaveable {
         mutableStateOf(false)
     }
     var mSelectedText by remember {
-        mutableStateOf("Name")//sortTypes[0])
+        mutableStateOf(sortTypes[selectedSortIndex])
     }
     var mTextFieldSize by remember { mutableStateOf(Size.Zero) }
-    val icon = if (isDropDownExpanded)
-        Icons.Filled.KeyboardArrowUp
-    else
-        Icons.Filled.KeyboardArrowDown
     val width = LocalConfiguration.current.screenWidthDp.dp
+
     Column(modifier) {
         LinearProgressStatus(
             progress = completedSubTask.toFloat() / totalSubTask.toFloat(),
@@ -483,7 +755,7 @@ fun SubtaskHeaderContent(
                     }
                 },
                 placeholder = {
-                    Text("Search task")
+                    Text(stringResource(id = R.string.search_subtask))
                 },
                 onActiveChange = {},
                 modifier = Modifier.weight(0.9f)
@@ -503,13 +775,15 @@ fun SubtaskHeaderContent(
                 }
             }
         }
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(8.dp))
         Row(
             Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Column {
-                Text("Sort by")
+                Text(stringResource(id = R.string.sorting_option))
+                Spacer(modifier = Modifier.height(4.dp))
                 Row(
                     Modifier
                         .fillMaxWidth(0.5f)
@@ -521,7 +795,11 @@ fun SubtaskHeaderContent(
                         .onGloballyPositioned { coordinates ->
                             //This value is used to assign to the DropDown the same width
                             mTextFieldSize = coordinates.size.toSize()
-                        },
+                        }
+                        .toggleable(value = isDropDownExpanded) {
+                            isDropDownExpanded = !isDropDownExpanded
+                        }
+                        .semantics(mergeDescendants = true) {},
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -532,7 +810,10 @@ fun SubtaskHeaderContent(
                         textAlign = TextAlign.Center
                     )
                     Icon(
-                        icon,
+                        if (isDropDownExpanded)
+                            Icons.Filled.KeyboardArrowUp
+                        else
+                            Icons.Filled.KeyboardArrowDown,
                         contentDescription = "sort expand/collapse button",
                         Modifier
                             .padding(end = 4.dp)
@@ -553,7 +834,7 @@ fun SubtaskHeaderContent(
                                 Text(text = type)
                             },
                             onClick = {
-                                onSortChange(SortOrder.getOrder(index))
+                                onSortChange(index)
                                 mSelectedText = type
                                 isDropDownExpanded = false
                             }
@@ -561,31 +842,90 @@ fun SubtaskHeaderContent(
                     }
                 }
             }
+            TextButton(onClick = { shareTask() }) {
+                Icon(painterResource(R.drawable.ic_share), stringResource(R.string.share))
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(stringResource(id = R.string.share))
+            }
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+        Row(
+            Modifier
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceAround
+        ) {
+            RoundedOutlinedTextField(
+                value = startDate,
+                onValueChange = {
+                    onStartDateChange(it)
+                },
+                leadingIcon = {
+                    Icon(
+                        painterResource(id = R.drawable.ic_calendar_small),
+                        contentDescription = null
+                    )
+                },
+                placeholder = {
+                    Text(stringResource(R.string.start_date))
+                },
+                modifier = Modifier
+                    .weight(1f)
+                    .background(MaterialTheme.colorScheme.surfaceVariant)
+                    .onFocusChanged {
+                        if (it.hasFocus) {
+                            setStartDate()
+                        }
+                    },
+                textStyle = TextStyle(fontSize = 12.sp)
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            RoundedOutlinedTextField(
+                value = endDate,
+                onValueChange = {
+                    onEndDateChange(it)
+                },
+                leadingIcon = {
+                    Icon(
+                        painterResource(id = R.drawable.ic_calendar_small),
+                        contentDescription = null
+                    )
+                },
+                placeholder = {
+                    Text(stringResource(R.string.end_date))
+                },
+                modifier = Modifier
+                    .weight(1f)
+                    .background(MaterialTheme.colorScheme.surfaceVariant)
+                    .onFocusChanged {
+                        if (it.hasFocus) {
+                            setEndDate()
+                        }
+                    },
+                textStyle = TextStyle(fontSize = 12.sp)
+            )
+        }
+        Spacer(Modifier.height(8.dp))
+        Row(
+            Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            TextButton(onClick = {
+                onReminderChange()
+            }) {
+                Icon(painterResource(R.drawable.ic_reminder_small), null)
+                Spacer(Modifier.width(8.dp))
+                Text(
+                    if (reminder != null) DateUtil.getDate(reminder)
+                    else stringResource(R.string.add_date_time)
+                )
+            }
             ChipGroup(
                 items = status,
                 selectedIndex = selectedStatusIndex
             ) { index ->
-                selectedStatusIndex = index
                 onStatusChange(index != 0)
             }
-        }
-    }
-}
-
-@Preview
-@Composable
-fun PreviewSubTaskScreen() {
-    val taskViewModel: TaskViewModel = viewModel()
-    val subTaskViewModel: SubTaskViewModel = viewModel()
-
-    MaterialTheme {
-        Surface(Modifier.background(MaterialTheme.colorScheme.background)) {
-            SubTaskScreen(
-                0,
-                navController = rememberNavController(),
-                taskViewModel = taskViewModel,
-                subTaskViewModel = subTaskViewModel
-            )
         }
     }
 }

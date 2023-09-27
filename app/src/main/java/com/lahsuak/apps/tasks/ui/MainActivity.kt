@@ -13,19 +13,15 @@ import androidx.compose.foundation.background
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import androidx.core.view.WindowInsetsControllerCompat
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.setupActionBarWithNavController
-import androidx.preference.PreferenceManager
 import com.lahsuak.apps.tasks.R
+import androidx.preference.PreferenceManager
 import com.lahsuak.apps.tasks.TaskApp.Companion.mylang
 import com.lahsuak.apps.tasks.databinding.ActivityMainBinding
 import com.lahsuak.apps.tasks.ui.navigation.TaskNavHost
 import com.lahsuak.apps.tasks.ui.theme.TaskAppTheme
 import com.lahsuak.apps.tasks.ui.viewmodel.NotificationViewModel
-import com.lahsuak.apps.tasks.ui.viewmodel.SettingViewModel
 import com.lahsuak.apps.tasks.ui.viewmodel.SubTaskViewModel
 import com.lahsuak.apps.tasks.ui.viewmodel.TaskViewModel
 import com.lahsuak.apps.tasks.util.AppConstants.SHARE_FORMAT
@@ -35,6 +31,7 @@ import com.lahsuak.apps.tasks.util.AppConstants.SharedPreference.THEME_DEFAULT
 import com.lahsuak.apps.tasks.util.AppConstants.SharedPreference.THEME_KEY
 import com.lahsuak.apps.tasks.util.AppUtil.getLanguage
 import com.lahsuak.apps.tasks.util.RuntimeLocaleChanger
+import com.lahsuak.apps.tasks.util.rememberWindowSize
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import javax.inject.Named
@@ -49,7 +46,6 @@ class MainActivity : AppCompatActivity() {
 
     private val taskViewModel: TaskViewModel by viewModels()
     private val subTaskViewModel: SubTaskViewModel by viewModels()
-    private val settingViewModel: SettingViewModel by viewModels()
     private val notificationViewModel: NotificationViewModel by viewModels()
 
     @Inject
@@ -84,71 +80,24 @@ class MainActivity : AppCompatActivity() {
                         taskViewModel,
                         subTaskViewModel,
                         notificationViewModel,
-                        settingViewModel,
                         navController,
-                        fragmentManager = supportFragmentManager
+                        fragmentManager = supportFragmentManager,
+                        windowSize = rememberWindowSize()
                     )
                 }
             }
         }
-//        setSupportActionBar(binding.toolbar)
-//        val sp = PreferenceManager.getDefaultSharedPreferences(this)
-//        val selectedTheme = sp.getString(THEME_KEY, THEME_DEFAULT)!!.toInt()
+        setSupportActionBar(binding.toolbar)
+        val sp = PreferenceManager.getDefaultSharedPreferences(this)
+        val selectedTheme = sp.getString(THEME_KEY, THEME_DEFAULT)!!.toInt()
 
-//        AppCompatDelegate.setDefaultNightMode(selectedTheme)
-//
+        AppCompatDelegate.setDefaultNightMode(selectedTheme)
 //        //shared text received from other apps
         if (intent?.action == Intent.ACTION_SEND) {
             if (SHARE_FORMAT == intent.type) {
                 shareTxt = intent.getStringExtra(Intent.EXTRA_TEXT)
             }
         }
-//
-//        //this is for transparent status bar and navigation bar
-//        WindowInsetsControllerCompat(window, window.decorView).isAppearanceLightStatusBars =
-//            true
-//        WindowInsetsControllerCompat(window, window.decorView).isAppearanceLightNavigationBars =
-//            true
-//        val navHostFragment =
-//            supportFragmentManager.findFragmentById(R.id.my_container) as NavHostFragment
-//        navController = navHostFragment.navController
-//        addDestinationChangeListener()
-//        setupActionBarWithNavController(navController)
-    }
-
-    private fun addDestinationChangeListener() {
-        listener = NavController.OnDestinationChangedListener { _, destination, _ ->
-            if (destination.id != R.id.taskFragment) {
-                binding.toolbar.setNavigationIcon(R.drawable.ic_back)
-            }
-            when (destination.id) {
-                R.id.taskFragment, R.id.subTaskFragment, R.id.renameFragmentDialog,
-                R.id.shortcutFragmentDialog, R.id.deleteAllCompletedDialogFragment,
-                R.id.deleteAllCompletedDialogFragment2 -> {
-                    supportActionBar?.hide()
-                }
-
-                else -> {
-                    supportActionBar?.show()
-                }
-            }
-        }
-        navController.addOnDestinationChangedListener(listener)
-    }
-
-    override fun onSupportNavigateUp(): Boolean {
-//        return navController.navigateUp() ||
-            return super.onSupportNavigateUp()
-    }
-
-    override fun onResume() {
-        super.onResume()
-//        navController.addOnDestinationChangedListener(listener)
-    }
-
-    override fun onPause() {
-        super.onPause()
-//        navController.removeOnDestinationChangedListener(listener)
     }
 
     override fun onDestroy() {

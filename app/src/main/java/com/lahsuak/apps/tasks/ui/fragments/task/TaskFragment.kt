@@ -18,8 +18,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ActionMode
 import androidx.appcompat.widget.SearchView
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.core.content.ContextCompat
 import androidx.core.view.doOnLayout
 import androidx.core.view.doOnPreDraw
@@ -51,8 +49,7 @@ import com.google.android.play.core.install.model.InstallStatus
 import com.google.android.play.core.install.model.UpdateAvailability
 import com.lahsuak.apps.tasks.R
 import com.lahsuak.apps.tasks.TaskApp
-import com.lahsuak.apps.tasks.data.FilterPreferences
-import com.lahsuak.apps.tasks.data.SortOrder
+import com.lahsuak.apps.tasks.data.model.SortOrder
 import com.lahsuak.apps.tasks.data.model.Task
 import com.lahsuak.apps.tasks.databinding.FragmentTaskBinding
 import com.lahsuak.apps.tasks.databinding.TaskSelectionDialogBinding
@@ -140,7 +137,8 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
         binding.composeView.setContent {
             TaskScreen(
                 navController = rememberNavController(),
-                taskViewModel = viewModel
+                taskViewModel = viewModel,
+                rememberWindowSize()
             )
         }
         selectedItem = null
@@ -225,7 +223,6 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
 
         viewModel.tasksFlow.asLiveData().observe(viewLifecycleOwner) { list ->
             if (shareTxt != null) {
-
                 taskSelectionBinding.txtOr.isVisible = list.isNotEmpty()
                 taskSelectionBinding.txtTaskSelect.isVisible = list.isNotEmpty()
                 taskSelectionBinding.taskPicker.isVisible = list.isNotEmpty()
@@ -532,6 +529,7 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
                         TaskFragmentDirections.actionGlobalDeleteAllCompletedDialogFragment()
                     navController.navigate(action)
                 }
+                is TaskEvent.Initial->{}
             }
         }
     }
