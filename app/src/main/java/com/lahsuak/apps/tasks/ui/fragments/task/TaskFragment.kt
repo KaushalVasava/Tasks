@@ -52,7 +52,6 @@ import com.lahsuak.apps.tasks.TaskApp
 import com.lahsuak.apps.tasks.data.model.SortOrder
 import com.lahsuak.apps.tasks.data.model.Task
 import com.lahsuak.apps.tasks.databinding.FragmentTaskBinding
-import com.lahsuak.apps.tasks.databinding.TaskSelectionDialogBinding
 import com.lahsuak.apps.tasks.model.TaskEvent
 import com.lahsuak.apps.tasks.ui.MainActivity.Companion.isWidgetClick
 import com.lahsuak.apps.tasks.ui.MainActivity.Companion.shareTxt
@@ -179,7 +178,7 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
         checkUpdate()
         appUpdateManager!!.registerListener(appUpdateListener)
         if (shareTxt != null) {
-            showTitleSelectionDialog()
+//            showTitleSelectionDialog()
         }
         addSwipeGesturesHandler() //swipe to delete and mark as imp functionality
         setTaskObserver() //observer for tasks and layout changes
@@ -214,64 +213,64 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
         }
     }
 
-    private fun showTitleSelectionDialog() {
-        val dialogBuilder = MaterialAlertDialogBuilder(requireContext())
-        val taskSelectionBinding =
-            TaskSelectionDialogBinding.inflate(LayoutInflater.from(requireContext()))
-        dialogBuilder.setView(taskSelectionBinding.root)
-        dialogBuilder.setCancelable(false)
-
-        viewModel.tasksFlow.asLiveData().observe(viewLifecycleOwner) { list ->
-            if (shareTxt != null) {
-                taskSelectionBinding.txtOr.isVisible = list.isNotEmpty()
-                taskSelectionBinding.txtTaskSelect.isVisible = list.isNotEmpty()
-                taskSelectionBinding.taskPicker.isVisible = list.isNotEmpty()
-                val adapter: ArrayAdapter<*> = ArrayAdapter<Any?>(
-                    requireContext(),
-                    android.R.layout.simple_spinner_dropdown_item, list.map { it.title }
-                )
-                adapter.setDropDownViewResource(
-                    android.R.layout.simple_spinner_dropdown_item
-                )
-                taskSelectionBinding.taskPicker.adapter = adapter
-                var selectedPosition = -1
-                taskSelectionBinding.taskPicker.onItemSelectedListener =
-                    object : AdapterView.OnItemSelectedListener {
-                        override fun onItemSelected(
-                            parent: AdapterView<*>?,
-                            view: View?,
-                            position: Int,
-                            id: Long,
-                        ) {
-                            selectedPosition = position
-                        }
-
-                        override fun onNothingSelected(adapterView: AdapterView<*>?) {}
-                    }
-                dialogBuilder.setPositiveButton(getString(R.string.save)) { dialog, _ ->
-                    val action =
-                        TaskFragmentDirections.actionTaskFragmentToSubTaskFragment(
-                            list[selectedPosition].copy(isDone = false),
-                            true,
-                            shareTxt!!,
-                            null
-                        )
-                    navController.navigate(action)
-                    shareTxt = null
-                    dialog.dismiss()
-                }
-                dialogBuilder.setNegativeButton(getString(R.string.cancel)) { dialog, _ ->
-                    dialog.dismiss()
-                }
-                val alertDialog = dialogBuilder.show()
-                taskSelectionBinding.btnNewTask.setOnClickListener {
-                    addNewTask(shareTxt)
-                    alertDialog.dismiss()
-                    shareTxt = null
-                }
-            }
-        }
-    }
+//    private fun showTitleSelectionDialog() {
+//        val dialogBuilder = MaterialAlertDialogBuilder(requireContext())
+//        val taskSelectionBinding =
+//            TaskSelectionDialogBinding.inflate(LayoutInflater.from(requireContext()))
+//        dialogBuilder.setView(taskSelectionBinding.root)
+//        dialogBuilder.setCancelable(false)
+//
+//        viewModel.tasksFlow.asLiveData().observe(viewLifecycleOwner) { list ->
+//            if (shareTxt != null) {
+//                taskSelectionBinding.txtOr.isVisible = list.isNotEmpty()
+//                taskSelectionBinding.txtTaskSelect.isVisible = list.isNotEmpty()
+//                taskSelectionBinding.taskPicker.isVisible = list.isNotEmpty()
+//                val adapter: ArrayAdapter<*> = ArrayAdapter<Any?>(
+//                    requireContext(),
+//                    android.R.layout.simple_spinner_dropdown_item, list.map { it.title }
+//                )
+//                adapter.setDropDownViewResource(
+//                    android.R.layout.simple_spinner_dropdown_item
+//                )
+//                taskSelectionBinding.taskPicker.adapter = adapter
+//                var selectedPosition = -1
+//                taskSelectionBinding.taskPicker.onItemSelectedListener =
+//                    object : AdapterView.OnItemSelectedListener {
+//                        override fun onItemSelected(
+//                            parent: AdapterView<*>?,
+//                            view: View?,
+//                            position: Int,
+//                            id: Long,
+//                        ) {
+//                            selectedPosition = position
+//                        }
+//
+//                        override fun onNothingSelected(adapterView: AdapterView<*>?) {}
+//                    }
+//                dialogBuilder.setPositiveButton(getString(R.string.save)) { dialog, _ ->
+//                    val action =
+//                        TaskFragmentDirections.actionTaskFragmentToSubTaskFragment(
+//                            list[selectedPosition].copy(isDone = false),
+//                            true,
+//                            shareTxt!!,
+//                            null
+//                        )
+//                    navController.navigate(action)
+//                    shareTxt = null
+//                    dialog.dismiss()
+//                }
+//                dialogBuilder.setNegativeButton(getString(R.string.cancel)) { dialog, _ ->
+//                    dialog.dismiss()
+//                }
+//                val alertDialog = dialogBuilder.show()
+//                taskSelectionBinding.btnNewTask.setOnClickListener {
+//                    addNewTask(shareTxt)
+//                    alertDialog.dismiss()
+//                    shareTxt = null
+//                }
+//            }
+//        }
+//    }
 
     private fun checkPermission() {
         if (Build.VERSION_CODES.TIRAMISU <= Build.VERSION.SDK_INT) {
@@ -320,12 +319,6 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
             val action =
                 TaskFragmentDirections.actionTaskFragmentToSettingsFragment()
             navController.navigate(action)
-        }
-        binding.btnNotification.setOnClickListener {
-            navController.navigate(R.id.action_taskFragment_to_notificationFragment)
-        }
-        binding.progressBar.setOnClickListener {
-            navController.navigate(R.id.action_taskFragment_to_overviewFragment)
         }
         binding.txtMoreApps.setOnClickListener {
             AppUtil.openMoreApp(requireContext())
@@ -525,9 +518,9 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
                 }
 
                 TaskEvent.NavigateToAllCompletedScreen -> {
-                    val action =
-                        TaskFragmentDirections.actionGlobalDeleteAllCompletedDialogFragment()
-                    navController.navigate(action)
+//                    val action =
+//                        TaskFragmentDirections.actionGlobalDeleteAllCompletedDialogFragment()
+//                    navController.navigate(action)
                 }
                 is TaskEvent.Initial->{}
             }
@@ -574,13 +567,13 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
     }
 
     private fun addNewTask(shareText: String?) {
-        val action =
-            TaskFragmentDirections.actionTaskFragmentToRenameFragmentDialog(
-                false,
-                INVALID_ID,
-                shareText
-            )
-        navController.navigate(action)
+//        val action =
+//            TaskFragmentDirections.actionTaskFragmentToRenameFragmentDialog(
+//                false,
+//                INVALID_ID,
+//                shareText
+//            )
+//        navController.navigate(action)
     }
 
     override fun onItemClicked(task: Task, position: Int, cardView: MaterialCardView) {
@@ -628,13 +621,13 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.TaskListener,
             viewModel.showDeleteDialog(requireContext(), task)
         } else {
             taskPosition = position
-            val action =
-                TaskFragmentDirections.actionTaskFragmentToRenameFragmentDialog(
-                    false,
-                    task.id,
-                    task.title
-                )
-            navController.navigate(action)
+//            val action =
+//                TaskFragmentDirections.actionTaskFragmentToRenameFragmentDialog(
+//                    false,
+//                    task.id,
+//                    task.title
+//                )
+//            navController.navigate(action)
         }
     }
 

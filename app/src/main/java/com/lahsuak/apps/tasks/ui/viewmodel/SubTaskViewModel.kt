@@ -165,31 +165,41 @@ class SubTaskViewModel @Inject constructor(
     }
 
     fun cancelReminder(
-        activity: FragmentActivity,
+        context: Context,
         task: Task,
         timerTxt: TextView,
     ) {
         timerTxt.isSelected = true
-        timerTxt.text = activity.getString(R.string.add_date_time)
+        timerTxt.text = context.getString(R.string.add_date_time)
         task.reminder = null
         update(task)
-        activity.baseContext.toast {
-            activity.getString(R.string.cancel_reminder)
+        context.toast {
+            context.getString(R.string.cancel_reminder)
         }
     }
 
+    fun cancelReminderCompose(
+        context: Context,
+        task: Task
+    ) {
+        task.reminder = null
+        update(task)
+        context.toast {
+            context.getString(R.string.cancel_reminder)
+        }
+    }
     fun cancelSubTaskReminder(
-        activity: FragmentActivity,
+        context: Context,
         subTask: SubTask,
         timerTxt: TextView,
         task: Task,
     ) {
         timerTxt.isSelected = true
-        timerTxt.text = activity.getString(R.string.add_date_time)
+        timerTxt.text = context.getString(R.string.add_date_time)
         subTask.reminder = null
         updateSubTask(subTask)
         update(task.copy(startDate = System.currentTimeMillis()))
-        activity.baseContext.toast { activity.getString(R.string.cancel_reminder) }
+        context.toast { context.getString(R.string.cancel_reminder) }
     }
 
     fun setSubTask(subTask: SubTask){

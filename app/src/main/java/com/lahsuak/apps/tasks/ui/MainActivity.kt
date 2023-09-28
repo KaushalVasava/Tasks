@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -15,8 +16,8 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.lahsuak.apps.tasks.R
 import androidx.preference.PreferenceManager
+import com.lahsuak.apps.tasks.R
 import com.lahsuak.apps.tasks.TaskApp.Companion.mylang
 import com.lahsuak.apps.tasks.databinding.ActivityMainBinding
 import com.lahsuak.apps.tasks.ui.navigation.TaskNavHost
@@ -41,8 +42,6 @@ class MainActivity : AppCompatActivity() {
     private var _binding: ActivityMainBinding? = null
     private val binding: ActivityMainBinding
         get() = _binding!!
-    private lateinit var navController: NavController
-    private lateinit var listener: NavController.OnDestinationChangedListener
 
     private val taskViewModel: TaskViewModel by viewModels()
     private val subTaskViewModel: SubTaskViewModel by viewModels()
@@ -82,7 +81,7 @@ class MainActivity : AppCompatActivity() {
                         notificationViewModel,
                         navController,
                         fragmentManager = supportFragmentManager,
-                        windowSize = rememberWindowSize()
+                        windowSize = rememberWindowSize(),
                     )
                 }
             }
@@ -96,6 +95,7 @@ class MainActivity : AppCompatActivity() {
         if (intent?.action == Intent.ACTION_SEND) {
             if (SHARE_FORMAT == intent.type) {
                 shareTxt = intent.getStringExtra(Intent.EXTRA_TEXT)
+                Log.d("TAG", "onCreate: $shareTxt")
             }
         }
     }

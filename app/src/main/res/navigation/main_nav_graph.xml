@@ -21,31 +21,6 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
-        <action
-            android:id="@+id/action_taskFragment_to_renameFragmentDialog"
-            app:destination="@id/renameFragmentDialog"
-            app:enterAnim="@anim/slide_in_top"
-            app:exitAnim="@anim/slide_out_bottom"
-            app:popEnterAnim="@anim/slide_in_bottom"
-            app:popExitAnim="@anim/slide_out_top">
-            <argument
-                android:name="subTaskId"
-                android:defaultValue="-1" />
-        </action>
-        <action
-            android:id="@+id/action_taskFragment_to_notificationFragment"
-            app:destination="@id/notificationFragment"
-            app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/slide_out_left"
-            app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right" />
-        <action
-            android:id="@+id/action_taskFragment_to_overviewFragment"
-            app:destination="@id/overviewFragment"
-            app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/slide_out_left"
-            app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/subTaskFragment"
@@ -69,13 +44,7 @@
         <deepLink
             android:id="@+id/deepLink"
             app:uri="myapp://kmv.com/editFragment/{task}{isSharedSubtask}{sharedText}{isNotification}" />
-        <action
-            android:id="@+id/action_subTaskFragment_to_renameFragmentDialog"
-            app:destination="@id/renameFragmentDialog"
-            app:enterAnim="@anim/slide_in_top"
-            app:exitAnim="@anim/slide_out_bottom"
-            app:popEnterAnim="@anim/slide_in_bottom"
-            app:popExitAnim="@anim/slide_out_top" />
+
         <action
             android:id="@+id/action_subTaskFragment_to_settingsFragment"
             app:destination="@id/settingsFragment"
@@ -83,58 +52,30 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
-        <action
-            android:id="@+id/action_subTaskFragment_to_overviewFragment"
-            app:destination="@id/overviewFragment"
-            app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/slide_out_left"
-            app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
-    <dialog
-        android:id="@+id/deleteAllCompletedDialogFragment"
-        android:name="com.lahsuak.apps.tasks.ui.fragments.dialog.DeleteAllCompletedDialogFragment"
-        android:label="DeleteAllCompletedDialogFragment" />
-    <action
-        android:id="@+id/action_global_deleteAllCompletedDialogFragment"
-        app:destination="@id/deleteAllCompletedDialogFragment" />
-    <dialog
-        android:id="@+id/deleteAllCompletedDialogFragment2"
-        android:name="com.lahsuak.apps.tasks.ui.fragments.dialog.DeleteAllCompletedDialogFragment2"
-        android:label="DeleteAllCompletedDialogFragment2">
-        <argument
-            android:name="taskID"
-            app:argType="integer" />
-    </dialog>
-    <action
-        android:id="@+id/action_global_deleteAllCompletedDialogFragment2"
-        app:destination="@id/deleteAllCompletedDialogFragment2" />
     <fragment
         android:id="@+id/settingsFragment"
         android:name="com.lahsuak.apps.tasks.ui.fragments.settings.SettingsFragment"
         android:label="@string/settings" />
-    <dialog
-        android:id="@+id/renameFragmentDialog"
-        android:name="com.lahsuak.apps.tasks.ui.fragments.dialog.AddUpdateTaskFragmentDialog"
-        android:label="RenameFragmentDialog"
-        tools:layout="@layout/dialog_add_update_task">
-        <argument
-            android:name="navigate_from_subtask"
-            app:argType="boolean" />
-        <argument
-            android:name="task_id"
-            app:argType="integer" />
-        <argument
-            android:name="task_title"
-            app:argType="string"
-            app:nullable="true" />
-        <argument
-            android:name="subTaskId"
-            app:argType="integer" />
-        <deepLink
-            android:id="@+id/deepLink"
-            app:uri="myapp://kmv.com/rename/{navigate_from_subtask}{task_id}{task_title}{subTaskId}" />
-    </dialog>
+<!--    <dialog-->
+<!--        android:id="@+id/renameFragmentDialog"-->
+<!--        android:name="com.lahsuak.apps.tasks.ui.fragments.dialog.AddUpdateTaskFragmentDialog"-->
+<!--        android:label="RenameFragmentDialog"-->
+<!--        tools:layout="@layout/dialog_add_update_task">-->
+<!--        <argument-->
+<!--            android:name="navigate_from_subtask"-->
+<!--            app:argType="boolean" />-->
+<!--        <argument-->
+<!--            android:name="task_id"-->
+<!--            app:argType="integer" />-->
+<!--        <argument-->
+<!--            android:name="task_title"-->
+<!--            app:argType="string"-->
+<!--            app:nullable="true" />-->
+<!--        <argument-->
+<!--            android:name="subTaskId"-->
+<!--            app:argType="integer" />-->
+<!--    </dialog>-->
     <dialog
         android:id="@+id/shortcutFragmentDialog"
         android:name="com.lahsuak.apps.tasks.ui.fragments.dialog.ShortcutFragmentDialog"
@@ -149,24 +90,11 @@
             android:defaultValue="null"
             app:argType="string"
             app:nullable="true" />
-        <deepLink
-            android:id="@+id/deepLink"
-            app:uri="myapp://kmv.com/shortcut" />
+<!--        <deepLink-->
+<!--            android:id="@+id/deepLink"-->
+<!--            app:uri="myapp://kmv.com/shortcut" />-->
     </dialog>
-    <action
-        android:id="@+id/action_global_shortcutFragmentDialog"
-        app:destination="@id/shortcutFragmentDialog" />
-    <fragment
-        android:id="@+id/notificationFragment"
-        android:name="com.lahsuak.apps.tasks.ui.fragments.notification.NotificationFragment"
-        android:label="@string/notifications"
-        tools:layout="@layout/fragment_notification">
-        <action
-            android:id="@+id/action_notificationFragment_to_subTaskFragment"
-            app:destination="@id/subTaskFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/overviewFragment"
-        android:name="com.lahsuak.apps.tasks.ui.fragments.overview.OverviewFragment"
-        android:label="@string/overview" />
+<!--    <action-->
+<!--        android:id="@+id/action_global_shortcutFragmentDialog"-->
+<!--        app:destination="@id/shortcutFragmentDialog" />-->
 </navigation>

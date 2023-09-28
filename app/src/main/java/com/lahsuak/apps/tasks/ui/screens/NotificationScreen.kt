@@ -91,7 +91,7 @@ fun NotificationScreen(notifications: List<Notification>, navController: NavCont
 
 @Composable
 fun NotificationItem(notification: Notification) {
-    Card {
+    Card(Modifier.padding(vertical = 8.dp)) {
         Column(
             Modifier
                 .fillMaxWidth()
@@ -113,7 +113,8 @@ fun NotificationItem(notification: Notification) {
 fun PreviewNotificationScreen() {
     NotificationScreen(
         listOf(
-            Notification(1, 1, "Alarm", System.currentTimeMillis())
+            Notification(1, 1, "Alarm", System.currentTimeMillis()),
+            Notification(2, 1, "Task", System.currentTimeMillis())
         ),
         rememberNavController()
     )

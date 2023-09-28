@@ -10,6 +10,8 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import androidx.navigation.navDeepLink
+import com.lahsuak.apps.tasks.ui.screens.AddUpdateSubTaskScreen
 import com.lahsuak.apps.tasks.ui.screens.AddUpdateTaskScreen
 import com.lahsuak.apps.tasks.ui.screens.NotificationScreen
 import com.lahsuak.apps.tasks.ui.screens.OverviewScreen
@@ -29,7 +31,7 @@ fun TaskNavHost(
     navController: NavHostController,
     modifier: Modifier = Modifier,
     fragmentManager: FragmentManager,
-    windowSize: WindowSize
+    windowSize: WindowSize,
 ) {
     NavHost(
         modifier = modifier,
@@ -43,21 +45,41 @@ fun TaskNavHost(
                 windowSize
             )
         }
-        composable("${NavigationItem.SubTask.route}/{taskId}",
+        composable("${NavigationItem.SubTask.route}/{task_id}/{has_notification}?sharedText={sharedText}",
             arguments = listOf(
-                navArgument("taskId") {
+                navArgument("task_id") {
                     type = NavType.IntType
+                },
+                navArgument("has_notification") {
+                    type = NavType.BoolType
+                    defaultValue = false
+                },
+                navArgument("sharedText") {
+                    type = NavType.StringType
+                    defaultValue = null
+                    nullable = true
                 }
-            )
+            ),
+            deepLinks = listOf(navDeepLink {
+                uriPattern =
+                    "myapp://kmv.com/subtaskscreen/{task_id}/{has_notification}"
+            })
         ) { backStackEntry ->
-            val taskId = backStackEntry.arguments?.getInt("taskId")
+            val taskId = backStackEntry.arguments?.getInt("task_id")
+            val hasNotification = backStackEntry.arguments?.getBoolean("has_notification") ?: false
+            val sharedText = backStackEntry.arguments?.getString("sharedText")
+
             if (taskId != null) {
                 SubTaskScreen(
                     taskId,
                     navController,
                     subTaskViewModel,
                     taskViewModel,
-                    fragmentManager
+                    notificationViewModel,
+                    fragmentManager,
+                    windowSize,
+                    hasNotification,
+                    sharedText
                 )
             }
         }
@@ -67,7 +89,8 @@ fun TaskNavHost(
         composable(NavigationItem.Overview.route) {
             OverviewScreen(navController, taskViewModel)
         }
-        composable("${NavigationItem.AddUpdateTask.route}?taskId={taskId}/{isNewTask}",
+        composable(
+            "${NavigationItem.AddUpdateTask.route}?taskId={taskId}/{isNewTask}?sharedText={sharedText}",
             arguments = listOf(
                 navArgument("taskId") {
                     type = NavType.StringType
@@ -75,17 +98,28 @@ fun TaskNavHost(
                 },
                 navArgument("isNewTask") {
                     type = NavType.BoolType
-                }
-            )
+                    defaultValue = true
+                },
+                navArgument("sharedText") {
+                    type = NavType.StringType
+                    nullable = true
+                    defaultValue = null
+                },
+            ),
+            deepLinks = listOf(navDeepLink {
+                uriPattern = "myapp://kmv.com/shortcut"
+            })
         ) { navBackStackEntry ->
             val taskId = navBackStackEntry.arguments?.getString("taskId")
             val isNewTask = navBackStackEntry.arguments?.getBoolean("isNewTask") ?: true
+            val sharedText = navBackStackEntry.arguments?.getString("sharedText")
             AddUpdateTaskScreen(
                 navController,
                 taskViewModel,
                 isNewTask,
                 taskId,
-                fragmentManager
+                fragmentManager,
+                sharedText
             )
         }
         composable(NavigationItem.Notification.route) {
@@ -93,6 +127,42 @@ fun TaskNavHost(
                 initial = emptyList()
             )
             NotificationScreen(notifications, navController)
+        }
+//                                navController.navigate("${NavigationItem.AddUpdateSubTask.route}?subTaskId=${subTask.id}/${task.id}/false")
+
+        composable(
+            "${NavigationItem.AddUpdateSubTask.route}?subTaskId={subTaskId}/{taskId}/{isNewTask}?sharedText={sharedText}",
+            arguments = listOf(
+                navArgument("taskId") {
+                    type = NavType.StringType
+                    nullable = true
+                },
+                navArgument("isNewTask") {
+                    type = NavType.BoolType
+                    defaultValue = true
+                },
+                navArgument("sharedText") {
+                    type = NavType.StringType
+                    nullable = true
+                    defaultValue = null
+                },
+            )
+        ) { navBackStackEntry ->
+            val subTaskId = navBackStackEntry.arguments?.getString("subTaskId")
+            val taskId = navBackStackEntry.arguments?.getString("taskId")
+            val isNewTask = navBackStackEntry.arguments?.getBoolean("isNewTask") ?: true
+            val sharedText = navBackStackEntry.arguments?.getString("sharedText")
+            if (taskId != null) {
+                AddUpdateSubTaskScreen(
+                    taskId.toInt(),
+                    subTaskId,
+                    isNewTask,
+                    navController,
+                    subTaskViewModel,
+                    fragmentManager,
+                    sharedText
+                )
+            }
         }
     }
 }

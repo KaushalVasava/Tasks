@@ -2,7 +2,6 @@ package com.lahsuak.apps.tasks.ui.screens
 
 import android.app.Activity
 import android.speech.RecognizerIntent
-import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -19,8 +18,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
@@ -89,13 +86,14 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import androidx.preference.PreferenceManager
 import com.lahsuak.apps.tasks.R
-import com.lahsuak.apps.tasks.util.preference.FilterPreferences
 import com.lahsuak.apps.tasks.data.model.SortOrder
 import com.lahsuak.apps.tasks.data.model.Task
 import com.lahsuak.apps.tasks.model.TaskEvent
+import com.lahsuak.apps.tasks.ui.MainActivity
 import com.lahsuak.apps.tasks.ui.navigation.NavigationItem
 import com.lahsuak.apps.tasks.ui.screens.components.ChipGroup
 import com.lahsuak.apps.tasks.ui.screens.components.LinearProgressStatus
+import com.lahsuak.apps.tasks.ui.screens.components.ShareDialog
 import com.lahsuak.apps.tasks.ui.screens.components.TaskItem
 import com.lahsuak.apps.tasks.ui.viewmodel.TaskViewModel
 import com.lahsuak.apps.tasks.util.AppConstants
@@ -103,6 +101,7 @@ import com.lahsuak.apps.tasks.util.AppUtil
 import com.lahsuak.apps.tasks.util.DateUtil
 import com.lahsuak.apps.tasks.util.WindowSize
 import com.lahsuak.apps.tasks.util.WindowType
+import com.lahsuak.apps.tasks.util.preference.FilterPreferences
 import com.lahsuak.apps.tasks.util.rememberWindowSize
 import com.lahsuak.apps.tasks.util.toSortForm
 import kotlin.random.Random
@@ -114,6 +113,10 @@ fun TaskScreen(
     taskViewModel: TaskViewModel,
     windowSize: WindowSize,
 ) {
+    var sharedText by rememberSaveable {
+        mutableStateOf(MainActivity.shareTxt)
+    }
+
     val prefManager = PreferenceManager.getDefaultSharedPreferences(LocalContext.current)
     val showVoiceTask =
         prefManager.getBoolean(AppConstants.SharedPreference.SHOW_VOICE_TASK_KEY, true)
@@ -125,6 +128,32 @@ fun TaskScreen(
             sortOrder = SortOrder.BY_NAME, hideCompleted = false, viewType = false
         )
     )
+    if (sharedText != null && tasks.isNotEmpty()) {
+        var openDialog by rememberSaveable {
+            mutableStateOf(true)
+        }
+        ShareDialog(
+            tasks,
+            openDialog = openDialog,
+            onDialogStatusChange = {
+                openDialog = it
+            },
+            onTaskAddButtonClick = {
+                navController.navigate("${NavigationItem.AddUpdateTask.route}?taskId=null/true?sharedText=$sharedText")
+                openDialog = false
+                sharedText = null
+            },
+            onSaveButtonClick = {
+                navController.navigate("${NavigationItem.SubTask.route}/${it.id}/false?sharedText=$sharedText")
+                openDialog = false
+                sharedText = null
+            }
+        ) {
+            openDialog = false
+            sharedText = null
+        }
+    }
+
     var searchQuery by rememberSaveable {
         mutableStateOf("")
     }
@@ -144,7 +173,8 @@ fun TaskScreen(
             val result1 = data!!.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
             val task = Task(
                 id = 0,
-                title = result1!![0]
+                title = result1!![0],
+                startDate = System.currentTimeMillis()
             )
             taskViewModel.insert(task)
         }
@@ -201,7 +231,6 @@ fun TaskScreen(
                     )
                     when (snackBarResult) {
                         SnackbarResult.Dismissed -> {
-                            Log.d("TAG", "TaskScreen: dismissed")
                         }
 
                         SnackbarResult.ActionPerformed -> {
@@ -339,7 +368,7 @@ fun TaskScreen(
                     if (isFabExtended) {
                         ExtendedFloatingActionButton(
                             onClick = {
-                                navController.navigate("${NavigationItem.AddUpdateTask.route}?taskId=null/true")
+                                navController.navigate("${NavigationItem.AddUpdateTask.route}?taskId=null/true?sharedText=null")
                             }, text = {
                                 Text("Add task")
                             },
@@ -352,7 +381,7 @@ fun TaskScreen(
                         )
                     } else {
                         FloatingActionButton(onClick = {
-                            navController.navigate("${NavigationItem.AddUpdateTask.route}?taskId=null/true")
+                            navController.navigate("${NavigationItem.AddUpdateTask.route}?taskId=null/true?sharedText=null")
                         }) {
                             Icon(
                                 painterResource(id = R.drawable.ic_create),
@@ -367,168 +396,100 @@ fun TaskScreen(
             SnackbarHost(snackBarHostState)
         }
     ) { paddingValue ->
-        if (!isListViewEnable) {
-            LazyColumn(
-                state = lazyListState,
-                modifier = Modifier.padding(paddingValue),
-                contentPadding = PaddingValues(horizontal = 8.dp)
-            ) {
-                item {
-                    HeaderContent(
-                        tasks.filter { it.isDone }.size,
-                        tasks.size,
-                        searchQuery = searchQuery,
-                        onQueryChange = {
-                            searchQuery = it
-                            taskViewModel.searchQuery.value = it
-                        },
-                        isListViewEnable = isListViewEnable,
-                        onViewChange = {
-                            if (tasks.size > 1)
-                                isListViewEnable = it
-                        },
-                        onStatusChange = {
-                            isTaskDone = it
-                        },
-                        status = status.toList(),
-                        selectedStatusIndex = if (isTaskDone) 1 else 0,
-                        sortTypes = sortTypes,
-                        selectedSortIndex = selectedSortIndex,
-                        onSortChange = { index ->
-                            selectedSortIndex = index
-                            taskViewModel.onSortOrderSelected(
-                                SortOrder.getOrder(index),
-                                context
-                            )
-                        },
-                        onProgressBarClick = {
-                            navController.navigate(NavigationItem.Overview.route)
-                        },
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                    Spacer(Modifier.height(8.dp))
-                }
-                items(
-                    tasks.filter { t -> isTaskDone == t.isDone }
-                        .sortedByDescending { t -> t.isImp },
-                    key = { t ->
-                        t.id + Random.nextInt()
-                    }
-                ) { task ->
-                    Row(Modifier.animateItemPlacement()) {
-                        TaskItem(
-                            task = task,
-                            isListViewEnable,
-                            onImpSwipe = { isImp ->
-                                taskViewModel.update(task.copy(isImp = isImp))
-                            },
-                            onItemClick = {
-                                taskViewModel.setTask(task)
-                                navController.navigate("${NavigationItem.SubTask.route}/${task.id}")
-                            },
-                            onCompletedTask = { isCompleted ->
-                                taskViewModel.update(task.copy(isDone = isCompleted))
-                            }
-                        ) { isDone ->
-                            if (isDone) {
-                                taskViewModel.onTaskSwiped(task)
-                                isSnackBarShow = true
-                            } else {
-                                taskViewModel.setTask(task)
-                                navController.navigate("${NavigationItem.AddUpdateTask.route}?taskId=${task.id}/false")
-                            }
-                        }
-                    }
-                    Spacer(Modifier.height(8.dp))
-                }
-            }
-        } else {
-            LazyVerticalStaggeredGrid(
-                modifier = Modifier.padding(paddingValue),
-                contentPadding = PaddingValues(horizontal = 8.dp),
-                columns = StaggeredGridCells.Fixed(
+        LazyVerticalStaggeredGrid(
+            modifier = Modifier.padding(paddingValue),
+            contentPadding = PaddingValues(horizontal = 8.dp),
+            columns = StaggeredGridCells.Fixed(
+                if (isListViewEnable) {
                     when (windowSize.width) {
                         WindowType.Expanded -> 4
+                        WindowType.Medium -> 3
                         else -> 2
                     }
-                ),
-            ) {
-                item(span = StaggeredGridItemSpan.FullLine) {
-                    HeaderContent(
-                        tasks.filter { it.isDone }.size,
-                        tasks.size,
-                        searchQuery = searchQuery,
-                        onQueryChange = {
-                            searchQuery = it
-                            taskViewModel.searchQuery.value = it
-                        },
-                        isListViewEnable = isListViewEnable,
-                        onViewChange = {
-                            isListViewEnable = it
-                        },
-                        onStatusChange = {
-                            isTaskDone = it
-                        },
-                        status = status,
-                        selectedStatusIndex = if (isTaskDone) 1 else 0,
-                        sortTypes = sortTypes,
-                        selectedSortIndex = selectedSortIndex,
-                        onSortChange = { index ->
-                            selectedSortIndex = index
-                            taskViewModel.onSortOrderSelected(
-                                SortOrder.getOrder(index),
-                                context
-                            )
-                        },
-                        onProgressBarClick = {
-                            navController.navigate(NavigationItem.Overview.route)
-                        },
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                    Spacer(Modifier.height(8.dp))
-                }
-                items(
-                    tasks.filter { t -> isTaskDone == t.isDone }
-                        .sortedByDescending { t -> t.isImp },
-                    key = { t ->
-                        t.id + Random.nextInt()
+                } else {
+                    when (windowSize.width) {
+                        WindowType.Expanded -> 3
+                        WindowType.Medium -> 2
+                        else -> 1
                     }
-                ) { task ->
-                    Row(
-                        Modifier
-                            .animateItemPlacement()
-                            .padding(4.dp)
-                    ) {
-                        TaskItem(
-                            task = task,
-                            isListViewEnable,
-                            onImpSwipe = { isImp ->
-                                taskViewModel.update(task.copy(isImp = isImp))
-                            },
-                            onItemClick = {
-                                taskViewModel.setTask(task)
-                                navController.navigate("${NavigationItem.SubTask.route}/${task.id}")
-                            },
-                            onCompletedTask = { isCompleted ->
-                                taskViewModel.update(
-                                    task.copy(
-                                        isDone = isCompleted,
-                                        startDate = System.currentTimeMillis()
-                                    )
+                }
+            ),
+        ) {
+            item(span = StaggeredGridItemSpan.FullLine) {
+                HeaderContent(
+                    tasks.filter { it.isDone }.size,
+                    tasks.size,
+                    searchQuery = searchQuery,
+                    onQueryChange = {
+                        searchQuery = it
+                        taskViewModel.searchQuery.value = it
+                    },
+                    isListViewEnable = isListViewEnable,
+                    onViewChange = {
+                        isListViewEnable = it
+                    },
+                    onStatusChange = {
+                        isTaskDone = it
+                    },
+                    status = status,
+                    selectedStatusIndex = if (isTaskDone) 1 else 0,
+                    sortTypes = sortTypes,
+                    selectedSortIndex = selectedSortIndex,
+                    onSortChange = { index ->
+                        selectedSortIndex = index
+                        taskViewModel.onSortOrderSelected(
+                            SortOrder.getOrder(index),
+                            context
+                        )
+                    },
+                    onProgressBarClick = {
+                        navController.navigate(NavigationItem.Overview.route)
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Spacer(Modifier.height(8.dp))
+            }
+            items(
+                tasks.filter { t -> isTaskDone == t.isDone }
+                    .sortedByDescending { t -> t.isImp },
+                key = { t ->
+                    t.id + Random.nextInt()
+                }
+            ) { task ->
+                Row(
+                    Modifier
+                        .animateItemPlacement()
+                        .padding(4.dp)
+                ) {
+                    TaskItem(
+                        task = task,
+                        isListViewEnable,
+                        onImpSwipe = { isImp ->
+                            taskViewModel.update(task.copy(isImp = isImp))
+                        },
+                        onItemClick = {
+                            taskViewModel.setTask(task)
+                            navController.navigate("${NavigationItem.SubTask.route}/${task.id}/false?sharedText=null")
+                        },
+                        onCompletedTask = { isCompleted ->
+                            taskViewModel.update(
+                                task.copy(
+                                    isDone = isCompleted,
+                                    startDate = System.currentTimeMillis()
                                 )
-                            }
-                        ) { isDone ->
-                            if (isDone) {
-                                taskViewModel.onTaskSwiped(task)
-                                isSnackBarShow = true
-                            } else {
-                                taskViewModel.setTask(task)
-                                navController.navigate("${NavigationItem.AddUpdateTask.route}?taskId=${task.id}/false")
-                            }
+                            )
+                        }
+                    ) { isDone ->
+                        if (isDone) {
+                            taskViewModel.onTaskSwiped(task)
+                            isSnackBarShow = true
+                        } else {
+                            taskViewModel.setTask(task)
+                            navController.navigate("${NavigationItem.AddUpdateTask.route}?taskId=${task.id}/false?sharedText=null")
                         }
                     }
-                    Spacer(Modifier.height(8.dp))
                 }
+                Spacer(Modifier.height(8.dp))
             }
         }
     }

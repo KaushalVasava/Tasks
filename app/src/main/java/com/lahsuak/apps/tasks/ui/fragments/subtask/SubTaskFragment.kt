@@ -134,15 +134,7 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
         initView()
         subTaskViewModel.taskId.value = task.id
         handleReminder()
-        if (args.isSharedSubtask) {
-            val action = SubTaskFragmentDirections.actionSubTaskFragmentToRenameFragmentDialog(
-                true,
-                task.id,
-                args.sharedText,
-                INVALID_ID,
-            )
-            navController.navigate(action)
-        }
+
         addSwipeGesturesHandler() //swipe to delete and mark as imp functionality
         completedSubTaskObserver() //completed and uncompleted task observer
         setSubTaskObserver()
@@ -274,9 +266,6 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
         }
         binding.btnShare.setOnClickListener {
             subTaskViewModel.shareTask(requireContext(), getAllText())
-        }
-        binding.progressBar.setOnClickListener {
-            navController.navigate(R.id.action_subTaskFragment_to_overviewFragment)
         }
         binding.etStartDate.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
@@ -510,11 +499,11 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
                 }
 
                 SubTaskEvent.NavigateToAllCompletedScreen -> {
-                    val action =
-                        SubTaskFragmentDirections.actionGlobalDeleteAllCompletedDialogFragment2(
-                            task.id
-                        )
-                    navController.navigate(action)
+//                    val action =
+//                        SubTaskFragmentDirections.actionGlobalDeleteAllCompletedDialogFragment2(
+//                            task.id
+//                        )
+//                    navController.navigate(action)
                 }
 
                 else -> {}
@@ -523,13 +512,13 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
     }
 
     private fun addNewTask() {
-        val action =
-            SubTaskFragmentDirections.actionSubTaskFragmentToRenameFragmentDialog(
-                true,
-                task.id,
-                null, INVALID_ID
-            )
-        navController.navigate(action)
+//        val action =
+//            SubTaskFragmentDirections.actionSubTaskFragmentToRenameFragmentDialog(
+//                true,
+//                task.id,
+//                null, INVALID_ID
+//            )
+//        navController.navigate(action)
     }
 
     private fun getAllText(): String {
@@ -568,13 +557,13 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
             actionMode!!.title =
                 String.format(getString(R.string.task_selected), counter, subTaskAdapter.itemCount)
         } else {
-            val action = SubTaskFragmentDirections.actionSubTaskFragmentToRenameFragmentDialog(
-                true,
-                task.id,
-                subTask.subTitle,
-                subTask.sId
-            )
-            navController.navigate(action)
+//            val action = SubTaskFragmentDirections.actionSubTaskFragmentToRenameFragmentDialog(
+//                true,
+//                task.id,
+//                subTask.subTitle,
+//                subTask.sId
+//            )
+//            navController.navigate(action)
         }
     }
 
@@ -582,14 +571,14 @@ class SubTaskFragment : Fragment(R.layout.fragment_subtask),
         if (subTask.isDone) {
             subTaskViewModel.showDeleteDialog(requireContext(), subTask)
         } else {
-            val action =
-                SubTaskFragmentDirections.actionSubTaskFragmentToRenameFragmentDialog(
-                    true,
-                    task.id,
-                    subTask.subTitle,
-                    subTask.sId
-                )
-            navController.navigate(action)
+//            val action =
+//                SubTaskFragmentDirections.actionSubTaskFragmentToRenameFragmentDialog(
+//                    true,
+//                    task.id,
+//                    subTask.subTitle,
+//                    subTask.sId
+//                )
+//            navController.navigate(action)
         }
     }
 

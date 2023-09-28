@@ -21,8 +21,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridItemSpan
@@ -47,7 +45,6 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.SnackbarDuration
@@ -56,7 +53,6 @@ import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -92,20 +88,23 @@ import androidx.navigation.NavController
 import androidx.preference.PreferenceManager
 import com.lahsuak.apps.tasks.R
 import com.lahsuak.apps.tasks.TaskApp
+import com.lahsuak.apps.tasks.data.model.Notification
 import com.lahsuak.apps.tasks.data.model.SortOrder
 import com.lahsuak.apps.tasks.data.model.SubTask
-import com.lahsuak.apps.tasks.data.model.Task
 import com.lahsuak.apps.tasks.model.SubTaskEvent
 import com.lahsuak.apps.tasks.ui.navigation.NavigationItem
 import com.lahsuak.apps.tasks.ui.screens.components.ChipGroup
 import com.lahsuak.apps.tasks.ui.screens.components.LinearProgressStatus
 import com.lahsuak.apps.tasks.ui.screens.components.RoundedOutlinedTextField
 import com.lahsuak.apps.tasks.ui.screens.components.SubTaskItem
+import com.lahsuak.apps.tasks.ui.viewmodel.NotificationViewModel
 import com.lahsuak.apps.tasks.ui.viewmodel.SubTaskViewModel
 import com.lahsuak.apps.tasks.ui.viewmodel.TaskViewModel
 import com.lahsuak.apps.tasks.util.AppConstants
 import com.lahsuak.apps.tasks.util.AppUtil
 import com.lahsuak.apps.tasks.util.DateUtil
+import com.lahsuak.apps.tasks.util.WindowSize
+import com.lahsuak.apps.tasks.util.WindowType
 import com.lahsuak.apps.tasks.util.preference.FilterPreferences
 import com.lahsuak.apps.tasks.util.toSortForm
 import kotlin.random.Random
@@ -117,7 +116,11 @@ fun SubTaskScreen(
     navController: NavController,
     subTaskViewModel: SubTaskViewModel,
     taskViewModel: TaskViewModel,
+    notificationViewModel: NotificationViewModel,
     fragmentManager: FragmentManager,
+    windowSize: WindowSize,
+    hasNotification: Boolean,
+    sharedText: String?
 ) {
     val prefManager = PreferenceManager.getDefaultSharedPreferences(LocalContext.current)
     val showVoiceTask =
@@ -153,13 +156,6 @@ fun SubTaskScreen(
         var isSubTaskDone by rememberSaveable {
             mutableStateOf(false)
         }
-        var subTaskId: Int? by rememberSaveable {
-            mutableStateOf(null)
-        }
-        val bottomSheet = rememberModalBottomSheetState()
-        var isBottomSheetOpened by rememberSaveable {
-            mutableStateOf(false)
-        }
 
         val speakLauncher = rememberLauncherForActivityResult(
             ActivityResultContracts.StartActivityForResult()
@@ -168,9 +164,10 @@ fun SubTaskScreen(
                 val data = result.data
                 val result1 = data!!.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
                 val subTask = SubTask(
-                    id = taskId,
+                    id = task.id,
                     sId = 0,
-                    subTitle = result1!![0]
+                    subTitle = result1!![0],
+                    dateTime = System.currentTimeMillis()
                 )
                 subTaskViewModel.insertSubTask(subTask)
             }
@@ -185,24 +182,22 @@ fun SubTaskScreen(
         var reminder by rememberSaveable {
             mutableStateOf(task.reminder)
         }
-
-        if (isBottomSheetOpened) {
-            ModalBottomSheet(
-                sheetState = bottomSheet,
-                onDismissRequest = {
-                    isBottomSheetOpened = false
-                }
-            ) {
-                AddUpdateSubTaskScreen(
-                    taskId = taskId,
-                    subTaskId = subTaskId?.toString(),
-                    isNewTask = isSubTaskDone,
-                    subTaskViewModel = subTaskViewModel,
-                    fragmentManager = fragmentManager
-                ) {
-                    isBottomSheetOpened = false
-                }
+        var isNotified by rememberSaveable {
+            mutableStateOf(hasNotification)
+        }
+        LaunchedEffect(key1 = Unit) {
+            if (isNotified) {
+                subTaskViewModel.cancelReminderCompose(
+                    context,
+                    task
+                )
+                notificationViewModel.insert(
+                    Notification(0, taskId, task.title, System.currentTimeMillis())
+                )
+                reminder = null
+                isNotified = false
             }
+
         }
 
         val sorts = listOf(
@@ -396,9 +391,7 @@ fun SubTaskScreen(
                     }
                     AnimatedVisibility(visible = !isSubTaskDone) {
                         FloatingActionButton(onClick = {
-                            subTaskId = -1
-                            isBottomSheetOpened = !isBottomSheetOpened
-//                            navController.navigate("${NavigationItem.AddUpdateSubTask.route}?subTaskId=null/${task.name}/true")
+                            navController.navigate("${NavigationItem.AddUpdateSubTask.route}?subTaskId=null/${taskId}/true?sharedText=$sharedText")
                         }) {
                             Icon(
                                 painterResource(R.drawable.ic_edit),
@@ -409,272 +402,180 @@ fun SubTaskScreen(
                 }
             }
         ) { paddingValues ->
-            if (!isListViewEnable) {
-                LazyColumn(
-                    Modifier.padding(paddingValues),
-                    contentPadding = PaddingValues(horizontal = 8.dp)
-                ) {
-                    item {
-                        SubtaskHeaderContent(
-                            startDate,
-                            onStartDateChange = {
-                                startDate = it
-                            },
-                            endDate,
-                            onEndDateChange = {
-                                endDate = it
-                            },
-                            setStartDate = {
-                                AppUtil.setDateTimeCompose(
-                                    context,
-                                    fragmentManager
-                                ) { calendar, time ->
-                                    startDate = time
-                                    task = task.copy(
-                                        startDate = calendar.timeInMillis
-                                    )
-                                }
-                            },
-                            setEndDate = {
-                                AppUtil.setDateTimeCompose(
-                                    context,
-                                    fragmentManager
-                                ) { calendar, time ->
-                                    endDate = time
-                                    task = task.copy(
-                                        endDate = calendar.timeInMillis
-                                    )
-                                    taskViewModel.update(task)
-                                }
-                            },
-                            shareTask = {
-                                subTaskViewModel.shareTask(
-                                    context,
-                                    AppUtil.getSubText(subTasks.map { it.subTitle })
-                                )
-                            },
-                            reminder = reminder,
-                            onReminderChange = {
-                                AppUtil.setDateTimeCompose(
-                                    context,
-                                    fragmentManager
-                                ) { calendar, _ ->
-                                    AppUtil.setReminderWorkRequest(
-                                        context,
-                                        task.title,
-                                        task,
-                                        calendar
-                                    )
-                                    task.reminder = calendar.timeInMillis
-                                    reminder = calendar.timeInMillis
-                                }
-                            },
-                            completedSubTask = subTasks.filter { it.isDone }.size,
-                            totalSubTask = subTasks.size,
-                            searchQuery = searchQuery,
-                            color = Color(TaskApp.categoryTypes[task.color].color),
-                            onQueryChange = {
-                                searchQuery = it
-                                subTaskViewModel.searchQuery.value = it
-                            },
-                            isListViewEnable = isListViewEnable,
-                            onViewChange = {
-                                if (subTasks.size > 1)
-                                    isListViewEnable = it
-                            },
-                            onStatusChange = {
-                                isSubTaskDone = it
-                            },
-                            status = status,
-                            selectedStatusIndex = if (isSubTaskDone) 1 else 0,
-                            sortTypes = sortTypes,
-                            selectedSortIndex = selectedSortIndex,
-                            onSortChange = {
-                                selectedSortIndex = it
-                                subTaskViewModel.onSortOrderSelected(
-                                    SortOrder.getOrder(it),
-                                    context
-                                )
-                            }
-                        )
-                    }
-                    items(subTasks.filter { t -> isSubTaskDone == t.isDone }
-                        .sortedByDescending { t -> t.isImportant }, key = {
-                        it.id + Random.nextInt()
-                    }) { subtask ->
-                        Row(Modifier.animateItemPlacement()) {
-                            SubTaskItem(
-                                subtask,
-                                color = Color(TaskApp.categoryTypes[task.color].color),
-                                onImpSwipe = {
-                                    subTaskViewModel.updateSubTask(subtask.copy(isImportant = it))
-                                },
-                                isListViewEnable = isListViewEnable,
-                                onItemClick = {
-                                    subTaskViewModel.setSubTask(subtask)
-                                    isBottomSheetOpened = !isBottomSheetOpened
-                                },
-                                onCompletedTask = { isCompleted ->
-                                    subTaskViewModel.updateSubTask(
-                                        subtask.copy(
-                                            isDone = isCompleted,
-                                            dateTime = System.currentTimeMillis()
-                                        )
-                                    )
-                                }
-                            ) { isDone ->
-                                if (isDone) {
-                                    subTaskViewModel.onSubTaskSwiped(subtask)
-                                    isSnackBarShow = false
-                                } else {
-                                    subTaskViewModel.setSubTask(subtask)
-                                    isBottomSheetOpened = !isBottomSheetOpened
-                                }
-                            }
+            LazyVerticalStaggeredGrid(
+                modifier = Modifier.padding(paddingValues),
+                contentPadding = PaddingValues(horizontal = 8.dp),
+                columns = StaggeredGridCells.Fixed(
+                    if (isListViewEnable) {
+                        when (windowSize.width) {
+                            WindowType.Expanded -> 4
+                            WindowType.Medium -> 3
+                            else -> 2
                         }
-                        Spacer(modifier = Modifier.height(8.dp))
+                    } else {
+                        when (windowSize.width) {
+                            WindowType.Expanded -> 3
+                            WindowType.Medium -> 2
+                            else -> 1
+                        }
                     }
+                ),
+            ) {
+                item(span = StaggeredGridItemSpan.FullLine) {
+                    SubtaskHeaderContent(
+                        startDate,
+                        onStartDateChange = {
+                            startDate = it
+                        },
+                        endDate,
+                        onEndDateChange = {
+                            endDate = it
+                        },
+                        setStartDate = {
+                            AppUtil.setDateTimeCompose(
+                                context,
+                                fragmentManager
+                            ) { calendar, time ->
+                                startDate = time
+                                task = task.copy(
+                                    startDate = calendar.timeInMillis
+                                )
+                            }
+                        },
+                        setEndDate = {
+                            AppUtil.setDateTimeCompose(
+                                context,
+                                fragmentManager
+                            ) { calendar, time ->
+                                endDate = time
+                                task = task.copy(
+                                    endDate = calendar.timeInMillis
+                                )
+                                taskViewModel.update(
+                                    task
+                                )
+                            }
+                        },
+                        shareTask = {
+                            subTaskViewModel.shareTask(
+                                context,
+                                AppUtil.getSubText(subTasks.map { it.subTitle })
+                            )
+                        },
+                        reminder = reminder,
+                        onReminderChange = {
+                            AppUtil.setDateTimeCompose(
+                                context,
+                                fragmentManager
+                            ) { calendar, _ ->
+                                AppUtil.setReminderWorkRequest(
+                                    context,
+                                    task.title,
+                                    task,
+                                    calendar
+                                )
+                                task.reminder = calendar.timeInMillis
+                                reminder = calendar.timeInMillis
+                            }
+                        },
+                        onReminderCancel = {
+                            subTaskViewModel.cancelReminderCompose(
+                                context,
+                                task
+                            )
+                            reminder = null
+                        },
+                        subTasks.filter { it.isDone }.size,
+                        subTasks.size,
+                        searchQuery = searchQuery,
+                        color = Color(TaskApp.categoryTypes[task.color].color),
+                        onQueryChange = {
+                            searchQuery = it
+                            subTaskViewModel.searchQuery.value = it
+                        },
+                        isListViewEnable = isListViewEnable,
+                        onViewChange = {
+                            if (subTasks.size > 1)
+                                isListViewEnable = it
+                        },
+                        onStatusChange = {
+                            isSubTaskDone = it
+                        },
+                        status = status,
+                        selectedStatusIndex = if (isSubTaskDone) 1 else 0,
+                        sortTypes = sortTypes,
+                        selectedSortIndex = selectedSortIndex,
+                        onSortChange = {
+                            selectedSortIndex = it
+                            subTaskViewModel.onSortOrderSelected(
+                                SortOrder.getOrder(it),
+                                context
+                            )
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    )
                 }
-            } else {
-                LazyVerticalStaggeredGrid(
-                    modifier = Modifier.padding(paddingValues),
-                    contentPadding = PaddingValues(horizontal = 8.dp),
-                    columns = StaggeredGridCells.Fixed(2),
-                ) {
-                    item(span = StaggeredGridItemSpan.FullLine) {
-                        SubtaskHeaderContent(
-                            startDate,
-                            onStartDateChange = {
-                                startDate = it
-                            },
-                            endDate,
-                            onEndDateChange = {
-                                endDate = it
-                            },
-                            setStartDate = {
-                                AppUtil.setDateTimeCompose(
-                                    context,
-                                    fragmentManager
-                                ) { calendar, time ->
-                                    startDate = time
-                                    task = task.copy(
-                                        startDate = calendar.timeInMillis
-                                    )
-                                }
-                            },
-                            setEndDate = {
-                                AppUtil.setDateTimeCompose(
-                                    context,
-                                    fragmentManager
-                                ) { calendar, time ->
-                                    endDate = time
-                                    task = task.copy(
-                                        endDate = calendar.timeInMillis
-                                    )
-                                    taskViewModel.update(task)
-                                }
-                            },
-                            shareTask = {
-                                subTaskViewModel.shareTask(
-                                    context,
-                                    AppUtil.getSubText(subTasks.map { it.subTitle })
-                                )
-                            },
-                            reminder = reminder,
-                            onReminderChange = {
-                                AppUtil.setDateTimeCompose(
-                                    context,
-                                    fragmentManager
-                                ) { calendar, _ ->
-                                    AppUtil.setReminderWorkRequest(
-                                        context,
-                                        task.title,
-                                        task,
-                                        calendar
-                                    )
-                                    task.reminder = calendar.timeInMillis
-                                    reminder = calendar.timeInMillis
-                                }
-                            },
-                            subTasks.filter { it.isDone }.size,
-                            subTasks.size,
-                            searchQuery = searchQuery,
+                items(
+                    subTasks.filter { t -> isSubTaskDone == t.isDone }
+                        .sortedByDescending { t -> t.isImportant },
+                    key = { t ->
+                        t.id + Random.nextInt()
+                    }
+                ) { subTask ->
+                    Row(
+                        Modifier
+                            .animateItemPlacement()
+                            .padding(4.dp)
+                    ) {
+                        SubTaskItem(
+                            subTask,
                             color = Color(TaskApp.categoryTypes[task.color].color),
-                            onQueryChange = {
-                                searchQuery = it
-                                subTaskViewModel.searchQuery.value = it
+                            onImpSwipe = {
+                                subTaskViewModel.updateSubTask(subTask.copy(isImportant = it))
                             },
                             isListViewEnable = isListViewEnable,
-                            onViewChange = {
-                                if (subTasks.size > 1)
-                                    isListViewEnable = it
-                            },
-                            onStatusChange = {
-                                isSubTaskDone = it
-                            },
-                            status = status,
-                            selectedStatusIndex = if (isSubTaskDone) 1 else 0,
-                            sortTypes = sortTypes,
-                            selectedSortIndex = selectedSortIndex,
-                            onSortChange = {
-                                selectedSortIndex = it
-                                subTaskViewModel.onSortOrderSelected(
-                                    SortOrder.getOrder(it),
-                                    context
+                            onItemClick = {
+                                subTaskViewModel.setSubTask(subTask)
+                                navController.navigate(
+                                    "${NavigationItem.AddUpdateSubTask.route}?subTaskId=${subTask.id}/${task.id}/false?sharedText=null"
                                 )
                             },
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                    }
-                    items(
-                        subTasks.filter { t -> isSubTaskDone == t.isDone }
-                            .sortedByDescending { t -> t.isImportant },
-                        key = { t ->
-                            t.id + Random.nextInt()
-                        }
-                    ) { subTask ->
-                        Row(
-                            Modifier
-                                .animateItemPlacement()
-                                .padding(4.dp)
-                        ) {
-                            SubTaskItem(
-                                subTask,
-                                color = Color(TaskApp.categoryTypes[task.color].color),
-                                onImpSwipe = {
-                                    subTaskViewModel.updateSubTask(subTask.copy(isImportant = it))
-                                },
-                                isListViewEnable = isListViewEnable,
-                                onItemClick = {
-                                    subTaskViewModel.setSubTask(subTask)
-                                    navController.navigate(
-                                        "${NavigationItem.AddUpdateSubTask.route}?subTaskId=${subTask.id}/${task.id}/false"
+                            onCompletedTask = { isCompleted ->
+                                subTaskViewModel.updateSubTask(
+                                    subTask.copy(
+                                        isDone = isCompleted,
+                                        dateTime = System.currentTimeMillis()
                                     )
-                                },
-                                onCompletedTask = { isCompleted ->
-                                    subTaskViewModel.updateSubTask(
-                                        subTask.copy(
-                                            isDone = isCompleted,
-                                            dateTime = System.currentTimeMillis()
-                                        )
-                                    )
-                                }
-                            ) { isDone ->
-                                if (isDone) {
-                                    subTaskViewModel.onSubTaskSwiped(subTask)
-                                    isSnackBarShow = false
-                                } else {
-                                    subTaskViewModel.setSubTask(subTask)
-                                    navController.navigate("${NavigationItem.AddUpdateSubTask.route}?subTaskId=${subTask.id}/${task.id}/false")
-                                }
+                                )
+                            }
+                        ) { isDone ->
+                            if (isDone) {
+                                subTaskViewModel.onSubTaskSwiped(subTask)
+                                isSnackBarShow = false
+                            } else {
+                                subTaskViewModel.setSubTask(subTask)
+                                navController.navigate(
+                                "${NavigationItem.AddUpdateSubTask.route}?subTaskId=${subTask.id}/${task.id}/false?sharedText=null"
+                                )
                             }
                         }
-                        Spacer(Modifier.height(8.dp))
                     }
+                    Spacer(Modifier.height(8.dp))
                 }
             }
         }
     } else {
+        if (hasNotification || sharedText!=null) {
+            LaunchedEffect(key1 = Unit) {
+                taskViewModel.getById(taskId)
+                if(sharedText!=null){
+                    navController.navigate(
+                        "${NavigationItem.AddUpdateSubTask.route}?subTaskId=null/$taskId/true?sharedText=$sharedText"
+                    )
+                }
+            }
+        }
+
         Box(
             Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
@@ -696,6 +597,7 @@ fun SubtaskHeaderContent(
     shareTask: () -> Unit,
     reminder: Long?,
     onReminderChange: () -> Unit,
+    onReminderCancel: () -> Unit,
     completedSubTask: Int,
     totalSubTask: Int,
     searchQuery: String,
@@ -919,6 +821,12 @@ fun SubtaskHeaderContent(
                     if (reminder != null) DateUtil.getDate(reminder)
                     else stringResource(R.string.add_date_time)
                 )
+            }
+            if (reminder != null) {
+                Spacer(Modifier.width(8.dp))
+                Icon(painterResource(R.drawable.ic_cancel), null, Modifier.clickable {
+                    onReminderCancel()
+                })
             }
             ChipGroup(
                 items = status,

@@ -1,5 +1,6 @@
 package com.lahsuak.apps.tasks.ui.screens
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -36,6 +37,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.FragmentManager
+import androidx.navigation.NavController
 import com.lahsuak.apps.tasks.R
 import com.lahsuak.apps.tasks.data.model.SubTask
 import com.lahsuak.apps.tasks.ui.screens.components.RoundedOutlinedTextField
@@ -50,10 +52,12 @@ fun AddUpdateSubTaskScreen(
     taskId: Int,
     subTaskId: String?,
     isNewTask: Boolean,
+    navController: NavController,
     subTaskViewModel: SubTaskViewModel,
     fragmentManager: FragmentManager,
-    onDismiss: () -> Unit,
+    sharedText: String?
 ) {
+    val context = LocalContext.current
     val keyboard = LocalSoftwareKeyboardController.current
     val focusRequester = remember { FocusRequester() }
 
@@ -73,10 +77,9 @@ fun AddUpdateSubTaskScreen(
         st
     }
 
-    val context = LocalContext.current
     var title by rememberSaveable {
         mutableStateOf(
-            subTask?.subTitle ?: ""
+            subTask?.subTitle ?: (sharedText ?: "")
         )
     }
 
@@ -90,7 +93,6 @@ fun AddUpdateSubTaskScreen(
 
     Column(
         Modifier
-            .fillMaxWidth()
             .padding(vertical = 8.dp)
     ) {
         RoundedOutlinedTextField(
@@ -180,6 +182,7 @@ fun AddUpdateSubTaskScreen(
                             dateTime = System.currentTimeMillis(),
                             reminder = reminder
                         )
+                        subTask.subTitle = title
                         subTaskViewModel.updateSubTask(newTask)
                         subTaskViewModel.resetSubTaskValue()
                     } else {
@@ -194,7 +197,7 @@ fun AddUpdateSubTaskScreen(
                         subTaskViewModel.insertSubTask(newTask)
                         subTaskViewModel.resetSubTaskValue()
                     }
-                    onDismiss()
+                    navController.popBackStack()
                 } else {
                     context.toast {
                         context.getString(R.string.empty_task)

@@ -3,6 +3,8 @@ package com.lahsuak.apps.tasks.ui.screens
 import android.content.res.Configuration
 import android.widget.CalendarView
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -17,6 +19,8 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Card
@@ -76,9 +80,10 @@ fun OverviewScreen(navController: NavController, taskViewModel: TaskViewModel) {
         }
     }
 
+    val scrollState = rememberScrollState()
     Column(
         Modifier
-            .fillMaxSize()
+            .fillMaxSize().scrollable(scrollState, Orientation.Vertical)
     ) {
         TopAppBar(
             title = { Text(stringResource(id = R.string.overview)) },

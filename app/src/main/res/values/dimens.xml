@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="card_popup_animation">12dp</dimen>
+    <dimen name="very_small">12</dimen>
+    <dimen name="medium_small">14</dimen>
+    <dimen name="small">16</dimen>
+    <dimen name="medium">18</dimen>
+    <dimen name="large">20</dimen>
+    <dimen name="huge">22</dimen>
 </resources>

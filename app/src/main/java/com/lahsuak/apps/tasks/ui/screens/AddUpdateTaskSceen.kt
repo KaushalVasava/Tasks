@@ -82,6 +82,7 @@ fun AddUpdateTaskScreen(
     isNewTask: Boolean,
     taskId: String?,
     fragmentManager: FragmentManager,
+    sharedText: String?
 ) {
     val keyboard = LocalSoftwareKeyboardController.current
     val focusRequester = remember { FocusRequester() }
@@ -102,7 +103,7 @@ fun AddUpdateTaskScreen(
     }
     val context = LocalContext.current
     var title by rememberSaveable {
-        mutableStateOf(task?.title ?: "")
+        mutableStateOf(task?.title ?: if(sharedText!==null) sharedText else "")
     }
 
     var isImp by rememberSaveable {
@@ -125,9 +126,6 @@ fun AddUpdateTaskScreen(
     var selectedCategory by remember {
         mutableIntStateOf(0)
     }
-//    var selectedCategory by remember {
-//        mutableStateOf(TaskApp.categoryTypes[task?.color ?: 0].name)
-//    }
 
     var textFieldSize by remember { mutableStateOf(Size.Zero) }
     val subtasks = remember {
@@ -163,12 +161,12 @@ fun AddUpdateTaskScreen(
                 Checkbox(checked = isImp, onCheckedChange = {
                     isImp = it
                 })
-                Text(stringResource(id = R.string.important_task))
+                Text(stringResource(id = R.string.important_task), fontSize = 14.sp)
             }
             TextButton(onClick = { }) {
                 Icon(painterResource(R.drawable.ic_copy), stringResource(R.string.copy_text))
                 Spacer(modifier = Modifier.width(8.dp))
-                Text(stringResource(id = R.string.copy_text))
+                Text(stringResource(id = R.string.copy_text),  fontSize = 14.sp)
             }
             Column {
                 Row(
@@ -190,7 +188,7 @@ fun AddUpdateTaskScreen(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
-                    RoundedColorIcon(color = Color(categories[selectedCategory].color), size = 15.dp,
+                    RoundedColorIcon(color = Color(categories[selectedCategory].color), size = 12.dp,
                         modifier = Modifier.padding(start = 8.dp))
                     Spacer(Modifier.width(4.dp))
                     Text(
@@ -198,7 +196,8 @@ fun AddUpdateTaskScreen(
                         fontWeight = FontWeight.SemiBold,
                         modifier = Modifier
                             .weight(1f),
-                        textAlign = TextAlign.Center
+                        textAlign = TextAlign.Center,
+                        fontSize = 14.sp
                     )
                     Icon(
                         if (isDropDownExpanded)
@@ -229,7 +228,7 @@ fun AddUpdateTaskScreen(
                                 isDropDownExpanded = false
                             },
                             leadingIcon = {
-                                RoundedColorIcon(color = Color(category.color))
+                                RoundedColorIcon(color = Color(category.color), size = 15.dp)
                             }
                         )
                     }

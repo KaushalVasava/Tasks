@@ -30,23 +30,28 @@
 
                 <data android:mimeType="text/plain" />
             </intent-filter>
+            <intent-filter>
+                <data android:scheme="https" android:host="myapp://kmv.com/shortcut" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <action android:name="android.intent.action.VIEW" />
+            </intent-filter>
+            <intent-filter>
+                <data android:scheme="https" android:host="myapp://kmv.com/subtaskscreen/{task}/{has_notification}" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <action android:name="android.intent.action.VIEW" />
+            </intent-filter>
 
-            <nav-graph android:value="@navigation/main_nav_graph" />
-            <meta-data
-                android:name="android.app.shortcuts"
-                android:resource="@xml/shortcuts" />
         </activity>
 
-        <receiver
-            android:name="com.lahsuak.apps.tasks.ui.widget.TaskWidget"
-            android:exported="true">
+        <receiver android:name="com.lahsuak.apps.tasks.ui.widget.TaskWidgetReceiver" android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
-
             <meta-data
                 android:name="android.appwidget.provider"
-                android:resource="@xml/example_appwidget_info" />
+                android:resource="@xml/counter_widget_info" />
         </receiver>
     </application>
 
