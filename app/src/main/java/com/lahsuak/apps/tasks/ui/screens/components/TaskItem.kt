@@ -1,11 +1,13 @@
 package com.lahsuak.apps.tasks.ui.screens.components
 
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,6 +24,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.DismissDirection
 import androidx.compose.material3.DismissState
@@ -59,6 +62,7 @@ import androidx.preference.PreferenceManager
 import com.lahsuak.apps.tasks.R
 import com.lahsuak.apps.tasks.TaskApp
 import com.lahsuak.apps.tasks.data.model.Task
+import com.lahsuak.apps.tasks.ui.navigation.NavigationItem
 import com.lahsuak.apps.tasks.util.AppConstants.SharedPreference.FONT_SIZE_KEY
 import com.lahsuak.apps.tasks.util.AppConstants.SharedPreference.INITIAL_FONT_SIZE
 import com.lahsuak.apps.tasks.util.AppConstants.SharedPreference.SHOW_REMINDER_KEY
@@ -68,13 +72,17 @@ import com.lahsuak.apps.tasks.util.AppUtil
 import com.lahsuak.apps.tasks.util.DateUtil
 import kotlinx.coroutines.delay
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
+@OptIn(
+    ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class,
+    ExperimentalFoundationApi::class
+)
 @Composable
 fun TaskItem(
+    modifier:Modifier = Modifier,
     task: Task,
     isListViewEnable: Boolean,
     onImpSwipe: (Boolean) -> Unit,
-    onItemClick: () -> Unit,
+    onCancelReminder: () -> Unit,
     onCompletedTask: (Boolean) -> Unit,
     onEditIconClick: (Boolean) -> Unit,
 ) {
@@ -98,6 +106,9 @@ fun TaskItem(
         mutableStateOf(task.isDone)
     }
 
+//    var selected by rememberSaveable {
+//        mutableStateOf(isSelected)
+//    }
     var show by rememberSaveable { mutableStateOf(true) }
     val dismissState = rememberDismissState(
         confirmValueChange = {
@@ -118,9 +129,7 @@ fun TaskItem(
             },
             dismissContent = {
                 Column(
-                    Modifier
-                        .fillMaxWidth()
-                        .clickable { onItemClick() }
+                    modifier.fillMaxWidth()
                         .clip(RoundedCornerShape(8.dp))
                         .background(Color(TaskApp.categoryTypes[task.color].color).copy(alpha = 0.30f))
                 ) {
@@ -143,7 +152,9 @@ fun TaskItem(
                                     onCompletedTask(it)
                                     isChecked = it
                                 },
-                                modifier = Modifier.align(Alignment.CenterVertically)
+                                modifier = Modifier
+                                    .size(40.dp)
+                                    .align(Alignment.CenterVertically)
                             )
                             Column {
                                 FlowRow(
@@ -161,15 +172,17 @@ fun TaskItem(
                                         modifier = Modifier.padding(top = 8.dp)
                                     )
                                     Row {
-                                        IconButton(onClick = {
-                                            // expand list
-                                            isExpanded = !isExpanded
-                                        }) {
-                                            Icon(
-                                                painterResource(id = R.drawable.ic_expand_more),
-                                                modifier = Modifier.rotate(if (isExpanded) 180f else 0f),
-                                                contentDescription = null
-                                            )
+                                        if (task.subTaskList != null) {
+                                            IconButton(onClick = {
+                                                // expand list
+                                                isExpanded = !isExpanded
+                                            }) {
+                                                Icon(
+                                                    painterResource(id = R.drawable.ic_expand_more),
+                                                    modifier = Modifier.rotate(if (isExpanded) 180f else 0f),
+                                                    contentDescription = null
+                                                )
+                                            }
                                         }
                                         IconButton(onClick = {
                                             onEditIconClick(isChecked)
@@ -205,7 +218,7 @@ fun TaskItem(
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .padding(end = 8.dp, bottom = 8.dp),
-                                    maxItemsInEachRow = if(isLandScape) 4 else 3,
+                                    maxItemsInEachRow = if (isLandScape) 4 else 3,
                                     verticalArrangement = Arrangement.spacedBy(8.dp),
                                     horizontalArrangement = Arrangement.SpaceBetween
                                 ) {
@@ -269,13 +282,24 @@ fun TaskItem(
                                             )
                                             Spacer(
                                                 Modifier
-                                                    .width(4.dp)
+                                                    .width(2.dp)
                                                     .align(Alignment.Bottom)
                                             )
                                             Text(
                                                 DateUtil.getDate(task.reminder!!),
                                                 color = Color.Black,
                                                 fontSize = 10.sp
+                                            )
+                                            Icon(
+                                                painterResource(
+                                                    R.drawable.ic_cancel
+                                                ), stringResource(
+                                                    R.string.cancel_reminder
+                                                ),
+                                                tint = Color.Black,
+                                                modifier = Modifier.clickable {
+                                                    onCancelReminder()
+                                                }
                                             )
                                         }
                                     }
@@ -347,19 +371,20 @@ fun DismissBackground(dismissState: DismissState) {
     }
 }
 
-@Preview()
-@Composable
-fun TaskItemPreview() {
-    val task = Task(
-        0,
-        "Hello sfddjkssdkjsdjsdksdsjkdjksdsdjsjdskdksdjsjkdsjkdsjkdjksdsjkdsjkdsjkdjsdkdjksd",
-        subTaskList = "Hello"
-    )
-    TaskItem(
-        task = task,
-        isListViewEnable = false,
-        onImpSwipe = {},
-        onItemClick = {},
-        onCompletedTask = {}) {
-    }
-}
+//@Preview()
+//@Composable
+//fun TaskItemPreview() {
+//    val task = Task(
+//        0,
+//        "Hello sfddjkssdkjsdjsdksdsjkdjksdsdjsjdskdksdjsjkdsjkdsjkdjksdsjkdsjkdsjkdjsdkdjksd",
+//        subTaskList = "Hello"
+//    )
+//    TaskItem(
+//        task = task,
+//        isListViewEnable = false,
+//        onImpSwipe = {},
+//        isSelected = false,
+//        onCancelReminder = {},
+//        onCompletedTask = {}) {
+//    }
+//}

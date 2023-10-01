@@ -16,12 +16,9 @@ import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.net.toUri
-import androidx.navigation.NavDeepLinkBuilder
 import com.lahsuak.apps.tasks.R
-import com.lahsuak.apps.tasks.data.model.Notification
 import com.lahsuak.apps.tasks.data.model.Task
 import com.lahsuak.apps.tasks.ui.MainActivity
-import com.lahsuak.apps.tasks.ui.fragments.subtask.SubTaskFragmentArgs
 
 object NotificationUtil {
     @SuppressLint("MissingPermission")

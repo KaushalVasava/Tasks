@@ -1,8 +1,6 @@
 package com.lahsuak.apps.tasks.ui.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.fragment.app.FragmentManager
 import androidx.navigation.NavHostController
@@ -11,8 +9,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
-import com.lahsuak.apps.tasks.ui.screens.AddUpdateSubTaskScreen
-import com.lahsuak.apps.tasks.ui.screens.AddUpdateTaskScreen
+import com.lahsuak.apps.tasks.ui.screens.dialog.AddUpdateSubTaskScreen
+import com.lahsuak.apps.tasks.ui.screens.dialog.AddUpdateTaskScreen
 import com.lahsuak.apps.tasks.ui.screens.NotificationScreen
 import com.lahsuak.apps.tasks.ui.screens.OverviewScreen
 import com.lahsuak.apps.tasks.ui.screens.SettingScreen
@@ -42,10 +40,11 @@ fun TaskNavHost(
             TaskScreen(
                 navController,
                 taskViewModel,
-                windowSize
+                windowSize,
+                fragmentManager
             )
         }
-        composable("${NavigationItem.SubTask.route}/{task_id}/{has_notification}?sharedText={sharedText}",
+        composable("${NavigationItem.SubTask.route}/{task_id}/{has_notification}",
             arguments = listOf(
                 navArgument("task_id") {
                     type = NavType.IntType
@@ -53,11 +52,6 @@ fun TaskNavHost(
                 navArgument("has_notification") {
                     type = NavType.BoolType
                     defaultValue = false
-                },
-                navArgument("sharedText") {
-                    type = NavType.StringType
-                    defaultValue = null
-                    nullable = true
                 }
             ),
             deepLinks = listOf(navDeepLink {
@@ -67,8 +61,6 @@ fun TaskNavHost(
         ) { backStackEntry ->
             val taskId = backStackEntry.arguments?.getInt("task_id")
             val hasNotification = backStackEntry.arguments?.getBoolean("has_notification") ?: false
-            val sharedText = backStackEntry.arguments?.getString("sharedText")
-
             if (taskId != null) {
                 SubTaskScreen(
                     taskId,
@@ -78,8 +70,7 @@ fun TaskNavHost(
                     notificationViewModel,
                     fragmentManager,
                     windowSize,
-                    hasNotification,
-                    sharedText
+                    hasNotification
                 )
             }
         }
@@ -113,6 +104,7 @@ fun TaskNavHost(
             val taskId = navBackStackEntry.arguments?.getString("taskId")
             val isNewTask = navBackStackEntry.arguments?.getBoolean("isNewTask") ?: true
             val sharedText = navBackStackEntry.arguments?.getString("sharedText")
+
             AddUpdateTaskScreen(
                 navController,
                 taskViewModel,
@@ -120,15 +112,11 @@ fun TaskNavHost(
                 taskId,
                 fragmentManager,
                 sharedText
-            )
+            ){}
         }
         composable(NavigationItem.Notification.route) {
-            val notifications by notificationViewModel.notifications.collectAsState(
-                initial = emptyList()
-            )
-            NotificationScreen(notifications, navController)
+            NotificationScreen(notificationViewModel, navController)
         }
-//                                navController.navigate("${NavigationItem.AddUpdateSubTask.route}?subTaskId=${subTask.id}/${task.id}/false")
 
         composable(
             "${NavigationItem.AddUpdateSubTask.route}?subTaskId={subTaskId}/{taskId}/{isNewTask}?sharedText={sharedText}",
@@ -160,8 +148,8 @@ fun TaskNavHost(
                     navController,
                     subTaskViewModel,
                     fragmentManager,
-                    sharedText
-                )
+                    sharedText,
+                ){}
             }
         }
     }

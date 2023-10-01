@@ -2,13 +2,17 @@ package com.lahsuak.apps.tasks.ui.screens
 
 import android.app.Activity
 import android.speech.RecognizerIntent
+import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -23,16 +27,16 @@ import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridItemSpan
 import androidx.compose.foundation.lazy.staggeredgrid.items
+import androidx.compose.foundation.lazy.staggeredgrid.itemsIndexed
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
-import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -43,16 +47,18 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -68,6 +74,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
@@ -78,14 +85,13 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.fragment.app.FragmentManager
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import androidx.preference.PreferenceManager
 import com.lahsuak.apps.tasks.R
+import com.lahsuak.apps.tasks.data.model.Selection
 import com.lahsuak.apps.tasks.data.model.SortOrder
 import com.lahsuak.apps.tasks.data.model.Task
 import com.lahsuak.apps.tasks.model.TaskEvent
@@ -95,6 +101,7 @@ import com.lahsuak.apps.tasks.ui.screens.components.ChipGroup
 import com.lahsuak.apps.tasks.ui.screens.components.LinearProgressStatus
 import com.lahsuak.apps.tasks.ui.screens.components.ShareDialog
 import com.lahsuak.apps.tasks.ui.screens.components.TaskItem
+import com.lahsuak.apps.tasks.ui.screens.dialog.AddUpdateTaskScreen
 import com.lahsuak.apps.tasks.ui.viewmodel.TaskViewModel
 import com.lahsuak.apps.tasks.util.AppConstants
 import com.lahsuak.apps.tasks.util.AppUtil
@@ -102,7 +109,6 @@ import com.lahsuak.apps.tasks.util.DateUtil
 import com.lahsuak.apps.tasks.util.WindowSize
 import com.lahsuak.apps.tasks.util.WindowType
 import com.lahsuak.apps.tasks.util.preference.FilterPreferences
-import com.lahsuak.apps.tasks.util.rememberWindowSize
 import com.lahsuak.apps.tasks.util.toSortForm
 import kotlin.random.Random
 
@@ -112,6 +118,7 @@ fun TaskScreen(
     navController: NavController,
     taskViewModel: TaskViewModel,
     windowSize: WindowSize,
+    fragmentManager: FragmentManager,
 ) {
     var sharedText by rememberSaveable {
         mutableStateOf(MainActivity.shareTxt)
@@ -128,6 +135,37 @@ fun TaskScreen(
             sortOrder = SortOrder.BY_NAME, hideCompleted = false, viewType = false
         )
     )
+
+    var taskId: String? by rememberSaveable {
+        mutableStateOf(null)
+    }
+    var isNewTask by rememberSaveable {
+        mutableStateOf(true)
+    }
+    val bottomSheet = rememberModalBottomSheetState()
+    var isBottomSheetOpened by rememberSaveable {
+        mutableStateOf(false)
+    }
+    if (isBottomSheetOpened) {
+        ModalBottomSheet(
+            sheetState = bottomSheet,
+            onDismissRequest = {
+                isBottomSheetOpened = false
+            }
+        ) {
+            AddUpdateTaskScreen(
+                navController = navController,
+                taskViewModel = taskViewModel,
+                isNewTask = isNewTask,
+                taskId = taskId,
+                fragmentManager = fragmentManager,
+                sharedText = sharedText
+            ) {
+                isBottomSheetOpened = false
+            }
+        }
+    }
+
     if (sharedText != null && tasks.isNotEmpty()) {
         var openDialog by rememberSaveable {
             mutableStateOf(true)
@@ -139,12 +177,14 @@ fun TaskScreen(
                 openDialog = it
             },
             onTaskAddButtonClick = {
-                navController.navigate("${NavigationItem.AddUpdateTask.route}?taskId=null/true?sharedText=$sharedText")
+                taskId = null
+                isNewTask = true
+                isBottomSheetOpened = true
                 openDialog = false
                 sharedText = null
             },
             onSaveButtonClick = {
-                navController.navigate("${NavigationItem.SubTask.route}/${it.id}/false?sharedText=$sharedText")
+                navController.navigate("${NavigationItem.SubTask.route}/${it.id}/false")
                 openDialog = false
                 sharedText = null
             }
@@ -243,49 +283,26 @@ fun TaskScreen(
 
             TaskEvent.NavigateToAllCompletedScreen -> {
                 if (openDialog) {
-                    // below line is use to
-                    // display a alert dialog.
                     AlertDialog(
-                        // on dialog dismiss we are setting
-                        // our dialog value to false.
                         onDismissRequest = { openDialog = false },
-
-                        // below line is use to display title of our dialog
-                        // box and we are setting text color to white.
                         title = { Text(text = stringResource(id = R.string.confirm_deletion)) },
-
-                        // below line is use to display
-                        // description to our alert dialog.
                         text = { Text(stringResource(id = R.string.delete_completed_task)) },
-
-                        // in below line we are displaying
-                        // our confirm button.
                         confirmButton = {
-                            // below line we are adding on click
-                            // listener for our confirm button.
                             TextButton(
                                 onClick = {
                                     openDialog = false
                                     taskViewModel.deleteCompletedTask()
                                 }
                             ) {
-                                // in this line we are adding
-                                // text for our confirm button.
                                 Text(stringResource(id = R.string.delete))
                             }
                         },
-                        // in below line we are displaying
-                        // our dismiss button.
                         dismissButton = {
-                            // in below line we are displaying
-                            // our text button
                             TextButton(
-                                // adding on click listener for this button
                                 onClick = {
                                     openDialog = false
                                 }
                             ) {
-                                // adding text to our button.
                                 Text(stringResource(id = R.string.cancel))
                             }
                         },
@@ -297,96 +314,196 @@ fun TaskScreen(
         }
     }
 
+
+    var actionMode by rememberSaveable {
+        mutableStateOf(false)
+    }
+
+    val selectedItems = remember {
+        mutableStateListOf<Task>()
+    }
+
+    val resetSelectionMode = {
+        actionMode = false
+        selectedItems.clear()
+    }
+
+    BackHandler(
+        enabled = actionMode,
+    ) {
+        resetSelectionMode()
+    }
+
+    LaunchedEffect(
+        key1 = actionMode,
+        key2 = selectedItems.size,
+    ) {
+        if (actionMode && selectedItems.isEmpty()) {
+            actionMode = false
+        }
+    }
+
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        DateUtil.getToolbarDateTime(System.currentTimeMillis()),
-                        fontFamily = FontFamily.SansSerif,
-                        fontWeight = FontWeight.SemiBold
-                    )
-                },
-                actions = {
-                    Row {
+            if (actionMode) {
+                TopAppBar(
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = Color.Black,
+                        navigationIconContentColor = Color.White,
+                        titleContentColor = Color.White,
+                        actionIconContentColor = Color.White
+                    ),
+                    title = {
+                        Text(
+                            stringResource(
+                                id = R.string.task_selected,
+                                selectedItems.size,
+                                tasks.size
+                            ),
+                            fontFamily = FontFamily.SansSerif,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    },
+                    navigationIcon = {
                         IconButton(onClick = {
-                            navController.navigate(NavigationItem.Notification.route)
+                            resetSelectionMode()
                         }) {
                             Icon(
-                                Icons.Default.Notifications,
-                                contentDescription = "notifications"
+                                painterResource(id = R.drawable.ic_back),
+                                stringResource(id = R.string.back)
                             )
                         }
-                        IconButton(onClick = {
-                            navController.navigate(NavigationItem.Setting.route)
-                        }) {
-                            Icon(
-                                Icons.Default.Settings,
-                                contentDescription = "settings"
-                            )
+                    },
+                    actions = {
+                        Row {
+                            IconButton(onClick = {
+                                if (selectedItems.size == tasks.size) {
+                                    selectedItems.clear()
+                                } else {
+                                    selectedItems.clear()
+                                    selectedItems.addAll(tasks)
+                                }
+                            }) {
+                                Icon(
+                                    painterResource(
+                                        if (selectedItems.size == tasks.size)
+                                            R.drawable.ic_select_all_on
+                                        else R.drawable.ic_select_all
+                                    ),
+                                    stringResource(id = R.string.select_all)
+                                )
+                            }
+                            IconButton(onClick = {
+                                // delete selected items
+                                selectedItems.map {
+                                    taskViewModel.delete(it)
+                                }
+                            }) {
+                                Icon(
+                                    painterResource(id = R.drawable.ic_delete),
+                                    stringResource(id = R.string.delete_task)
+                                )
+                            }
                         }
                     }
-                }
-            )
+                )
+            } else {
+                TopAppBar(
+                    title = {
+                        Text(
+                            DateUtil.getToolbarDateTime(System.currentTimeMillis()),
+                            fontFamily = FontFamily.SansSerif,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    },
+                    actions = {
+                        Row {
+                            IconButton(onClick = {
+                                navController.navigate(NavigationItem.Notification.route)
+                            }) {
+                                Icon(
+                                    painterResource(id = R.drawable.ic_reminder),
+                                    stringResource(id = R.string.notifications)
+                                )
+                            }
+                            IconButton(onClick = {
+                                navController.navigate(NavigationItem.Setting.route)
+                            }) {
+                                Icon(
+                                    painterResource(id = R.drawable.ic_settings),
+                                    stringResource(id = R.string.settings)
+                                )
+                            }
+                        }
+
+                    }
+                )
+            }
         },
         floatingActionButtonPosition = FabPosition.Center,
         floatingActionButton = {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-                horizontalArrangement =
-                if (isTaskDone)
-                    Arrangement.Center
-                else
-                    Arrangement.SpaceBetween,
-            ) {
-                AnimatedVisibility(visible = showVoiceTask && !isTaskDone) {
-                    FloatingActionButton(onClick = {
-                        AppUtil.speakToAddTaskCompose(context, speakLauncher)
-                    }) {
-                        Icon(
-                            painterResource(id = R.drawable.ic_mic),
-                            contentDescription = stringResource(id = R.string.add_task)
-                        )
-                    }
-                }
-                AnimatedVisibility(visible = isTaskDone) {
-                    FloatingActionButton(
-                        onClick = {
-                            taskViewModel.onDeleteAllCompletedClick()
-                            openDialog = true
-                        },
-                    ) {
-                        Icon(
-                            Icons.Default.Delete,
-                            contentDescription = stringResource(id = R.string.delete_task)
-                        )
-                    }
-                }
-                AnimatedVisibility(visible = !isTaskDone) {
-                    if (isFabExtended) {
-                        ExtendedFloatingActionButton(
-                            onClick = {
-                                navController.navigate("${NavigationItem.AddUpdateTask.route}?taskId=null/true?sharedText=null")
-                            }, text = {
-                                Text("Add task")
-                            },
-                            icon = {
-                                Icon(
-                                    painterResource(id = R.drawable.ic_create),
-                                    contentDescription = stringResource(id = R.string.add_task)
-                                )
-                            }
-                        )
-                    } else {
+            if (!actionMode) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                    horizontalArrangement =
+                    if (isTaskDone)
+                        Arrangement.Center
+                    else
+                        Arrangement.SpaceBetween,
+                ) {
+                    AnimatedVisibility(visible = showVoiceTask && !isTaskDone) {
                         FloatingActionButton(onClick = {
-                            navController.navigate("${NavigationItem.AddUpdateTask.route}?taskId=null/true?sharedText=null")
+                            AppUtil.speakToAddTaskCompose(context, speakLauncher)
                         }) {
                             Icon(
-                                painterResource(id = R.drawable.ic_create),
+                                painterResource(id = R.drawable.ic_mic),
                                 contentDescription = stringResource(id = R.string.add_task)
                             )
+                        }
+                    }
+                    AnimatedVisibility(visible = isTaskDone) {
+                        FloatingActionButton(
+                            onClick = {
+                                taskViewModel.onDeleteAllCompletedClick()
+                                openDialog = true
+                            },
+                        ) {
+                            Icon(
+                                Icons.Default.Delete,
+                                contentDescription = stringResource(id = R.string.delete_task)
+                            )
+                        }
+                    }
+                    AnimatedVisibility(visible = !isTaskDone) {
+                        if (isFabExtended) {
+                            ExtendedFloatingActionButton(
+                                onClick = {
+                                    taskId = null
+                                    isNewTask = true
+                                    isBottomSheetOpened = true
+                                }, text = {
+                                    Text(stringResource(R.string.add_task))
+                                },
+                                icon = {
+                                    Icon(
+                                        painterResource(id = R.drawable.ic_create),
+                                        stringResource(id = R.string.add_task)
+                                    )
+                                }
+                            )
+                        } else {
+                            FloatingActionButton(onClick = {
+                                taskId = null
+                                isNewTask = true
+                                isBottomSheetOpened = true
+                            }) {
+                                Icon(
+                                    painterResource(id = R.drawable.ic_create),
+                                    stringResource(id = R.string.add_task)
+                                )
+                            }
                         }
                     }
                 }
@@ -416,38 +533,40 @@ fun TaskScreen(
             ),
         ) {
             item(span = StaggeredGridItemSpan.FullLine) {
-                HeaderContent(
-                    tasks.filter { it.isDone }.size,
-                    tasks.size,
-                    searchQuery = searchQuery,
-                    onQueryChange = {
-                        searchQuery = it
-                        taskViewModel.searchQuery.value = it
-                    },
-                    isListViewEnable = isListViewEnable,
-                    onViewChange = {
-                        isListViewEnable = it
-                    },
-                    onStatusChange = {
-                        isTaskDone = it
-                    },
-                    status = status,
-                    selectedStatusIndex = if (isTaskDone) 1 else 0,
-                    sortTypes = sortTypes,
-                    selectedSortIndex = selectedSortIndex,
-                    onSortChange = { index ->
-                        selectedSortIndex = index
-                        taskViewModel.onSortOrderSelected(
-                            SortOrder.getOrder(index),
-                            context
-                        )
-                    },
-                    onProgressBarClick = {
-                        navController.navigate(NavigationItem.Overview.route)
-                    },
-                    modifier = Modifier.fillMaxWidth()
-                )
-                Spacer(Modifier.height(8.dp))
+                AnimatedVisibility(!actionMode) {
+                    HeaderContent(
+                        tasks.filter { it.isDone }.size,
+                        tasks.size,
+                        searchQuery = searchQuery,
+                        onQueryChange = {
+                            searchQuery = it
+                            taskViewModel.searchQuery.value = it
+                        },
+                        isListViewEnable = isListViewEnable,
+                        onViewChange = {
+                            isListViewEnable = it
+                        },
+                        onStatusChange = {
+                            isTaskDone = it
+                        },
+                        status = status,
+                        selectedStatusIndex = if (isTaskDone) 1 else 0,
+                        sortTypes = sortTypes,
+                        selectedSortIndex = selectedSortIndex,
+                        onSortChange = { index ->
+                            selectedSortIndex = index
+                            taskViewModel.onSortOrderSelected(
+                                SortOrder.getOrder(index),
+                                context
+                            )
+                        },
+                        onProgressBarClick = {
+                            navController.navigate(NavigationItem.Overview.route)
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    Spacer(Modifier.height(8.dp))
+                }
             }
             items(
                 tasks.filter { t -> isTaskDone == t.isDone }
@@ -456,36 +575,77 @@ fun TaskScreen(
                     t.id + Random.nextInt()
                 }
             ) { task ->
+                val isSelected =
+                    selectedItems.contains(task)
                 Row(
                     Modifier
                         .animateItemPlacement()
                         .padding(4.dp)
                 ) {
                     TaskItem(
+                        Modifier
+                            .combinedClickable(
+                                onClick = {
+                                    if (actionMode) {
+                                        if (isSelected)
+                                            selectedItems.remove(task)
+                                        else
+                                            selectedItems.add(task)
+                                    } else {
+                                        taskViewModel.setTask(task)
+                                        navController.navigate("${NavigationItem.SubTask.route}/${task.id}/false")
+                                    }
+                                },
+                                onLongClick = {
+                                    if (actionMode) {
+                                        if (isSelected)
+                                            selectedItems.remove(task)
+                                        else
+                                            selectedItems.add(task)
+                                    } else {
+                                        actionMode = true
+                                        selectedItems.add(task)
+                                    }
+                                },
+                            )
+                            .border(
+                                if (isSelected) 2.dp else (-1).dp,
+                                color = MaterialTheme.colorScheme.primary,
+                                RoundedCornerShape(8.dp)
+                            ),
                         task = task,
-                        isListViewEnable,
+                        isListViewEnable = isListViewEnable,
                         onImpSwipe = { isImp ->
                             taskViewModel.update(task.copy(isImp = isImp))
                         },
-                        onItemClick = {
-                            taskViewModel.setTask(task)
-                            navController.navigate("${NavigationItem.SubTask.route}/${task.id}/false?sharedText=null")
+                        onCancelReminder = {
+                            if (!actionMode) {
+                                task.copy(
+                                    reminder = null
+                                )
+                            }
                         },
                         onCompletedTask = { isCompleted ->
-                            taskViewModel.update(
-                                task.copy(
-                                    isDone = isCompleted,
-                                    startDate = System.currentTimeMillis()
+                            if (!actionMode) {
+                                taskViewModel.update(
+                                    task.copy(
+                                        isDone = isCompleted,
+                                        startDate = System.currentTimeMillis()
+                                    )
                                 )
-                            )
+                            }
                         }
                     ) { isDone ->
-                        if (isDone) {
-                            taskViewModel.onTaskSwiped(task)
-                            isSnackBarShow = true
-                        } else {
-                            taskViewModel.setTask(task)
-                            navController.navigate("${NavigationItem.AddUpdateTask.route}?taskId=${task.id}/false?sharedText=null")
+                        if (!actionMode) {
+                            if (isDone) {
+                                taskViewModel.onTaskSwiped(task)
+                                isSnackBarShow = true
+                            } else {
+                                taskViewModel.setTask(task)
+                                taskId = task.id.toString()
+                                isNewTask = false
+                                isBottomSheetOpened = true
+                            }
                         }
                     }
                 }
@@ -653,22 +813,6 @@ fun HeaderContent(
             ) { index ->
                 onStatusChange(index != 0)
             }
-        }
-    }
-}
-
-@Preview
-@Composable
-fun PreviewTaskScreen() {
-    val taskViewModel: TaskViewModel = viewModel()
-
-    MaterialTheme {
-        Surface(Modifier.background(MaterialTheme.colorScheme.background)) {
-            TaskScreen(
-                navController = rememberNavController(),
-                taskViewModel = taskViewModel,
-                rememberWindowSize()
-            )
         }
     }
 }

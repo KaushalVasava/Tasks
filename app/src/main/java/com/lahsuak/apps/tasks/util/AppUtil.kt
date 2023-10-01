@@ -425,7 +425,6 @@ object AppUtil {
         }
         return sendtxt
     }
-
 }
 
 fun TextView.setTextDrawableColor(context: Context, colorId: Int) {

@@ -42,7 +42,9 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>
-
+            <meta-data
+                android:name="android.app.shortcuts"
+                android:resource="@xml/shortcuts" />
         </activity>
 
         <receiver android:name="com.lahsuak.apps.tasks.ui.widget.TaskWidgetReceiver" android:exported="true">

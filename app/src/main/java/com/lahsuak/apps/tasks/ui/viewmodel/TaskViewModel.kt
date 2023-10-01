@@ -16,6 +16,7 @@ import com.lahsuak.apps.tasks.data.repository.TaskRepository
 import com.lahsuak.apps.tasks.model.TaskEvent
 import com.lahsuak.apps.tasks.util.AppConstants.SEARCH_INITIAL_VALUE
 import com.lahsuak.apps.tasks.util.AppConstants.SEARCH_QUERY
+import com.lahsuak.apps.tasks.util.toast
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -142,5 +143,16 @@ class TaskViewModel @Inject constructor(
 
     fun setTask(task: Task){
         _taskFlow.value = task
+    }
+
+    fun cancelReminderCompose(
+        context: Context,
+        task: Task
+    ) {
+        task.reminder = null
+        update(task)
+        context.toast {
+            context.getString(R.string.cancel_reminder)
+        }
     }
 }

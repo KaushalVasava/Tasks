@@ -3,6 +3,7 @@ package com.lahsuak.apps.tasks.ui.viewmodel
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.FragmentActivity
@@ -104,6 +105,7 @@ class SubTaskViewModel @Inject constructor(
     }
 
     fun updateSubTask(subTask: SubTask) = viewModelScope.launch(Dispatchers.IO) {
+        Log.d("TAG", "updateSubTask: ${subTask.subTitle}")
         repository.updateSubTask(subTask)
     }
 
@@ -178,16 +180,6 @@ class SubTaskViewModel @Inject constructor(
         }
     }
 
-    fun cancelReminderCompose(
-        context: Context,
-        task: Task
-    ) {
-        task.reminder = null
-        update(task)
-        context.toast {
-            context.getString(R.string.cancel_reminder)
-        }
-    }
     fun cancelSubTaskReminder(
         context: Context,
         subTask: SubTask,

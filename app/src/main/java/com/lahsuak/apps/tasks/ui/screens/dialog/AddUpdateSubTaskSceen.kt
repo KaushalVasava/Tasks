@@ -1,4 +1,4 @@
-package com.lahsuak.apps.tasks.ui.screens
+package com.lahsuak.apps.tasks.ui.screens.dialog
 
 import android.util.Log
 import androidx.compose.foundation.background
@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.selection.toggleable
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
@@ -28,14 +30,18 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.fragment.app.FragmentManager
 import androidx.navigation.NavController
 import com.lahsuak.apps.tasks.R
@@ -55,7 +61,8 @@ fun AddUpdateSubTaskScreen(
     navController: NavController,
     subTaskViewModel: SubTaskViewModel,
     fragmentManager: FragmentManager,
-    sharedText: String?
+    sharedText: String?,
+    onSaveClick: () -> Unit,
 ) {
     val context = LocalContext.current
     val keyboard = LocalSoftwareKeyboardController.current
@@ -65,6 +72,7 @@ fun AddUpdateSubTaskScreen(
         focusRequester.requestFocus()
         keyboard?.show()
     }
+    Log.d("TAG", "AddUpdateSubTaskScreen: new $isNewTask and id $subTaskId")
     if (!isNewTask && subTaskId != null) {
         LaunchedEffect(key1 = subTaskId) {
             subTaskViewModel.getBySubTaskId(subTaskId.toInt())
@@ -118,16 +126,22 @@ fun AddUpdateSubTaskScreen(
                 Icon(painter = painterResource(id = R.drawable.ic_paste), contentDescription = null)
             }
         )
-        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-            Checkbox(checked = isImp, onCheckedChange = {
-                isImp = it
-            })
-            Text(stringResource(id = R.string.important_task))
-            TextButton(onClick = { }) {
-                Icon(painterResource(id = R.drawable.ic_copy), contentDescription = null)
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(stringResource(id = R.string.copy_text))
-            }
+        Row(
+            Modifier.toggleable(
+                    isImp,
+                    role = Role.Checkbox,
+                    onValueChange = {
+                        isImp = it
+                    }
+                )
+                .semantics(mergeDescendants = true) {}
+                .padding(4.dp)
+                .clip(RoundedCornerShape(8.dp)),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Checkbox(checked = isImp, onCheckedChange = null)
+            Spacer(modifier = Modifier.width(4.dp))
+            Text(stringResource(id = R.string.important_task), fontSize = 14.sp)
         }
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -135,6 +149,11 @@ fun AddUpdateSubTaskScreen(
                 .fillMaxWidth()
                 .padding(horizontal = 8.dp)
         ) {
+            TextButton(onClick = { AppUtil.setClipboard(context, title)}) {
+                Icon(painterResource(id = R.drawable.ic_copy), contentDescription = null)
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(stringResource(id = R.string.copy_text))
+            }
             TextButton(onClick = {
                 AppUtil.setDateTimeCompose(context, fragmentManager) { calendar, _ ->
                     if (subTask != null) {
@@ -182,7 +201,6 @@ fun AddUpdateSubTaskScreen(
                             dateTime = System.currentTimeMillis(),
                             reminder = reminder
                         )
-                        subTask.subTitle = title
                         subTaskViewModel.updateSubTask(newTask)
                         subTaskViewModel.resetSubTaskValue()
                     } else {
@@ -197,7 +215,7 @@ fun AddUpdateSubTaskScreen(
                         subTaskViewModel.insertSubTask(newTask)
                         subTaskViewModel.resetSubTaskValue()
                     }
-                    navController.popBackStack()
+                    onSaveClick()
                 } else {
                     context.toast {
                         context.getString(R.string.empty_task)

@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.CircleShape
@@ -56,11 +57,12 @@ import kotlinx.coroutines.delay
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun SubTaskItem(
+    modifier: Modifier = Modifier,
     subTask: SubTask,
     color: Color,
     isListViewEnable: Boolean,
     onImpSwipe: (Boolean) -> Unit,
-    onItemClick: () -> Unit,
+    onCancelReminder: () -> Unit,
     onCompletedTask: (Boolean) -> Unit,
     onEditIconClick: (Boolean) -> Unit,
 ) {
@@ -91,9 +93,8 @@ fun SubTaskItem(
             },
             dismissContent = {
                 Column(
-                    Modifier
+                    modifier
                         .fillMaxWidth()
-                        .clickable { onItemClick() }
                         .clip(RoundedCornerShape(8.dp))
                         .background(color.copy(alpha = 0.30f))
                 ) {
@@ -104,6 +105,7 @@ fun SubTaskItem(
                                 contentDescription = stringResource(id = R.string.important_task),
                                 modifier = Modifier
                                     .align(Alignment.TopStart)
+                                    .size(24.dp)
                                     .padding(top = 8.dp, start = 4.dp)
                             )
                         }
@@ -115,7 +117,7 @@ fun SubTaskItem(
                                     onCompletedTask(it)
                                     isChecked = it
                                 },
-                                modifier = Modifier.align(Alignment.CenterVertically)
+                                modifier = Modifier.size(40.dp).align(Alignment.CenterVertically)
                             )
                             Column {
                                 Row(
@@ -155,8 +157,7 @@ fun SubTaskItem(
                                         .fillMaxWidth()
                                         .padding(end = 8.dp, bottom = 8.dp),
                                     verticalArrangement = Arrangement.spacedBy(8.dp),
-                                    horizontalArrangement =
-                                        Arrangement.SpaceBetween
+                                    horizontalArrangement = Arrangement.SpaceBetween
                                 ) {
                                     Row(
                                         verticalAlignment = Alignment.CenterVertically,
@@ -170,7 +171,7 @@ fun SubTaskItem(
                                     ) {
                                         Icon(
                                             painterResource(id = R.drawable.ic_calendar_small),
-                                            contentDescription = null,
+                                            stringResource(id = R.string.start_date),
                                             tint = Color.Black
                                         )
                                         Spacer(
@@ -184,16 +185,6 @@ fun SubTaskItem(
                                             color = Color.Black
                                         )
                                     }
-                                    Icon(
-                                        painterResource(R.drawable.ic_copy),
-                                        stringResource(id = R.string.copy_text),
-                                        modifier = Modifier
-                                            .clip(CircleShape)
-                                            .clickable {
-                                                AppUtil.setClipboard(context, subTask.subTitle)
-                                            }
-                                            .padding(4.dp)
-                                    )
                                     if (subTask.reminder != null) {
                                         Row(
                                             verticalAlignment = Alignment.CenterVertically,
@@ -205,19 +196,42 @@ fun SubTaskItem(
                                         ) {
                                             Icon(
                                                 painterResource(id = R.drawable.ic_reminder_small),
-                                                contentDescription = null
+                                                null,
+                                                tint = Color.Black
                                             )
                                             Spacer(
                                                 Modifier
-                                                    .width(4.dp)
+                                                    .width(2.dp)
                                                     .align(Alignment.Bottom)
                                             )
                                             Text(
                                                 DateUtil.getDate(subTask.reminder!!),
-                                                fontSize = 10.sp
+                                                fontSize = 10.sp,
+                                                color = Color.Black
+                                            )
+                                            Icon(
+                                                painterResource(
+                                                    R.drawable.ic_cancel
+                                                ), stringResource(
+                                                    R.string.cancel_reminder
+                                                ),
+                                                tint = Color.Black,
+                                                modifier = Modifier.clickable {
+                                                    onCancelReminder()
+                                                }
                                             )
                                         }
                                     }
+                                    Icon(
+                                        painterResource(R.drawable.ic_copy),
+                                        stringResource(id = R.string.copy_text),
+                                        modifier = Modifier
+                                            .clip(CircleShape)
+                                            .clickable {
+                                                AppUtil.setClipboard(context, subTask.subTitle)
+                                            }
+                                            .padding(4.dp)
+                                    )
                                 }
                             }
                         }
@@ -258,7 +272,7 @@ fun SubTaskItemPreview() {
         subTask = task,
         isListViewEnable = true,
         onImpSwipe = {},
-        onItemClick = {},
+        onCancelReminder = {},
         onCompletedTask = {},
         color = Color.White
     ) {}

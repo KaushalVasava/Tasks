@@ -6,6 +6,7 @@ import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
+import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -14,7 +15,6 @@ import androidx.compose.foundation.background
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import androidx.preference.PreferenceManager
 import com.lahsuak.apps.tasks.R
@@ -39,9 +39,6 @@ import javax.inject.Named
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
-    private var _binding: ActivityMainBinding? = null
-    private val binding: ActivityMainBinding
-        get() = _binding!!
 
     private val taskViewModel: TaskViewModel by viewModels()
     private val subTaskViewModel: SubTaskViewModel by viewModels()
@@ -69,8 +66,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setTheme(R.style.Theme_Tasks)
-        _binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
         setContent {
             val navController = rememberNavController()
             TaskAppTheme {
@@ -86,7 +81,6 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-        setSupportActionBar(binding.toolbar)
         val sp = PreferenceManager.getDefaultSharedPreferences(this)
         val selectedTheme = sp.getString(THEME_KEY, THEME_DEFAULT)!!.toInt()
 
@@ -98,10 +92,5 @@ class MainActivity : AppCompatActivity() {
                 Log.d("TAG", "onCreate: $shareTxt")
             }
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        _binding = null
     }
 }
