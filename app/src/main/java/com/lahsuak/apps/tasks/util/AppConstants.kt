@@ -51,6 +51,7 @@ object AppConstants {
         //default preference keys
         const val FONT_SIZE_KEY = "font_size"
         const val TASK_PROGRESS_KEY = "task_progress"
+        const val SHOW_COPY_KEY = "show_copy"
         const val SHOW_SUBTASK_KEY = "show_subtask"
         const val SHOW_REMINDER_KEY = "show_reminder"
         const val SHOW_VOICE_TASK_KEY = "show_voice_task_button"

@@ -1,5 +1,6 @@
 package com.lahsuak.apps.tasks.ui.screens.components
 
+import android.content.SharedPreferences
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.spring
@@ -47,9 +48,11 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.preference.PreferenceManager
 import com.lahsuak.apps.tasks.R
 import com.lahsuak.apps.tasks.TaskApp
 import com.lahsuak.apps.tasks.data.model.SubTask
+import com.lahsuak.apps.tasks.util.AppConstants
 import com.lahsuak.apps.tasks.util.AppUtil
 import com.lahsuak.apps.tasks.util.DateUtil
 import kotlinx.coroutines.delay
@@ -59,6 +62,7 @@ import kotlinx.coroutines.delay
 fun SubTaskItem(
     modifier: Modifier = Modifier,
     subTask: SubTask,
+    prefManager: SharedPreferences,
     color: Color,
     isListViewEnable: Boolean,
     onImpSwipe: (Boolean) -> Unit,
@@ -69,6 +73,18 @@ fun SubTaskItem(
     var isChecked by rememberSaveable {
         mutableStateOf(subTask.isDone)
     }
+    val context = LocalContext.current
+
+    val showReminder = prefManager.getBoolean(AppConstants.SharedPreference.SHOW_REMINDER_KEY, true)
+    val titleSize = prefManager.getString(
+            AppConstants.SharedPreference.FONT_SIZE_KEY,
+            AppConstants.SharedPreference.INITIAL_FONT_SIZE
+        )!!.toFloat()
+    val showCopyIcon = prefManager.getBoolean(
+        AppConstants.SharedPreference.SHOW_COPY_KEY,
+        true
+    )
+
     var show by rememberSaveable { mutableStateOf(true) }
     val dismissState = rememberDismissState(
         confirmValueChange = {
@@ -82,7 +98,6 @@ fun SubTaskItem(
     val isImp by rememberSaveable {
         mutableStateOf(subTask.isImportant)
     }
-    val context = LocalContext.current
     AnimatedVisibility(
         show, exit = fadeOut(spring())
     ) {
@@ -109,34 +124,33 @@ fun SubTaskItem(
                                     .padding(top = 8.dp, start = 4.dp)
                             )
                         }
-                        val modifier = if (isListViewEnable) Modifier.fillMaxWidth() else Modifier
-                        Row(modifier) {
+                        val tempModifier = if (isListViewEnable) Modifier.fillMaxWidth() else Modifier
+                        Row(tempModifier) {
                             CircleCheckbox(
                                 checked = isChecked,
                                 onCheckedChange = {
                                     onCompletedTask(it)
                                     isChecked = it
                                 },
-                                modifier = Modifier.size(40.dp).align(Alignment.CenterVertically)
+                                modifier = Modifier
+                                    .size(40.dp)
+                                    .align(Alignment.CenterVertically)
                             )
                             Column {
                                 Row(
                                     Modifier.fillMaxWidth(),
                                     horizontalArrangement = Arrangement.SpaceBetween
                                 ) {
-                                    Text(
+                                    LinkifyText(
                                         subTask.subTitle,
-                                        fontSize = 16.sp,
-                                        color = MaterialTheme.colorScheme.onSurface,
-                                        textDecoration = if (isChecked)
-                                            TextDecoration.LineThrough
-                                        else
-                                            TextDecoration.None,
+                                        titleSize,
+                                        MaterialTheme.colorScheme.onSurface,
+                                        textDecoration = isChecked,
                                         modifier = Modifier
                                             .fillMaxWidth(
                                                 if (isListViewEnable) 0.8f else 0.9f
                                             )
-                                            .padding(top = 8.dp)
+                                            .padding(top = 8.dp),
                                     )
                                     IconButton(onClick = {
                                         onEditIconClick(isChecked)
@@ -185,7 +199,7 @@ fun SubTaskItem(
                                             color = Color.Black
                                         )
                                     }
-                                    if (subTask.reminder != null) {
+                                    if (showReminder && subTask.reminder != null) {
                                         Row(
                                             verticalAlignment = Alignment.CenterVertically,
                                             horizontalArrangement = Arrangement.Center,
@@ -204,11 +218,14 @@ fun SubTaskItem(
                                                     .width(2.dp)
                                                     .align(Alignment.Bottom)
                                             )
-                                            Text(
-                                                DateUtil.getDate(subTask.reminder!!),
-                                                fontSize = 10.sp,
-                                                color = Color.Black
-                                            )
+
+                                            val diff = DateUtil.getTimeDiff(subTask.reminder!!)
+
+                                            val (color, text) = if (diff < 0) {
+                                                Color.Red to stringResource(id = R.string.overdue)
+                                            } else
+                                                Color.Black to DateUtil.getDate(subTask.reminder!!)
+                                            Text(text, fontSize = 10.sp, color = color)
                                             Icon(
                                                 painterResource(
                                                     R.drawable.ic_cancel
@@ -222,16 +239,17 @@ fun SubTaskItem(
                                             )
                                         }
                                     }
-                                    Icon(
-                                        painterResource(R.drawable.ic_copy),
-                                        stringResource(id = R.string.copy_text),
-                                        modifier = Modifier
-                                            .clip(CircleShape)
-                                            .clickable {
-                                                AppUtil.setClipboard(context, subTask.subTitle)
-                                            }
-                                            .padding(4.dp)
-                                    )
+                                    AnimatedVisibility(visible = showCopyIcon) {
+                                        Icon(
+                                            painterResource(R.drawable.ic_copy),
+                                            stringResource(id = R.string.copy_text),
+                                            modifier = Modifier
+                                                .clip(CircleShape)
+                                                .clickable {
+                                                    AppUtil.setClipboard(context, subTask.subTitle)
+                                                }.padding(4.dp)
+                                        )
+                                    }
                                 }
                             }
                         }
@@ -258,22 +276,4 @@ fun SubTaskItem(
             }
         }
     }
-}
-
-@Preview(uiMode = UI_MODE_NIGHT_YES)
-@Composable
-fun SubTaskItemPreview() {
-    val task = SubTask(
-        id = 1,
-        subTitle = "Hello sfdjkdjksdsjkdsjkdsjkdjsdkdjksd",
-        sId = 1
-    )
-    SubTaskItem(
-        subTask = task,
-        isListViewEnable = true,
-        onImpSwipe = {},
-        onCancelReminder = {},
-        onCompletedTask = {},
-        color = Color.White
-    ) {}
 }

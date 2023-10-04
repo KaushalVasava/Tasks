@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="grey">#BFBCBC</color>
+<!--    <color name="light_green">#005307</color>-->
+<!--    &lt;!&ndash;    <color name="light_red">#D04E4E</color>&ndash;&gt;-->
+<!--    <color name="light_blue">#004d63</color>-->
+<!--    <color name="light_yellow">#574500</color>-->
+<!--    <color name="light_pink">#78265d</color>-->
+<!--    <color name="light_purple">#5e2f8b</color>-->
 </resources>

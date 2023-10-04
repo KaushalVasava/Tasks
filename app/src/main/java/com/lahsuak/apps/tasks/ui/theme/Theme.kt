@@ -1,3 +1,4 @@
+
 package com.lahsuak.apps.tasks.ui.theme
 
 import android.app.Activity
@@ -85,7 +86,7 @@ private val DarkColorScheme = darkColorScheme(
 fun TaskAppTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
@@ -106,7 +107,7 @@ fun TaskAppTheme(
 
     MaterialTheme(
         colorScheme = colorScheme,
-        typography = com.lahsuak.apps.tasks.ui.theme.Typography,
+        typography = Typography,
         content = content
     )
 }

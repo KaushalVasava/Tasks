@@ -2,22 +2,24 @@ package com.lahsuak.apps.tasks.ui.screens
 
 import android.app.Activity
 import android.speech.RecognizerIntent
-import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -27,10 +29,11 @@ import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridItemSpan
 import androidx.compose.foundation.lazy.staggeredgrid.items
-import androidx.compose.foundation.lazy.staggeredgrid.itemsIndexed
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.selection.SelectionContainer
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.ModalBottomSheetLayout
+import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
@@ -47,7 +50,6 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.SnackbarDuration
@@ -58,7 +60,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -68,6 +69,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -75,6 +77,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
@@ -86,12 +89,12 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
 import androidx.fragment.app.FragmentManager
 import androidx.navigation.NavController
 import androidx.preference.PreferenceManager
 import com.lahsuak.apps.tasks.R
-import com.lahsuak.apps.tasks.data.model.Selection
 import com.lahsuak.apps.tasks.data.model.SortOrder
 import com.lahsuak.apps.tasks.data.model.Task
 import com.lahsuak.apps.tasks.model.TaskEvent
@@ -110,9 +113,13 @@ import com.lahsuak.apps.tasks.util.WindowSize
 import com.lahsuak.apps.tasks.util.WindowType
 import com.lahsuak.apps.tasks.util.preference.FilterPreferences
 import com.lahsuak.apps.tasks.util.toSortForm
+import kotlinx.coroutines.launch
 import kotlin.random.Random
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+@OptIn(
+    ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class,
+    ExperimentalMaterialApi::class
+)
 @Composable
 fun TaskScreen(
     navController: NavController,
@@ -142,30 +149,10 @@ fun TaskScreen(
     var isNewTask by rememberSaveable {
         mutableStateOf(true)
     }
-    val bottomSheet = rememberModalBottomSheetState()
+
     var isBottomSheetOpened by rememberSaveable {
         mutableStateOf(false)
     }
-    if (isBottomSheetOpened) {
-        ModalBottomSheet(
-            sheetState = bottomSheet,
-            onDismissRequest = {
-                isBottomSheetOpened = false
-            }
-        ) {
-            AddUpdateTaskScreen(
-                navController = navController,
-                taskViewModel = taskViewModel,
-                isNewTask = isNewTask,
-                taskId = taskId,
-                fragmentManager = fragmentManager,
-                sharedText = sharedText
-            ) {
-                isBottomSheetOpened = false
-            }
-        }
-    }
-
     if (sharedText != null && tasks.isNotEmpty()) {
         var openDialog by rememberSaveable {
             mutableStateOf(true)
@@ -197,8 +184,8 @@ fun TaskScreen(
     var searchQuery by rememberSaveable {
         mutableStateOf("")
     }
-    val active = stringResource(id = R.string.active)
-    val done = stringResource(id = R.string.done)
+    val active = stringResource(R.string.active)
+    val done = stringResource(R.string.done)
     val status = remember {
         mutableStateListOf(active, done)
     }
@@ -237,8 +224,8 @@ fun TaskScreen(
     }
     val sorts = listOf(
         stringResource(R.string.name),
-        stringResource(R.string.date),
         stringResource(R.string.name_desc),
+        stringResource(R.string.date),
         stringResource(R.string.date_desc),
         stringResource(R.string.category),
         stringResource(R.string.category_desc)
@@ -247,12 +234,14 @@ fun TaskScreen(
         mutableStateOf(sorts)
     }
     var selectedSortIndex by rememberSaveable {
-        mutableIntStateOf(
-            sorts.indexOfFirst {
-                it.contains(preference.sortOrder.name.toSortForm())
-            }
-        )
+        mutableIntStateOf(sorts.indexOfFirst {
+            it.contains(preference.sortOrder.name.toSortForm())
+        })
     }
+    var selectedSort by rememberSaveable {
+        mutableStateOf(sortTypes[selectedSortIndex])
+    }
+
     var isSnackBarShow by rememberSaveable {
         mutableStateOf(false)
     }
@@ -285,8 +274,8 @@ fun TaskScreen(
                 if (openDialog) {
                     AlertDialog(
                         onDismissRequest = { openDialog = false },
-                        title = { Text(text = stringResource(id = R.string.confirm_deletion)) },
-                        text = { Text(stringResource(id = R.string.delete_completed_task)) },
+                        title = { Text(text = stringResource(R.string.confirm_deletion)) },
+                        text = { Text(stringResource(R.string.delete_completed_task)) },
                         confirmButton = {
                             TextButton(
                                 onClick = {
@@ -294,7 +283,7 @@ fun TaskScreen(
                                     taskViewModel.deleteCompletedTask()
                                 }
                             ) {
-                                Text(stringResource(id = R.string.delete))
+                                Text(stringResource(R.string.delete))
                             }
                         },
                         dismissButton = {
@@ -303,7 +292,7 @@ fun TaskScreen(
                                     openDialog = false
                                 }
                             ) {
-                                Text(stringResource(id = R.string.cancel))
+                                Text(stringResource(R.string.cancel))
                             }
                         },
                     )
@@ -313,7 +302,6 @@ fun TaskScreen(
             TaskEvent.Initial -> {}
         }
     }
-
 
     var actionMode by rememberSaveable {
         mutableStateOf(false)
@@ -343,315 +331,384 @@ fun TaskScreen(
         }
     }
 
-    Scaffold(
-        topBar = {
-            if (actionMode) {
-                TopAppBar(
-                    colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = Color.Black,
-                        navigationIconContentColor = Color.White,
-                        titleContentColor = Color.White,
-                        actionIconContentColor = Color.White
-                    ),
-                    title = {
-                        Text(
-                            stringResource(
-                                id = R.string.task_selected,
-                                selectedItems.size,
-                                tasks.size
-                            ),
-                            fontFamily = FontFamily.SansSerif,
-                            fontWeight = FontWeight.SemiBold
-                        )
-                    },
-                    navigationIcon = {
-                        IconButton(onClick = {
-                            resetSelectionMode()
-                        }) {
-                            Icon(
-                                painterResource(id = R.drawable.ic_back),
-                                stringResource(id = R.string.back)
-                            )
-                        }
-                    },
-                    actions = {
-                        Row {
-                            IconButton(onClick = {
-                                if (selectedItems.size == tasks.size) {
-                                    selectedItems.clear()
-                                } else {
-                                    selectedItems.clear()
-                                    selectedItems.addAll(tasks)
-                                }
-                            }) {
-                                Icon(
-                                    painterResource(
-                                        if (selectedItems.size == tasks.size)
-                                            R.drawable.ic_select_all_on
-                                        else R.drawable.ic_select_all
-                                    ),
-                                    stringResource(id = R.string.select_all)
-                                )
-                            }
-                            IconButton(onClick = {
-                                // delete selected items
-                                selectedItems.map {
-                                    taskViewModel.delete(it)
-                                }
-                            }) {
-                                Icon(
-                                    painterResource(id = R.drawable.ic_delete),
-                                    stringResource(id = R.string.delete_task)
-                                )
-                            }
-                        }
-                    }
-                )
-            } else {
-                TopAppBar(
-                    title = {
-                        Text(
-                            DateUtil.getToolbarDateTime(System.currentTimeMillis()),
-                            fontFamily = FontFamily.SansSerif,
-                            fontWeight = FontWeight.SemiBold
-                        )
-                    },
-                    actions = {
-                        Row {
-                            IconButton(onClick = {
-                                navController.navigate(NavigationItem.Notification.route)
-                            }) {
-                                Icon(
-                                    painterResource(id = R.drawable.ic_reminder),
-                                    stringResource(id = R.string.notifications)
-                                )
-                            }
-                            IconButton(onClick = {
-                                navController.navigate(NavigationItem.Setting.route)
-                            }) {
-                                Icon(
-                                    painterResource(id = R.drawable.ic_settings),
-                                    stringResource(id = R.string.settings)
-                                )
-                            }
-                        }
+    val sheetState = androidx.compose.material.rememberModalBottomSheetState(
+        initialValue = ModalBottomSheetValue.Hidden
+    )
+    val scope = rememberCoroutineScope()
 
-                    }
-                )
-            }
-        },
-        floatingActionButtonPosition = FabPosition.Center,
-        floatingActionButton = {
-            if (!actionMode) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
-                    horizontalArrangement =
-                    if (isTaskDone)
-                        Arrangement.Center
-                    else
-                        Arrangement.SpaceBetween,
+    ModalBottomSheetLayout(
+        sheetBackgroundColor = MaterialTheme.colorScheme.surface,
+        sheetState = sheetState,
+        sheetContent = {
+            if (isBottomSheetOpened) {
+                AddUpdateTaskScreen(
+                    sheetState,
+                    taskViewModel = taskViewModel,
+                    isNewTask = isNewTask,
+                    taskId = taskId,
+                    fragmentManager = fragmentManager,
+                    sharedText = sharedText
                 ) {
-                    AnimatedVisibility(visible = showVoiceTask && !isTaskDone) {
-                        FloatingActionButton(onClick = {
-                            AppUtil.speakToAddTaskCompose(context, speakLauncher)
-                        }) {
-                            Icon(
-                                painterResource(id = R.drawable.ic_mic),
-                                contentDescription = stringResource(id = R.string.add_task)
-                            )
-                        }
+                    scope.launch {
+                        sheetState.hide()
+                        isBottomSheetOpened = false
                     }
-                    AnimatedVisibility(visible = isTaskDone) {
-                        FloatingActionButton(
-                            onClick = {
-                                taskViewModel.onDeleteAllCompletedClick()
-                                openDialog = true
-                            },
-                        ) {
-                            Icon(
-                                Icons.Default.Delete,
-                                contentDescription = stringResource(id = R.string.delete_task)
+                }
+            }
+        }) {
+        Scaffold(
+            topBar = {
+                if (actionMode) {
+                    TopAppBar(
+                        colors = TopAppBarDefaults.topAppBarColors(
+                            containerColor = Color.Black,
+                            navigationIconContentColor = Color.White,
+                            titleContentColor = Color.White,
+                            actionIconContentColor = Color.White
+                        ),
+                        title = {
+                            Text(
+                                stringResource(
+                                    R.string.task_selected,
+                                    selectedItems.size,
+                                    tasks.size
+                                ),
+                                fontFamily = FontFamily.SansSerif,
+                                fontWeight = FontWeight.SemiBold
                             )
+                        },
+                        navigationIcon = {
+                            IconButton(onClick = {
+                                resetSelectionMode()
+                            }) {
+                                Icon(
+                                    painterResource(R.drawable.ic_back),
+                                    stringResource(R.string.back)
+                                )
+                            }
+                        },
+                        actions = {
+                            Row {
+                                IconButton(onClick = {
+                                    if (selectedItems.size == tasks.size) {
+                                        selectedItems.clear()
+                                    } else {
+                                        selectedItems.clear()
+                                        selectedItems.addAll(tasks)
+                                    }
+                                }) {
+                                    Icon(
+                                        painterResource(
+                                            if (selectedItems.size == tasks.size)
+                                                R.drawable.ic_select_all_on
+                                            else R.drawable.ic_select_all
+                                        ),
+                                        stringResource(R.string.select_all)
+                                    )
+                                }
+                                IconButton(onClick = {
+                                    // delete selected items
+                                    selectedItems.map {
+                                        taskViewModel.delete(it)
+                                    }
+                                }) {
+                                    Icon(
+                                        painterResource(R.drawable.ic_delete),
+                                        stringResource(R.string.delete_task)
+                                    )
+                                }
+                            }
                         }
-                    }
-                    AnimatedVisibility(visible = !isTaskDone) {
-                        if (isFabExtended) {
-                            ExtendedFloatingActionButton(
+                    )
+                } else {
+                    TopAppBar(
+                        title = {
+                            Text(
+                                DateUtil.getToolbarDateTime(System.currentTimeMillis()),
+                                fontFamily = FontFamily.SansSerif,
+                                fontWeight = FontWeight.SemiBold
+                            )
+                        },
+                        actions = {
+                            Row {
+                                IconButton(onClick = {
+                                    navController.navigate(NavigationItem.Notification.route)
+                                }) {
+                                    Icon(
+                                        painterResource(R.drawable.ic_reminder),
+                                        stringResource(R.string.notifications)
+                                    )
+                                }
+                                IconButton(onClick = {
+                                    navController.navigate(NavigationItem.Setting.route)
+                                }) {
+                                    Icon(
+                                        painterResource(R.drawable.ic_settings),
+                                        stringResource(R.string.settings)
+                                    )
+                                }
+                            }
+
+                        }
+                    )
+                }
+            },
+            floatingActionButtonPosition = FabPosition.Center,
+            floatingActionButton = {
+                if (!actionMode) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp),
+                        horizontalArrangement =
+                        if (isTaskDone)
+                            Arrangement.Center
+                        else
+                            Arrangement.SpaceBetween,
+                    ) {
+                        AnimatedVisibility(visible = showVoiceTask && !isTaskDone) {
+                            FloatingActionButton(onClick = {
+                                AppUtil.speakToAddTaskCompose(context, speakLauncher)
+                            }) {
+                                Icon(
+                                    painterResource(R.drawable.ic_mic),
+                                    stringResource(R.string.add_task)
+                                )
+                            }
+                        }
+                        AnimatedVisibility(visible = isTaskDone) {
+                            FloatingActionButton(
+                                containerColor = MaterialTheme.colorScheme.errorContainer,
                                 onClick = {
+                                    taskViewModel.onDeleteAllCompletedClick()
+                                    openDialog = true
+                                },
+                            ) {
+                                Icon(
+                                    Icons.Default.Delete,
+                                    stringResource(R.string.delete_task)
+                                )
+                            }
+                        }
+                        AnimatedVisibility(visible = !isTaskDone) {
+                            if (isFabExtended) {
+                                ExtendedFloatingActionButton(
+                                    onClick = {
+                                        taskId = null
+                                        isNewTask = true
+                                        isBottomSheetOpened = true
+                                        scope.launch {
+                                            sheetState.show()
+                                        }
+                                    }, text = {
+                                        Text(stringResource(R.string.add_task))
+                                    },
+                                    icon = {
+                                        Icon(
+                                            painterResource(R.drawable.ic_create),
+                                            stringResource(R.string.add_task)
+                                        )
+                                    }
+                                )
+                            } else {
+                                FloatingActionButton(onClick = {
                                     taskId = null
                                     isNewTask = true
                                     isBottomSheetOpened = true
-                                }, text = {
-                                    Text(stringResource(R.string.add_task))
-                                },
-                                icon = {
+                                    scope.launch {
+                                        sheetState.show()
+                                    }
+                                }) {
                                     Icon(
-                                        painterResource(id = R.drawable.ic_create),
-                                        stringResource(id = R.string.add_task)
+                                        painterResource(R.drawable.ic_create),
+                                        stringResource(R.string.add_task)
                                     )
                                 }
-                            )
-                        } else {
-                            FloatingActionButton(onClick = {
-                                taskId = null
-                                isNewTask = true
-                                isBottomSheetOpened = true
-                            }) {
-                                Icon(
-                                    painterResource(id = R.drawable.ic_create),
-                                    stringResource(id = R.string.add_task)
-                                )
                             }
                         }
                     }
                 }
+            },
+            snackbarHost = {
+                SnackbarHost(snackBarHostState)
             }
-        },
-        snackbarHost = {
-            SnackbarHost(snackBarHostState)
-        }
-    ) { paddingValue ->
-        LazyVerticalStaggeredGrid(
-            modifier = Modifier.padding(paddingValue),
-            contentPadding = PaddingValues(horizontal = 8.dp),
-            columns = StaggeredGridCells.Fixed(
-                if (isListViewEnable) {
-                    when (windowSize.width) {
-                        WindowType.Expanded -> 4
-                        WindowType.Medium -> 3
-                        else -> 2
-                    }
-                } else {
-                    when (windowSize.width) {
-                        WindowType.Expanded -> 3
-                        WindowType.Medium -> 2
-                        else -> 1
+        ) { paddingValue ->
+            if (tasks.isEmpty()) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(paddingValue),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center,
+                        modifier = Modifier.clickable {
+                            taskId = null
+                            isNewTask = true
+                            isBottomSheetOpened = true
+                            scope.launch {
+                                sheetState.show()
+                            }
+                        }
+                    ) {
+                        Image(
+                            painterResource(R.drawable.ic_add_task2),
+                            stringResource(
+                                R.string.add_task
+                            ),
+                            modifier = Modifier,
+                            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary)
+                        )
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Text(stringResource(R.string.create_new_task))
                     }
                 }
-            ),
-        ) {
-            item(span = StaggeredGridItemSpan.FullLine) {
-                AnimatedVisibility(!actionMode) {
-                    HeaderContent(
-                        tasks.filter { it.isDone }.size,
-                        tasks.size,
-                        searchQuery = searchQuery,
-                        onQueryChange = {
-                            searchQuery = it
-                            taskViewModel.searchQuery.value = it
-                        },
-                        isListViewEnable = isListViewEnable,
-                        onViewChange = {
-                            isListViewEnable = it
-                        },
-                        onStatusChange = {
-                            isTaskDone = it
-                        },
-                        status = status,
-                        selectedStatusIndex = if (isTaskDone) 1 else 0,
-                        sortTypes = sortTypes,
-                        selectedSortIndex = selectedSortIndex,
-                        onSortChange = { index ->
-                            selectedSortIndex = index
-                            taskViewModel.onSortOrderSelected(
-                                SortOrder.getOrder(index),
-                                context
-                            )
-                        },
-                        onProgressBarClick = {
-                            navController.navigate(NavigationItem.Overview.route)
-                        },
-                        modifier = Modifier.fillMaxWidth()
-                    )
+            }
+
+            LazyVerticalStaggeredGrid(
+                modifier = Modifier.padding(paddingValue),
+                contentPadding = PaddingValues(horizontal = 8.dp),
+                columns = StaggeredGridCells.Fixed(
+                    if (isListViewEnable) {
+                        when (windowSize.width) {
+                            WindowType.Compact -> 2
+                            WindowType.Medium -> 3
+                            WindowType.Expanded -> 4
+                        }
+                    } else {
+                        when (windowSize.width) {
+                            WindowType.Compact -> 1
+                            WindowType.Medium -> 2
+                            WindowType.Expanded -> 3
+                        }
+                    }
+                ),
+            ) {
+                item(span = StaggeredGridItemSpan.FullLine) {
+                    AnimatedVisibility(!actionMode) {
+                        HeaderContent(
+                            tasks.filter { it.isDone }.size,
+                            tasks.size,
+                            searchQuery = searchQuery,
+                            onQueryChange = {
+                                searchQuery = it
+                                taskViewModel.searchQuery.value = it
+                            },
+                            isListViewEnable = isListViewEnable,
+                            onViewChange = {
+                                isListViewEnable = it
+                                taskViewModel.onViewTypeChanged(it, context)
+                            },
+                            onStatusChange = {
+                                isTaskDone = it
+                            },
+                            status = status,
+                            selectedStatusIndex = if (isTaskDone) 1 else 0,
+                            sortTypes = sortTypes,
+                            selectedSort = selectedSort,
+                            onSortChange = { index ->
+                                selectedSortIndex = index
+                                selectedSort = sortTypes[selectedSortIndex]
+                                taskViewModel.onSortOrderSelected(
+                                    SortOrder.getOrder(index),
+                                    context
+                                )
+                            },
+                            onProgressBarClick = {
+                                navController.navigate(NavigationItem.Overview.route)
+                            },
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+                }
+                items(
+                    tasks.filter { t -> isTaskDone == t.isDone }
+                        .sortedByDescending { t -> t.isImp },
+                    key = { t ->
+                        t.id + Random.nextInt()
+                    }
+                ) { task ->
+                    val isSelected = selectedItems.contains(task)
+                    Row(
+                        Modifier
+                            .animateItemPlacement()
+                            .padding(4.dp)
+                    ) {
+                        TaskItem(
+                            Modifier
+                                .combinedClickable(
+                                    onClick = {
+                                        if (actionMode) {
+                                            if (isSelected)
+                                                selectedItems.remove(task)
+                                            else
+                                                selectedItems.add(task)
+                                        } else {
+                                            taskViewModel.setTask(task)
+                                            navController.navigate("${NavigationItem.SubTask.route}/${task.id}/false")
+                                        }
+                                    },
+                                    onLongClick = {
+                                        if (actionMode) {
+                                            if (isSelected)
+                                                selectedItems.remove(task)
+                                            else
+                                                selectedItems.add(task)
+                                        } else {
+                                            actionMode = true
+                                            selectedItems.add(task)
+                                        }
+                                    },
+                                )
+                                .border(
+                                    if (isSelected) 2.dp else (-1).dp,
+                                    color = MaterialTheme.colorScheme.primary,
+                                    RoundedCornerShape(8.dp)
+                                ),
+                            task = task,
+                            prefManager = prefManager,
+                            isListViewEnable = isListViewEnable,
+                            onImpSwipe = { isImp ->
+                                taskViewModel.update(task.copy(isImp = isImp))
+                            },
+                            onCancelReminder = {
+                                if (!actionMode) {
+                                    taskViewModel.update(task.copy(reminder = null))
+                                }
+                            },
+                            onCompletedTask = { isCompleted ->
+                                if (!actionMode) {
+                                    taskViewModel.update(
+                                        task.copy(
+                                            isDone = isCompleted,
+                                            startDate = System.currentTimeMillis()
+                                        )
+                                    )
+                                }
+                            }
+                        ) { isDone ->
+                            if (!actionMode) {
+                                if (isDone) {
+                                    taskViewModel.onTaskSwiped(task)
+                                    isSnackBarShow = true
+                                } else {
+                                    taskViewModel.setTask(task)
+                                    taskId = task.id.toString()
+                                    isNewTask = false
+                                    scope.launch {
+                                        isBottomSheetOpened = true
+                                        sheetState.show()
+                                    }
+                                }
+                            }
+                        }
+                    }
                     Spacer(Modifier.height(8.dp))
                 }
             }
-            items(
-                tasks.filter { t -> isTaskDone == t.isDone }
-                    .sortedByDescending { t -> t.isImp },
-                key = { t ->
-                    t.id + Random.nextInt()
-                }
-            ) { task ->
-                val isSelected =
-                    selectedItems.contains(task)
-                Row(
-                    Modifier
-                        .animateItemPlacement()
-                        .padding(4.dp)
-                ) {
-                    TaskItem(
-                        Modifier
-                            .combinedClickable(
-                                onClick = {
-                                    if (actionMode) {
-                                        if (isSelected)
-                                            selectedItems.remove(task)
-                                        else
-                                            selectedItems.add(task)
-                                    } else {
-                                        taskViewModel.setTask(task)
-                                        navController.navigate("${NavigationItem.SubTask.route}/${task.id}/false")
-                                    }
-                                },
-                                onLongClick = {
-                                    if (actionMode) {
-                                        if (isSelected)
-                                            selectedItems.remove(task)
-                                        else
-                                            selectedItems.add(task)
-                                    } else {
-                                        actionMode = true
-                                        selectedItems.add(task)
-                                    }
-                                },
-                            )
-                            .border(
-                                if (isSelected) 2.dp else (-1).dp,
-                                color = MaterialTheme.colorScheme.primary,
-                                RoundedCornerShape(8.dp)
-                            ),
-                        task = task,
-                        isListViewEnable = isListViewEnable,
-                        onImpSwipe = { isImp ->
-                            taskViewModel.update(task.copy(isImp = isImp))
-                        },
-                        onCancelReminder = {
-                            if (!actionMode) {
-                                task.copy(
-                                    reminder = null
-                                )
-                            }
-                        },
-                        onCompletedTask = { isCompleted ->
-                            if (!actionMode) {
-                                taskViewModel.update(
-                                    task.copy(
-                                        isDone = isCompleted,
-                                        startDate = System.currentTimeMillis()
-                                    )
-                                )
-                            }
-                        }
-                    ) { isDone ->
-                        if (!actionMode) {
-                            if (isDone) {
-                                taskViewModel.onTaskSwiped(task)
-                                isSnackBarShow = true
-                            } else {
-                                taskViewModel.setTask(task)
-                                taskId = task.id.toString()
-                                isNewTask = false
-                                isBottomSheetOpened = true
-                            }
-                        }
-                    }
-                }
-                Spacer(Modifier.height(8.dp))
-            }
         }
+
     }
 }
 
@@ -668,16 +725,13 @@ fun HeaderContent(
     status: List<String>,
     selectedStatusIndex: Int,
     sortTypes: List<String>,
-    selectedSortIndex: Int,
+    selectedSort: String,
     onSortChange: (Int) -> Unit,
     onProgressBarClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var isDropDownExpanded by rememberSaveable {
         mutableStateOf(false)
-    }
-    var mSelectedText by remember {
-        mutableStateOf(sortTypes[selectedSortIndex])
     }
     var mTextFieldSize by remember { mutableStateOf(Size.Zero) }
     val width = LocalConfiguration.current.screenWidthDp.dp
@@ -688,7 +742,7 @@ fun HeaderContent(
                 onProgressBarClick()
             },
             progress = completedTask.toFloat() / totalTask.toFloat(),
-            text = stringResource(id = R.string.task_progress, completedTask, totalTask),
+            text = stringResource(R.string.task_progress, completedTask, totalTask),
             trackColor = MaterialTheme.colorScheme.surfaceVariant,
             width = width,
             height = 24.dp,
@@ -706,13 +760,13 @@ fun HeaderContent(
                 onSearch = {},
                 active = false,
                 leadingIcon = {
-                    Icon(Icons.Default.Search, contentDescription = null)
+                    Icon(Icons.Default.Search, null)
                 },
                 trailingIcon = {
                     AnimatedVisibility(searchQuery.isNotEmpty()) {
                         Icon(
                             Icons.Default.Close,
-                            contentDescription = null,
+                            null,
                             modifier = Modifier.clickable {
                                 onQueryChange("")
                             }
@@ -720,7 +774,7 @@ fun HeaderContent(
                     }
                 },
                 placeholder = {
-                    Text(stringResource(id = R.string.search_task))
+                    Text(stringResource(R.string.search_task))
                 },
                 onActiveChange = {},
                 modifier = Modifier.weight(0.9f)
@@ -732,31 +786,26 @@ fun HeaderContent(
                 }) {
                     Icon(
                         if (isListViewEnable)
-                            painterResource(id = R.drawable.ic_list_view)
+                            painterResource(R.drawable.ic_list_view)
                         else
-                            painterResource(id = R.drawable.ic_grid_view),
-                        contentDescription = "layout view changer"
+                            painterResource(R.drawable.ic_grid_view),
+                        stringResource(R.string.layout_view_change_button),
+                        tint = MaterialTheme.colorScheme.primary
                     )
                 }
             }
         }
-        Spacer(modifier = Modifier.height(8.dp))
         Row(
             Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column {
-                Text(stringResource(id = R.string.sorting_option))
-                Spacer(Modifier.height(4.dp))
                 Row(
                     Modifier
                         .fillMaxWidth(0.5f)
                         .clip(RoundedCornerShape(8.dp))
-                        .background(
-                            MaterialTheme.colorScheme.surfaceVariant
-                        )
-                        .padding(4.dp)
+                        .background(MaterialTheme.colorScheme.surfaceVariant)
                         .onGloballyPositioned { coordinates ->
                             //This value is used to assign to the DropDown the same width
                             mTextFieldSize = coordinates.size.toSize()
@@ -764,14 +813,16 @@ fun HeaderContent(
                         .toggleable(value = isDropDownExpanded) {
                             isDropDownExpanded = !isDropDownExpanded
                         }
-                        .semantics(mergeDescendants = true) {},
+                        .semantics(mergeDescendants = true) {}
+                        .padding(4.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
+                    Text(stringResource(R.string.sorting_option))
+                    Spacer(Modifier.width(4.dp))
                     Text(
-                        mSelectedText, fontWeight = FontWeight.SemiBold,
-                        modifier = Modifier
-                            .weight(1f),
+                        selectedSort, fontWeight = FontWeight.SemiBold,
+                        modifier = Modifier.weight(1f),
                         textAlign = TextAlign.Center
                     )
                     Icon(
@@ -779,12 +830,8 @@ fun HeaderContent(
                             Icons.Filled.KeyboardArrowUp
                         else
                             Icons.Filled.KeyboardArrowDown,
-                        contentDescription = "sort expand/collapse button",
-                        Modifier
-                            .padding(end = 4.dp)
-                            .clickable {
-                                isDropDownExpanded = !isDropDownExpanded
-                            }
+                        stringResource(R.string.sort_expand_collapse_button),
+                        Modifier.padding(end = 4.dp)
                     )
                 }
                 DropdownMenu(
@@ -795,12 +842,9 @@ fun HeaderContent(
                 ) {
                     sortTypes.forEachIndexed { index, type ->
                         DropdownMenuItem(
-                            text = {
-                                Text(text = type)
-                            },
+                            text = { Text(text = type) },
                             onClick = {
                                 onSortChange(index)
-                                mSelectedText = type
                                 isDropDownExpanded = false
                             }
                         )

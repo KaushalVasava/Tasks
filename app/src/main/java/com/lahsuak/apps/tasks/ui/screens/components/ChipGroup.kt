@@ -21,10 +21,10 @@ fun ChipGroup(
     selectedIndex: Int,
     onSelectedChanged: (Int) -> Unit = {},
 ) {
-    Column(modifier = Modifier) {
+    Column {
         LazyRow(
             modifier = Modifier.fillMaxWidth(),
-            contentPadding = PaddingValues(8.dp),
+            contentPadding = PaddingValues(horizontal = 8.dp),
             horizontalArrangement = Arrangement.End
         ) {
             itemsIndexed(items) { index, item ->

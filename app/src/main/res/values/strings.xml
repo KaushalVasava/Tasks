@@ -148,4 +148,9 @@
     <string name="general">General</string>
     <string name="category_txt">Category</string>
     <string name="paste">Paste</string>
+    <string name="delete_all_notifications">Delete all notifications</string>
+    <string name="confirm_notification_msg">Do you want to delete all notifications?</string>
+    <string name="sort_expand_collapse_button">Sort expand/collapse button</string>
+    <string name="layout_view_change_button">Layout view change button</string>
+    <string name="show_copy">Show copy icon on individual task</string>
 </resources>

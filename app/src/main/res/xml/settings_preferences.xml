@@ -26,6 +26,13 @@
             app:summaryOn="@string/enable"
             app:title="@string/show_voice_to_add_task_option" />
         <SwitchPreference
+            app:defaultValue="true"
+            app:icon="@drawable/ic_copy"
+            app:key="show_copy"
+            app:summaryOff="@string/disable"
+            app:summaryOn="@string/enable"
+            app:title="@string/show_copy" />
+        <SwitchPreference
             app:defaultValue="false"
             app:icon="@drawable/ic_progress"
             app:key="task_progress"

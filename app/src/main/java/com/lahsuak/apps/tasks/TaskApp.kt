@@ -13,7 +13,6 @@ import com.lahsuak.apps.tasks.util.AppConstants.SharedPreference.LANGUAGE_SHARED
 import com.lahsuak.apps.tasks.util.AppUtil.createNotificationWorkRequest
 import com.lahsuak.apps.tasks.util.RuntimeLocaleChanger
 import com.lahsuak.apps.tasks.util.AppUtil.getLanguage
-import com.lahsuak.apps.tasks.util.getAttribute
 import com.lahsuak.apps.tasks.util.getColorCode
 import dagger.hilt.android.HiltAndroidApp
 import java.text.SimpleDateFormat
@@ -21,7 +20,6 @@ import java.util.Calendar
 import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Named
-import kotlin.time.Duration.Companion.hours
 
 @HiltAndroidApp
 class TaskApp : Application() {

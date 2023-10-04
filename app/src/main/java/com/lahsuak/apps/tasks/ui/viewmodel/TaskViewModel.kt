@@ -58,14 +58,6 @@ class TaskViewModel @Inject constructor(
         )
     }.distinctUntilChanged()
 
-    val tasksFlow2 = combine(
-        searchQuery.asFlow(), preferencesFlow
-    ) { query, filterPreferences ->
-        Pair(query, filterPreferences)
-    }.flatMapLatest { (query, filterPreferences) ->
-        repository.getAllTasks(query, filterPreferences.sortOrder, false).distinctUntilChanged()
-    }.asLiveData()
-
     fun onSortOrderSelected(sortOrder: SortOrder, context: Context) = viewModelScope.launch {
         preferenceManager.updateSortOrder(sortOrder, context)
     }

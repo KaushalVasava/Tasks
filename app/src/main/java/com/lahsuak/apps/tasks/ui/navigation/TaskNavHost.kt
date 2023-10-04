@@ -1,5 +1,6 @@
 package com.lahsuak.apps.tasks.ui.navigation
 
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.fragment.app.FragmentManager
@@ -21,6 +22,7 @@ import com.lahsuak.apps.tasks.ui.viewmodel.SubTaskViewModel
 import com.lahsuak.apps.tasks.ui.viewmodel.TaskViewModel
 import com.lahsuak.apps.tasks.util.WindowSize
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun TaskNavHost(
     taskViewModel: TaskViewModel,
@@ -104,9 +106,8 @@ fun TaskNavHost(
             val taskId = navBackStackEntry.arguments?.getString("taskId")
             val isNewTask = navBackStackEntry.arguments?.getBoolean("isNewTask") ?: true
             val sharedText = navBackStackEntry.arguments?.getString("sharedText")
-
             AddUpdateTaskScreen(
-                navController,
+                null,
                 taskViewModel,
                 isNewTask,
                 taskId,
@@ -142,10 +143,10 @@ fun TaskNavHost(
             val sharedText = navBackStackEntry.arguments?.getString("sharedText")
             if (taskId != null) {
                 AddUpdateSubTaskScreen(
+                    null,
                     taskId.toInt(),
                     subTaskId,
                     isNewTask,
-                    navController,
                     subTaskViewModel,
                     fragmentManager,
                     sharedText,

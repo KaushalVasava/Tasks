@@ -3,38 +3,27 @@ package com.lahsuak.apps.tasks.util
 import android.annotation.SuppressLint
 import android.app.*
 import android.content.*
-import android.content.res.ColorStateList
-import android.content.res.Configuration
 import android.content.res.Resources
-import android.graphics.Color
-import android.graphics.PorterDuff
-import android.graphics.PorterDuffColorFilter
 import android.net.Uri
 import android.os.Build
 import android.provider.Settings
 import android.speech.RecognizerIntent
-import android.util.TypedValue
-import android.widget.TextView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.annotation.ColorRes
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.ui.res.stringResource
 import androidx.core.content.ContextCompat
-import androidx.core.widget.TextViewCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.workDataOf
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.lahsuak.apps.tasks.BuildConfig
 import com.lahsuak.apps.tasks.R
 import com.lahsuak.apps.tasks.TaskApp
 import com.lahsuak.apps.tasks.data.model.SubTask
 import com.lahsuak.apps.tasks.data.model.Task
-import com.lahsuak.apps.tasks.ui.MainActivity
 import com.lahsuak.apps.tasks.util.AppConstants.MARKET_PLACE_HOLDER
 import com.lahsuak.apps.tasks.util.AppConstants.SHARE_FORMAT
 import com.lahsuak.apps.tasks.util.AppUtil.UNDERSCORE
@@ -49,20 +38,6 @@ object AppUtil {
     private const val FIRST = "1. "
     private const val COPY_TAG = "Copied Text"
     const val UNDERSCORE = "_"
-    fun <T> unsafeLazy(initializer: () -> T): Lazy<T> {
-        return lazy(LazyThreadSafetyMode.NONE, initializer)
-    }
-
-    fun getTransparentColor(color: Int): Int {
-        var alpha = Color.alpha(color)
-        val red = Color.red(color)
-        val green = Color.green(color)
-        val blue = Color.blue(color)
-
-        // Set alpha based on your logic, here I'm making it 25% of it's initial value.
-        alpha *= 0.25.toInt()
-        return Color.argb(alpha, red, green, blue)
-    }
 
     fun setClipboard(context: Context, text: String) {
         val clipboard =
@@ -374,23 +349,6 @@ object AppUtil {
         }
     }
 
-    @SuppressLint("QueryPermissionsNeeded")
-    fun speakToAddTask(activity: FragmentActivity, speakLauncher: ActivityResultLauncher<Intent>) {
-        val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
-        intent.putExtra(
-            RecognizerIntent.EXTRA_LANGUAGE_MODEL,
-            RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
-        )
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
-        if (intent.resolveActivity(activity.packageManager) != null) {
-            speakLauncher.launch(intent)
-        } else {
-            activity.baseContext.toast {
-                activity.baseContext.getString(R.string.speech_not_support)
-            }
-        }
-    }
-
     fun getLanguage(): String {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             Resources.getSystem().configuration.locales[0].toString().substring(0, 2)
@@ -427,19 +385,6 @@ object AppUtil {
     }
 }
 
-fun TextView.setTextDrawableColor(context: Context, colorId: Int) {
-    val color = ContextCompat.getColor(context, colorId)
-    val colorList = ColorStateList.valueOf(color)
-    TextViewCompat.setCompoundDrawableTintList(this, colorList)
-}
-
-fun TextView.toTrimString() = this.text.toString().trim()
-
-fun BottomSheetBehavior<*>.applyCommonBottomSheetBehaviour() {
-    skipCollapsed = true
-    state = BottomSheetBehavior.STATE_EXPANDED
-}
-
 inline fun Context?.runActivityCatching(block: () -> Unit) {
     this ?: return
     try {
@@ -454,38 +399,17 @@ fun Context.getColorCode(@ColorRes colorId: Int): Int {
     return ContextCompat.getColor(this, colorId)
 }
 
-fun Context.getAttribute(resId: Int): Int {
-    val value = TypedValue()
-    this.theme.resolveAttribute(resId, value, true)
-    return value.data
-}
 
 fun String.toSortForm(): String {
     val msg = this.lowercase().substringAfter(UNDERSCORE)
-    return msg.toCamelCase()
-}
-
-fun TextView.setDrawableColor(color: Int) {
-    for (drawable in this.compoundDrawables) {
-        if (drawable != null) {
-            drawable.colorFilter =
-                PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN)
-        }
-    }
+    return msg.replace(UNDERSCORE, " ").toCamelCase()
 }
 
 fun String.toCamelCase(): String {
     return this.substring(0, 1).uppercase() + this.substring(1)
 }
 
-fun Context.isItLightMode(): Boolean {
-    return this.resources.configuration.uiMode == Configuration.UI_MODE_NIGHT_NO
-}
 
 fun Context.getSizeInDp(): Float {
     return resources.displayMetrics.widthPixels / resources.displayMetrics.density
-}
-
-fun Context.isTabletOrLandscape(): Boolean {
-    return getSizeInDp() >= resources.displayMetrics.densityDpi
 }

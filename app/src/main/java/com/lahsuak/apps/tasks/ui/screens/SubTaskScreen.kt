@@ -8,6 +8,7 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -29,6 +30,9 @@ import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridItemSpan
 import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.ModalBottomSheetLayout
+import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
@@ -45,7 +49,6 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.SnackbarDuration
@@ -55,7 +58,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -64,6 +66,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -72,6 +75,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
@@ -94,7 +98,6 @@ import com.lahsuak.apps.tasks.TaskApp
 import com.lahsuak.apps.tasks.data.model.Notification
 import com.lahsuak.apps.tasks.data.model.SortOrder
 import com.lahsuak.apps.tasks.data.model.SubTask
-import com.lahsuak.apps.tasks.data.model.Task
 import com.lahsuak.apps.tasks.model.SubTaskEvent
 import com.lahsuak.apps.tasks.ui.MainActivity
 import com.lahsuak.apps.tasks.ui.navigation.NavigationItem
@@ -114,9 +117,13 @@ import com.lahsuak.apps.tasks.util.WindowSize
 import com.lahsuak.apps.tasks.util.WindowType
 import com.lahsuak.apps.tasks.util.preference.FilterPreferences
 import com.lahsuak.apps.tasks.util.toSortForm
+import kotlinx.coroutines.launch
 import kotlin.random.Random
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+@OptIn(
+    ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class,
+    ExperimentalMaterialApi::class
+)
 @Composable
 fun SubTaskScreen(
     taskId: Int,
@@ -144,33 +151,13 @@ fun SubTaskScreen(
     var isNewTask by rememberSaveable {
         mutableStateOf(true)
     }
-    val bottomSheet = rememberModalBottomSheetState()
     var isBottomSheetOpened by rememberSaveable {
         mutableStateOf(false)
-    }
-    if (isBottomSheetOpened) {
-        ModalBottomSheet(
-            sheetState = bottomSheet,
-            onDismissRequest = {
-                isBottomSheetOpened = false
-            }
-        ) {
-            AddUpdateSubTaskScreen(
-                navController = navController,
-                subTaskId = subTaskId?.toString(),
-                taskId = taskId,
-                isNewTask = isNewTask,
-                subTaskViewModel = subTaskViewModel,
-                fragmentManager = fragmentManager,
-                sharedText = sharedText
-            ) {
-                isBottomSheetOpened = false
-            }
-        }
     }
 
     if (taskState != null) {
         var task = taskState!!
+
         subTaskViewModel.taskId.value = taskId
         val subTasks by subTaskViewModel.subTasks.collectAsState(initial = emptyList())
         val preference by subTaskViewModel.preferencesFlow.collectAsState(
@@ -230,8 +217,8 @@ fun SubTaskScreen(
         var searchQuery by rememberSaveable {
             mutableStateOf("")
         }
-        val active = stringResource(id = R.string.active)
-        val done = stringResource(id = R.string.done)
+        val active = stringResource(R.string.active)
+        val done = stringResource(R.string.done)
         val status = remember {
             mutableStateListOf(active, done)
         }
@@ -264,22 +251,19 @@ fun SubTaskScreen(
         var reminder by rememberSaveable {
             mutableStateOf(task.reminder)
         }
+        val color by remember {
+            mutableStateOf(Color(TaskApp.categoryTypes[task.color].color))
+        }
         var isNotified by rememberSaveable {
             mutableStateOf(hasNotification)
         }
         LaunchedEffect(key1 = Unit) {
             if (isNotified) {
-                taskViewModel.cancelReminderCompose(
-                    context,
-                    task
-                )
                 notificationViewModel.insert(
                     Notification(0, taskId, task.title, System.currentTimeMillis())
                 )
-                reminder = null
                 isNotified = false
             }
-
         }
 
         val sorts = listOf(
@@ -308,8 +292,6 @@ fun SubTaskScreen(
         val snackBarHostState = remember {
             SnackbarHostState()
         }
-        // below line is to check if the
-        // dialog box is open or not.
         if (isSnackBarShow) {
             when (val event = subTaskEvents) {
                 is SubTaskEvent.ShowUndoDeleteTaskMessage -> {
@@ -335,8 +317,8 @@ fun SubTaskScreen(
                     if (openDialog) {
                         AlertDialog(
                             onDismissRequest = { openDialog = false },
-                            title = { Text(text = stringResource(id = R.string.confirm_deletion)) },
-                            text = { Text(stringResource(id = R.string.delete_completed_task)) },
+                            title = { Text(text = stringResource(R.string.confirm_deletion)) },
+                            text = { Text(stringResource(R.string.delete_completed_task)) },
                             confirmButton = {
                                 TextButton(
                                     onClick = {
@@ -344,7 +326,7 @@ fun SubTaskScreen(
                                         subTaskViewModel.deleteAllCompletedSubTasks(task.id)
                                     }
                                 ) {
-                                    Text(stringResource(id = R.string.delete))
+                                    Text(stringResource(R.string.delete))
                                 }
                             },
                             dismissButton = {
@@ -353,7 +335,7 @@ fun SubTaskScreen(
                                         openDialog = false
                                     }
                                 ) {
-                                    Text(stringResource(id = R.string.cancel))
+                                    Text(stringResource(R.string.cancel))
                                 }
                             },
                         )
@@ -364,372 +346,444 @@ fun SubTaskScreen(
             }
         }
 
-        Scaffold(
-            topBar = {
-                if (actionMode) {
-                    TopAppBar(
-                        colors = TopAppBarDefaults.topAppBarColors(
-                            containerColor = Color.Black,
-                            navigationIconContentColor = Color.White,
-                            titleContentColor = Color.White,
-                            actionIconContentColor = Color.White
-                        ),
-                        title = {
-                            Text(
-                                stringResource(
-                                    id = R.string.task_selected,
-                                    selectedItems.size,
-                                    subTasks.size
-                                ),
-                                fontFamily = FontFamily.SansSerif,
-                                fontWeight = FontWeight.SemiBold
-                            )
-                        },
-                        navigationIcon = {
-                            IconButton(onClick = {
-                                resetSelectionMode()
-                            }) {
-                                Icon(
-                                    painterResource(id = R.drawable.ic_back),
-                                    stringResource(id = R.string.back)
-                                )
-                            }
-                        },
-                        actions = {
-                            Row {
-                                IconButton(onClick = {
-                                    if (selectedItems.size == subTasks.size) {
-                                        selectedItems.clear()
-                                    } else {
-                                        selectedItems.clear()
-                                        selectedItems.addAll(subTasks)
-                                    }
-                                }) {
-                                    Icon(
-                                        painterResource(
-                                            if (selectedItems.size == subTasks.size)
-                                                R.drawable.ic_select_all_on
-                                            else R.drawable.ic_select_all
-                                        ),
-                                        stringResource(id = R.string.select_all)
-                                    )
-                                }
-                                IconButton(onClick = {
-                                    // delete selected items
-                                    selectedItems.map {
-                                        subTaskViewModel.deleteSubTask(it)
-                                    }
-                                }) {
-                                    Icon(
-                                        painterResource(id = R.drawable.ic_delete),
-                                        stringResource(id = R.string.delete_task)
-                                    )
-                                }
-                            }
-                        }
-                    )
-                } else {
-                    TopAppBar(
-                        title = {
-                            Text(
-                                task.title,
-                                fontFamily = FontFamily.SansSerif,
-                                fontWeight = FontWeight.SemiBold
-                            )
-                        },
-                        navigationIcon = {
-                            IconButton(onClick = {
-                                val progress = if (subTasks.isNotEmpty()) {
-                                    subTasks.filter { it.isDone }.size.toFloat() / subTasks.size.toFloat()
-                                } else -1f
-                                taskViewModel.update(
-                                    task.copy(
-                                        progress = progress,
-                                        startDate = System.currentTimeMillis(),
-                                        subTaskList = AppUtil.getSubText(subTasks.map { it.subTitle })
-                                    )
-                                )
-                                navController.popBackStack()
-                            }) {
-                                Icon(
-                                    painterResource(id = R.drawable.ic_back),
-                                    stringResource(id = R.string.back)
-                                )
-                            }
-                        },
-                        actions = {
-                            Row {
-                                IconButton(onClick = {
-                                    navController.navigate(NavigationItem.Notification.route)
-                                }) {
-                                    Icon(
-                                        painterResource(id = R.drawable.ic_reminder),
-                                        stringResource(id = R.string.notifications)
-                                    )
-                                }
-                                IconButton(onClick = {
-                                    navController.navigate(NavigationItem.Setting.route)
-                                }) {
-                                    Icon(
-                                        painterResource(id = R.drawable.ic_settings),
-                                        stringResource(id = R.string.settings)
-                                    )
-                                }
-                            }
-                        }
-                    )
-                }
-            },
-            floatingActionButtonPosition = FabPosition.Center,
-            floatingActionButton = {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
-                    horizontalArrangement =
-                    if (isSubTaskDone)
-                        Arrangement.Center
-                    else
-                        Arrangement.SpaceBetween,
-                ) {
-                    AnimatedVisibility(visible = !actionMode && showVoiceTask && !isSubTaskDone) {
-                        FloatingActionButton(onClick = {
-                            AppUtil.speakToAddTaskCompose(context, speakLauncher)
-                        }) {
-                            Icon(
-                                painterResource(R.drawable.ic_mic),
-                                stringResource(R.string.add_task)
-                            )
-                        }
-                    }
-                    AnimatedVisibility(visible = isSubTaskDone) {
-                        FloatingActionButton(onClick = {
-                            subTaskViewModel.onDeleteAllCompletedClick()
-                            openDialog = true
-                        }) {
-                            Icon(
-                                Icons.Default.Delete,
-                                stringResource(R.string.delete_task)
-                            )
-                        }
-                    }
-                    AnimatedVisibility(visible = !actionMode && !isSubTaskDone) {
-                        FloatingActionButton(onClick = {
-                            subTaskId = null
-                            isNewTask = true
-                            isBottomSheetOpened = true
-                        }) {
-                            Icon(
-                                painterResource(R.drawable.ic_edit),
-                                stringResource(R.string.add_task)
-                            )
+        val sheetState = androidx.compose.material.rememberModalBottomSheetState(
+            initialValue = ModalBottomSheetValue.Hidden
+        )
+        val scope = rememberCoroutineScope()
+
+        ModalBottomSheetLayout(
+            sheetBackgroundColor = MaterialTheme.colorScheme.surface,
+            sheetState = sheetState,
+            sheetContent = {
+                if (isBottomSheetOpened) {
+                    AddUpdateSubTaskScreen(
+                        sheetState = sheetState,
+                        taskId = taskId,
+                        subTaskId = subTaskId?.toString(),
+                        isNewTask = isNewTask,
+                        subTaskViewModel = subTaskViewModel,
+                        fragmentManager = fragmentManager,
+                        sharedText = sharedText
+                    ) {
+                        scope.launch {
+                            sheetState.hide()
+                            isBottomSheetOpened = false
                         }
                     }
                 }
             }
-        ) { paddingValues ->
-            LazyVerticalStaggeredGrid(
-                modifier = Modifier.padding(paddingValues),
-                contentPadding = PaddingValues(horizontal = 8.dp),
-                columns = StaggeredGridCells.Fixed(
-                    if (isListViewEnable) {
-                        when (windowSize.width) {
-                            WindowType.Expanded -> 4
-                            WindowType.Medium -> 3
-                            else -> 2
-                        }
+        ) {
+            Scaffold(
+                topBar = {
+                    if (actionMode) {
+                        TopAppBar(
+                            colors = TopAppBarDefaults.topAppBarColors(
+                                containerColor = Color.Black,
+                                navigationIconContentColor = Color.White,
+                                titleContentColor = Color.White,
+                                actionIconContentColor = Color.White
+                            ),
+                            title = {
+                                Text(
+                                    stringResource(
+                                        R.string.task_selected,
+                                        selectedItems.size,
+                                        subTasks.size
+                                    ),
+                                    fontFamily = FontFamily.SansSerif,
+                                    fontWeight = FontWeight.SemiBold
+                                )
+                            },
+                            navigationIcon = {
+                                IconButton(onClick = {
+                                    resetSelectionMode()
+                                }) {
+                                    Icon(
+                                        painterResource(R.drawable.ic_back),
+                                        stringResource(R.string.back)
+                                    )
+                                }
+                            },
+                            actions = {
+                                Row {
+                                    IconButton(onClick = {
+                                        if (selectedItems.size == subTasks.size) {
+                                            selectedItems.clear()
+                                        } else {
+                                            selectedItems.clear()
+                                            selectedItems.addAll(subTasks)
+                                        }
+                                    }) {
+                                        Icon(
+                                            painterResource(
+                                                if (selectedItems.size == subTasks.size)
+                                                    R.drawable.ic_select_all_on
+                                                else R.drawable.ic_select_all
+                                            ),
+                                            stringResource(R.string.select_all)
+                                        )
+                                    }
+                                    IconButton(onClick = {
+                                        // delete selected items
+                                        selectedItems.map {
+                                            subTaskViewModel.deleteSubTask(it)
+                                        }
+                                    }) {
+                                        Icon(
+                                            painterResource(R.drawable.ic_delete),
+                                            stringResource(R.string.delete_task)
+                                        )
+                                    }
+                                }
+                            }
+                        )
                     } else {
-                        when (windowSize.width) {
-                            WindowType.Expanded -> 3
-                            WindowType.Medium -> 2
-                            else -> 1
-                        }
-                    }
-                ),
-            ) {
-                item(span = StaggeredGridItemSpan.FullLine) {
-                    AnimatedVisibility(!actionMode) {
-                        SubtaskHeaderContent(
-                            startDate,
-                            onStartDateChange = {
-                                startDate = it
+                        TopAppBar(
+                            title = {
+                                Text(
+                                    task.title,
+                                    fontFamily = FontFamily.SansSerif,
+                                    fontWeight = FontWeight.SemiBold
+                                )
                             },
-                            endDate,
-                            onEndDateChange = {
-                                endDate = it
-                            },
-                            setStartDate = {
-                                AppUtil.setDateTimeCompose(
-                                    context,
-                                    fragmentManager
-                                ) { calendar, time ->
-                                    startDate = time
-                                    task = task.copy(
-                                        startDate = calendar.timeInMillis
-                                    )
-                                }
-                            },
-                            setEndDate = {
-                                AppUtil.setDateTimeCompose(
-                                    context,
-                                    fragmentManager
-                                ) { calendar, time ->
-                                    endDate = time
-                                    task = task.copy(
-                                        endDate = calendar.timeInMillis
-                                    )
+                            navigationIcon = {
+                                IconButton(onClick = {
+                                    val progress = if (subTasks.isNotEmpty()) {
+                                        subTasks.filter { it.isDone }.size.toFloat() / subTasks.size.toFloat()
+                                    } else -1f
                                     taskViewModel.update(
-                                        task
+                                        task.copy(
+                                            progress = progress,
+                                            startDate = System.currentTimeMillis(),
+                                            subTaskList = AppUtil.getSubText(subTasks.map { it.subTitle })
+                                        )
+                                    )
+                                    navController.popBackStack()
+                                }) {
+                                    Icon(
+                                        painterResource(R.drawable.ic_back),
+                                        stringResource(R.string.back)
                                     )
                                 }
                             },
-                            shareTask = {
-                                subTaskViewModel.shareTask(
-                                    context,
-                                    AppUtil.getSubText(subTasks.map { it.subTitle })
-                                )
-                            },
-                            reminder = reminder,
-                            onReminderChange = {
-                                AppUtil.setDateTimeCompose(
-                                    context,
-                                    fragmentManager
-                                ) { calendar, _ ->
-                                    AppUtil.setReminderWorkRequest(
-                                        context,
-                                        task.title,
-                                        task,
-                                        calendar
-                                    )
-                                    task.reminder = calendar.timeInMillis
-                                    reminder = calendar.timeInMillis
+                            actions = {
+                                Row {
+                                    IconButton(onClick = {
+                                        navController.navigate(NavigationItem.Notification.route)
+                                    }) {
+                                        Icon(
+                                            painterResource(R.drawable.ic_reminder),
+                                            stringResource(R.string.notifications)
+                                        )
+                                    }
+                                    IconButton(onClick = {
+                                        navController.navigate(NavigationItem.Setting.route)
+                                    }) {
+                                        Icon(
+                                            painterResource(R.drawable.ic_settings),
+                                            stringResource(R.string.settings)
+                                        )
+                                    }
                                 }
-                            },
-                            onReminderCancel = {
-                                taskViewModel.cancelReminderCompose(
-                                    context,
-                                    task
-                                )
-                                reminder = null
-                            },
-                            subTasks.filter { it.isDone }.size,
-                            subTasks.size,
-                            searchQuery = searchQuery,
-                            color = Color(TaskApp.categoryTypes[task.color].color),
-                            onQueryChange = {
-                                searchQuery = it
-                                subTaskViewModel.searchQuery.value = it
-                            },
-                            isListViewEnable = isListViewEnable,
-                            onViewChange = {
-                                if (subTasks.size > 1)
-                                    isListViewEnable = it
-                            },
-                            onStatusChange = {
-                                isSubTaskDone = it
-                            },
-                            status = status,
-                            selectedStatusIndex = if (isSubTaskDone) 1 else 0,
-                            sortTypes = sortTypes,
-                            selectedSortIndex = selectedSortIndex,
-                            onSortChange = {
-                                selectedSortIndex = it
-                                subTaskViewModel.onSortOrderSelected(
-                                    SortOrder.getOrder(it),
-                                    context
-                                )
-                            },
-                            modifier = Modifier.fillMaxWidth()
+                            }
                         )
                     }
-                }
-                items(
-                    subTasks.filter { t -> isSubTaskDone == t.isDone }
-                        .sortedByDescending { t -> t.isImportant },
-                    key = { t ->
-                        t.id + Random.nextInt()
-                    }
-                ) { subTask ->
-                    val isSelected =
-                        selectedItems.contains(subTask)
+                },
+                floatingActionButtonPosition = FabPosition.Center,
+                floatingActionButton = {
                     Row(
-                        Modifier
-                            .animateItemPlacement()
-                            .padding(4.dp)
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp),
+                        horizontalArrangement =
+                        if (isSubTaskDone)
+                            Arrangement.Center
+                        else
+                            Arrangement.SpaceBetween,
                     ) {
-                        SubTaskItem(
-                            modifier = Modifier
-                                .combinedClickable(
-                                    onClick = {
-                                        if (actionMode) {
-                                            if (isSelected)
-                                                selectedItems.remove(subTask)
-                                            else
-                                                selectedItems.add(subTask)
-                                        } else {
-                                            subTaskViewModel.setSubTask(subTask)
-                                            isNewTask = false
-                                            subTaskId = subTask.sId
-                                            isBottomSheetOpened = true
-                                        }
-                                    },
-                                    onLongClick = {
-                                        if (actionMode) {
-                                            if (isSelected)
-                                                selectedItems.remove(subTask)
-                                            else
-                                                selectedItems.add(subTask)
-                                        } else {
-                                            actionMode = true
-                                            selectedItems.add(subTask)
-                                        }
-                                    },
+                        AnimatedVisibility(visible = !actionMode && showVoiceTask && !isSubTaskDone) {
+                            FloatingActionButton(
+                                onClick = {
+                                    AppUtil.speakToAddTaskCompose(context, speakLauncher)
+                                }) {
+                                Icon(
+                                    painterResource(R.drawable.ic_mic),
+                                    stringResource(R.string.add_task)
                                 )
-                                .border(
-                                    if (isSelected) 2.dp else (-1).dp,
-                                    color = MaterialTheme.colorScheme.primary,
-                                    RoundedCornerShape(8.dp)
-                                ),
-                            subTask = subTask,
-                            color = Color(TaskApp.categoryTypes[task.color].color),
-                            onImpSwipe = {
-                                subTaskViewModel.updateSubTask(subTask.copy(isImportant = it))
-                            },
-                            isListViewEnable = isListViewEnable,
-                            onCancelReminder = {
-                                if (!actionMode) {
-                                    subTaskViewModel.updateSubTask(
-                                        subTask.copy(
-                                            reminder = null
-                                        )
-                                    )
-                                }
-                            },
-                            onCompletedTask = { isCompleted ->
-                                if (!actionMode) {
-                                    subTaskViewModel.updateSubTask(
-                                        subTask.copy(
-                                            isDone = isCompleted,
-                                            dateTime = System.currentTimeMillis()
-                                        )
-                                    )
-                                }
                             }
-                        ) { isDone ->
-                            if (!actionMode) {
-                                if (isDone) {
-                                    subTaskViewModel.onSubTaskSwiped(subTask)
-                                    isSnackBarShow = false
-                                } else {
-                                    subTaskViewModel.setSubTask(subTask)
-                                    isNewTask = false
-                                    subTaskId = subTask.sId
-                                    isBottomSheetOpened = true
+                        }
+                        AnimatedVisibility(visible = isSubTaskDone) {
+                            FloatingActionButton(
+                                containerColor = MaterialTheme.colorScheme.errorContainer,
+                                onClick = {
+                                    subTaskViewModel.onDeleteAllCompletedClick()
+                                    openDialog = true
                                 }
+                            ) {
+                                Icon(
+                                    Icons.Default.Delete,
+                                    stringResource(R.string.delete_task)
+                                )
+                            }
+                        }
+                        AnimatedVisibility(visible = !actionMode && !isSubTaskDone) {
+                            FloatingActionButton(
+                                onClick = {
+                                    subTaskId = null
+                                    isNewTask = true
+                                    scope.launch {
+                                        isBottomSheetOpened = true
+                                        sheetState.show()
+                                    }
+                                }) {
+                                Icon(
+                                    painterResource(R.drawable.ic_edit),
+                                    stringResource(R.string.add_task)
+                                )
                             }
                         }
                     }
-                    Spacer(Modifier.height(8.dp))
+                }
+            ) { paddingValues ->
+                if (subTasks.isEmpty()) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(paddingValues),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center,
+                            modifier = Modifier.clickable {
+                                subTaskId = null
+                                isNewTask = true
+                                scope.launch {
+                                    isBottomSheetOpened = true
+                                    sheetState.show()
+                                }
+                            }
+                        ) {
+                            Image(
+                                painterResource(R.drawable.ic_add_task2),
+                                contentDescription = stringResource(
+                                    R.string.add_task
+                                ),
+                                colorFilter = ColorFilter.tint(color)
+                            )
+                            Spacer(modifier = Modifier.height(4.dp))
+                            Text(stringResource(R.string.create_new_sub_task))
+                        }
+                    }
+                }
+
+                LazyVerticalStaggeredGrid(
+                    modifier = Modifier.padding(paddingValues),
+                    contentPadding = PaddingValues(horizontal = 8.dp),
+                    columns = StaggeredGridCells.Fixed(
+                        if (isListViewEnable) {
+                            when (windowSize.width) {
+                                WindowType.Expanded -> 4
+                                WindowType.Medium -> 3
+                                else -> 2
+                            }
+                        } else {
+                            when (windowSize.width) {
+                                WindowType.Expanded -> 3
+                                WindowType.Medium -> 2
+                                else -> 1
+                            }
+                        }
+                    ),
+                ) {
+                    item(span = StaggeredGridItemSpan.FullLine) {
+                        AnimatedVisibility(!actionMode) {
+                            SubtaskHeaderContent(
+                                startDate,
+                                onStartDateChange = {
+                                    startDate = it
+                                },
+                                endDate,
+                                onEndDateChange = {
+                                    endDate = it
+                                },
+                                setStartDate = {
+                                    AppUtil.setDateTimeCompose(
+                                        context,
+                                        fragmentManager
+                                    ) { calendar, time ->
+                                        startDate = time
+                                        task = task.copy(
+                                            startDate = calendar.timeInMillis
+                                        )
+                                    }
+                                },
+                                setEndDate = {
+                                    AppUtil.setDateTimeCompose(
+                                        context,
+                                        fragmentManager
+                                    ) { calendar, time ->
+                                        endDate = time
+                                        task = task.copy(endDate = calendar.timeInMillis)
+                                        taskViewModel.update(task)
+                                    }
+                                },
+                                shareTask = {
+                                    subTaskViewModel.shareTask(
+                                        context,
+                                        AppUtil.getSubText(subTasks.map { it.subTitle })
+                                    )
+                                },
+                                onProgressBarClick = {
+                                    navController.navigate(NavigationItem.Overview.route)
+                                },
+                                reminder = reminder,
+                                onReminderChange = {
+                                    AppUtil.setDateTimeCompose(
+                                        context,
+                                        fragmentManager
+                                    ) { calendar, _ ->
+                                        AppUtil.setReminderWorkRequest(
+                                            context,
+                                            task.title,
+                                            task,
+                                            calendar
+                                        )
+                                        task.reminder = calendar.timeInMillis
+                                        reminder = calendar.timeInMillis
+                                    }
+                                },
+                                onReminderCancel = {
+                                    taskViewModel.cancelReminderCompose(
+                                        context,
+                                        task
+                                    )
+                                    reminder = null
+                                },
+                                subTasks.filter { it.isDone }.size,
+                                subTasks.size,
+                                searchQuery = searchQuery,
+                                color = color,
+                                onQueryChange = {
+                                    searchQuery = it
+                                    subTaskViewModel.searchQuery.value = it
+                                },
+                                isListViewEnable = isListViewEnable,
+                                onViewChange = {
+                                    if (subTasks.size > 1)
+                                        isListViewEnable = it
+                                },
+                                onStatusChange = {
+                                    isSubTaskDone = it
+                                },
+                                status = status,
+                                selectedStatusIndex = if (isSubTaskDone) 1 else 0,
+                                sortTypes = sortTypes,
+                                selectedSortIndex = selectedSortIndex,
+                                onSortChange = {
+                                    selectedSortIndex = it
+                                    subTaskViewModel.onSortOrderSelected(
+                                        SortOrder.getOrder(it),
+                                        context
+                                    )
+                                },
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                        }
+                    }
+                    items(
+                        subTasks.filter { t -> isSubTaskDone == t.isDone }
+                            .sortedByDescending { t -> t.isImportant },
+                        key = { t ->
+                            t.id + Random.nextInt()
+                        }
+                    ) { subTask ->
+                        val isSelected =
+                            selectedItems.contains(subTask)
+                        Row(
+                            Modifier
+                                .animateItemPlacement()
+                                .padding(4.dp)
+                        ) {
+                            SubTaskItem(
+                                modifier = Modifier
+                                    .combinedClickable(
+                                        onClick = {
+                                            if (actionMode) {
+                                                if (isSelected)
+                                                    selectedItems.remove(subTask)
+                                                else
+                                                    selectedItems.add(subTask)
+                                            } else {
+                                                subTaskViewModel.setSubTask(subTask)
+                                                isNewTask = false
+                                                subTaskId = subTask.sId
+                                                scope.launch {
+                                                    isBottomSheetOpened = true
+                                                    sheetState.show()
+                                                }
+                                            }
+                                        },
+                                        onLongClick = {
+                                            if (actionMode) {
+                                                if (isSelected)
+                                                    selectedItems.remove(subTask)
+                                                else
+                                                    selectedItems.add(subTask)
+                                            } else {
+                                                actionMode = true
+                                                selectedItems.add(subTask)
+                                            }
+                                        },
+                                    )
+                                    .border(
+                                        if (isSelected) 2.dp else (-1).dp,
+                                        color = MaterialTheme.colorScheme.primary,
+                                        RoundedCornerShape(8.dp)
+                                    ),
+                                subTask = subTask,
+                                prefManager = prefManager,
+                                color = color,
+                                onImpSwipe = {
+                                    subTaskViewModel.updateSubTask(subTask.copy(isImportant = it))
+                                },
+                                isListViewEnable = isListViewEnable,
+                                onCancelReminder = {
+                                    if (!actionMode) {
+                                        subTaskViewModel.updateSubTask(
+                                            subTask.copy(reminder = null)
+                                        )
+                                    }
+                                },
+                                onCompletedTask = { isCompleted ->
+                                    if (!actionMode) {
+                                        subTaskViewModel.updateSubTask(
+                                            subTask.copy(
+                                                isDone = isCompleted,
+                                                dateTime = System.currentTimeMillis()
+                                            )
+                                        )
+                                    }
+                                }
+                            ) { isDone ->
+                                if (!actionMode) {
+                                    if (isDone) {
+                                        subTaskViewModel.onSubTaskSwiped(subTask)
+                                        isSnackBarShow = false
+                                    } else {
+                                        subTaskViewModel.setSubTask(subTask)
+                                        isNewTask = false
+                                        subTaskId = subTask.sId
+                                        scope.launch {
+                                            isBottomSheetOpened = true
+                                            sheetState.show()
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        Spacer(Modifier.height(8.dp))
+                    }
                 }
             }
         }
@@ -766,6 +820,7 @@ fun SubtaskHeaderContent(
     setStartDate: () -> Unit,
     setEndDate: () -> Unit,
     shareTask: () -> Unit,
+    onProgressBarClick: () -> Unit,
     reminder: Long?,
     onReminderChange: () -> Unit,
     onReminderCancel: () -> Unit,
@@ -796,10 +851,13 @@ fun SubtaskHeaderContent(
     Column(modifier) {
         LinearProgressStatus(
             progress = completedSubTask.toFloat() / totalSubTask.toFloat(),
-            text = stringResource(id = R.string.subtask_progress, completedSubTask, totalSubTask),
+            text = stringResource(R.string.subtask_progress, completedSubTask, totalSubTask),
             color = color,
             width = width,
-            height = 24.dp
+            height = 24.dp,
+            modifier = Modifier.clickable {
+                onProgressBarClick()
+            }
         )
         Row(
             Modifier.fillMaxWidth(),
@@ -828,7 +886,7 @@ fun SubtaskHeaderContent(
                     }
                 },
                 placeholder = {
-                    Text(stringResource(id = R.string.search_subtask))
+                    Text(stringResource(R.string.search_subtask))
                 },
                 onActiveChange = {},
                 modifier = Modifier.weight(0.9f)
@@ -840,23 +898,21 @@ fun SubtaskHeaderContent(
                 }) {
                     Icon(
                         if (isListViewEnable)
-                            painterResource(id = R.drawable.ic_list_view)
+                            painterResource(R.drawable.ic_list_view)
                         else
-                            painterResource(id = R.drawable.ic_grid_view),
-                        contentDescription = "layout view changer"
+                            painterResource(R.drawable.ic_grid_view),
+                        contentDescription = stringResource(R.string.layout_view_change_button),
+                        tint = color
                     )
                 }
             }
         }
-        Spacer(modifier = Modifier.height(8.dp))
         Row(
             Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column {
-                Text(stringResource(id = R.string.sorting_option))
-                Spacer(modifier = Modifier.height(4.dp))
                 Row(
                     Modifier
                         .fillMaxWidth(0.5f)
@@ -864,7 +920,6 @@ fun SubtaskHeaderContent(
                         .background(
                             MaterialTheme.colorScheme.surfaceVariant
                         )
-                        .padding(4.dp)
                         .onGloballyPositioned { coordinates ->
                             //This value is used to assign to the DropDown the same width
                             mTextFieldSize = coordinates.size.toSize()
@@ -872,14 +927,16 @@ fun SubtaskHeaderContent(
                         .toggleable(value = isDropDownExpanded) {
                             isDropDownExpanded = !isDropDownExpanded
                         }
-                        .semantics(mergeDescendants = true) {},
+                        .semantics(mergeDescendants = true) {}
+                        .padding(4.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
+                    Text(stringResource(R.string.sorting_option))
+                    Spacer(modifier = Modifier.width(4.dp))
                     Text(
                         mSelectedText, fontWeight = FontWeight.SemiBold,
-                        modifier = Modifier
-                            .weight(1f),
+                        modifier = Modifier.weight(1f),
                         textAlign = TextAlign.Center
                     )
                     Icon(
@@ -887,12 +944,8 @@ fun SubtaskHeaderContent(
                             Icons.Filled.KeyboardArrowUp
                         else
                             Icons.Filled.KeyboardArrowDown,
-                        contentDescription = "sort expand/collapse button",
-                        Modifier
-                            .padding(end = 4.dp)
-                            .clickable {
-                                isDropDownExpanded = !isDropDownExpanded
-                            }
+                        contentDescription = stringResource(R.string.sort_expand_collapse_button),
+                        Modifier.padding(end = 4.dp)
                     )
                 }
                 DropdownMenu(
@@ -916,15 +969,17 @@ fun SubtaskHeaderContent(
                 }
             }
             TextButton(onClick = { shareTask() }) {
-                Icon(painterResource(R.drawable.ic_share), stringResource(R.string.share))
+                Icon(
+                    painterResource(R.drawable.ic_share),
+                    stringResource(R.string.share),
+                    tint = color
+                )
                 Spacer(modifier = Modifier.width(8.dp))
-                Text(stringResource(id = R.string.share))
+                Text(stringResource(R.string.share), color = color)
             }
         }
-        Spacer(modifier = Modifier.height(16.dp))
         Row(
-            Modifier
-                .fillMaxWidth(),
+            Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceAround
         ) {
             RoundedOutlinedTextField(
@@ -934,7 +989,7 @@ fun SubtaskHeaderContent(
                 },
                 leadingIcon = {
                     Icon(
-                        painterResource(id = R.drawable.ic_calendar_small),
+                        painterResource(R.drawable.ic_calendar_small),
                         contentDescription = null
                     )
                 },
@@ -943,7 +998,6 @@ fun SubtaskHeaderContent(
                 },
                 modifier = Modifier
                     .weight(1f)
-                    .background(MaterialTheme.colorScheme.surfaceVariant)
                     .onFocusChanged {
                         if (it.hasFocus) {
                             setStartDate()
@@ -959,7 +1013,7 @@ fun SubtaskHeaderContent(
                 },
                 leadingIcon = {
                     Icon(
-                        painterResource(id = R.drawable.ic_calendar_small),
+                        painterResource(R.drawable.ic_calendar_small),
                         contentDescription = null
                     )
                 },
@@ -968,7 +1022,6 @@ fun SubtaskHeaderContent(
                 },
                 modifier = Modifier
                     .weight(1f)
-                    .background(MaterialTheme.colorScheme.surfaceVariant)
                     .onFocusChanged {
                         if (it.hasFocus) {
                             setEndDate()
@@ -977,21 +1030,28 @@ fun SubtaskHeaderContent(
                 textStyle = TextStyle(fontSize = 12.sp)
             )
         }
-        Spacer(Modifier.height(8.dp))
         Row(
             Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            TextButton(onClick = {
-                onReminderChange()
-            }) {
-                Icon(painterResource(R.drawable.ic_reminder_small), null)
-                Spacer(Modifier.width(8.dp))
-                Text(
-                    if (reminder != null) DateUtil.getDate(reminder)
-                    else stringResource(R.string.add_date_time)
+            TextButton(onClick = { onReminderChange() }) {
+                Icon(
+                    painterResource(R.drawable.ic_reminder_small),
+                    null,
+                    tint = color
                 )
+                Spacer(Modifier.width(8.dp))
+                if (reminder != null) {
+                    val diff = DateUtil.getTimeDiff(reminder)
+                    val (timeColor, text) = if (diff < 0) {
+                        Color.Red to stringResource(R.string.overdue)
+                    } else
+                        color to DateUtil.getDate(reminder)
+                    Text(text, color = timeColor)
+                } else {
+                    Text(stringResource(R.string.add_date_time), color = color)
+                }
             }
             if (reminder != null) {
                 Spacer(Modifier.width(8.dp))

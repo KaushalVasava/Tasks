@@ -3,14 +3,11 @@ package com.lahsuak.apps.tasks.ui.screens
 import android.content.res.Configuration
 import android.widget.CalendarView
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -18,17 +15,15 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
+import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridItemSpan
 import androidx.compose.foundation.lazy.staggeredgrid.items
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -57,7 +52,7 @@ import androidx.navigation.compose.rememberNavController
 import com.lahsuak.apps.tasks.R
 import com.lahsuak.apps.tasks.TaskApp
 import com.lahsuak.apps.tasks.data.model.Task
-import com.lahsuak.apps.tasks.ui.screens.components.LinearProgressStatus
+import com.lahsuak.apps.tasks.ui.screens.components.CircularProgressStatus
 import com.lahsuak.apps.tasks.ui.theme.TaskAppTheme
 import com.lahsuak.apps.tasks.ui.viewmodel.TaskViewModel
 import com.lahsuak.apps.tasks.util.DateUtil
@@ -80,78 +75,86 @@ fun OverviewScreen(navController: NavController, taskViewModel: TaskViewModel) {
         }
     }
 
-    val scrollState = rememberScrollState()
-    Column(
-        Modifier
-            .fillMaxSize().scrollable(scrollState, Orientation.Vertical)
-    ) {
+    Scaffold(topBar = {
         TopAppBar(
-            title = { Text(stringResource(id = R.string.overview)) },
+            title = { Text(stringResource(R.string.overview)) },
             navigationIcon = {
                 IconButton(onClick = {
                     navController.popBackStack()
                 }) {
                     Icon(
-                        painterResource(id = R.drawable.ic_back),
-                        stringResource(id = R.string.back)
+                        painterResource(R.drawable.ic_back),
+                        stringResource(R.string.back)
                     )
                 }
             }
         )
-        Row(
-            Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 8.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Card(
-                Modifier.weight(0.5f),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.error
-                )
-            ) {
-                Text(
-                    stringResource(id = R.string.pending, tasks.count { !it.isDone }),
-                    fontSize = 24.sp,
-                    modifier = Modifier.padding(vertical = 24.dp, horizontal = 16.dp)
-                )
-            }
-            Spacer(Modifier.width(16.dp))
-            Card(
-                Modifier.weight(0.5f),
-                colors = CardDefaults.cardColors(
-                    containerColor = colorResource(id = R.color.light_green)
-                )
-            )
-            {
-                Text(
-                    stringResource(id = R.string.completed, tasks.count { it.isDone }),
-                    fontSize = 24.sp,
-                    modifier = Modifier.padding(vertical = 24.dp, horizontal = 16.dp)
-                )
-
-            }
-        }
-        Spacer(modifier = Modifier.height(16.dp))
-        AndroidView(
-            factory = { CalendarView(it) },
-            modifier = Modifier.wrapContentWidth(),
-            update = { views ->
-                views.setOnDateChangeListener { calendarView, year, month, dayOfMonth ->
-                    val calendar = Calendar.getInstance()
-                    calendar.set(year, month, dayOfMonth)
-                    selectedDate = calendar.timeInMillis
-                    selectedDate?.let {
-                        calendarView.date = it
-                    }
-                }
-            }
-        )
-        Spacer(modifier = Modifier.height(16.dp))
+    }) { paddingValues ->
         LazyVerticalStaggeredGrid(
+            modifier = Modifier.padding(paddingValues),
             columns = StaggeredGridCells.Fixed(2),
             contentPadding = PaddingValues(horizontal = 16.dp)
         ) {
+            item(span = StaggeredGridItemSpan.FullLine) {
+                Column(
+                    Modifier
+                        .fillMaxWidth()
+                ) {
+
+                    Row(
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp, vertical = 8.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Card(
+                            Modifier.weight(0.5f),
+                            colors = CardDefaults.cardColors(
+                                containerColor = MaterialTheme.colorScheme.error
+                            )
+                        ) {
+                            Text(
+                                stringResource(R.string.pending, tasks.count { !it.isDone }),
+                                fontSize = 24.sp,
+                                modifier = Modifier.padding(vertical = 24.dp, horizontal = 16.dp)
+                            )
+                        }
+                        Spacer(Modifier.width(16.dp))
+                        Card(
+                            Modifier.weight(0.5f),
+                            colors = CardDefaults.cardColors(
+                                containerColor = colorResource(R.color.light_green)
+                            )
+                        )
+                        {
+                            Text(
+                                stringResource(R.string.completed, tasks.count { it.isDone }),
+                                fontSize = 24.sp,
+                                modifier = Modifier.padding(vertical = 24.dp, horizontal = 16.dp)
+                            )
+
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(16.dp))
+                    AndroidView(
+                        factory = { CalendarView(it) },
+                        modifier = Modifier.wrapContentWidth(),
+                        update = { views ->
+                            selectedDate?.let {
+                                views.date = it
+                            }
+                            views.setOnDateChangeListener { calendarView, year, month, dayOfMonth ->
+                                val calendar = Calendar.getInstance()
+                                calendar.set(year, month, dayOfMonth)
+                                selectedDate = calendar.timeInMillis
+                                selectedDate?.let {
+                                    calendarView.date = it
+                                }
+                            }
+                        }
+                    )
+                }
+            }
             items(filterTasks, key = {
                 it.id
             }) {
@@ -166,7 +169,7 @@ fun TaskOverviewItem(task: Task) {
     Card(
         modifier = Modifier.padding(4.dp),
         colors = CardDefaults.cardColors(
-            containerColor = Color(TaskApp.categoryTypes[task.color].color).copy(alpha = 0.6f)
+            containerColor = Color(TaskApp.categoryTypes[task.color].color).copy(alpha = 0.30f)
         )
     ) {
         Column(
@@ -184,7 +187,12 @@ fun TaskOverviewItem(task: Task) {
             }
             if (task.progress != -1f) {
                 Spacer(modifier = Modifier.height(8.dp))
-                LinearProgressStatus(text = null, progress = task.progress, height = 8.dp)
+                CircularProgressStatus(
+                    progress = task.progress,
+                    color = Color(TaskApp.categoryTypes[task.color].color),
+                    trackColor = Color.LightGray,
+                    size = 32.dp
+                )
             }
         }
     }

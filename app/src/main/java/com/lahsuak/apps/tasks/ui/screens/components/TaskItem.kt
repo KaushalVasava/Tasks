@@ -1,13 +1,11 @@
 package com.lahsuak.apps.tasks.ui.screens.components
 
+import android.content.SharedPreferences
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,13 +21,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.DismissDirection
 import androidx.compose.material3.DismissState
 import androidx.compose.material3.DismissValue
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -52,19 +49,21 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.preference.PreferenceManager
 import com.lahsuak.apps.tasks.R
 import com.lahsuak.apps.tasks.TaskApp
 import com.lahsuak.apps.tasks.data.model.Task
-import com.lahsuak.apps.tasks.ui.navigation.NavigationItem
+import com.lahsuak.apps.tasks.util.AppConstants
 import com.lahsuak.apps.tasks.util.AppConstants.SharedPreference.FONT_SIZE_KEY
 import com.lahsuak.apps.tasks.util.AppConstants.SharedPreference.INITIAL_FONT_SIZE
+import com.lahsuak.apps.tasks.util.AppConstants.SharedPreference.SHOW_COPY_KEY
 import com.lahsuak.apps.tasks.util.AppConstants.SharedPreference.SHOW_REMINDER_KEY
 import com.lahsuak.apps.tasks.util.AppConstants.SharedPreference.SHOW_SUBTASK_KEY
 import com.lahsuak.apps.tasks.util.AppConstants.SharedPreference.TASK_PROGRESS_KEY
@@ -73,13 +72,13 @@ import com.lahsuak.apps.tasks.util.DateUtil
 import kotlinx.coroutines.delay
 
 @OptIn(
-    ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class,
-    ExperimentalFoundationApi::class
+    ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class
 )
 @Composable
 fun TaskItem(
-    modifier:Modifier = Modifier,
+    modifier: Modifier = Modifier,
     task: Task,
+    prefManager: SharedPreferences,
     isListViewEnable: Boolean,
     onImpSwipe: (Boolean) -> Unit,
     onCancelReminder: () -> Unit,
@@ -91,24 +90,17 @@ fun TaskItem(
     val color = Color(TaskApp.categoryTypes[task.color].color)
     val context = LocalContext.current
 
-    val prefManager = PreferenceManager.getDefaultSharedPreferences(context)
     val showProgress = prefManager.getBoolean(TASK_PROGRESS_KEY, false)
     val showReminder = prefManager.getBoolean(SHOW_REMINDER_KEY, true)
     val showSubTask = prefManager.getBoolean(SHOW_SUBTASK_KEY, true)
-    val prefMgr = PreferenceManager.getDefaultSharedPreferences(context)
-    val titleSize =
-        prefMgr.getString(FONT_SIZE_KEY, INITIAL_FONT_SIZE)!!.toFloat()
-
+    val titleSize = prefManager.getString(FONT_SIZE_KEY, INITIAL_FONT_SIZE)!!.toFloat()
+    val showCopyIcon = prefManager.getBoolean(SHOW_COPY_KEY, true)
     var isExpanded by rememberSaveable {
         mutableStateOf(true)
     }
     var isChecked by rememberSaveable {
         mutableStateOf(task.isDone)
     }
-
-//    var selected by rememberSaveable {
-//        mutableStateOf(isSelected)
-//    }
     var show by rememberSaveable { mutableStateOf(true) }
     val dismissState = rememberDismissState(
         confirmValueChange = {
@@ -129,7 +121,8 @@ fun TaskItem(
             },
             dismissContent = {
                 Column(
-                    modifier.fillMaxWidth()
+                    modifier
+                        .fillMaxWidth()
                         .clip(RoundedCornerShape(8.dp))
                         .background(Color(TaskApp.categoryTypes[task.color].color).copy(alpha = 0.30f))
                 ) {
@@ -144,8 +137,9 @@ fun TaskItem(
                                     .padding(top = 8.dp, start = 4.dp)
                             )
                         }
-                        val modifier = if (isListViewEnable) Modifier.fillMaxWidth() else Modifier
-                        Row(modifier) {
+                        val tempModifier =
+                            if (isListViewEnable) Modifier.fillMaxWidth() else Modifier
+                        Row(tempModifier) {
                             CircleCheckbox(
                                 checked = isChecked,
                                 onCheckedChange = {
@@ -161,15 +155,12 @@ fun TaskItem(
                                     Modifier.fillMaxWidth(),
                                     horizontalArrangement = Arrangement.SpaceBetween
                                 ) {
-                                    Text(
+                                    LinkifyText(
                                         task.title,
-                                        fontSize = titleSize.sp,
-                                        color = MaterialTheme.colorScheme.onSurface,
-                                        textDecoration = if (isChecked)
-                                            TextDecoration.LineThrough
-                                        else
-                                            TextDecoration.None,
-                                        modifier = Modifier.padding(top = 8.dp)
+                                        titleSize,
+                                        MaterialTheme.colorScheme.onSurface,
+                                        textDecoration = isChecked,
+                                        modifier = Modifier.padding(top = 8.dp),
                                     )
                                     Row {
                                         if (task.subTaskList != null) {
@@ -210,10 +201,8 @@ fun TaskItem(
                                             overflow = TextOverflow.Ellipsis
                                         )
                                     }
-                                    Spacer(modifier = Modifier.height(4.dp))
-                                    Divider(color = MaterialTheme.colorScheme.onSurface)
+                                    Spacer(modifier = Modifier.height(8.dp))
                                 }
-                                Spacer(modifier = Modifier.height(4.dp))
                                 FlowRow(
                                     modifier = Modifier
                                         .fillMaxWidth()
@@ -254,24 +243,23 @@ fun TaskItem(
                                             size = if (isListViewEnable) 32.dp else 28.dp
                                         )
                                     }
-                                    Icon(
-                                        painterResource(R.drawable.ic_copy),
-                                        stringResource(id = R.string.copy_text),
-                                        modifier = Modifier
-                                            .clip(CircleShape)
-                                            .clickable {
-                                                AppUtil.setClipboard(context, task.title)
-                                            }
-                                            .padding(4.dp)
-                                    )
+                                    AnimatedVisibility(visible = showCopyIcon) {
+                                        Icon(
+                                            painterResource(R.drawable.ic_copy),
+                                            stringResource(id = R.string.copy_text),
+                                            modifier = Modifier
+                                                .clip(CircleShape)
+                                                .clickable {
+                                                    AppUtil.setClipboard(context, task.title)
+                                                }.padding(4.dp)
+                                        )
+                                    }
                                     AnimatedVisibility(showReminder && task.reminder != null) {
                                         Row(
                                             verticalAlignment = Alignment.CenterVertically,
                                             horizontalArrangement = Arrangement.Center,
                                             modifier = Modifier
-                                                .clip(
-                                                    RoundedCornerShape(16.dp)
-                                                )
+                                                .clip(RoundedCornerShape(16.dp))
                                                 .background(color)
                                                 .padding(4.dp)
                                         ) {
@@ -281,15 +269,15 @@ fun TaskItem(
                                                 tint = Color.Black
                                             )
                                             Spacer(
-                                                Modifier
-                                                    .width(2.dp)
-                                                    .align(Alignment.Bottom)
+                                                Modifier.width(2.dp).align(Alignment.Bottom)
                                             )
-                                            Text(
-                                                DateUtil.getDate(task.reminder!!),
-                                                color = Color.Black,
-                                                fontSize = 10.sp
-                                            )
+                                            val diff = DateUtil.getTimeDiff(task.reminder!!)
+
+                                            val (color, text) = if (diff < 0) {
+                                                Color.Red to stringResource(id = R.string.overdue)
+                                            } else
+                                                Color.Black to DateUtil.getDate(task.reminder!!)
+                                            Text(text, fontSize = 10.sp, color = color)
                                             Icon(
                                                 painterResource(
                                                     R.drawable.ic_cancel
@@ -370,21 +358,3 @@ fun DismissBackground(dismissState: DismissState) {
             )
     }
 }
-
-//@Preview()
-//@Composable
-//fun TaskItemPreview() {
-//    val task = Task(
-//        0,
-//        "Hello sfddjkssdkjsdjsdksdsjkdjksdsdjsjdskdksdjsjkdsjkdsjkdjksdsjkdsjkdsjkdjsdkdjksd",
-//        subTaskList = "Hello"
-//    )
-//    TaskItem(
-//        task = task,
-//        isListViewEnable = false,
-//        onImpSwipe = {},
-//        isSelected = false,
-//        onCancelReminder = {},
-//        onCompletedTask = {}) {
-//    }
-//}

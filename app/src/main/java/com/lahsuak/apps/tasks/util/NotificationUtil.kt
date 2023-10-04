@@ -25,7 +25,7 @@ object NotificationUtil {
     fun createNotificationDaily(
         context: Context,
         title: String,
-        msg: String
+        msg: String,
     ) {
         createNotificationChannel(
             context,
@@ -68,7 +68,7 @@ object NotificationUtil {
         parentTitle: String?,
         isDone: Boolean,
         startDate: Long,
-        endDate: Long
+        endDate: Long,
     ) {
         createNotificationChannel(
             context,
@@ -82,24 +82,13 @@ object NotificationUtil {
             val lastDate = if (endDate == -1L) null else endDate
             Task(id, title, isDone, startDate = startDate, endDate = lastDate)
         }
-//        val pendingIntent = NavDeepLinkBuilder(context)
-//            .setGraph(R.navigation.main_nav_graph)
-//            .setDestination(R.id.subTaskFragment)
-//            .setArguments(
-//                SubTaskFragmentArgs.Builder(
-//                    task, false, null,
-//                    Notification(id = 0, id, title, System.currentTimeMillis())
-//                ).build().toBundle()
-//            )
-//            .createPendingIntent()
-        Log.d("TAG", "createNotification: ${task.title}")
         val deepLinkIntent = Intent(
             Intent.ACTION_VIEW,
             "myapp://kmv.com/subtaskscreen/${task.id}/true".toUri(),
             context,
             MainActivity::class.java
         )
-        val flag = if(Build.VERSION.SDK_INT > Build.VERSION_CODES.S){
+        val flag = if (Build.VERSION.SDK_INT > Build.VERSION_CODES.S) {
             PendingIntent.FLAG_IMMUTABLE
         } else PendingIntent.FLAG_UPDATE_CURRENT
         val deepLinkPendingIntent: PendingIntent = TaskStackBuilder.create(context).run {
@@ -127,7 +116,7 @@ object NotificationUtil {
         context: Context,
         id: String,
         name: String,
-        desc: String
+        desc: String,
     ) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
