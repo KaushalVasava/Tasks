@@ -1,7 +1,6 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
-    id 'androidx.navigation.safeargs'
     id 'kotlin-kapt'
     id 'dagger.hilt.android.plugin'
     id("org.jetbrains.kotlin.plugin.parcelize")
@@ -14,8 +13,8 @@ android {
         applicationId "com.lahsuak.apps.tasks"
         minSdk 21
         targetSdk 34
-        versionCode 13
-        versionName "1.0.1"
+        versionCode 14
+        versionName "1.0.2"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -25,7 +24,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion '1.4.5'
+        kotlinCompilerExtensionVersion '1.4.7'
     }
     packagingOptions {
         resources {
@@ -71,21 +70,19 @@ android {
 
 dependencies {
 
-    implementation 'androidx.core:core-ktx:1.10.1'
+    implementation 'androidx.core:core-ktx:1.12.0'
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.9.0'
     implementation 'androidx.compose.material:material:1.6.0-alpha06'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation 'androidx.lifecycle:lifecycle-service:2.6.1'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 
     implementation 'androidx.work:work-runtime-ktx:2.8.1'
-    implementation 'androidx.preference:preference-ktx:1.2.0'
+    implementation 'androidx.preference:preference-ktx:1.2.1'
     // Kotlin
-    implementation "androidx.navigation:navigation-fragment-ktx:2.6.0"
-    implementation "androidx.navigation:navigation-ui-ktx:2.6.0"
+    implementation "androidx.navigation:navigation-fragment-ktx:2.7.3"
+    implementation "androidx.navigation:navigation-ui-ktx:2.7.3"
 
     // Room components
     implementation "androidx.room:room-ktx:2.5.2"
@@ -94,41 +91,40 @@ dependencies {
     kapt "androidx.room:room-compiler:2.5.2"
     implementation "androidx.arch.core:core-testing:2.2.0"
 
-    // Lifecycle components
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1"
-    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.6.1"
+//    // Lifecycle components
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.6.2"
 
     // Kotlin components
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3"
 
-    implementation "com.google.dagger:hilt-android:2.44.2"
-    kapt "com.google.dagger:hilt-android-compiler:2.44.2"
+    implementation "com.google.dagger:hilt-android:2.45"
+    kapt "com.google.dagger:hilt-android-compiler:2.45"
     kapt "androidx.hilt:hilt-compiler:1.0.0"
 
     //save and retrieve arraylist
     implementation "androidx.datastore:datastore-preferences:1.0.0"
-    implementation 'it.xabaras.android:recyclerview-swipedecorator:1.2.1'
     // Play core library
     implementation "com.google.android.play:core:1.10.3"
     //rate dialog
     implementation 'com.github.hotchemi:android-rate:1.0.1'
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.10'
 
-    def compose_version = "1.4.5"
+    def compose_version = "1.4.7"
     // compose dependency
     implementation 'androidx.activity:activity-compose:1.7.2'
     implementation "androidx.compose.ui:ui:$compose_version"
     implementation "androidx.compose.ui:ui-tooling-preview:$compose_version"
-    implementation 'androidx.compose.material3:material3:1.2.0-alpha02'
+    implementation 'androidx.compose.material3:material3:1.2.0-alpha08'
+    implementation "com.google.accompanist:accompanist-systemuicontroller:0.28.0"
+    implementation "androidx.navigation:navigation-compose:2.7.3"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2"
+    implementation 'androidx.glance:glance:1.0.0'
+    implementation "androidx.glance:glance-appwidget:1.0.0"
 
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
     debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_version"
-    implementation "androidx.navigation:navigation-compose:2.6.0"
-    implementation 'androidx.browser:browser:1.6.0'
-    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1"
 
-    implementation 'androidx.glance:glance:1.0.0'
-    implementation "androidx.glance:glance-appwidget:1.0.0"
 }

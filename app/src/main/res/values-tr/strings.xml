@@ -142,4 +142,13 @@
     <string name="good_morning">Merhaba canım</string>
     <string name="notification_daily_desc">Görevleriniz beklemede, onları hızlı bir şekilde bitirmeniz gerekiyor</string>
     <string name="show_voice_to_add_task_option">Görev seçeneği eklemek için sesi göster</string>
+    <string name="task_not_completed_yet">Görev henüz tamamlanmadı</string>
+    <string name="general">Genel</string>
+    <string name="category_txt">Kategori</string>
+    <string name="paste">Yapıştır</string>
+    <string name="delete_all_notifications">Tüm bildirimleri sil</string>
+    <string name="confirm_notification_msg">Tüm bildirimleri silmek istiyor musunuz?</string>
+    <string name="sort_expand_collapse_button">Sıralamayı genişlet/daralt düğmesi</string>
+    <string name="layout_view_change_button">Yerleşim görünümünü değiştirme düğmesi</string>
+    <string name="show_copy">Kopyalama simgesini bireysel görevde göster</string>
 </resources>

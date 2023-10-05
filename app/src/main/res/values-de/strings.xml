@@ -142,4 +142,13 @@
     <string name="good_morning">Hallo Schatz</string>
     <string name="notification_daily_desc">Ihre Aufgaben stehen noch aus, Sie müssen sie schnell erledigen</string>
     <string name="show_voice_to_add_task_option">Option „Stimme zum Hinzufügen einer Aufgabe anzeigen“</string>
+    <string name="task_not_completed_yet">Die Aufgabe wurde noch nicht abgeschlossen</string>
+    <string name="general">Allgemein</string>
+    <string name="category_txt">Kategorie</string>
+    <string name="paste">Einfügen</string>
+    <string name="delete_all_notifications">Alle Benachrichtigungen löschen</string>
+    <string name="confirm_notification_msg">Möchten Sie alle Benachrichtigungen löschen?</string>
+    <string name="sort_expand_collapse_button">Schaltfläche zum Erweitern/Reduzieren der Sortierung</string>
+    <string name="layout_view_change_button">Schaltfläche zum Ändern der Layoutansicht</string>
+    <string name="show_copy">Kopiersymbol für einzelne Aufgabe anzeigen</string>
 </resources>

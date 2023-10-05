@@ -6,6 +6,11 @@ import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.util.Log
 import com.lahsuak.apps.tasks.model.Category
+import com.lahsuak.apps.tasks.ui.theme.lightBlue
+import com.lahsuak.apps.tasks.ui.theme.lightGreen
+import com.lahsuak.apps.tasks.ui.theme.lightPink
+import com.lahsuak.apps.tasks.ui.theme.lightPurple
+import com.lahsuak.apps.tasks.ui.theme.lightYellow
 import com.lahsuak.apps.tasks.util.AppConstants
 import com.lahsuak.apps.tasks.util.AppConstants.SharedPreference.LANGUAGE_DEFAULT_VALUE
 import com.lahsuak.apps.tasks.util.AppConstants.SharedPreference.LANGUAGE_SHARED_PREFERENCE_KEY
@@ -81,27 +86,19 @@ class TaskApp : Application() {
 
     private fun initCategory() {
         categoryTypes.add(
-            Category(0, getString(R.string.home), appContext.getColorCode(R.color.light_blue))
+            Category(0, getString(R.string.home),lightBlue.hashCode())
         )
         categoryTypes.add(
-            Category(
-                1,
-                getString(R.string.personal),
-                appContext.getColorCode(R.color.light_green)
-            )
+            Category(1, getString(R.string.personal), lightGreen.hashCode())
         )
         categoryTypes.add(
-            Category(
-                2,
-                getString(R.string.school),
-                appContext.getColorCode(R.color.light_yellow)
-            )
+            Category(2, getString(R.string.school), lightYellow.hashCode())
         )
         categoryTypes.add(
-            Category(3, getString(R.string.work), appContext.getColorCode(R.color.light_pink))
+            Category(3, getString(R.string.work), lightPink.hashCode())
         )
         categoryTypes.add(
-            Category(4, getString(R.string.other), appContext.getColorCode(R.color.light_purple))
+            Category(4, getString(R.string.other), lightPurple.hashCode())
         )
     }
 

@@ -140,4 +140,13 @@
     <string name="good_morning">ہیلو عزیز</string>
     <string name="notification_daily_desc">آپ کے کام زیر التواء ہیں، آپ کو انہیں جلدی سے مکمل کرنا ہوگا</string>
     <string name="show_voice_to_add_task_option">ٹاسک آپشن شامل کرنے کے لیے آواز دکھائیں</string>
+    <string name="task_not_completed_yet">کام ابھی تک مکمل نہیں ہوا ہے</string>
+    <string name = "general"> جنرل</string>
+    <string name="category_txt">زمرہ</string>
+    <string name="paste">چسپاں کریں</string>
+    <string name="delete_all_notifications">تمام اطلاعات کو حذف کریں</string>
+    <string name="confirm_notification_msg">کیا آپ تمام اطلاعات کو حذف کرنا چاہتے ہیں؟</string>
+    <string name="sort_expand_collapse_button">چھانٹیں پھیلائیں/کم کریں بٹن</string>
+    <string name="layout_view_change_button">لے آؤٹ ویو میں تبدیلی کا بٹن</string>
+    <string name="show_copy">انفرادی کام پر کاپی آئیکن دکھائیں</string>
 </resources>

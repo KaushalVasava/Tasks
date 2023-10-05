@@ -7,6 +7,8 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -16,6 +18,8 @@ import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -87,6 +91,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
@@ -116,7 +121,6 @@ import com.lahsuak.apps.tasks.util.DateUtil
 import com.lahsuak.apps.tasks.util.WindowSize
 import com.lahsuak.apps.tasks.util.WindowType
 import com.lahsuak.apps.tasks.util.preference.FilterPreferences
-import com.lahsuak.apps.tasks.util.toSortForm
 import kotlinx.coroutines.launch
 import kotlin.random.Random
 
@@ -278,7 +282,7 @@ fun SubTaskScreen(
         var selectedSortIndex by rememberSaveable {
             mutableIntStateOf(
                 sorts.indexOfFirst {
-                    it.contains(preference.sortOrder.name.toSortForm())
+                    it == preference.sortOrder.type
                 }
             )
         }
@@ -355,7 +359,11 @@ fun SubTaskScreen(
             sheetBackgroundColor = MaterialTheme.colorScheme.surface,
             sheetState = sheetState,
             sheetContent = {
-                if (isBottomSheetOpened) {
+                AnimatedVisibility(
+                    visible = isBottomSheetOpened,
+                    enter = expandVertically(),
+                    exit = shrinkVertically()
+                ) {
                     AddUpdateSubTaskScreen(
                         sheetState = sheetState,
                         taskId = taskId,
@@ -391,7 +399,9 @@ fun SubTaskScreen(
                                         subTasks.size
                                     ),
                                     fontFamily = FontFamily.SansSerif,
-                                    fontWeight = FontWeight.SemiBold
+                                    fontWeight = FontWeight.SemiBold,
+                                    maxLines = 2,
+                                    overflow = TextOverflow.Ellipsis
                                 )
                             },
                             navigationIcon = {
@@ -572,7 +582,10 @@ fun SubTaskScreen(
                                 colorFilter = ColorFilter.tint(color)
                             )
                             Spacer(modifier = Modifier.height(4.dp))
-                            Text(stringResource(R.string.create_new_sub_task))
+                            Text(
+                                stringResource(R.string.create_new_sub_task),
+                                textAlign = TextAlign.Center
+                            )
                         }
                     }
                 }
@@ -687,7 +700,8 @@ fun SubTaskScreen(
                                         context
                                     )
                                 },
-                                modifier = Modifier.fillMaxWidth()
+                                modifier = Modifier.fillMaxWidth(),
+                                windowSize = windowSize
                             )
                         }
                     }
@@ -810,7 +824,7 @@ fun SubTaskScreen(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun SubtaskHeaderContent(
     startDate: String,
@@ -838,6 +852,7 @@ fun SubtaskHeaderContent(
     selectedSortIndex: Int,
     onSortChange: (Int) -> Unit,
     modifier: Modifier = Modifier,
+    windowSize: WindowSize,
 ) {
     var isDropDownExpanded by rememberSaveable {
         mutableStateOf(false)
@@ -847,7 +862,7 @@ fun SubtaskHeaderContent(
     }
     var mTextFieldSize by remember { mutableStateOf(Size.Zero) }
     val width = LocalConfiguration.current.screenWidthDp.dp
-
+    val isLandscape = windowSize.width > windowSize.height
     Column(modifier) {
         LinearProgressStatus(
             progress = completedSubTask.toFloat() / totalSubTask.toFloat(),
@@ -859,10 +874,11 @@ fun SubtaskHeaderContent(
                 onProgressBarClick()
             }
         )
-        Row(
+        FlowRow(
             Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            maxItemsInEachRow = if (isLandscape) 3 else 1
         ) {
             SearchBar(
                 query = searchQuery,
@@ -889,33 +905,17 @@ fun SubtaskHeaderContent(
                     Text(stringResource(R.string.search_subtask))
                 },
                 onActiveChange = {},
-                modifier = Modifier.weight(0.9f)
+                modifier = Modifier.weight(1f)
             ) {}
-            Spacer(modifier = Modifier.width(8.dp))
-            AnimatedVisibility(searchQuery.isEmpty()) {
-                IconButton(onClick = {
-                    onViewChange(!isListViewEnable)
-                }) {
-                    Icon(
-                        if (isListViewEnable)
-                            painterResource(R.drawable.ic_list_view)
-                        else
-                            painterResource(R.drawable.ic_grid_view),
-                        contentDescription = stringResource(R.string.layout_view_change_button),
-                        tint = color
-                    )
-                }
+            if(isLandscape){
+                Spacer(modifier = Modifier.width(8.dp))
             }
-        }
-        Row(
-            Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Column {
+            Column(modifier = Modifier
+                .weight(1f)
+                .align(Alignment.CenterVertically)
+            ) {
                 Row(
                     Modifier
-                        .fillMaxWidth(0.5f)
                         .clip(RoundedCornerShape(8.dp))
                         .background(
                             MaterialTheme.colorScheme.surfaceVariant
@@ -932,12 +932,14 @@ fun SubtaskHeaderContent(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(stringResource(R.string.sorting_option))
+                    Text(stringResource(R.string.sorting_option), fontSize = 12.sp)
                     Spacer(modifier = Modifier.width(4.dp))
                     Text(
-                        mSelectedText, fontWeight = FontWeight.SemiBold,
+                        mSelectedText,
+                        fontWeight = FontWeight.SemiBold,
                         modifier = Modifier.weight(1f),
-                        textAlign = TextAlign.Center
+                        textAlign = TextAlign.Center,
+                        fontSize = 12.sp
                     )
                     Icon(
                         if (isDropDownExpanded)
@@ -968,16 +970,34 @@ fun SubtaskHeaderContent(
                     }
                 }
             }
-            TextButton(onClick = { shareTask() }) {
-                Icon(
-                    painterResource(R.drawable.ic_share),
-                    stringResource(R.string.share),
-                    tint = color
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(stringResource(R.string.share), color = color)
+            Row(
+                modifier = Modifier
+                    .weight(1f),
+                horizontalArrangement = Arrangement.End,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                TextButton(onClick = { shareTask() }) {
+                    Icon(
+                        painterResource(R.drawable.ic_share),
+                        stringResource(R.string.share),
+                        tint = color
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(stringResource(R.string.share), color = color)
+                }
+                IconButton(onClick = { onViewChange(!isListViewEnable) }) {
+                    Icon(
+                        if (isListViewEnable)
+                            painterResource(R.drawable.ic_list_view)
+                        else
+                            painterResource(R.drawable.ic_grid_view),
+                        contentDescription = stringResource(R.string.layout_view_change_button),
+                        tint = color
+                    )
+                }
             }
         }
+        Spacer(modifier = Modifier.height(8.dp))
         Row(
             Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceAround
@@ -994,7 +1014,7 @@ fun SubtaskHeaderContent(
                     )
                 },
                 placeholder = {
-                    Text(stringResource(R.string.start_date))
+                    Text(stringResource(R.string.start_date), fontSize = 12.sp)
                 },
                 modifier = Modifier
                     .weight(1f)
@@ -1018,7 +1038,7 @@ fun SubtaskHeaderContent(
                     )
                 },
                 placeholder = {
-                    Text(stringResource(R.string.end_date))
+                    Text(stringResource(R.string.end_date), fontSize = 12.sp)
                 },
                 modifier = Modifier
                     .weight(1f)
@@ -1041,7 +1061,6 @@ fun SubtaskHeaderContent(
                     null,
                     tint = color
                 )
-                Spacer(Modifier.width(8.dp))
                 if (reminder != null) {
                     val diff = DateUtil.getTimeDiff(reminder)
                     val (timeColor, text) = if (diff < 0) {
@@ -1061,7 +1080,8 @@ fun SubtaskHeaderContent(
             }
             ChipGroup(
                 items = status,
-                selectedIndex = selectedStatusIndex
+                selectedIndex = selectedStatusIndex,
+                selectedContainerColor = color
             ) { index ->
                 onStatusChange(index != 0)
             }

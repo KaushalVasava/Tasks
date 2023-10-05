@@ -134,13 +134,21 @@
     <string name="select_project_start_date">প্রকল্প শুরুর তারিখ নির্বাচন করুন</string>
     <string name="no_notification">এখনও কোনো বিজ্ঞপ্তি নেই</string>
     <string name="notifications">বিজ্ঞপ্তি</string>
-    <string name="sort_by_old_to_new">পুরাতন থেকে নতুন</string>৷
+    <string name="sort_by_old_to_new">পুরাতন থেকে নতুন</string>
     <string name="pending">অমীমাংসিত কাজগুলি <b>%d</b></string>
-    ৷
     <string name="completed">সমাপ্ত কাজগুলি <b>%d</b></string>
 
     <string name="overview">ওভারভিউ</string>
     <string name="good_morning">হ্যালো প্রিয়</string>
     <string name="notification_daily_desc">আপনার কাজগুলি মুলতুবি আছে, আপনাকে সেগুলি দ্রুত শেষ করতে হবে</string>
     <string name="show_voice_to_add_task_option">টাস্ক বিকল্প যোগ করতে ভয়েস দেখান</string>
+    <string name = "task_not_completed_yet"> টাস্কটি এখনো শেষ হয়নি</string>
+    <string name="general">সাধারণ</string>
+    <string name = "category_txt">বিভাগ</string>
+    <string name="paste">পেস্ট করুন</string>
+    <string name="delete_all_notifications">সমস্ত বিজ্ঞপ্তি মুছুন</string>
+    <string name="confirm_notification_msg">আপনি কি সমস্ত বিজ্ঞপ্তি মুছতে চান?</string>
+    <string name="sort_expand_collapse_button">বাছাই প্রসারিত/সংকোচন বোতাম</string>
+    <string name="layout_view_change_button">লেআউট ভিউ পরিবর্তন বোতাম</string>
+    <string name="show_copy">স্বতন্ত্র টাস্কে কপি আইকন দেখান</string>
 </resources>

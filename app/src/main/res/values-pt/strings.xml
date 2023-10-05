@@ -141,4 +141,13 @@
     <string name="good_morning">Olá querida</string>
     <string name="notification_daily_desc">Suas tarefas estão pendentes, você deve finalizá-las rapidamente</string>
     <string name="show_voice_to_add_task_option">Mostrar voz para adicionar opção de tarefa</string>
+    <string name="task_not_completed_yet">A tarefa ainda não foi concluída</string>
+    <string name="general">Geral</string>
+    <string name="category_txt">Categoria</string>
+    <string name="paste">Colar</string>
+    <string name="delete_all_notifications">Excluir todas as notificações</string>
+    <string name="confirm_notification_msg">Deseja excluir todas as notificações?</string>
+    <string name="sort_expand_collapse_button">Botão Classificar expandir/recolher</string>
+    <string name="layout_view_change_button">Botão de alteração da visualização do layout</string>
+    <string name="show_copy">Mostrar ícone de cópia em tarefa individual</string>
 </resources>

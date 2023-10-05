@@ -139,4 +139,13 @@
     <string name="good_morning">안녕하세요.</string>
     <string name="notification_daily_desc">작업이 대기 중입니다. 빨리 완료해야 합니다</string>
     <string name="show_voice_to_add_task_option">작업 옵션 추가를 위한 음성 표시</string>
+    <string name="task_not_completed_yet">작업이 아직 완료되지 않았습니다</string>
+    <string name="general">일반</string>
+    <string name="category_txt">범주</string>
+    <string name="paste">붙여넣기</string>
+    <string name="delete_all_notifications">모든 알림 삭제</string>
+    <string name="confirm_notification_msg">모든 알림을 삭제하시겠습니까?</string>
+    <string name="sort_expand_collapse_button">확장/축소 버튼 정렬</string>
+    <string name="layout_view_change_button">레이아웃 보기 변경 버튼</string>
+    <string name="show_copy">개별 작업에 복사 아이콘 표시</string>
 </resources>

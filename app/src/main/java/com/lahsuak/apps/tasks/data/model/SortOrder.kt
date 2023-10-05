@@ -1,12 +1,15 @@
 package com.lahsuak.apps.tasks.data.model
 
-enum class SortOrder {
-    BY_NAME,
-    BY_NAME_DESC,
-    BY_DATE,
-    BY_DATE_DESC,
-    BY_CATEGORY,
-    BY_CATEGORY_DESC
+import com.lahsuak.apps.tasks.R
+import com.lahsuak.apps.tasks.ui.MainActivity.Companion.activityContext
+
+enum class SortOrder(val type: String) {
+    BY_NAME(activityContext.getString(R.string.name)),
+    BY_NAME_DESC(activityContext.getString(R.string.name_desc)),
+    BY_DATE(activityContext.getString(R.string.date)),
+    BY_DATE_DESC(activityContext.getString(R.string.date_desc)),
+    BY_CATEGORY(activityContext.getString(R.string.category)),
+    BY_CATEGORY_DESC(activityContext.getString(R.string.category_desc))
     ;
 
     companion object {

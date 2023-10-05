@@ -190,7 +190,8 @@ fun AddUpdateTaskScreen(
                 text = stringResource( R.string.important_task),
                 value = isImp,
                 onValueChange = { isImp = it },
-                fontSize = 12.sp
+                fontSize = 12.sp,
+                modifier = Modifier.padding(start = 4.dp)
             )
             TextButton(onClick = {
                 AppUtil.setClipboard(context, title)
@@ -280,7 +281,7 @@ fun AddUpdateTaskScreen(
                     )
                 },
                 placeholder = {
-                    Text(stringResource(R.string.start_date))
+                    Text(stringResource(R.string.start_date), fontSize = 12.sp)
                 },
                 modifier = Modifier
                     .weight(1f)
@@ -309,7 +310,7 @@ fun AddUpdateTaskScreen(
                     Icon(painterResource( R.drawable.ic_calendar_small), null)
                 },
                 placeholder = {
-                    Text(stringResource(R.string.end_date))
+                    Text(stringResource(R.string.end_date), fontSize = 12.sp)
                 },
                 modifier = Modifier
                     .weight(1f)

@@ -142,4 +142,13 @@
     <string name="good_morning">Bonjour mon cher</string>
     <string name="notification_daily_desc">Vos tâches sont en attente, vous devez les terminer rapidement</string>
     <string name="show_voice_to_add_task_option">Afficher la voix pour ajouter l\'option de tâche</string>
+    <string name="task_not_completed_yet">La tâche n\'est pas encore terminée</string>
+    <string name="general">Général</string>
+    <string name="category_txt">Catégorie</string>
+    <string name="paste">Coller</string>
+    <string name="delete_all_notifications">Supprimer toutes les notifications</string>
+    <string name="confirm_notification_msg">Voulez-vous supprimer toutes les notifications ?</string>
+    <string name="sort_expand_collapse_button">Bouton de tri développer/réduire</string>
+    <string name="layout_view_change_button">Bouton de changement de vue de mise en page</string>
+    <string name="show_copy">Afficher l\'icône de copie sur une tâche individuelle</string>
 </resources>

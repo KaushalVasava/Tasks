@@ -7,6 +7,8 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -16,6 +18,8 @@ import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -112,7 +116,6 @@ import com.lahsuak.apps.tasks.util.DateUtil
 import com.lahsuak.apps.tasks.util.WindowSize
 import com.lahsuak.apps.tasks.util.WindowType
 import com.lahsuak.apps.tasks.util.preference.FilterPreferences
-import com.lahsuak.apps.tasks.util.toSortForm
 import kotlinx.coroutines.launch
 import kotlin.random.Random
 
@@ -160,9 +163,7 @@ fun TaskScreen(
         ShareDialog(
             tasks,
             openDialog = openDialog,
-            onDialogStatusChange = {
-                openDialog = it
-            },
+            onDialogStatusChange = { openDialog = it },
             onTaskAddButtonClick = {
                 taskId = null
                 isNewTask = true
@@ -210,9 +211,7 @@ fun TaskScreen(
     val lazyListState = rememberLazyListState()
 
     val isFabExtended by remember {
-        derivedStateOf {
-            lazyListState.firstVisibleItemIndex != 0
-        }
+        derivedStateOf { lazyListState.firstVisibleItemIndex != 0 }
     }
     var isListViewEnable by rememberSaveable {
         mutableStateOf(preference.viewType)
@@ -233,10 +232,11 @@ fun TaskScreen(
     val sortTypes by remember {
         mutableStateOf(sorts)
     }
+    val index = sorts.indexOfFirst {
+        it == preference.sortOrder.type
+    }
     var selectedSortIndex by rememberSaveable {
-        mutableIntStateOf(sorts.indexOfFirst {
-            it.contains(preference.sortOrder.name.toSortForm())
-        })
+        mutableIntStateOf(index)
     }
     var selectedSort by rememberSaveable {
         mutableStateOf(sortTypes[selectedSortIndex])
@@ -340,7 +340,11 @@ fun TaskScreen(
         sheetBackgroundColor = MaterialTheme.colorScheme.surface,
         sheetState = sheetState,
         sheetContent = {
-            if (isBottomSheetOpened) {
+            AnimatedVisibility(
+                visible = isBottomSheetOpened,
+                enter = expandVertically(),
+                exit = shrinkVertically()
+            ) {
                 AddUpdateTaskScreen(
                     sheetState,
                     taskViewModel = taskViewModel,
@@ -561,7 +565,7 @@ fun TaskScreen(
                             colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary)
                         )
                         Spacer(modifier = Modifier.height(4.dp))
-                        Text(stringResource(R.string.create_new_task))
+                        Text(stringResource(R.string.create_new_task), textAlign = TextAlign.Center)
                     }
                 }
             }
@@ -712,7 +716,7 @@ fun TaskScreen(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun HeaderContent(
     completedTask: Int,
@@ -728,7 +732,7 @@ fun HeaderContent(
     selectedSort: String,
     onSortChange: (Int) -> Unit,
     onProgressBarClick: () -> Unit,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
 ) {
     var isDropDownExpanded by rememberSaveable {
         mutableStateOf(false)
@@ -747,10 +751,10 @@ fun HeaderContent(
             width = width,
             height = 24.dp,
         )
-        Row(
+        FlowRow(
             Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             SearchBar(
                 query = searchQuery,
@@ -777,33 +781,11 @@ fun HeaderContent(
                     Text(stringResource(R.string.search_task))
                 },
                 onActiveChange = {},
-                modifier = Modifier.weight(0.9f)
+                modifier = Modifier.weight(1f)
             ) {}
-            Spacer(modifier = Modifier.width(8.dp))
-            AnimatedVisibility(searchQuery.isEmpty()) {
-                IconButton(onClick = {
-                    onViewChange(!isListViewEnable)
-                }) {
-                    Icon(
-                        if (isListViewEnable)
-                            painterResource(R.drawable.ic_list_view)
-                        else
-                            painterResource(R.drawable.ic_grid_view),
-                        stringResource(R.string.layout_view_change_button),
-                        tint = MaterialTheme.colorScheme.primary
-                    )
-                }
-            }
-        }
-        Row(
-            Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Column {
+            Column(Modifier.weight(1f).align(Alignment.CenterVertically)) {
                 Row(
                     Modifier
-                        .fillMaxWidth(0.5f)
                         .clip(RoundedCornerShape(8.dp))
                         .background(MaterialTheme.colorScheme.surfaceVariant)
                         .onGloballyPositioned { coordinates ->
@@ -815,15 +797,15 @@ fun HeaderContent(
                         }
                         .semantics(mergeDescendants = true) {}
                         .padding(4.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(stringResource(R.string.sorting_option))
+                    Text(stringResource(R.string.sorting_option), fontSize = 14.sp)
                     Spacer(Modifier.width(4.dp))
                     Text(
                         selectedSort, fontWeight = FontWeight.SemiBold,
                         modifier = Modifier.weight(1f),
-                        textAlign = TextAlign.Center
+                        textAlign = TextAlign.Center,
+                        fontSize = 14.sp
                     )
                     Icon(
                         if (isDropDownExpanded)
@@ -851,11 +833,29 @@ fun HeaderContent(
                     }
                 }
             }
+        }
+
+        Row(
+            horizontalArrangement = Arrangement.End,
+            modifier = Modifier.fillMaxWidth()
+        ) {
             ChipGroup(
                 items = status,
                 selectedIndex = selectedStatusIndex
             ) { index ->
                 onStatusChange(index != 0)
+            }
+            IconButton(onClick = {
+                onViewChange(!isListViewEnable)
+            }) {
+                Icon(
+                    if (isListViewEnable)
+                        painterResource(R.drawable.ic_list_view)
+                    else
+                        painterResource(R.drawable.ic_grid_view),
+                    stringResource(R.string.layout_view_change_button),
+                    tint = MaterialTheme.colorScheme.primary
+                )
             }
         }
     }

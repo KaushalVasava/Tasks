@@ -5,7 +5,7 @@ import android.app.TaskStackBuilder
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import androidx.glance.GlanceId
@@ -25,6 +25,7 @@ import androidx.glance.background
 import androidx.glance.layout.padding
 import com.lahsuak.apps.tasks.R
 import com.lahsuak.apps.tasks.ui.MainActivity
+import com.lahsuak.apps.tasks.ui.theme.lightBlue
 
 
 object TaskWidgetCompose : GlanceAppWidget() {
@@ -32,14 +33,14 @@ object TaskWidgetCompose : GlanceAppWidget() {
     override suspend fun provideGlance(context: Context, id: GlanceId) {
         provideContent {
             Image(
-                provider = ImageProvider(R.drawable.ic_edit), contentDescription = "Add",
+                provider = ImageProvider(R.drawable.ic_edit), stringResource(id = R.string.add_task),
                 modifier = GlanceModifier
-                    .background(MaterialTheme.colorScheme.primary)
-                    .padding(16.dp)
-                    .cornerRadius(8.dp)
                     .clickable(
                         actionRunCallback(TaskActionCallback::class.java)
                     )
+                    .background(lightBlue)
+                    .padding(16.dp)
+                    .cornerRadius(8.dp)
             )
         }
     }
@@ -59,7 +60,7 @@ class TaskActionCallback : ActionCallback {
         updateAppWidgetState(context, glanceId) { prefs ->
             val deepLinkIntent = Intent(
                 Intent.ACTION_VIEW,
-                "myapp://kmv.com/shortcut".toUri(),
+                "myapp://kmv.com/shortcut/true".toUri(),
                 context,
                 MainActivity::class.java
             )

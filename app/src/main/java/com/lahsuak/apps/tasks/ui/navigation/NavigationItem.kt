@@ -1,21 +1,19 @@
 package com.lahsuak.apps.tasks.ui.navigation
 
-enum class Screen {
-    TASK,
-    SUBTASK,
-    ADD_UPDATE_TASK,
-    ADD_UPDATE_SUBTASK,
-    OVERVIEW,
-    SETTING,
-    NOTIFICATION
-}
+import com.lahsuak.apps.tasks.util.NavigationConstants.Screen.TASK
+import com.lahsuak.apps.tasks.util.NavigationConstants.Screen.SUBTASK
+import com.lahsuak.apps.tasks.util.NavigationConstants.Screen.SETTING
+import com.lahsuak.apps.tasks.util.NavigationConstants.Screen.ADD_UPDATE_TASK
+import com.lahsuak.apps.tasks.util.NavigationConstants.Screen.ADD_UPDATE_SUBTASK
+import com.lahsuak.apps.tasks.util.NavigationConstants.Screen.NOTIFICATION
+import com.lahsuak.apps.tasks.util.NavigationConstants.Screen.OVERVIEW
 
 sealed class NavigationItem(val route: String) {
-    object Task : NavigationItem(Screen.TASK.name)
-    object SubTask : NavigationItem(Screen.SUBTASK.name)
-    object AddUpdateTask : NavigationItem(Screen.ADD_UPDATE_TASK.name)
-    object AddUpdateSubTask : NavigationItem(Screen.ADD_UPDATE_SUBTASK.name)
-    object Overview : NavigationItem(Screen.OVERVIEW.name)
-    object Setting : NavigationItem(Screen.SETTING.name)
-    object Notification : NavigationItem(Screen.NOTIFICATION.name)
+    object Task : NavigationItem(TASK)
+    object SubTask : NavigationItem(SUBTASK)
+    object AddUpdateTask : NavigationItem(ADD_UPDATE_TASK)
+    object AddUpdateSubTask : NavigationItem(ADD_UPDATE_SUBTASK)
+    object Overview : NavigationItem(OVERVIEW)
+    object Setting : NavigationItem(SETTING)
+    object Notification : NavigationItem(NOTIFICATION)
 }

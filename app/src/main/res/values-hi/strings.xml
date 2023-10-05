@@ -139,4 +139,13 @@
     <string name="good_morning">नमस्कार प्रिय</string>
     <string name="notification_daily_desc">आपके कार्य लंबित हैं, आपको उन्हें जल्दी से पूरा करना होगा</string>
     <string name='show_voice_to_add_task_option'>कार्य विकल्प जोड़ने के लिए आवाज दिखाएं</string>
+    <string name='task_not_completed_yet'>कार्य अभी तक पूरा नहीं हुआ है</string>
+    <string name="general">सामान्य</string>
+    <string name="category_txt">श्रेणी</string>
+    <string name="paste">पेस्ट करें</string>
+    <string name="delete_all_notifications">सभी सूचनाएं हटाएं</string>
+    <string name="confirm_notification_msg">क्या आप सभी सूचनाएं हटाना चाहते हैं?</string>
+    <string name="sort_expand_collapse_button">विस्तारित करें/संक्षिप्त करें बटन</string>
+    <string name="layout_view_change_button">लेआउट दृश्य परिवर्तन बटन</string>
+    <string name="show_copy">व्यक्तिगत कार्य पर कॉपी आइकन दिखाएं</string>
 </resources>

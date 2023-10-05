@@ -317,13 +317,6 @@ fun TaskItem(
             }
         }
     }
-
-//    val haptic = LocalHapticFeedback.current
-//    LaunchedEffect(key1 = show, block = {
-//        if (!show) {
-//            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-//        }
-//    })
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

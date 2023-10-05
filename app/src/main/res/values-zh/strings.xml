@@ -142,4 +142,13 @@
     <string name="good_morning">亲爱的你好</string>
     <string name="notification_daily_desc">您的任务正在等待处理，您必须尽快完成</string>
     <string name="show_voice_to_add_task_option">显示语音以添加任务选项</string>
+    <string name="task_not_completed_yet">任务尚未完成</string>
+    <string name="general">常规</string>
+    <string name="category_txt">类别</string>
+    <string name="paste">粘贴</string>
+    <string name="delete_all_notifications">删除所有通知</string>
+    <string name="confirm_notification_msg">您要删除所有通知吗？</string>
+    <string name="sort_expand_collapse_button">排序展开/折叠按钮</string>
+    <string name="layout_view_change_button">布局视图更改按钮</string>
+    <string name="show_copy">在单个任务上显示复制图标</string>
 </resources>

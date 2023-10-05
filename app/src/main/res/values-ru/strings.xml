@@ -141,4 +141,13 @@
     <string name="good_morning">Привет, дорогая</string>
     <string name="notification_daily_desc">Ваши задачи находятся на рассмотрении, вы должны закончить их быстро</string>
     <string name="show_voice_to_add_task_option">Показать голос для добавления опции задачи</string>
+    <string name="task_not_completed_yet">Задача еще не выполнена</string>
+    <string name="general">Общие</string>
+    <string name="category_txt">Категория</string>
+    <string name="paste">Вставить</string>
+    <string name="delete_all_notifications">Удалить все уведомления</string>
+    <string name="confirm_notification_msg">Хотите удалить все уведомления?</string>
+    <string name="sort_expand_collapse_button">Кнопка "Сортировка развернуть/свернуть"</string>
+    <string name="layout_view_change_button">Кнопка изменения вида макета</string>
+    <string name="show_copy">Показывать значок копирования для отдельной задачи</string>
 </resources>

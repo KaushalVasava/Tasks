@@ -2,6 +2,12 @@ package com.lahsuak.apps.tasks.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
+val lightBlue = Color(0xFF59c0e7)
+val lightYellow = Color(0xFFe6b904)
+val lightPink = Color(0xFFea86c2)
+val lightGreen = Color(0xFF65ba5a)
+val lightPurple = Color(0xFFb07fe0)
+
 val md_theme_light_primary = Color(0xFF367EF2)
 val md_theme_light_onPrimary = Color(0xFFFFFFFF)
 val md_theme_light_primaryContainer = Color(0xFFD9E2FF)

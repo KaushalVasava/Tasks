@@ -61,6 +61,15 @@ object AppConstants {
         //Daily notification
         const val DAILY_NOTIFICATION = "daily_notification"
         const val DAILY_NOTIFICATION_KEY = "daily_notification_key"
+
+        const val FEEDBACK = "feedback"
+        const val SHARE = "share"
+        const val MORE_APP = "more_app"
+        const val APP_VERSION = "app_version"
+        const val RATING = "rating"
+        const val FONT_SIZE = "font_size"
+        const val LANGUAGE = "language"
+        const val DEVELOPER = "developer"
     }
 
     object WorkManager {

@@ -141,4 +141,13 @@
     <string name="good_morning">Hallo schat</string>
     <string name="notification_daily_desc">Je taken zijn in behandeling, je moet ze snel afmaken</string>
     <string name="show_voice_to_add_task_option">Toon stem om taakoptie toe te voegen</string>
+    <string name="task_not_completed_yet">De taak is nog niet voltooid</string>
+    <string name="general">Algemeen</string>
+    <string name="category_txt">Categorie</string>
+    <string name="paste">Plakken</string>
+    <string name="delete_all_notifications">Verwijder alle meldingen</string>
+    <string name="confirm_notification_msg">Wil je alle meldingen verwijderen?</string>
+    <string name="sort_expand_collapse_button">Sorteer knop uitvouwen/samenvouwen</string>
+    <string name="layout_view_change_button">Knop voor het wijzigen van de lay-outweergave</string>
+    <string name="show_copy">Kopieerpictogram weergeven voor individuele taak</string>
 </resources>

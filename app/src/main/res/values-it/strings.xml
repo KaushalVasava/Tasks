@@ -142,4 +142,13 @@
     <string name="good_morning">Ciao cara</string>
     <string name="notification_daily_desc">Le tue attività sono in sospeso, devi completarle in fretta</string>
     <string name="show_voice_to_add_task_option">Mostra l\'opzione voce per aggiungere attività</string>
+    <string name="task_not_completed_yet">L\'attività non è stata ancora completata</string>
+    <string name="general">Generale</string>
+    <string name="category_txt">Categoria</string>
+    <string name="paste">Incolla</string>
+    <string name="delete_all_notifications">Elimina tutte le notifiche</string>
+    <string name="confirm_notification_msg">Vuoi eliminare tutte le notifiche?</string>
+    <string name="sort_expand_collapse_button">Pulsante Ordina espandi/comprimi</string>
+    <string name="layout_view_change_button">Pulsante di modifica della vista layout</string>
+    <string name="show_copy">Mostra l\'icona di copia sulla singola attività</string>
 </resources>

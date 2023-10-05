@@ -141,4 +141,13 @@
     <string name="good_morning">Γεια σου αγαπητέ</string>
     <string name="notification_daily_desc">Οι εργασίες σας εκκρεμούν, πρέπει να τις ολοκληρώσετε γρήγορα</string>
     <string name="show_voice_to_add_task_option">Εμφάνιση επιλογής φωνής για προσθήκη εργασίας</string>
+    <string name="task_not_completed_yet">Η εργασία δεν έχει ολοκληρωθεί ακόμα</string>
+    <string name="general">Γενικά</string>
+    <string name="category_txt">Κατηγορία</string>
+    <string name="paste">Επικόλληση</string>
+    <string name="delete_all_notifications">Διαγραφή όλων των ειδοποιήσεων</string>
+    <string name="confirm_notification_msg">Θέλετε να διαγράψετε όλες τις ειδοποιήσεις;</string>
+    <string name="sort_expand_collapse_button">Κουμπί επέκτασης/σύμπτυξης ταξινόμησης</string>
+    <string name="layout_view_change_button">Κουμπί αλλαγής προβολής διάταξης</string>
+    <string name="show_copy">Εμφάνιση εικονιδίου αντιγραφής σε μεμονωμένη εργασία</string>
 </resources>

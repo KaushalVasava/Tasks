@@ -25,13 +25,11 @@
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
-
                 <category android:name="android.intent.category.DEFAULT" />
-
                 <data android:mimeType="text/plain" />
             </intent-filter>
             <intent-filter>
-                <data android:scheme="https" android:host="myapp://kmv.com/shortcut" />
+                <data android:scheme="https" android:host="myapp://kmv.com/shortcut/true" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <action android:name="android.intent.action.VIEW" />
@@ -42,9 +40,9 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>
-            <meta-data
-                android:name="android.app.shortcuts"
-                android:resource="@xml/shortcuts" />
+<!--            <meta-data-->
+<!--                android:name="android.app.shortcuts"-->
+<!--                android:resource="@xml/shortcuts" />-->
         </activity>
 
         <receiver android:name="com.lahsuak.apps.tasks.ui.widget.TaskWidgetReceiver" android:exported="true">

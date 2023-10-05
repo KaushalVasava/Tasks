@@ -141,4 +141,13 @@
     <string name="good_morning">Halo sayang</string>
     <string name="notification_daily_desc">Tugas Anda tertunda, Anda harus menyelesaikannya dengan cepat</string>
     <string name="show_voice_to_add_task_option">Tampilkan suara untuk menambahkan opsi tugas</string>
+    <string name="task_not_completed_yet">Tugas belum selesai</string>
+    <string name="general">Umum</string>
+    <string name="category_txt">Kategori</string>
+    <string name="paste">Tempel</string>
+    <string name="delete_all_notifications">Hapus semua notifikasi</string>
+    <string name="confirm_notification_msg">Apakah Anda ingin menghapus semua notifikasi?</string>
+    <string name="sort_expand_collapse_button">Tombol Urutkan perluas/ciutkan</string>
+    <string name="layout_view_change_button">Tombol perubahan tampilan tata letak</string>
+    <string name="show_copy">Tampilkan ikon salin pada tugas individual</string>
 </resources>

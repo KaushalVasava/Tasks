@@ -141,7 +141,8 @@ fun AddUpdateSubTaskScreen(
                 text = stringResource( R.string.important_task),
                 value = isImp,
                 onValueChange = { isImp = it },
-                fontSize = 12.sp
+                fontSize = 12.sp,
+                modifier = Modifier.padding(start = 4.dp)
             )
             TextButton(onClick = { AppUtil.setClipboard(context, title) }) {
                 Icon(painterResource( R.drawable.ic_copy), stringResource(R.string.copy_text))
@@ -153,7 +154,7 @@ fun AddUpdateSubTaskScreen(
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 8.dp)
+                .padding(end = 8.dp)
         ) {
             TextButton(onClick = {
                 if (title.isNotEmpty()) {
@@ -208,7 +209,7 @@ fun AddUpdateSubTaskScreen(
                     } else {
                         val newTask = SubTask(
                             id = taskId,
-                            subTitle = title,
+                            subTitle = title.trim(),
                             isImportant = isImp,
                             sId = 0,
                             dateTime = System.currentTimeMillis(),

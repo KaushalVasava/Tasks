@@ -139,4 +139,13 @@
     <string name="good_morning">こんにちは</string>
     <string name="notification_daily_desc">タスクは保留中です。すぐに完了する必要があります</string>
     <string name="show_voice_to_add_task_option">タスク オプションを追加するための音声を表示</string>
+    <string name="task_not_completed_yet">タスクはまだ完了していません</string>
+    <string name="general">全般</string>
+    <string name="category_txt">カテゴリ</string>
+    <string name="paste">貼り付け</string>
+    <string name="delete_all_notifications">すべての通知を削除</string>
+    <string name="confirm_notification_msg">すべての通知を削除しますか?</string>
+    <string name="sort_expand_collapse_button">並べ替えの展開/折りたたみボタン</string>
+    <string name="layout_view_change_button">レイアウトビュー変更ボタン</string>
+    <string name="show_copy">個々のタスクにコピー アイコンを表示する</string>
 </resources>

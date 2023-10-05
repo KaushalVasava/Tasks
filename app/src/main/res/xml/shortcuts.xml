@@ -7,7 +7,7 @@
         android:shortcutShortLabel="@string/new_task">
         <intent
             android:action="android.intent.action.VIEW"
-            android:data="myapp://kmv.com/shortcut"
+            android:data="myapp://kmv.com/shortcut/true"
             android:targetClass="com.lahsuak.apps.tasks.ui.MainActivity"
             android:targetPackage="com.lahsuak.apps.tasks" />
     </shortcut>
