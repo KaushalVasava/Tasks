@@ -150,4 +150,6 @@
     <string name="sort_expand_collapse_button">Sorteer uitbrei/vou-knoppie</string>
     <string name="layout_view_change_button">Veranderknoppie vir uitlegaansig</string>
     <string name="show_copy">Wys kopieikoon op individuele taak</string>
+    <string name="visit_github">Besoek GitHub</string>
+    <string name="privacy_policy">Privaatheidsbeleid</string>
 </resources>

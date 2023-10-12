@@ -151,4 +151,6 @@
     <string name="sort_expand_collapse_button">排序展开/折叠按钮</string>
     <string name="layout_view_change_button">布局视图更改按钮</string>
     <string name="show_copy">在单个任务上显示复制图标</string>
+    <string name="visit_github">访问 GitHub</string>
+    <string name="privacy_policy">隐私政策</string>
 </resources>

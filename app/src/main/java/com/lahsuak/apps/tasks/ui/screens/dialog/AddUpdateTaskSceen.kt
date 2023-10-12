@@ -84,7 +84,6 @@ fun AddUpdateTaskScreen(
 ) {
     val keyboard = LocalSoftwareKeyboardController.current
     val focusRequester = remember { FocusRequester() }
-
     LaunchedEffect(Unit) {
         focusRequester.requestFocus()
         keyboard?.show()
@@ -101,7 +100,7 @@ fun AddUpdateTaskScreen(
     }
     val context = LocalContext.current
     var title by rememberSaveable {
-        mutableStateOf(task?.title ?: if (sharedText !== null) sharedText else "")
+        mutableStateOf(task?.title ?: (sharedText ?: ""))
     }
 
     var isImp by rememberSaveable {
@@ -341,7 +340,9 @@ fun AddUpdateTaskScreen(
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxWidth().padding(end = 8.dp, top = 8.dp, bottom = 8.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(end = 8.dp, top = 8.dp, bottom = 8.dp)
         ) {
             TextButton(onClick = {
                 if (title.isNotEmpty()) {

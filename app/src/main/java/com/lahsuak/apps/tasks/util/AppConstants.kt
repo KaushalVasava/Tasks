@@ -9,14 +9,17 @@ object AppConstants {
     const val NOTIFICATION_DAILY_CHANNEL_NAME = "Daily notification"
     const val NOTIFICATION_DAILY_CHANNEL_DESCRIPTION = "Daily task notification"
 
-    //website
-    const val WEBSITE = "https://zaap.bio/KaushalVasava"
+    //tables
+    const val TASK_TABLE = "task_table"
+    const val SUB_TASK_TABLE = "sub_task_table"
+    const val NOTIFICATION_TABLE = "notification_table"
+
 
     const val TIME_FORMAT = "hh:mm a"
     const val DATE_FORMAT = "dd MM, yy"
     const val REMINDER_DATE_TIME_FORMAT = "dd MMM, yy hh:mm a"
     const val TOOLBAR_DATE_TIME_FORMAT = "E, dd LLLL"
-    const val MARKET_PLACE_HOLDER = "market://details?name="
+    const val MARKET_PLACE_HOLDER = "market://details?id="
     const val SHARE_FORMAT = "text/plain"
     const val SORT_ORDER = "sort_order"
     const val SORT_ORDER2 = "sort_order2"
@@ -28,13 +31,10 @@ object AppConstants {
     const val SEARCH_QUERY = "searchQuery"
     const val SEARCH_INITIAL_VALUE = ""
     const val TASK_ID = "taskId"
-    const val UPDATE_REQUEST_CODE = 123
     const val SEPARATOR = " - "
     const val PACKAGE = "package"
     const val DEPRECATION = "deprecation"
-    const val MAX_COUNTER_FOR_MORE_APPS = 5
-    const val MORE_APPS_DELAY = 10000L
-    const val INVALID_ID = -1
+    const val SPLASH_SCREEN_TIME = 500L
 
     // Preferences key
     object SharedPreference {
@@ -55,7 +55,6 @@ object AppConstants {
         const val SHOW_SUBTASK_KEY = "show_subtask"
         const val SHOW_REMINDER_KEY = "show_reminder"
         const val SHOW_VOICE_TASK_KEY = "show_voice_task_button"
-        const val REM_KEY = "rem_key"
         const val INITIAL_FONT_SIZE = "18"
 
         //Daily notification
@@ -67,9 +66,10 @@ object AppConstants {
         const val MORE_APP = "more_app"
         const val APP_VERSION = "app_version"
         const val RATING = "rating"
-        const val FONT_SIZE = "font_size"
         const val LANGUAGE = "language"
         const val DEVELOPER = "developer"
+        const val GITHUB = "github"
+        const val PRIVACY_POLICY = "privacy_policy"
     }
 
     object WorkManager {

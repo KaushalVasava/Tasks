@@ -3,13 +3,8 @@ package com.lahsuak.apps.tasks.ui.viewmodel
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
-import android.util.Log
-import android.widget.TextView
-import androidx.appcompat.app.AlertDialog
-import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.*
 import com.lahsuak.apps.tasks.R
-import com.lahsuak.apps.tasks.util.preference.PreferenceManager
 import com.lahsuak.apps.tasks.data.model.SortOrder
 import com.lahsuak.apps.tasks.data.model.SubTask
 import com.lahsuak.apps.tasks.data.model.Task
@@ -19,6 +14,7 @@ import com.lahsuak.apps.tasks.util.AppConstants.SEARCH_INITIAL_VALUE
 import com.lahsuak.apps.tasks.util.AppConstants.SEARCH_QUERY
 import com.lahsuak.apps.tasks.util.AppConstants.SHARE_FORMAT
 import com.lahsuak.apps.tasks.util.AppConstants.TASK_ID
+import com.lahsuak.apps.tasks.util.preference.PreferenceManager
 import com.lahsuak.apps.tasks.util.toast
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -72,15 +68,8 @@ class SubTaskViewModel @Inject constructor(
     }
 
     val subTasks = subTasksFlow
-
-    val subTasks2 = subTasksFlow2
-
     fun onSortOrderSelected(sortOrder: SortOrder, context: Context) = viewModelScope.launch {
         preferenceManager.updateSortOrder2(sortOrder, context)
-    }
-
-    fun onHideCompleted(hideCompleted: Boolean, context: Context) = viewModelScope.launch {
-        preferenceManager.updateHideCompleted2(hideCompleted, context)
     }
 
     fun onSubTaskSwiped(subTask: SubTask) = viewModelScope.launch {
@@ -105,7 +94,6 @@ class SubTaskViewModel @Inject constructor(
     }
 
     fun updateSubTask(subTask: SubTask) = viewModelScope.launch(Dispatchers.IO) {
-        Log.d("TAG", "updateSubTask: ${subTask.subTitle}")
         repository.updateSubTask(subTask)
     }
 
@@ -113,9 +101,6 @@ class SubTaskViewModel @Inject constructor(
         repository.deleteSubTask(subTask)
     }
 
-    fun deleteAllSubTasks(id: Int) = viewModelScope.launch(Dispatchers.IO) {
-        repository.deleteAllSubTasks(id)
-    }
     fun deleteAllCompletedSubTasks(id: Int) = viewModelScope.launch(Dispatchers.IO) {
         repository.deleteAllCompletedSubTask(id)
     }
@@ -135,22 +120,6 @@ class SubTaskViewModel @Inject constructor(
         repository.updateTask(task)
     }
 
-    fun showDeleteDialog(
-        context: Context,
-        subTask: SubTask,
-    ) {
-        AlertDialog.Builder(context)
-            .setTitle(context.getString(R.string.delete))
-            .setMessage(context.getString(R.string.delete_task))
-            .setPositiveButton(context.getString(R.string.delete)) { dialog, _ ->
-                deleteSubTask(subTask)
-                dialog.dismiss()
-            }
-            .setNegativeButton(context.getString(R.string.cancel)) { dialog, _ ->
-                dialog.dismiss()
-            }.show()
-    }
-
     fun shareTask(context: Context, text: String?) {
         val sendIntent = Intent().apply {
             action = Intent.ACTION_SEND
@@ -164,34 +133,6 @@ class SubTaskViewModel @Inject constructor(
         } catch (e: ActivityNotFoundException) {
             context.toast { context.getString(R.string.empty_task) }
         }
-    }
-
-    fun cancelReminder(
-        context: Context,
-        task: Task,
-        timerTxt: TextView,
-    ) {
-        timerTxt.isSelected = true
-        timerTxt.text = context.getString(R.string.add_date_time)
-        task.reminder = null
-        update(task)
-        context.toast {
-            context.getString(R.string.cancel_reminder)
-        }
-    }
-
-    fun cancelSubTaskReminder(
-        context: Context,
-        subTask: SubTask,
-        timerTxt: TextView,
-        task: Task,
-    ) {
-        timerTxt.isSelected = true
-        timerTxt.text = context.getString(R.string.add_date_time)
-        subTask.reminder = null
-        updateSubTask(subTask)
-        update(task.copy(startDate = System.currentTimeMillis()))
-        context.toast { context.getString(R.string.cancel_reminder) }
     }
 
     fun setSubTask(subTask: SubTask){

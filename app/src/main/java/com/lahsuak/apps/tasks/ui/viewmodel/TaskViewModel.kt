@@ -62,10 +62,6 @@ class TaskViewModel @Inject constructor(
         preferenceManager.updateSortOrder(sortOrder, context)
     }
 
-    fun onHideCompleted(hideCompleted: Boolean, context: Context) = viewModelScope.launch {
-        preferenceManager.updateHideCompleted(hideCompleted, context)
-    }
-
     //new method for layout of items
     fun onViewTypeChanged(viewType: Boolean, context: Context) = viewModelScope.launch {
         preferenceManager.updateViewType(viewType, context)
@@ -110,27 +106,8 @@ class TaskViewModel @Inject constructor(
         _taskFlow.value = null
     }
 
-    fun deleteAllTasks() = viewModelScope.launch(Dispatchers.IO) {
-        repository.deleteAllTasks()
-    }
     fun deleteCompletedTask() = viewModelScope.launch(Dispatchers.IO) {
         repository.deleteAllCompletedTask()
-    }
-
-    fun showDeleteDialog(
-        context: Context,
-        task: Task,
-    ) {
-        AlertDialog.Builder(context)
-            .setTitle(context.getString(R.string.delete))
-            .setMessage(context.getString(R.string.delete_task))
-            .setPositiveButton(context.getString(R.string.delete)) { dialog, _ ->
-                delete(task)
-                dialog.dismiss()
-            }
-            .setNegativeButton(context.getString(R.string.cancel)) { dialog, _ ->
-                dialog.dismiss()
-            }.show()
     }
 
     fun setTask(task: Task){

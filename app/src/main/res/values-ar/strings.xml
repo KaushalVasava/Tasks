@@ -147,4 +147,6 @@
     <string name="sort_expand_collapse_button">زر فرز التوسيع/الطي</string>
     <string name="layout_view_change_button">زر تغيير طريقة عرض التخطيط</string>
     <string name="show_copy">إظهار أيقونة النسخ في مهمة فردية</string>
+    <string name="visit_github">تفضل بزيارة GitHub</string>
+    <string name="privacy_policy">سياسة الخصوصية</string>
 </resources>

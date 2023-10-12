@@ -4,7 +4,6 @@ import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
 import android.content.res.Configuration
-import android.util.Log
 import com.lahsuak.apps.tasks.model.Category
 import com.lahsuak.apps.tasks.ui.theme.lightBlue
 import com.lahsuak.apps.tasks.ui.theme.lightGreen
@@ -16,9 +15,8 @@ import com.lahsuak.apps.tasks.util.AppConstants.SharedPreference.LANGUAGE_DEFAUL
 import com.lahsuak.apps.tasks.util.AppConstants.SharedPreference.LANGUAGE_SHARED_PREFERENCE_KEY
 import com.lahsuak.apps.tasks.util.AppConstants.SharedPreference.LANGUAGE_SHARED_PREFERENCE_LANGUAGE_KEY
 import com.lahsuak.apps.tasks.util.AppUtil.createNotificationWorkRequest
-import com.lahsuak.apps.tasks.util.RuntimeLocaleChanger
 import com.lahsuak.apps.tasks.util.AppUtil.getLanguage
-import com.lahsuak.apps.tasks.util.getColorCode
+import com.lahsuak.apps.tasks.util.RuntimeLocaleChanger
 import dagger.hilt.android.HiltAndroidApp
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -29,7 +27,6 @@ import javax.inject.Named
 @HiltAndroidApp
 class TaskApp : Application() {
     companion object {
-        var counter = 0
         var mylang = getLanguage()
         lateinit var appContext: Context
         val categoryTypes = mutableListOf<Category>()
@@ -59,12 +56,6 @@ class TaskApp : Application() {
         val formatter = SimpleDateFormat(AppConstants.TIME_FORMAT, Locale.getDefault())
         var hour = formatter.format(mCalendar.time).substring(0, 2).trim().toInt()
         val isAm = formatter.format(mCalendar.time).substring(6).trim().lowercase()
-//        24-16 = 8
-//        16-9 = 7
-//        24 - 15 = 9+9
-//        24 - 16 = 8+9
-//        24 - 12 = 12+9
-        // 15+24-6
         if (isAm == getString(R.string.pm_format))
             hour += 12
         val startDelay = 24 - hour + 9 // 9 for 9 am notification

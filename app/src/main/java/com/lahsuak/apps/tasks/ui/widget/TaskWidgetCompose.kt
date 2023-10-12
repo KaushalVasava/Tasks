@@ -26,6 +26,7 @@ import androidx.glance.layout.padding
 import com.lahsuak.apps.tasks.R
 import com.lahsuak.apps.tasks.ui.MainActivity
 import com.lahsuak.apps.tasks.ui.theme.lightBlue
+import com.lahsuak.apps.tasks.util.NavigationConstants
 
 
 object TaskWidgetCompose : GlanceAppWidget() {
@@ -35,12 +36,12 @@ object TaskWidgetCompose : GlanceAppWidget() {
             Image(
                 provider = ImageProvider(R.drawable.ic_edit), stringResource(id = R.string.add_task),
                 modifier = GlanceModifier
-                    .clickable(
-                        actionRunCallback(TaskActionCallback::class.java)
-                    )
                     .background(lightBlue)
                     .padding(16.dp)
                     .cornerRadius(8.dp)
+                    .clickable(
+                        actionRunCallback(TaskActionCallback::class.java)
+                    )
             )
         }
     }
@@ -57,10 +58,10 @@ class TaskActionCallback : ActionCallback {
         glanceId: GlanceId,
         parameters: ActionParameters,
     ) {
-        updateAppWidgetState(context, glanceId) { prefs ->
+        updateAppWidgetState(context, glanceId) {
             val deepLinkIntent = Intent(
                 Intent.ACTION_VIEW,
-                "myapp://kmv.com/shortcut/true".toUri(),
+                NavigationConstants.Key.ADD_UPDATE_TASK_DEEP_LINK.toUri(),
                 context,
                 MainActivity::class.java
             )

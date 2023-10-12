@@ -8,7 +8,6 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
-import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -28,11 +27,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridItemSpan
 import androidx.compose.foundation.lazy.staggeredgrid.items
+import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
@@ -120,7 +119,8 @@ import kotlinx.coroutines.launch
 import kotlin.random.Random
 
 @OptIn(
-    ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class,
+    ExperimentalMaterial3Api::class,
+    ExperimentalFoundationApi::class,
     ExperimentalMaterialApi::class
 )
 @Composable
@@ -156,31 +156,6 @@ fun TaskScreen(
     var isBottomSheetOpened by rememberSaveable {
         mutableStateOf(false)
     }
-    if (sharedText != null && tasks.isNotEmpty()) {
-        var openDialog by rememberSaveable {
-            mutableStateOf(true)
-        }
-        ShareDialog(
-            tasks,
-            openDialog = openDialog,
-            onDialogStatusChange = { openDialog = it },
-            onTaskAddButtonClick = {
-                taskId = null
-                isNewTask = true
-                isBottomSheetOpened = true
-                openDialog = false
-                sharedText = null
-            },
-            onSaveButtonClick = {
-                navController.navigate("${NavigationItem.SubTask.route}/${it.id}/false")
-                openDialog = false
-                sharedText = null
-            }
-        ) {
-            openDialog = false
-            sharedText = null
-        }
-    }
 
     var searchQuery by rememberSaveable {
         mutableStateOf("")
@@ -208,10 +183,10 @@ fun TaskScreen(
         }
     }
 
-    val lazyListState = rememberLazyListState()
+    val lazyGridListState = rememberLazyStaggeredGridState()
 
     val isFabExtended by remember {
-        derivedStateOf { lazyListState.firstVisibleItemIndex != 0 }
+        derivedStateOf { lazyGridListState.firstVisibleItemIndex != 0 }
     }
     var isListViewEnable by rememberSaveable {
         mutableStateOf(preference.viewType)
@@ -232,11 +207,10 @@ fun TaskScreen(
     val sortTypes by remember {
         mutableStateOf(sorts)
     }
-    val index = sorts.indexOfFirst {
-        it == preference.sortOrder.type
-    }
     var selectedSortIndex by rememberSaveable {
-        mutableIntStateOf(index)
+        mutableIntStateOf(sortTypes.indexOfFirst {
+            it == preference.sortOrder.type
+        })
     }
     var selectedSort by rememberSaveable {
         mutableStateOf(sortTypes[selectedSortIndex])
@@ -336,14 +310,42 @@ fun TaskScreen(
     )
     val scope = rememberCoroutineScope()
 
+    if (sharedText != null && tasks.isNotEmpty()) {
+        var openDialog by rememberSaveable {
+            mutableStateOf(true)
+        }
+        ShareDialog(
+            tasks,
+            openDialog = openDialog,
+            onDialogStatusChange = { openDialog = it },
+            onTaskAddButtonClick = {
+                taskId = null
+                isNewTask = true
+                isBottomSheetOpened = true
+                scope.launch {
+                    sheetState.show()
+                    MainActivity.shareTxt = null
+                }
+                openDialog = false
+            },
+            onSaveButtonClick = {
+                navController.navigate("${NavigationItem.SubTask.route}/${it.id}/false")
+                openDialog = false
+                sharedText = null
+            }
+        ) {
+            openDialog = false
+            sharedText = null
+        }
+    }
+
     ModalBottomSheetLayout(
         sheetBackgroundColor = MaterialTheme.colorScheme.surface,
         sheetState = sheetState,
         sheetContent = {
             AnimatedVisibility(
                 visible = isBottomSheetOpened,
-                enter = expandVertically(),
-                exit = shrinkVertically()
+                enter = expandVertically()
             ) {
                 AddUpdateTaskScreen(
                     sheetState,
@@ -571,6 +573,7 @@ fun TaskScreen(
             }
 
             LazyVerticalStaggeredGrid(
+                state = lazyGridListState,
                 modifier = Modifier.padding(paddingValue),
                 contentPadding = PaddingValues(horizontal = 8.dp),
                 columns = StaggeredGridCells.Fixed(
@@ -683,12 +686,7 @@ fun TaskScreen(
                             },
                             onCompletedTask = { isCompleted ->
                                 if (!actionMode) {
-                                    taskViewModel.update(
-                                        task.copy(
-                                            isDone = isCompleted,
-                                            startDate = System.currentTimeMillis()
-                                        )
-                                    )
+                                    taskViewModel.onTaskCheckedChanged(task, isCompleted)
                                 }
                             }
                         ) { isDone ->
@@ -732,7 +730,7 @@ fun HeaderContent(
     selectedSort: String,
     onSortChange: (Int) -> Unit,
     onProgressBarClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     var isDropDownExpanded by rememberSaveable {
         mutableStateOf(false)
@@ -741,16 +739,18 @@ fun HeaderContent(
     val width = LocalConfiguration.current.screenWidthDp.dp
 
     Column(modifier) {
-        LinearProgressStatus(
-            modifier = Modifier.clickable {
-                onProgressBarClick()
-            },
-            progress = completedTask.toFloat() / totalTask.toFloat(),
-            text = stringResource(R.string.task_progress, completedTask, totalTask),
-            trackColor = MaterialTheme.colorScheme.surfaceVariant,
-            width = width,
-            height = 24.dp,
-        )
+        if (totalTask > 0) {
+            LinearProgressStatus(
+                modifier = Modifier.clickable {
+                    onProgressBarClick()
+                },
+                progress = completedTask.toFloat() / totalTask.toFloat(),
+                text = stringResource(R.string.task_progress, completedTask, totalTask),
+                trackColor = MaterialTheme.colorScheme.surfaceVariant,
+                width = width,
+                height = 24.dp,
+            )
+        }
         FlowRow(
             Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -783,7 +783,11 @@ fun HeaderContent(
                 onActiveChange = {},
                 modifier = Modifier.weight(1f)
             ) {}
-            Column(Modifier.weight(1f).align(Alignment.CenterVertically)) {
+            Column(
+                Modifier
+                    .weight(1f)
+                    .align(Alignment.CenterVertically)
+            ) {
                 Row(
                     Modifier
                         .clip(RoundedCornerShape(8.dp))
@@ -799,13 +803,14 @@ fun HeaderContent(
                         .padding(4.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(stringResource(R.string.sorting_option), fontSize = 14.sp)
+                    Text(stringResource(R.string.sorting_option), fontSize = 12.sp)
                     Spacer(Modifier.width(4.dp))
                     Text(
-                        selectedSort, fontWeight = FontWeight.SemiBold,
+                        selectedSort,
+                        fontWeight = FontWeight.SemiBold,
                         modifier = Modifier.weight(1f),
                         textAlign = TextAlign.Center,
-                        fontSize = 14.sp
+                        fontSize = 12.sp
                     )
                     Icon(
                         if (isDropDownExpanded)

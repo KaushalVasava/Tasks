@@ -32,6 +32,7 @@ import javax.inject.Named
 
 @AndroidEntryPoint
 class SettingsFragment : PreferenceFragmentCompat() {
+
     companion object {
         var selectedTheme = -1
         var selectedLang = LANGUAGE_DEFAULT_VALUE
@@ -43,7 +44,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         (activity as AppCompatActivity).supportActionBar?.show()
         return super.onCreateView(inflater, container, savedInstanceState)
@@ -52,7 +53,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.settings_preferences, rootKey)
         val sp = PreferenceManager.getDefaultSharedPreferences(requireContext())
-        selectedTheme = sp.getString(AppConstants.SharedPreference.THEME_KEY, THEME_DEFAULT)!!.toInt()
+        selectedTheme =
+            sp.getString(AppConstants.SharedPreference.THEME_KEY, THEME_DEFAULT)!!.toInt()
         val prefFeedback = findPreference<Preference>(AppConstants.SharedPreference.FEEDBACK)
         val prefShare = findPreference<Preference>(AppConstants.SharedPreference.SHARE)
         val prefMoreApp = findPreference<Preference>(AppConstants.SharedPreference.MORE_APP)
@@ -62,6 +64,9 @@ class SettingsFragment : PreferenceFragmentCompat() {
         val prefTheme = findPreference<ListPreference>(AppConstants.SharedPreference.THEME_KEY)
         val prefLanguage = findPreference<ListPreference>(AppConstants.SharedPreference.LANGUAGE)
         val prefDeveloper = findPreference<Preference>(AppConstants.SharedPreference.DEVELOPER)
+        val prefGithub = findPreference<Preference>(AppConstants.SharedPreference.GITHUB)
+        val prefPrivacyPolicy =
+            findPreference<Preference>(AppConstants.SharedPreference.PRIVACY_POLICY)
 
         selectedLang =
             preference.getString(LANGUAGE_SHARED_PREFERENCE_KEY, LANGUAGE_DEFAULT_VALUE)
@@ -107,7 +112,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
             true
         }
         prefFeedback?.setOnPreferenceClickListener {
-            AppUtil.openWebsite(context, AppConstants.WEBSITE)
+            AppUtil.openWebsite(context, getString(R.string.portfolio))
             true
         }
         prefShare?.setOnPreferenceClickListener {
@@ -128,7 +133,15 @@ class SettingsFragment : PreferenceFragmentCompat() {
             true
         }
         prefDeveloper?.setOnPreferenceClickListener {
-            AppUtil.openWebsite(context, AppConstants.WEBSITE)
+            AppUtil.openWebsite(context, getString(R.string.portfolio))
+            true
+        }
+        prefGithub?.setOnPreferenceClickListener {
+            AppUtil.openWebsite(context, getString(R.string.github_link))
+            true
+        }
+        prefPrivacyPolicy?.setOnPreferenceClickListener {
+            AppUtil.openWebsite(context, getString(R.string.privacy_policy_link))
             true
         }
     }

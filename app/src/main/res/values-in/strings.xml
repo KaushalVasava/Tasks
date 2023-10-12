@@ -150,4 +150,6 @@
     <string name="sort_expand_collapse_button">Tombol Urutkan perluas/ciutkan</string>
     <string name="layout_view_change_button">Tombol perubahan tampilan tata letak</string>
     <string name="show_copy">Tampilkan ikon salin pada tugas individual</string>
+    <string name="visit_github">Kunjungi GitHub</string>
+    <string name="privacy_policy">Kebijakan privasi</string>
 </resources>

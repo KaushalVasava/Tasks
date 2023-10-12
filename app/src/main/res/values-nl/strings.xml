@@ -150,4 +150,6 @@
     <string name="sort_expand_collapse_button">Sorteer knop uitvouwen/samenvouwen</string>
     <string name="layout_view_change_button">Knop voor het wijzigen van de lay-outweergave</string>
     <string name="show_copy">Kopieerpictogram weergeven voor individuele taak</string>
+    <string name="visit_github">Bezoek GitHub</string>
+    <string name="privacy_policy">Privacybeleid</string>
 </resources>

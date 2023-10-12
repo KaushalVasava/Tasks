@@ -8,7 +8,6 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
-import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -32,6 +31,7 @@ import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridItemSpan
 import androidx.compose.foundation.lazy.staggeredgrid.items
+import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
@@ -48,6 +48,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -65,6 +66,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
@@ -84,6 +86,7 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
@@ -125,7 +128,8 @@ import kotlinx.coroutines.launch
 import kotlin.random.Random
 
 @OptIn(
-    ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class,
+    ExperimentalMaterial3Api::class,
+    ExperimentalFoundationApi::class,
     ExperimentalMaterialApi::class
 )
 @Composable
@@ -143,7 +147,8 @@ fun SubTaskScreen(
     val showVoiceTask =
         prefManager.getBoolean(AppConstants.SharedPreference.SHOW_VOICE_TASK_KEY, true)
 
-    var sharedText by rememberSaveable {
+    val view = LocalView.current
+    val sharedText by rememberSaveable {
         mutableStateOf(MainActivity.shareTxt)
     }
 
@@ -152,12 +157,22 @@ fun SubTaskScreen(
     var subTaskId: Int? by rememberSaveable {
         mutableStateOf(null)
     }
+
+    val lazyGridListState = rememberLazyStaggeredGridState()
+
+    val isFabExtended by remember {
+        derivedStateOf { lazyGridListState.firstVisibleItemIndex != 0 }
+    }
     var isNewTask by rememberSaveable {
         mutableStateOf(true)
     }
     var isBottomSheetOpened by rememberSaveable {
         mutableStateOf(false)
     }
+    val sheetState = androidx.compose.material.rememberModalBottomSheetState(
+        initialValue = ModalBottomSheetValue.Hidden
+    )
+    val scope = rememberCoroutineScope()
 
     if (taskState != null) {
         var task = taskState!!
@@ -272,19 +287,21 @@ fun SubTaskScreen(
 
         val sorts = listOf(
             stringResource(R.string.name),
-            stringResource(R.string.date),
             stringResource(R.string.name_desc),
+            stringResource(R.string.date),
             stringResource(R.string.date_desc)
         )
         val sortTypes by remember {
             mutableStateOf(sorts)
         }
+        val index = sortTypes.indexOfFirst {
+            it == preference.sortOrder.type
+        }
         var selectedSortIndex by rememberSaveable {
-            mutableIntStateOf(
-                sorts.indexOfFirst {
-                    it == preference.sortOrder.type
-                }
-            )
+            mutableIntStateOf(if (index < 0) 0 else index)
+        }
+        var selectedSort by rememberSaveable {
+            mutableStateOf(sortTypes[selectedSortIndex])
         }
 
         var isSnackBarShow by rememberSaveable {
@@ -296,6 +313,7 @@ fun SubTaskScreen(
         val snackBarHostState = remember {
             SnackbarHostState()
         }
+
         if (isSnackBarShow) {
             when (val event = subTaskEvents) {
                 is SubTaskEvent.ShowUndoDeleteTaskMessage -> {
@@ -350,19 +368,13 @@ fun SubTaskScreen(
             }
         }
 
-        val sheetState = androidx.compose.material.rememberModalBottomSheetState(
-            initialValue = ModalBottomSheetValue.Hidden
-        )
-        val scope = rememberCoroutineScope()
-
         ModalBottomSheetLayout(
             sheetBackgroundColor = MaterialTheme.colorScheme.surface,
             sheetState = sheetState,
             sheetContent = {
                 AnimatedVisibility(
                     visible = isBottomSheetOpened,
-                    enter = expandVertically(),
-                    exit = shrinkVertically()
+                    enter = expandVertically()
                 ) {
                     AddUpdateSubTaskScreen(
                         sheetState = sheetState,
@@ -537,8 +549,27 @@ fun SubTaskScreen(
                             }
                         }
                         AnimatedVisibility(visible = !actionMode && !isSubTaskDone) {
-                            FloatingActionButton(
-                                onClick = {
+                            if (isFabExtended) {
+                                ExtendedFloatingActionButton(
+                                    onClick = {
+                                        subTaskId = null
+                                        isNewTask = true
+                                        scope.launch {
+                                            isBottomSheetOpened = true
+                                            sheetState.show()
+                                        }
+                                    }, text = {
+                                        Text(stringResource(R.string.add_task))
+                                    },
+                                    icon = {
+                                        Icon(
+                                            painterResource(R.drawable.ic_create),
+                                            stringResource(R.string.add_task)
+                                        )
+                                    }
+                                )
+                            } else {
+                                FloatingActionButton(onClick = {
                                     subTaskId = null
                                     isNewTask = true
                                     scope.launch {
@@ -546,10 +577,11 @@ fun SubTaskScreen(
                                         sheetState.show()
                                     }
                                 }) {
-                                Icon(
-                                    painterResource(R.drawable.ic_edit),
-                                    stringResource(R.string.add_task)
-                                )
+                                    Icon(
+                                        painterResource(R.drawable.ic_create),
+                                        stringResource(R.string.add_task)
+                                    )
+                                }
                             }
                         }
                     }
@@ -591,6 +623,7 @@ fun SubTaskScreen(
                 }
 
                 LazyVerticalStaggeredGrid(
+                    state = lazyGridListState,
                     modifier = Modifier.padding(paddingValues),
                     contentPadding = PaddingValues(horizontal = 8.dp),
                     columns = StaggeredGridCells.Fixed(
@@ -692,9 +725,10 @@ fun SubTaskScreen(
                                 status = status,
                                 selectedStatusIndex = if (isSubTaskDone) 1 else 0,
                                 sortTypes = sortTypes,
-                                selectedSortIndex = selectedSortIndex,
+                                selectedSort = selectedSort,
                                 onSortChange = {
                                     selectedSortIndex = it
+                                    selectedSort = sortTypes[it]
                                     subTaskViewModel.onSortOrderSelected(
                                         SortOrder.getOrder(it),
                                         context
@@ -771,11 +805,9 @@ fun SubTaskScreen(
                                 },
                                 onCompletedTask = { isCompleted ->
                                     if (!actionMode) {
-                                        subTaskViewModel.updateSubTask(
-                                            subTask.copy(
-                                                isDone = isCompleted,
-                                                dateTime = System.currentTimeMillis()
-                                            )
+                                        subTaskViewModel.onSubTaskCheckedChanged(
+                                            subTask,
+                                            isCompleted
                                         )
                                     }
                                 }
@@ -808,9 +840,12 @@ fun SubTaskScreen(
                 if (sharedText != null) {
                     subTaskId = null
                     isNewTask = true
-                    isBottomSheetOpened = true
+                    scope.launch {
+                        isBottomSheetOpened = true
+                        sheetState.show()
+                    }
                     MainActivity.shareTxt = null
-                    sharedText = null
+//                    sharedText = null
                 }
             }
         }
@@ -849,7 +884,7 @@ fun SubtaskHeaderContent(
     status: List<String>,
     selectedStatusIndex: Int,
     sortTypes: List<String>,
-    selectedSortIndex: Int,
+    selectedSort: String,
     onSortChange: (Int) -> Unit,
     modifier: Modifier = Modifier,
     windowSize: WindowSize,
@@ -857,23 +892,24 @@ fun SubtaskHeaderContent(
     var isDropDownExpanded by rememberSaveable {
         mutableStateOf(false)
     }
-    var mSelectedText by remember {
-        mutableStateOf(sortTypes[selectedSortIndex])
-    }
+
     var mTextFieldSize by remember { mutableStateOf(Size.Zero) }
     val width = LocalConfiguration.current.screenWidthDp.dp
     val isLandscape = windowSize.width > windowSize.height
+
     Column(modifier) {
-        LinearProgressStatus(
-            progress = completedSubTask.toFloat() / totalSubTask.toFloat(),
-            text = stringResource(R.string.subtask_progress, completedSubTask, totalSubTask),
-            color = color,
-            width = width,
-            height = 24.dp,
-            modifier = Modifier.clickable {
-                onProgressBarClick()
-            }
-        )
+        if (totalSubTask > 0) {
+            LinearProgressStatus(
+                progress = completedSubTask.toFloat() / totalSubTask.toFloat(),
+                text = stringResource(R.string.subtask_progress, completedSubTask, totalSubTask),
+                color = color,
+                width = width,
+                height = 24.dp,
+                modifier = Modifier.clickable {
+                    onProgressBarClick()
+                }
+            )
+        }
         FlowRow(
             Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -907,12 +943,13 @@ fun SubtaskHeaderContent(
                 onActiveChange = {},
                 modifier = Modifier.weight(1f)
             ) {}
-            if(isLandscape){
+            if (isLandscape) {
                 Spacer(modifier = Modifier.width(8.dp))
             }
-            Column(modifier = Modifier
-                .weight(1f)
-                .align(Alignment.CenterVertically)
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .align(Alignment.CenterVertically)
             ) {
                 Row(
                     Modifier
@@ -935,7 +972,7 @@ fun SubtaskHeaderContent(
                     Text(stringResource(R.string.sorting_option), fontSize = 12.sp)
                     Spacer(modifier = Modifier.width(4.dp))
                     Text(
-                        mSelectedText,
+                        selectedSort,
                         fontWeight = FontWeight.SemiBold,
                         modifier = Modifier.weight(1f),
                         textAlign = TextAlign.Center,
@@ -958,12 +995,9 @@ fun SubtaskHeaderContent(
                 ) {
                     sortTypes.forEachIndexed { index, type ->
                         DropdownMenuItem(
-                            text = {
-                                Text(text = type)
-                            },
+                            text = { Text(text = type) },
                             onClick = {
                                 onSortChange(index)
-                                mSelectedText = type
                                 isDropDownExpanded = false
                             }
                         )

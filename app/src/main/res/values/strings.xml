@@ -36,7 +36,7 @@
     <string name="contact_support">Contact Support</string>
     <string name="rating">Rate the app</string>
     <string name="more_apps">More Apps</string>
-    <string name="share_app">Share App</string>
+    <string name="share_app">Share Tasks</string>
     <string name="delete_completed_task">Delete all completed tasks</string>
     <string name="hide_completed_task">Hide completed tasks</string>
     <string name="settings">Settings</string>
@@ -126,7 +126,7 @@
     <!--    sort type-->
     <string name="name">Name ⬇</string>
     <string name="name_desc">Name ⬆</string>
-    <string name="date" >Date ⬇</string>
+    <string name="date">Date ⬇</string>
     <string name="date_desc">Date ⬆</string>
     <string name="category">Category ⬇</string>
     <string name="category_desc">Category ⬆</string>
@@ -153,4 +153,9 @@
     <string name="sort_expand_collapse_button">Sort expand/collapse button</string>
     <string name="layout_view_change_button">Layout view change button</string>
     <string name="show_copy">Show copy icon on individual task</string>
+    <string name="visit_github">Visit GitHub</string>
+    <string name="privacy_policy">Privacy policy</string>
+    <string name="portfolio" translatable="false">https://zaap.bio/KaushalVasava</string>
+    <string name="github_link" translatable="false">https://github.com/KaushalVasava</string>
+    <string name="privacy_policy_link" translatable="false">https://doc-hosting.flycricket.io/tasks-to-do-list-reminders/a4486a8e-2c2b-4ae8-8ade-59c845a8276e/privacy</string>
 </resources>

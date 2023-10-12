@@ -148,4 +148,6 @@
     <string name="sort_expand_collapse_button">並べ替えの展開/折りたたみボタン</string>
     <string name="layout_view_change_button">レイアウトビュー変更ボタン</string>
     <string name="show_copy">個々のタスクにコピー アイコンを表示する</string>
+    <string name="visit_github">GitHub にアクセス</string>
+    <string name="privacy_policy">プライバシー ポリシー</string>
 </resources>

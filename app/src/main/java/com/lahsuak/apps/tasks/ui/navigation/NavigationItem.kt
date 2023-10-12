@@ -7,6 +7,7 @@ import com.lahsuak.apps.tasks.util.NavigationConstants.Screen.ADD_UPDATE_TASK
 import com.lahsuak.apps.tasks.util.NavigationConstants.Screen.ADD_UPDATE_SUBTASK
 import com.lahsuak.apps.tasks.util.NavigationConstants.Screen.NOTIFICATION
 import com.lahsuak.apps.tasks.util.NavigationConstants.Screen.OVERVIEW
+import com.lahsuak.apps.tasks.util.NavigationConstants.Screen.SPLASH
 
 sealed class NavigationItem(val route: String) {
     object Task : NavigationItem(TASK)

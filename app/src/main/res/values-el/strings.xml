@@ -150,4 +150,6 @@
     <string name="sort_expand_collapse_button">Κουμπί επέκτασης/σύμπτυξης ταξινόμησης</string>
     <string name="layout_view_change_button">Κουμπί αλλαγής προβολής διάταξης</string>
     <string name="show_copy">Εμφάνιση εικονιδίου αντιγραφής σε μεμονωμένη εργασία</string>
+    <string name="visit_github">Επισκεφτείτε το GitHub</string>
+    <string name="privacy_policy">Πολιτική απορρήτου</string>
 </resources>

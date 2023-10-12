@@ -28,7 +28,6 @@ fun ChipGroup(
 ) {
     Column {
         LazyRow(
-            contentPadding = PaddingValues(start = 8.dp),
             horizontalArrangement = Arrangement.End
         ) {
             itemsIndexed(items) { index, item ->

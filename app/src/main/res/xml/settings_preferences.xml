@@ -98,14 +98,23 @@
             app:summary="@string/feedback_text"
             app:title="@string/contact_support"
             app:useSimpleSummaryProvider="true" />
-
+        <Preference
+            app:icon="@drawable/ic_github"
+            app:key="github"
+            app:title="@string/visit_github"
+            app:useSimpleSummaryProvider="true" />
+        <Preference
+            app:icon="@drawable/ic_policy"
+            app:key="privacy_policy"
+            app:title="@string/privacy_policy"
+            app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
 
     <PreferenceCategory
         app:iconSpaceReserved="false"
         app:title="@string/about">
         <Preference
-            app:icon="@drawable/ic_website"
+            app:icon="@drawable/ic_developer"
             app:key="developer"
             app:summary="@string/developer_name"
             app:title="@string/developer"

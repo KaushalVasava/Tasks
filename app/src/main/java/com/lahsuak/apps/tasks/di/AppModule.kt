@@ -32,7 +32,6 @@ object AppModule {
     fun provideTodoDatabase(app: Application): TaskDatabase {
         val migration1To2 = object : Migration(1, 2) {
             override fun migrate(database: SupportSQLiteDatabase) {
-//                database.execSQL("ALTER TABLE task_table RENAME COLUMN date TO startDate")
                 database.execSQL(
                     "CREATE TABLE IF NOT EXISTS `task_temporary` (" +
                             "`id` INTEGER NOT NULL, `title` TEXT NOT NULL, `status` INTEGER NOT NULL, `importance` INTEGER NOT NULL," +
@@ -82,7 +81,7 @@ object AppModule {
             .addMigrations(migration1To2)
             .addMigrations(migration2To3)
             .addMigrations(migration3To4)
-//            .fallbackToDestructiveMigration()
+            .fallbackToDestructiveMigration()
             .build()
     }
 

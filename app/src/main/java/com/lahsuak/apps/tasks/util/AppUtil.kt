@@ -9,9 +9,7 @@ import android.os.Build
 import android.provider.Settings
 import android.speech.RecognizerIntent
 import androidx.activity.result.ActivityResultLauncher
-import androidx.annotation.ColorRes
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.work.OneTimeWorkRequestBuilder
@@ -26,7 +24,6 @@ import com.lahsuak.apps.tasks.data.model.SubTask
 import com.lahsuak.apps.tasks.data.model.Task
 import com.lahsuak.apps.tasks.util.AppConstants.MARKET_PLACE_HOLDER
 import com.lahsuak.apps.tasks.util.AppConstants.SHARE_FORMAT
-import com.lahsuak.apps.tasks.util.AppUtil.UNDERSCORE
 import com.lahsuak.apps.tasks.util.worker.NotificationWorker
 import com.lahsuak.apps.tasks.util.worker.ReminderWorker
 import java.text.DateFormat
@@ -38,7 +35,6 @@ object AppUtil {
     private const val FIRST = "1. "
     private const val COPY_TAG = "Copied Text"
     const val UNDERSCORE = "_"
-
     fun setClipboard(context: Context, text: String) {
         val clipboard =
             context.getSystemService(AppCompatActivity.CLIPBOARD_SERVICE) as ClipboardManager
@@ -393,16 +389,6 @@ inline fun Context?.runActivityCatching(block: () -> Unit) {
         e.logError()
         this.toast { this.getString(R.string.no_application_found) }
     }
-}
-
-fun Context.getColorCode(@ColorRes colorId: Int): Int {
-    return ContextCompat.getColor(this, colorId)
-}
-
-
-fun String.toSortForm(): String {
-    val msg = this.lowercase().substringAfter(UNDERSCORE)
-    return msg.replace(UNDERSCORE, " ").toCamelCase()
 }
 
 fun String.toCamelCase(): String {

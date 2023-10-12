@@ -149,4 +149,6 @@
     <string name="sort_expand_collapse_button">چھانٹیں پھیلائیں/کم کریں بٹن</string>
     <string name="layout_view_change_button">لے آؤٹ ویو میں تبدیلی کا بٹن</string>
     <string name="show_copy">انفرادی کام پر کاپی آئیکن دکھائیں</string>
+    <string name="visit_github">GitHub ملاحظہ کریں</string>
+    <string name = "privacy_policy"> رازداری کی پالیسی</string>
 </resources>

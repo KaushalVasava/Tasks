@@ -1,15 +1,6 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-
+<resources>
     <style name="Theme.Tasks" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Primary brand color. -->
         <item name="colorPrimary">@color/light_primary</item>
-<!--        <item name="colorOnPrimaryContainer">@color/light_onPrimaryContainer</item>-->
         <item name="colorSecondary">@color/light_primary</item>
-<!--        <item name="colorOnSecondary">@color/light_onSecondary</item>-->
-<!--        <item name="colorSecondaryContainer">@color/light_secondaryContainer</item>-->
-<!--        <item name="colorOnSecondaryContainer">@color/light_onSecondaryContainer</item>-->
-<!--        <item name="colorTertiary">@color/light_tertiary</item>-->
-<!--        <item name="colorOnTertiary">@color/light_onTertiary</item>-->
     </style>
 </resources>

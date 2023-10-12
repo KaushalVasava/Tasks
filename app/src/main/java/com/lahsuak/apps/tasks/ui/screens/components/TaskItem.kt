@@ -21,7 +21,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.DismissDirection
@@ -49,18 +48,13 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.viewinterop.AndroidView
-import androidx.preference.PreferenceManager
 import com.lahsuak.apps.tasks.R
 import com.lahsuak.apps.tasks.TaskApp
 import com.lahsuak.apps.tasks.data.model.Task
-import com.lahsuak.apps.tasks.util.AppConstants
 import com.lahsuak.apps.tasks.util.AppConstants.SharedPreference.FONT_SIZE_KEY
 import com.lahsuak.apps.tasks.util.AppConstants.SharedPreference.INITIAL_FONT_SIZE
 import com.lahsuak.apps.tasks.util.AppConstants.SharedPreference.SHOW_COPY_KEY
@@ -109,6 +103,9 @@ fun TaskItem(
                 true
             } else
                 false
+        },
+        positionalThreshold = {
+            it / 2
         }
     )
     AnimatedVisibility(
@@ -217,7 +214,7 @@ fun TaskItem(
                                         modifier = Modifier
                                             .clip(RoundedCornerShape(16.dp))
                                             .background(color)
-                                            .padding(4.dp)
+                                            .padding(2.dp)
                                     ) {
                                         Icon(
                                             painterResource(id = R.drawable.ic_calendar_small),
@@ -251,7 +248,8 @@ fun TaskItem(
                                                 .clip(CircleShape)
                                                 .clickable {
                                                     AppUtil.setClipboard(context, task.title)
-                                                }.padding(4.dp)
+                                                }
+                                                .padding(2.dp)
                                         )
                                     }
                                     AnimatedVisibility(showReminder && task.reminder != null) {
@@ -261,7 +259,7 @@ fun TaskItem(
                                             modifier = Modifier
                                                 .clip(RoundedCornerShape(16.dp))
                                                 .background(color)
-                                                .padding(4.dp)
+                                                .padding(2.dp)
                                         ) {
                                             Icon(
                                                 painterResource(id = R.drawable.ic_reminder_small),
@@ -269,7 +267,9 @@ fun TaskItem(
                                                 tint = Color.Black
                                             )
                                             Spacer(
-                                                Modifier.width(2.dp).align(Alignment.Bottom)
+                                                Modifier
+                                                    .width(2.dp)
+                                                    .align(Alignment.Bottom)
                                             )
                                             val diff = DateUtil.getTimeDiff(task.reminder!!)
 

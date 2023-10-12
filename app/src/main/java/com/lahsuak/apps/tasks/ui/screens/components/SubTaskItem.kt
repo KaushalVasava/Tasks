@@ -93,6 +93,9 @@ fun SubTaskItem(
                 true
             } else
                 false
+        },
+        positionalThreshold = {
+            it/2
         }
     )
     val isImp by rememberSaveable {
@@ -181,7 +184,7 @@ fun SubTaskItem(
                                                 RoundedCornerShape(16.dp)
                                             )
                                             .background(color)
-                                            .padding(4.dp)
+                                            .padding(2.dp)
                                     ) {
                                         Icon(
                                             painterResource(id = R.drawable.ic_calendar_small),
@@ -206,7 +209,7 @@ fun SubTaskItem(
                                             modifier = Modifier
                                                 .clip(RoundedCornerShape(16.dp))
                                                 .background(color)
-                                                .padding(4.dp)
+                                                .padding(2.dp)
                                         ) {
                                             Icon(
                                                 painterResource(id = R.drawable.ic_reminder_small),
@@ -247,7 +250,7 @@ fun SubTaskItem(
                                                 .clip(CircleShape)
                                                 .clickable {
                                                     AppUtil.setClipboard(context, subTask.subTitle)
-                                                }.padding(4.dp)
+                                                }.padding(2.dp)
                                         )
                                     }
                                 }

@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.sp
 @Preview
 fun LinearProgressStatus(
     modifier: Modifier = Modifier,
-    progress: Float = 0f,
+    progress: Float = 0.0f,
     text: String? = "Task completed",
     color: Color = ProgressIndicatorDefaults.linearColor,
     trackColor: Color = ProgressIndicatorDefaults.linearTrackColor,
@@ -44,14 +44,9 @@ fun LinearProgressStatus(
             color = color,
             trackColor = trackColor,
             strokeCap = StrokeCap.Round,
-            modifier = modifier
-                .size(width, height)
-                .clip(RoundedCornerShape(16.dp))
+            modifier = modifier.size(width, height).clip(RoundedCornerShape(16.dp))
         )
         if (text != null)
-            Text(
-                text,
-                fontSize = 14.sp
-            )
+            Text(text, fontSize = 14.sp)
     }
 }

@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.res.Configuration
-import android.graphics.Color
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -17,7 +16,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.luminance
-import androidx.core.view.WindowInsetsControllerCompat
 import androidx.navigation.compose.rememberNavController
 import androidx.preference.PreferenceManager
 import com.google.accompanist.systemuicontroller.SystemUiController
@@ -52,7 +50,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var preference: SharedPreferences
 
     companion object {
-        lateinit var activityContext: Context
+        var activityContext: Context? = null
         var shareTxt: String? = null
     }
 
@@ -70,8 +68,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setTheme(R.style.Theme_Tasks)
         activityContext = this
-        setContent {
 
+        setContent {
             val navController = rememberNavController()
             TaskAppTheme {
                 SetupTransparentSystemUi(
@@ -90,8 +88,8 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-        val sp = PreferenceManager.getDefaultSharedPreferences(this)
-        val selectedTheme = sp.getString(THEME_KEY, THEME_DEFAULT)!!.toInt()
+        val sharedPreference = PreferenceManager.getDefaultSharedPreferences(this)
+        val selectedTheme = sharedPreference.getString(THEME_KEY, THEME_DEFAULT)!!.toInt()
 
         AppCompatDelegate.setDefaultNightMode(selectedTheme)
         if (intent?.action == Intent.ACTION_SEND) {
@@ -99,12 +97,6 @@ class MainActivity : AppCompatActivity() {
                 shareTxt = intent.getStringExtra(Intent.EXTRA_TEXT)
             }
         }
-        //this is for transparent status bar and navigation bar
-        WindowInsetsControllerCompat(window, window.decorView).isAppearanceLightStatusBars =
-            true
-        WindowInsetsControllerCompat(window, window.decorView).isAppearanceLightNavigationBars =
-            true
-
     }
 
     @Composable
@@ -126,5 +118,10 @@ class MainActivity : AppCompatActivity() {
                 navigationBarContrastEnforced = false
             )
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        activityContext = null
     }
 }

@@ -19,14 +19,6 @@ class NotificationViewModel @Inject constructor(
     private val _notifications = repository.getAllNotifications(isAscOrder)
     val notifications = _notifications
 
-    fun setOrder(isAsc: Boolean) {
-        isAscOrder = isAsc
-    }
-
-    fun getOrder(): Boolean {
-        return isAscOrder
-    }
-
     fun insert(notification: Notification) = viewModelScope.launch(Dispatchers.IO) {
         repository.insertNotification(notification)
     }

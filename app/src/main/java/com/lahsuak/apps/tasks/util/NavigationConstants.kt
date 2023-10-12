@@ -2,6 +2,7 @@ package com.lahsuak.apps.tasks.util
 
 object NavigationConstants {
     object Screen {
+        const val SPLASH = "splash"
         const val TASK = "task"
         const val SUBTASK = "subtask"
         const val ADD_UPDATE_TASK = "add_update_task"

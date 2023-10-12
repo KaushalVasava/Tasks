@@ -151,4 +151,6 @@
     <string name="sort_expand_collapse_button">Ordenar botón expandir/contraer</string>
     <string name="layout_view_change_button">Botón de cambio de vista de diseño</string>
     <string name="show_copy">Mostrar icono de copia en tarea individual</string>
+    <string name="visit_github">Visita GitHub</string>
+    <string name="privacy_policy">Política de privacidad</string>
 </resources>

@@ -151,4 +151,6 @@
     <string name="sort_expand_collapse_button">Bouton de tri développer/réduire</string>
     <string name="layout_view_change_button">Bouton de changement de vue de mise en page</string>
     <string name="show_copy">Afficher l\'icône de copie sur une tâche individuelle</string>
+    <string name="visit_github">Visitez GitHub</string>
+    <string name="privacy_policy">Politique de confidentialité</string>
 </resources>

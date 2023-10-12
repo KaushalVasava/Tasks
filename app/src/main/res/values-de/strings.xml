@@ -151,4 +151,6 @@
     <string name="sort_expand_collapse_button">Schaltfläche zum Erweitern/Reduzieren der Sortierung</string>
     <string name="layout_view_change_button">Schaltfläche zum Ändern der Layoutansicht</string>
     <string name="show_copy">Kopiersymbol für einzelne Aufgabe anzeigen</string>
+    <string name="visit_github">Besuchen Sie GitHub</string>
+    <string name="privacy_policy">Datenschutzerklärung</string>
 </resources>

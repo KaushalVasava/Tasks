@@ -1,5 +1,7 @@
 package com.lahsuak.apps.tasks.ui.navigation
 
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.core.tween
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.runtime.Composable
@@ -44,7 +46,31 @@ fun TaskNavHost(
     NavHost(
         modifier = modifier,
         navController = navController,
-        startDestination = NavigationItem.Task.route
+        startDestination = NavigationItem.Task.route,
+        enterTransition = {
+            slideIntoContainer(
+                AnimatedContentTransitionScope.SlideDirection.Left,
+                tween(500)
+            )
+        },
+        exitTransition = {
+            slideOutOfContainer(
+                AnimatedContentTransitionScope.SlideDirection.Left,
+                tween(500)
+            )
+        },
+        popEnterTransition = {
+            slideIntoContainer(
+                towards = AnimatedContentTransitionScope.SlideDirection.Companion.Right,
+                animationSpec = tween(500)
+            )
+        },
+        popExitTransition = {
+            slideOutOfContainer(
+                towards = AnimatedContentTransitionScope.SlideDirection.Companion.Right,
+                animationSpec = tween(500)
+            )
+        }
     ) {
         composable(NavigationItem.Task.route) {
             TaskScreen(

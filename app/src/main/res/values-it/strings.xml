@@ -151,4 +151,6 @@
     <string name="sort_expand_collapse_button">Pulsante Ordina espandi/comprimi</string>
     <string name="layout_view_change_button">Pulsante di modifica della vista layout</string>
     <string name="show_copy">Mostra l\'icona di copia sulla singola attività</string>
+    <string name="visit_github">Visita GitHub</string>
+    <string name="privacy_policy">Informativa sulla privacy</string>
 </resources>

@@ -148,4 +148,6 @@
     <string name="sort_expand_collapse_button">विस्तारित करें/संक्षिप्त करें बटन</string>
     <string name="layout_view_change_button">लेआउट दृश्य परिवर्तन बटन</string>
     <string name="show_copy">व्यक्तिगत कार्य पर कॉपी आइकन दिखाएं</string>
+    <string name="visit_github">GitHub पर जाएं</string>
+    <string name="privacy_policy">गोपनीयता नीति</string>
 </resources>
