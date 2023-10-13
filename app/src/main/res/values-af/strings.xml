@@ -152,4 +152,10 @@
     <string name="show_copy">Wys kopieikoon op individuele taak</string>
     <string name="visit_github">Besoek GitHub</string>
     <string name="privacy_policy">Privaatheidsbeleid</string>
+    <string name="prompt_info_title">Taakprogram-stawing</string>
+    <string name="prompt_info_subtitle">Meld aan met vingerafdrukverifikasie</string>
+    <string name="app_lock">Toepslot</string>
+    <string name="restore_data">Herstel data</string>
+    <string name="backup_data">Rugsteundata</string>
+    <string name="security_and_data">Sekuriteit en data</string>
 </resources>

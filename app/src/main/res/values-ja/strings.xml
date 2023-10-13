@@ -150,4 +150,10 @@
     <string name="show_copy">個々のタスクにコピー アイコンを表示する</string>
     <string name="visit_github">GitHub にアクセス</string>
     <string name="privacy_policy">プライバシー ポリシー</string>
+    <string name="prompt_info_title">タスクアプリ認証</string>
+    <string name="prompt_info_subtitle">指紋認証でログイン</string>
+    <string name="app_lock">アプリのロック</string>
+    <string name="restore_data">データの復元</string>
+    <string name="backup_data">バックアップデータ</string>
+    <string name="security_and_data">セキュリティとデータ</string>
 </resources>

@@ -152,4 +152,10 @@
     <string name="show_copy">Показывать значок копирования для отдельной задачи</string>
     <string name="visit_github">Посетить GitHub</string>
     <string name="privacy_policy">Политика конфиденциальности</string>
+    <string name="prompt_info_title">Аутентификация приложения-задачи</string>
+    <string name="prompt_info_subtitle">Войти с аутентификацией по отпечатку пальца</string>
+    <string name="app_lock">Блокировка приложения</string>
+    <string name="restore_data">Восстановить данные</string>
+    <string name="backup_data">Данные резервной копии</string>
+    <string name="security_and_data">Безопасность и данные</string>
 </resources>

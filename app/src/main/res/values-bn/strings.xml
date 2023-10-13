@@ -153,4 +153,10 @@
     <string name="show_copy">স্বতন্ত্র টাস্কে কপি আইকন দেখান</string>
     <string name="visit_github">GitHub এ যান</string>
     <string name="privacy_policy">গোপনীয়তা নীতি</string>
+    <string name="prompt_info_title">টাস্ক অ্যাপ প্রমাণীকরণ</string>
+    <string name="prompt_info_subtitle">আঙ্গুলের ছাপ প্রমাণীকরণের মাধ্যমে লগইন করুন</string>
+    <string name="app_lock">অ্যাপ লক</string>
+    <string name="restore_data">ডেটা পুনরুদ্ধার করুন</string>
+    <string name="backup_data">ব্যাকআপ ডেটা</string>৷
+    <string name="security_and_data">নিরাপত্তা এবং ডেটা</string>৷
 </resources>

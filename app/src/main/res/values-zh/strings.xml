@@ -153,4 +153,10 @@
     <string name="show_copy">在单个任务上显示复制图标</string>
     <string name="visit_github">访问 GitHub</string>
     <string name="privacy_policy">隐私政策</string>
+    <string name="prompt_info_title">任务应用身份验证</string>
+    <string name="prompt_info_subtitle">使用指纹认证登录</string>
+    <string name="app_lock">应用锁</string>
+    <string name="restore_data">恢复数据</string>
+    <string name="backup_data">备份数据</string>
+    <string name="security_and_data">安全和数据</string>
 </resources>

@@ -8,6 +8,7 @@ import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.lahsuak.apps.tasks.R
 
 /**
  * Helper class for managing Biometric Authentication Process
@@ -32,16 +33,12 @@ object BiometricUtil {
      * Prepares PromptInfo dialog with provided configuration
      */
     private fun setBiometricPromptInfo(
-        title: String,
-        subtitle: String,
-        description: String,
+        context: Context,
         allowDeviceCredential: Boolean,
     ): BiometricPrompt.PromptInfo {
         val builder = BiometricPrompt.PromptInfo.Builder()
-            .setTitle(title)
-            .setSubtitle(subtitle)
-            .setDescription(description)
-
+            .setTitle(context.getString(R.string.prompt_info_title))
+            .setSubtitle(context.getString(R.string.prompt_info_subtitle))
         // Use Device Credentials if allowed, otherwise show Cancel Button
         builder.apply {
             if (allowDeviceCredential) setDeviceCredentialAllowed(true)
@@ -87,9 +84,6 @@ object BiometricUtil {
      * Displays a BiometricPrompt with provided configurations
      */
     fun showBiometricPrompt(
-        title: String = "Biometric Authentication",
-        subtitle: String = "Enter biometric credentials to proceed.",
-        description: String = "Input your Fingerprint or FaceID to ensure it's you!",
         activity: AppCompatActivity,
         listener: BiometricAuthListener,
         cryptoObject: BiometricPrompt.CryptoObject? = null,
@@ -97,9 +91,7 @@ object BiometricUtil {
     ) {
         // Prepare BiometricPrompt Dialog
         val promptInfo = setBiometricPromptInfo(
-            title,
-            subtitle,
-            description,
+            activity.baseContext,
             allowDeviceCredential
         )
 

@@ -149,4 +149,10 @@
     <string name="show_copy">إظهار أيقونة النسخ في مهمة فردية</string>
     <string name="visit_github">تفضل بزيارة GitHub</string>
     <string name="privacy_policy">سياسة الخصوصية</string>
+    <string name="prompt_info_title">مصادقة تطبيق المهمة</string>
+    <string name="prompt_info_subtitle">تسجيل الدخول باستخدام مصادقة بصمة الإصبع</string>
+    <string name="app_lock">قفل التطبيقات</string>
+    <string name="restore_data">استعادة البيانات</string>
+    <string name="backup_data">بيانات النسخ الاحتياطي</string>
+    <string name="security_and_data">الأمان والبيانات</string>
 </resources>

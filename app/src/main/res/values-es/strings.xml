@@ -153,4 +153,10 @@
     <string name="show_copy">Mostrar icono de copia en tarea individual</string>
     <string name="visit_github">Visita GitHub</string>
     <string name="privacy_policy">Política de privacidad</string>
+    <string name="prompt_info_title">Autenticación de aplicación de tarea</string>
+    <string name="prompt_info_subtitle">Iniciar sesión con autenticación de huellas dactilares</string>
+    <string name="app_lock">Bloqueo de aplicación</string>
+    <string name="restore_data">Restaurar datos</string>
+    <string name="backup_data">Datos de copia de seguridad</string>
+    <string name="security_and_data">Seguridad y datos</string>
 </resources>

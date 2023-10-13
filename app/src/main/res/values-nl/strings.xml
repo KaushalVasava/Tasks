@@ -152,4 +152,10 @@
     <string name="show_copy">Kopieerpictogram weergeven voor individuele taak</string>
     <string name="visit_github">Bezoek GitHub</string>
     <string name="privacy_policy">Privacybeleid</string>
+    <string name="prompt_info_title">Taak-app-authenticatie</string>
+    <string name="prompt_info_subtitle">Log in met vingerafdrukauthenticatie</string>
+    <string name="app_lock">App-vergrendeling</string>
+    <string name="restore_data">Gegevens herstellen</string>
+    <string name="backup_data">Back-upgegevens</string>
+    <string name="security_and_data">Beveiliging en gegevens</string>
 </resources>

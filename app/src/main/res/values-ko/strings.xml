@@ -150,4 +150,10 @@
     <string name="show_copy">개별 작업에 복사 아이콘 표시</string>
     <string name="visit_github">GitHub 방문</string>
     <string name="privacy_policy">개인정보 보호정책</string>
+    <string name="prompt_info_title">태스크앱 인증</string>
+    <string name="prompt_info_subtitle">지문인증으로 로그인</string>
+    <string name="app_lock">앱 잠금</string>
+    <string name="restore_data">데이터 복원</string>
+    <string name="backup_data">데이터 백업</string>
+    <string name="security_and_data">보안 및 데이터</string>
 </resources>

@@ -153,4 +153,10 @@
     <string name="show_copy">Kopyalama simgesini bireysel görevde göster</string>
     <string name="visit_github">GitHub\'ı ziyaret edin</string>
     <string name="privacy_policy">Gizlilik politikası</string>
+    <string name="prompt_info_title">Görev Uygulaması Kimlik Doğrulaması</string>
+    <string name="prompt_info_subtitle">Parmak izi kimlik doğrulamasıyla giriş yapın</string>
+    <string name="app_lock">Uygulama kilidi</string>
+    <string name="restore_data">Verileri Geri Yükle</string>
+    <string name="backup_data">Verileri Yedekle</string>
+    <string name="security_and_data">Güvenlik ve Veriler</string>
 </resources>

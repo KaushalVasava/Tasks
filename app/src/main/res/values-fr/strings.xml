@@ -153,4 +153,10 @@
     <string name="show_copy">Afficher l\'icône de copie sur une tâche individuelle</string>
     <string name="visit_github">Visitez GitHub</string>
     <string name="privacy_policy">Politique de confidentialité</string>
+    <string name="prompt_info_title">Authentification de l\'application de tâche</string>
+    <string name="prompt_info_subtitle">Connexion avec authentification par empreinte digitale</string>
+    <string name="app_lock">Verrouillage de l\'application</string>
+    <string name="restore_data">Restaurer les données</string>
+    <string name="backup_data">Données de sauvegarde</string>
+    <string name="security_and_data">Sécurité et données</string>
 </resources>

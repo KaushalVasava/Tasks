@@ -36,7 +36,10 @@ object AppConstants {
     const val PACKAGE = "package"
     const val DEPRECATION = "deprecation"
     const val SPLASH_SCREEN_TIME = 500L
-
+    const val BACKUP_FILE_NAME = "Tasks.zip"
+    const val ANY_MIME_TYPE = "*/*"
+    const val BACKUP = "backup"
+    const val RESTORE = "restore"
     // Preferences key
     object SharedPreference {
         //theme

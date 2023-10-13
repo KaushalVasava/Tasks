@@ -8,14 +8,21 @@ import android.os.LocaleList
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate.*
 import androidx.core.view.WindowInsetsControllerCompat
+import androidx.fragment.app.viewModels
 import androidx.preference.*
 import com.lahsuak.apps.tasks.BuildConfig
 import com.lahsuak.apps.tasks.R
 import com.lahsuak.apps.tasks.TaskApp.Companion.mylang
+import com.lahsuak.apps.tasks.ui.viewmodel.SettingsViewModel
 import com.lahsuak.apps.tasks.util.AppConstants
+import com.lahsuak.apps.tasks.util.AppConstants.ANY_MIME_TYPE
+import com.lahsuak.apps.tasks.util.AppConstants.BACKUP
+import com.lahsuak.apps.tasks.util.AppConstants.BACKUP_FILE_NAME
+import com.lahsuak.apps.tasks.util.AppConstants.RESTORE
 import com.lahsuak.apps.tasks.util.AppConstants.SharedPreference.BIOMETRIC_ENABLE_KEY
 import com.lahsuak.apps.tasks.util.AppConstants.SharedPreference.BIOMETRIC_SHARED_PREFERENCE
 import com.lahsuak.apps.tasks.util.AppConstants.SharedPreference.LANGUAGE_DEFAULT_VALUE
@@ -38,6 +45,8 @@ import javax.inject.Named
 @AndroidEntryPoint
 class SettingsFragment : PreferenceFragmentCompat(), BiometricAuthListener {
 
+    private val settingsViewModel: SettingsViewModel by viewModels()
+
     companion object {
         var selectedTheme = -1
         var selectedLang = LANGUAGE_DEFAULT_VALUE
@@ -50,6 +59,17 @@ class SettingsFragment : PreferenceFragmentCompat(), BiometricAuthListener {
     @Inject
     @Named(BIOMETRIC_SHARED_PREFERENCE)
     lateinit var bioMetricPreference: SharedPreferences
+
+    private val exportLauncher =
+        registerForActivityResult(ActivityResultContracts.CreateDocument(ANY_MIME_TYPE)) { uri ->
+            uri?.let { settingsViewModel.onExport(uri) }
+        }
+
+    private val importLauncher = registerForActivityResult(
+        ActivityResultContracts.OpenDocument()
+    ) { uri ->
+        uri?.let { settingsViewModel.onImport(uri) }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -79,6 +99,8 @@ class SettingsFragment : PreferenceFragmentCompat(), BiometricAuthListener {
             findPreference<Preference>(AppConstants.SharedPreference.PRIVACY_POLICY)
         val prefFingerPrint =
             findPreference<Preference>(AppConstants.SharedPreference.FINGERPRINT)
+        val prefBackup = findPreference<Preference>(BACKUP)
+        val prefRestore = findPreference<Preference>(RESTORE)
 
         selectedLang =
             preference.getString(LANGUAGE_SHARED_PREFERENCE_KEY, LANGUAGE_DEFAULT_VALUE)
@@ -110,7 +132,7 @@ class SettingsFragment : PreferenceFragmentCompat(), BiometricAuthListener {
             }
             true
         }
-        prefFingerPrint?.setOnPreferenceChangeListener { _,_ ->
+        prefFingerPrint?.setOnPreferenceChangeListener { _, _ ->
             BiometricUtil.showBiometricPrompt(
                 activity = (activity as AppCompatActivity),
                 listener = this,
@@ -159,6 +181,14 @@ class SettingsFragment : PreferenceFragmentCompat(), BiometricAuthListener {
         }
         prefGithub?.setOnPreferenceClickListener {
             AppUtil.openWebsite(context, getString(R.string.github_link))
+            true
+        }
+        prefBackup?.setOnPreferenceClickListener {
+            exportLauncher.launch(BACKUP_FILE_NAME)
+            true
+        }
+        prefRestore?.setOnPreferenceClickListener {
+            importLauncher.launch(arrayOf(ANY_MIME_TYPE))
             true
         }
         prefPrivacyPolicy?.setOnPreferenceClickListener {

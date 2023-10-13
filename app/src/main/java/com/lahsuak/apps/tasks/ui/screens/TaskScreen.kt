@@ -223,6 +223,19 @@ fun TaskScreen(
     val undoMsg = stringResource(R.string.undo)
     val snackBarMsg = stringResource(R.string.task_deleted)
 
+    var actionMode by rememberSaveable {
+        mutableStateOf(false)
+    }
+
+    val selectedItems = remember {
+        mutableStateListOf<Task>()
+    }
+
+    val resetSelectionMode = {
+        actionMode = false
+        selectedItems.clear()
+    }
+
     if (isSnackBarShow) {
         when (val event = taskEvents) {
             is TaskEvent.ShowUndoDeleteTaskMessage -> {
@@ -255,6 +268,7 @@ fun TaskScreen(
                                 onClick = {
                                     openDialog = false
                                     taskViewModel.deleteCompletedTask()
+                                    resetSelectionMode()
                                 }
                             ) {
                                 Text(stringResource(R.string.delete))
@@ -275,19 +289,6 @@ fun TaskScreen(
 
             TaskEvent.Initial -> {}
         }
-    }
-
-    var actionMode by rememberSaveable {
-        mutableStateOf(false)
-    }
-
-    val selectedItems = remember {
-        mutableStateListOf<Task>()
-    }
-
-    val resetSelectionMode = {
-        actionMode = false
-        selectedItems.clear()
     }
 
     BackHandler(

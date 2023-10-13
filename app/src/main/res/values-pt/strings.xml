@@ -152,4 +152,10 @@
     <string name="show_copy">Mostrar ícone de cópia em tarefa individual</string>
     <string name="visit_github">Visite o GitHub</string>
     <string name="privacy_policy">Política de privacidade</string>
+    <string name="prompt_info_title">Autenticação de aplicativo de tarefa</string>
+    <string name="prompt_info_subtitle">Login com autenticação de impressão digital</string>
+    <string name="app_lock">Bloqueio de aplicativo</string>
+    <string name="restore_data">Restaurar dados</string>
+    <string name="backup_data">Dados de backup</string>
+    <string name="security_and_data">Segurança e dados</string>
 </resources>

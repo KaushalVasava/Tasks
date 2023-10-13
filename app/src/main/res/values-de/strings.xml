@@ -153,4 +153,10 @@
     <string name="show_copy">Kopiersymbol für einzelne Aufgabe anzeigen</string>
     <string name="visit_github">Besuchen Sie GitHub</string>
     <string name="privacy_policy">Datenschutzerklärung</string>
+    <string name="prompt_info_title">Aufgaben-App-Authentifizierung</string>
+    <string name="prompt_info_subtitle">Anmeldung mit Fingerabdruck-Authentifizierung</string>
+    <string name="app_lock">App-Sperre</string>
+    <string name="restore_data">Daten wiederherstellen</string>
+    <string name="backup_data">Sicherungsdaten</string>
+    <string name="security_and_data">Sicherheit und Daten</string>
 </resources>

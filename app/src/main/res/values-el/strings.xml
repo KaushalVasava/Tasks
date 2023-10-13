@@ -152,4 +152,10 @@
     <string name="show_copy">Εμφάνιση εικονιδίου αντιγραφής σε μεμονωμένη εργασία</string>
     <string name="visit_github">Επισκεφτείτε το GitHub</string>
     <string name="privacy_policy">Πολιτική απορρήτου</string>
+    <string name="prompt_info_title">Έλεγχος ταυτότητας εφαρμογής Task</string>
+    <string name="prompt_info_subtitle">Σύνδεση με έλεγχο ταυτότητας με δακτυλικό αποτύπωμα</string>
+    <string name="app_lock">Κλείδωμα εφαρμογής</string>
+    <string name="restore_data">Επαναφορά δεδομένων</string>
+    <string name="backup_data">Δεδομένα αντιγράφων ασφαλείας</string>
+    <string name="security_and_data">Ασφάλεια και δεδομένα</string>
 </resources>

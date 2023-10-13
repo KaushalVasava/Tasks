@@ -151,4 +151,10 @@
     <string name="show_copy">انفرادی کام پر کاپی آئیکن دکھائیں</string>
     <string name="visit_github">GitHub ملاحظہ کریں</string>
     <string name = "privacy_policy"> رازداری کی پالیسی</string>
+    <string name = "prompt_info_title">ٹاسک ایپ کی توثیق</string>
+    <string name = "prompt_info_subtitle"> فنگر پرنٹ کی توثیق کے ساتھ لاگ ان کریں</string>
+    <string name="app_lock">ایپ لاک</string>
+    <string name="restore_data">ڈیٹا بحال کریں</string>
+    <string name = "backup_data"> بیک اپ ڈیٹا</string>
+    <string name = "security_and_data">سیکیورٹی اور ڈیٹا</string>
 </resources>

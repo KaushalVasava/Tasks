@@ -152,4 +152,10 @@
     <string name="show_copy">Tampilkan ikon salin pada tugas individual</string>
     <string name="visit_github">Kunjungi GitHub</string>
     <string name="privacy_policy">Kebijakan privasi</string>
+    <string name="prompt_info_title">Otentikasi Aplikasi Tugas</string>
+    <string name="prompt_info_subtitle">Masuk dengan autentikasi sidik jari</string>
+    <string name="app_lock">Kunci aplikasi</string>
+    <string name="restore_data">Pulihkan Data</string>
+    <string name="backup_data">Data Cadangan</string>
+    <string name="security_and_data">Keamanan dan Data</string>
 </resources>

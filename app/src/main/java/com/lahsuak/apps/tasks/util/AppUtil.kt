@@ -365,7 +365,7 @@ object AppUtil {
         }
     }
 
-    fun getSubText(list: List<String>): String? {
+    fun getSubTasks(list: List<String>): String? {
         var sendtxt: String?
         sendtxt = FIRST
         if (list.isNotEmpty()) {

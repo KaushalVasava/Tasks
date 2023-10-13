@@ -147,7 +147,6 @@ fun SubTaskScreen(
     val showVoiceTask =
         prefManager.getBoolean(AppConstants.SharedPreference.SHOW_VOICE_TASK_KEY, true)
 
-    val view = LocalView.current
     val sharedText by rememberSaveable {
         mutableStateOf(MainActivity.shareTxt)
     }
@@ -223,7 +222,7 @@ fun SubTaskScreen(
                 task.copy(
                     progress = progress,
                     startDate = System.currentTimeMillis(),
-                    subTaskList = AppUtil.getSubText(subTasks.map { it.subTitle })
+                    subTaskList = AppUtil.getSubTasks(subTasks.map { it.subTitle })
                 )
             )
             navController.popBackStack()
@@ -346,6 +345,7 @@ fun SubTaskScreen(
                                     onClick = {
                                         openDialog = false
                                         subTaskViewModel.deleteAllCompletedSubTasks(task.id)
+                                        resetSelectionMode()
                                     }
                                 ) {
                                     Text(stringResource(R.string.delete))
@@ -477,7 +477,7 @@ fun SubTaskScreen(
                                         task.copy(
                                             progress = progress,
                                             startDate = System.currentTimeMillis(),
-                                            subTaskList = AppUtil.getSubText(subTasks.map { it.subTitle })
+                                            subTaskList = AppUtil.getSubTasks(subTasks.map { it.subTitle })
                                         )
                                     )
                                     navController.popBackStack()
@@ -677,7 +677,7 @@ fun SubTaskScreen(
                                 shareTask = {
                                     subTaskViewModel.shareTask(
                                         context,
-                                        AppUtil.getSubText(subTasks.map { it.subTitle })
+                                        AppUtil.getSubTasks(subTasks.map { it.subTitle })
                                     )
                                 },
                                 onProgressBarClick = {

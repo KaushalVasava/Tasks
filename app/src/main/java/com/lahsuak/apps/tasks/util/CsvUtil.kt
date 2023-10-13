@@ -1,6 +1,6 @@
 package com.lahsuak.apps.tasks.util
 
-internal object CsvIo {
+internal object CsvUtil {
 
     /** The character used for escaping quotes.  */
     const val DEFAULT_ESCAPE_CHARACTER = '"'

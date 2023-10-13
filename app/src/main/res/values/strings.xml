@@ -159,8 +159,10 @@
     <string name="github_link" translatable="false">https://github.com/KaushalVasava</string>
     <string name="privacy_policy_link" translatable="false">https://doc-hosting.flycricket.io/tasks-to-do-list-reminders/a4486a8e-2c2b-4ae8-8ade-59c845a8276e/privacy</string>
 
-    <string name="prompt_info_title">Sample App Authentication</string>
-    <string name="prompt_info_subtitle">Please login to get access</string>
-    <string name="prompt_info_description">Sample App is using Android biometric authentication</string>
-    <string name="prompt_info_use_app_password">Use app password</string>
+    <string name="prompt_info_title">Task App Authentication</string>
+    <string name="prompt_info_subtitle">Login with fingerprint authentication</string>
+    <string name="app_lock">App lock</string>
+    <string name="restore_data">Restore Data</string>
+    <string name="backup_data">Backup Data</string>
+    <string name="security_and_data">Security and Data</string>
 </resources>

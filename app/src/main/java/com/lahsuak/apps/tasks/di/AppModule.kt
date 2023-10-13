@@ -29,7 +29,7 @@ import javax.inject.Singleton
 object AppModule {
     @Provides
     @Singleton
-    fun provideTodoDatabase(app: Application): TaskDatabase {
+    fun provideTaskDatabase(app: Application): TaskDatabase {
         val migration1To2 = object : Migration(1, 2) {
             override fun migrate(database: SupportSQLiteDatabase) {
                 database.execSQL(

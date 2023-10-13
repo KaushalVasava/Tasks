@@ -150,4 +150,10 @@
     <string name="show_copy">व्यक्तिगत कार्य पर कॉपी आइकन दिखाएं</string>
     <string name="visit_github">GitHub पर जाएं</string>
     <string name="privacy_policy">गोपनीयता नीति</string>
+    <string name='prompt_info_title'>कार्य ऐप प्रमाणीकरण</string>
+    <string name='prompt_info_subtitle'>फ़िंगरप्रिंट प्रमाणीकरण के साथ लॉगिन करें</string>
+    <string name='app_lock'>ऐप लॉक</string>
+    <string name='restore_data'>डेटा पुनर्स्थापित करें</string>
+    <string name='backup_data'>बैकअप डेटा</string>
+    <string name='security_and_data'>सुरक्षा और डेटा</string>
 </resources>
