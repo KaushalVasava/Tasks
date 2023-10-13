@@ -1,6 +1,7 @@
 package com.lahsuak.apps.tasks.util
 
 object AppConstants {
+    const val UPDATE_REQUEST_CODE = 101
     //notfiication
     const val NOTIFICATION_CHANNEL_ID = "com.lahsuak.apps.mytask.notificationID"
     const val NOTIFICATION_CHANNEL_NAME = "Reminder"
