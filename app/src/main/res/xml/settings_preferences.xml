@@ -55,6 +55,17 @@
             app:summaryOn="@string/enable"
             app:title="@string/subtask_of_task" />
     </PreferenceCategory>
+    <PreferenceCategory
+        app:iconSpaceReserved="false"
+        app:title="security">
+        <SwitchPreference
+            app:defaultValue="true"
+            app:icon="@drawable/ic_search"
+            app:key="fingerprint"
+            app:summaryOff="@string/disable"
+            app:summaryOn="@string/enable"
+            app:title="Add secure lock"/>
+    </PreferenceCategory>
 
     <PreferenceCategory
         app:iconSpaceReserved="false"

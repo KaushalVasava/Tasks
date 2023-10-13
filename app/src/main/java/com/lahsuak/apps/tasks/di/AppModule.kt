@@ -119,6 +119,16 @@ object AppModule {
             AppConstants.SharedPreference.DAILY_NOTIFICATION,
             Context.MODE_PRIVATE
         )
+    @Provides
+    @Singleton
+    @Named(AppConstants.SharedPreference.BIOMETRIC_SHARED_PREFERENCE)
+    fun provideSharedPreferencesForBiometric(@ApplicationContext app: Context): SharedPreferences =
+        app.getSharedPreferences(
+            AppConstants.SharedPreference.BIOMETRIC_ENABLE_KEY,
+            Context.MODE_PRIVATE
+        )
+
+
 }
 
 @Retention(AnnotationRetention.RUNTIME)

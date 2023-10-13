@@ -71,6 +71,11 @@ object AppConstants {
         const val DEVELOPER = "developer"
         const val GITHUB = "github"
         const val PRIVACY_POLICY = "privacy_policy"
+        const val FINGERPRINT = "fingerprint"
+
+        //Biometric
+        const val BIOMETRIC_SHARED_PREFERENCE = "biometric"
+        const val BIOMETRIC_ENABLE_KEY = "biometric_enable_key"
     }
 
     object WorkManager {

@@ -69,6 +69,7 @@ import com.lahsuak.apps.tasks.ui.screens.components.RoundedOutlinedTextField
 import com.lahsuak.apps.tasks.ui.viewmodel.TaskViewModel
 import com.lahsuak.apps.tasks.util.AppUtil
 import com.lahsuak.apps.tasks.util.DateUtil
+import com.lahsuak.apps.tasks.util.rememberWindowSize
 import com.lahsuak.apps.tasks.util.toast
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -84,6 +85,8 @@ fun AddUpdateTaskScreen(
 ) {
     val keyboard = LocalSoftwareKeyboardController.current
     val focusRequester = remember { FocusRequester() }
+    val windowSize = rememberWindowSize()
+    val isLandScape = windowSize.width > windowSize.height
     LaunchedEffect(Unit) {
         focusRequester.requestFocus()
         keyboard?.show()
@@ -186,7 +189,7 @@ fun AddUpdateTaskScreen(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             CheckBoxWithText(
-                text = stringResource( R.string.important_task),
+                text = stringResource(R.string.important_task),
                 value = isImp,
                 onValueChange = { isImp = it },
                 fontSize = 12.sp,
@@ -197,8 +200,73 @@ fun AddUpdateTaskScreen(
             }) {
                 Icon(painterResource(R.drawable.ic_copy), stringResource(R.string.copy_text))
                 Spacer(modifier = Modifier.width(8.dp))
-                Text(stringResource( R.string.copy_text), fontSize = 12.sp)
+                Text(stringResource(R.string.copy_text), fontSize = 12.sp)
             }
+            if (isLandScape) {
+                Column(verticalArrangement = Arrangement.Center) {
+                    Row(
+                        Modifier
+                            .padding(horizontal = 8.dp)
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(
+                                MaterialTheme.colorScheme.surfaceVariant
+                            )
+                            .semantics(mergeDescendants = true) {}
+                            .toggleable(isDropDownExpanded, onValueChange = {
+                                isDropDownExpanded = it
+                            })
+                            .onGloballyPositioned { coordinates ->
+                                textFieldSize = coordinates.size.toSize()
+                            },
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        RoundedColorIcon(
+                            color = Color(categories[selectedCategory].color), size = 12.dp,
+                            modifier = Modifier.padding(start = 8.dp)
+                        )
+                        Spacer(Modifier.width(4.dp))
+                        Text(
+                            categories[selectedCategory].name,
+                            fontWeight = FontWeight.SemiBold,
+                            modifier = Modifier.weight(1f),
+                            textAlign = TextAlign.Center,
+                            fontSize = 14.sp
+                        )
+                        Icon(
+                            if (isDropDownExpanded)
+                                Icons.Filled.KeyboardArrowUp
+                            else
+                                Icons.Filled.KeyboardArrowDown,
+                            contentDescription = null,
+                            Modifier.padding(end = 4.dp)
+                        )
+                    }
+                    DropdownMenu(
+                        expanded = isDropDownExpanded,
+                        onDismissRequest = { isDropDownExpanded = false },
+                        modifier = Modifier
+                            .width(with(LocalDensity.current) { textFieldSize.width.toDp() })
+                    ) {
+                        TaskApp.categoryTypes.forEach { category ->
+                            DropdownMenuItem(
+                                text = {
+                                    Text(text = category.name, fontSize = 14.sp)
+                                },
+                                onClick = {
+                                    selectedCategory = category.order
+                                    isDropDownExpanded = false
+                                },
+                                leadingIcon = {
+                                    RoundedColorIcon(color = Color(category.color), size = 14.dp)
+                                }
+                            )
+                        }
+                    }
+                }
+            }
+        }
+        if (!isLandScape) {
             Column(verticalArrangement = Arrangement.Center) {
                 Row(
                     Modifier
@@ -275,8 +343,8 @@ fun AddUpdateTaskScreen(
                 },
                 leadingIcon = {
                     Icon(
-                        painterResource( R.drawable.ic_calendar_small),
-                         null
+                        painterResource(R.drawable.ic_calendar_small),
+                        null
                     )
                 },
                 placeholder = {
@@ -306,7 +374,7 @@ fun AddUpdateTaskScreen(
                 value = endDate,
                 onValueChange = { endDate = it },
                 leadingIcon = {
-                    Icon(painterResource( R.drawable.ic_calendar_small), null)
+                    Icon(painterResource(R.drawable.ic_calendar_small), null)
                 },
                 placeholder = {
                     Text(stringResource(R.string.end_date), fontSize = 12.sp)
@@ -416,7 +484,7 @@ fun AddUpdateTaskScreen(
             }) {
                 Icon(
                     painterResource(id = R.drawable.ic_done),
-                     null
+                    null
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(stringResource(id = R.string.save))

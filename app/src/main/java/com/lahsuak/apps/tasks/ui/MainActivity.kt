@@ -7,6 +7,7 @@ import android.content.IntentSender
 import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -40,6 +41,7 @@ import com.lahsuak.apps.tasks.ui.viewmodel.SubTaskViewModel
 import com.lahsuak.apps.tasks.ui.viewmodel.TaskViewModel
 import com.lahsuak.apps.tasks.util.AppConstants
 import com.lahsuak.apps.tasks.util.AppConstants.SHARE_FORMAT
+import com.lahsuak.apps.tasks.util.AppConstants.SharedPreference.BIOMETRIC_ENABLE_KEY
 import com.lahsuak.apps.tasks.util.AppConstants.SharedPreference.LANGUAGE_SHARED_PREFERENCE
 import com.lahsuak.apps.tasks.util.AppConstants.SharedPreference.LANGUAGE_SHARED_PREFERENCE_LANGUAGE_KEY
 import com.lahsuak.apps.tasks.util.AppConstants.SharedPreference.THEME_DEFAULT
@@ -47,6 +49,8 @@ import com.lahsuak.apps.tasks.util.AppConstants.SharedPreference.THEME_KEY
 import com.lahsuak.apps.tasks.util.AppConstants.UPDATE_REQUEST_CODE
 import com.lahsuak.apps.tasks.util.AppUtil.getLanguage
 import com.lahsuak.apps.tasks.util.RuntimeLocaleChanger
+import com.lahsuak.apps.tasks.util.biometric.BiometricAuthListener
+import com.lahsuak.apps.tasks.util.biometric.BiometricUtil
 import com.lahsuak.apps.tasks.util.rememberWindowSize
 import com.lahsuak.apps.tasks.util.toast
 import dagger.hilt.android.AndroidEntryPoint
@@ -54,7 +58,7 @@ import javax.inject.Inject
 import javax.inject.Named
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity() ,BiometricAuthListener{
     private val taskViewModel: TaskViewModel by viewModels()
     private val subTaskViewModel: SubTaskViewModel by viewModels()
     private val notificationViewModel: NotificationViewModel by viewModels()
@@ -63,6 +67,9 @@ class MainActivity : AppCompatActivity() {
     @Inject
     @Named(LANGUAGE_SHARED_PREFERENCE)
     lateinit var preference: SharedPreferences
+    @Inject
+    @Named(AppConstants.SharedPreference.BIOMETRIC_SHARED_PREFERENCE)
+    lateinit var bioMetricPreference: SharedPreferences
 
     companion object {
         var activityContext: Context? = null
@@ -83,6 +90,13 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setTheme(R.style.Theme_Tasks)
         activityContext = this
+        if(bioMetricPreference.getBoolean(BIOMETRIC_ENABLE_KEY, false)){
+            Log.d("TAG", "onCreate: open biometric")
+            BiometricUtil.showBiometricPrompt(
+                activity = this,
+                listener = this
+            )
+        }
         appUpdateManager = AppUpdateManagerFactory.create(this)
         checkUpdate()
         appUpdateManager.registerListener(appUpdateListener)
@@ -138,14 +152,14 @@ class MainActivity : AppCompatActivity() {
         }
     }
     private fun checkUpdate() {
-        val appUpdateInfoTask = appUpdateManager?.appUpdateInfo
+        val appUpdateInfoTask = appUpdateManager.appUpdateInfo
 
-        appUpdateInfoTask?.addOnSuccessListener { appUpdateInfo ->
+        appUpdateInfoTask.addOnSuccessListener { appUpdateInfo ->
             if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
                 && appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE)
             ) {
                 try {
-                    appUpdateManager?.startUpdateFlowForResult(
+                    appUpdateManager.startUpdateFlowForResult(
                         appUpdateInfo, AppUpdateType.FLEXIBLE,
                         this, UPDATE_REQUEST_CODE
                     )
@@ -169,6 +183,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+
     @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         @Suppress(AppConstants.DEPRECATION)
@@ -186,5 +201,17 @@ class MainActivity : AppCompatActivity() {
         super.onDestroy()
         appUpdateManager.unregisterListener(appUpdateListener)
         activityContext = null
+    }
+
+    override fun onBiometricAuthSuccess() {
+       //Successful
+    }
+
+    override fun onUserCancelled() {
+        finish()
+    }
+
+    override fun onErrorOccurred() {
+        finish()
     }
 }

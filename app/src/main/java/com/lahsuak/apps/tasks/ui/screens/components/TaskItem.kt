@@ -21,22 +21,25 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.DismissDirection
+import androidx.compose.material.DismissState
+import androidx.compose.material.DismissValue
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.FixedThreshold
+import androidx.compose.material.SwipeToDismiss
+import androidx.compose.material.ThresholdConfig
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material3.DismissDirection
-import androidx.compose.material3.DismissState
-import androidx.compose.material3.DismissValue
-import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material.rememberDismissState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.SwipeToDismiss
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberDismissState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -63,10 +66,11 @@ import com.lahsuak.apps.tasks.util.AppConstants.SharedPreference.SHOW_SUBTASK_KE
 import com.lahsuak.apps.tasks.util.AppConstants.SharedPreference.TASK_PROGRESS_KEY
 import com.lahsuak.apps.tasks.util.AppUtil
 import com.lahsuak.apps.tasks.util.DateUtil
+import com.lahsuak.apps.tasks.util.rememberWindowSize
 import kotlinx.coroutines.delay
 
 @OptIn(
-    ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class
+    ExperimentalLayoutApi::class, ExperimentalMaterialApi::class
 )
 @Composable
 fun TaskItem(
@@ -95,17 +99,14 @@ fun TaskItem(
     var isChecked by rememberSaveable {
         mutableStateOf(task.isDone)
     }
-    var show by rememberSaveable { mutableStateOf(true) }
+    var show by remember { mutableStateOf(true) }
     val dismissState = rememberDismissState(
-        confirmValueChange = {
-            if (it == DismissValue.DismissedToStart || it == DismissValue.DismissedToEnd) {
+        confirmStateChange = {
+            if (it == DismissValue.DismissedToEnd || it == DismissValue.DismissedToStart) {
                 show = false
                 true
             } else
                 false
-        },
-        positionalThreshold = {
-            it / 2
         }
     )
     AnimatedVisibility(
@@ -296,6 +297,9 @@ fun TaskItem(
                         }
                     }
                 }
+            },
+            dismissThresholds = {
+                FixedThreshold(120.dp)
             }
         )
     }
@@ -315,11 +319,13 @@ fun TaskItem(
                     // no-op
                 }
             }
+        } else {
+            dismissState.animateTo(DismissValue.Default)
         }
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun DismissBackground(dismissState: DismissState) {
     val color = when (dismissState.dismissDirection) {
@@ -341,13 +347,13 @@ fun DismissBackground(dismissState: DismissState) {
             Icon(
                 // make sure add baseline_archive_24 resource to drawable folder
                 painter = painterResource(R.drawable.ic_pin),
-                contentDescription = "Archive"
+                contentDescription = stringResource(id = R.string.important_task)
             )
         Spacer(modifier = Modifier)
         if (direction == DismissDirection.EndToStart)
             Icon(
                 Icons.Default.Delete,
-                contentDescription = "delete"
+                contentDescription = stringResource(id = R.string.delete)
             )
     }
 }

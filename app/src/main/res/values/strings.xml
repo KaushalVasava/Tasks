@@ -158,4 +158,9 @@
     <string name="portfolio" translatable="false">https://zaap.bio/KaushalVasava</string>
     <string name="github_link" translatable="false">https://github.com/KaushalVasava</string>
     <string name="privacy_policy_link" translatable="false">https://doc-hosting.flycricket.io/tasks-to-do-list-reminders/a4486a8e-2c2b-4ae8-8ade-59c845a8276e/privacy</string>
+
+    <string name="prompt_info_title">Sample App Authentication</string>
+    <string name="prompt_info_subtitle">Please login to get access</string>
+    <string name="prompt_info_description">Sample App is using Android biometric authentication</string>
+    <string name="prompt_info_use_app_password">Use app password</string>
 </resources>

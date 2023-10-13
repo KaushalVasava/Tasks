@@ -16,6 +16,8 @@ import com.lahsuak.apps.tasks.BuildConfig
 import com.lahsuak.apps.tasks.R
 import com.lahsuak.apps.tasks.TaskApp.Companion.mylang
 import com.lahsuak.apps.tasks.util.AppConstants
+import com.lahsuak.apps.tasks.util.AppConstants.SharedPreference.BIOMETRIC_ENABLE_KEY
+import com.lahsuak.apps.tasks.util.AppConstants.SharedPreference.BIOMETRIC_SHARED_PREFERENCE
 import com.lahsuak.apps.tasks.util.AppConstants.SharedPreference.LANGUAGE_DEFAULT_VALUE
 import com.lahsuak.apps.tasks.util.AppConstants.SharedPreference.LANGUAGE_SHARED_PREFERENCE
 import com.lahsuak.apps.tasks.util.AppConstants.SharedPreference.LANGUAGE_SHARED_PREFERENCE_KEY
@@ -25,13 +27,16 @@ import com.lahsuak.apps.tasks.util.AppUtil
 import com.lahsuak.apps.tasks.util.AppUtil.appRating
 import com.lahsuak.apps.tasks.util.AppUtil.getLanguage
 import com.lahsuak.apps.tasks.util.AppUtil.shareApp
+import com.lahsuak.apps.tasks.util.biometric.BiometricAuthListener
+import com.lahsuak.apps.tasks.util.biometric.BiometricUtil
+import com.lahsuak.apps.tasks.util.toast
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Named
 
 @AndroidEntryPoint
-class SettingsFragment : PreferenceFragmentCompat() {
+class SettingsFragment : PreferenceFragmentCompat(), BiometricAuthListener {
 
     companion object {
         var selectedTheme = -1
@@ -41,6 +46,11 @@ class SettingsFragment : PreferenceFragmentCompat() {
     @Inject
     @Named(LANGUAGE_SHARED_PREFERENCE)
     lateinit var preference: SharedPreferences
+
+    @Inject
+    @Named(BIOMETRIC_SHARED_PREFERENCE)
+    lateinit var bioMetricPreference: SharedPreferences
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -67,6 +77,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
         val prefGithub = findPreference<Preference>(AppConstants.SharedPreference.GITHUB)
         val prefPrivacyPolicy =
             findPreference<Preference>(AppConstants.SharedPreference.PRIVACY_POLICY)
+        val prefFingerPrint =
+            findPreference<Preference>(AppConstants.SharedPreference.FINGERPRINT)
 
         selectedLang =
             preference.getString(LANGUAGE_SHARED_PREFERENCE_KEY, LANGUAGE_DEFAULT_VALUE)
@@ -96,6 +108,15 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 20 -> prefFont.summary = getString(R.string.large)
                 22 -> prefFont.summary = getString(R.string.huge)
             }
+            true
+        }
+        prefFingerPrint?.setOnPreferenceChangeListener { _,_ ->
+            BiometricUtil.showBiometricPrompt(
+                activity = (activity as AppCompatActivity),
+                listener = this,
+                cryptoObject = null,
+                allowDeviceCredential = true
+            )
             true
         }
         prefLanguage?.setOnPreferenceChangeListener { _, newValue ->
@@ -190,5 +211,25 @@ class SettingsFragment : PreferenceFragmentCompat() {
             apply()
         }
         requireActivity().recreate()
+    }
+
+    override fun onBiometricAuthSuccess() {
+        val isAuth = bioMetricPreference.getBoolean(BIOMETRIC_ENABLE_KEY, false)
+        bioMetricPreference.edit().apply {
+            putBoolean(BIOMETRIC_ENABLE_KEY, !isAuth)
+            apply()
+        }
+    }
+
+    override fun onUserCancelled() {
+        context.toast {
+            getString(R.string.cancel)
+        }
+    }
+
+    override fun onErrorOccurred() {
+        context.toast {
+            getString(R.string.something_went_wrong)
+        }
     }
 }
