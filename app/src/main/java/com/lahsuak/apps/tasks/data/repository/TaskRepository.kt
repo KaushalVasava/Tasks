@@ -15,8 +15,7 @@ interface TaskRepository {
 
     fun getAllTasks(
         searchQuery: String,
-        sortOrder: SortOrder,
-        hideCompleted: Boolean,
+        sortOrder: SortOrder
     ): Flow<List<Task>>
 
     suspend fun getById(id: Int): Task
@@ -35,8 +34,7 @@ interface TaskRepository {
     fun getAllSubTasks(
         id: Int,
         query: String,
-        sortOrder: SortOrder,
-        hideCompleted: Boolean,
+        sortOrder: SortOrder
     ): Flow<List<SubTask>>
 
     suspend fun deleteAllCompletedSubTask(id: Int)

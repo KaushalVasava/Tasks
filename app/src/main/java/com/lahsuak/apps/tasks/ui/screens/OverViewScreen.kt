@@ -49,6 +49,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -110,9 +111,9 @@ fun OverviewScreen(
             columns = StaggeredGridCells.Fixed(
                 if (windowSize.width > windowSize.height) {
                     when (windowSize.width) {
-                        WindowType.Compact -> 3
                         WindowType.Medium -> 4
                         WindowType.Expanded -> 4
+                        else -> 3
                     }
                 } else {
                     when (windowSize.width) {
@@ -250,7 +251,7 @@ fun TaskOverviewItem(task: Task) {
             )
             if (task.subTaskList != null) {
                 Spacer(modifier = Modifier.height(8.dp))
-                Text(task.subTaskList!!)
+                Text(task.subTaskList!!, maxLines = 5, overflow = TextOverflow.Ellipsis)
             }
             if (task.progress != -1f) {
                 Spacer(modifier = Modifier.height(8.dp))

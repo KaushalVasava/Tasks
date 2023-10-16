@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="light_primary">#367EF2</color>
+    <color name="light_container">#BED7FF</color>
 </resources>

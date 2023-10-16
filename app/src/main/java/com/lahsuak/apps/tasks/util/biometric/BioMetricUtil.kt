@@ -1,13 +1,16 @@
 package com.lahsuak.apps.tasks.util.biometric
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import androidx.activity.ComponentActivity
 import androidx.appcompat.app.AppCompatActivity
 import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.FragmentActivity
 import com.lahsuak.apps.tasks.R
 
 /**
@@ -52,7 +55,7 @@ object BiometricUtil {
      * Initializes BiometricPrompt with the caller and callback handlers
      */
     private fun initBiometricPrompt(
-        activity: AppCompatActivity,
+        activity: Activity,
         listener: BiometricAuthListener,
     ): BiometricPrompt {
         // Attach calling Activity
@@ -77,14 +80,14 @@ object BiometricUtil {
             }
         }
 
-        return BiometricPrompt(activity, executor, callback)
+        return BiometricPrompt(activity as FragmentActivity, executor, callback)
     }
 
     /**
      * Displays a BiometricPrompt with provided configurations
      */
     fun showBiometricPrompt(
-        activity: AppCompatActivity,
+        activity: Activity,
         listener: BiometricAuthListener,
         cryptoObject: BiometricPrompt.CryptoObject? = null,
         allowDeviceCredential: Boolean = false,

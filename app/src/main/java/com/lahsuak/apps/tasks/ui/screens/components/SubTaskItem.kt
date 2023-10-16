@@ -1,6 +1,5 @@
 package com.lahsuak.apps.tasks.ui.screens.components
 
-import android.content.SharedPreferences
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeOut
@@ -34,6 +33,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -48,9 +48,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.lahsuak.apps.tasks.R
 import com.lahsuak.apps.tasks.data.model.SubTask
-import com.lahsuak.apps.tasks.util.AppConstants
 import com.lahsuak.apps.tasks.util.AppUtil
 import com.lahsuak.apps.tasks.util.DateUtil
+import com.lahsuak.apps.tasks.util.preference.SettingPreferences
 import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalLayoutApi::class,
@@ -60,7 +60,7 @@ import kotlinx.coroutines.delay
 fun SubTaskItem(
     modifier: Modifier = Modifier,
     subTask: SubTask,
-    prefManager: SharedPreferences,
+    settingPreferences: SettingPreferences,
     color: Color,
     isListViewEnable: Boolean,
     onImpSwipe: (Boolean) -> Unit,
@@ -73,15 +73,15 @@ fun SubTaskItem(
     }
     val context = LocalContext.current
 
-    val showReminder = prefManager.getBoolean(AppConstants.SharedPreference.SHOW_REMINDER_KEY, true)
-    val titleSize = prefManager.getString(
-            AppConstants.SharedPreference.FONT_SIZE_KEY,
-            AppConstants.SharedPreference.INITIAL_FONT_SIZE
-        )!!.toFloat()
-    val showCopyIcon = prefManager.getBoolean(
-        AppConstants.SharedPreference.SHOW_COPY_KEY,
-        true
-    )
+    val showCopyIcon by rememberSaveable {
+        mutableStateOf(settingPreferences.showCopyIcon)
+    }
+    val titleSize by rememberSaveable {
+        mutableFloatStateOf(settingPreferences.fontSize.toFloat())
+    }
+    val showReminder by rememberSaveable {
+        mutableStateOf(settingPreferences.showReminder)
+    }
 
     var show by rememberSaveable { mutableStateOf(true) }
     val dismissState = rememberDismissState(
@@ -176,7 +176,7 @@ fun SubTaskItem(
                                         horizontalArrangement = Arrangement.End,
                                         modifier = Modifier
                                             .clip(
-                                                RoundedCornerShape(16.dp)
+                                                RoundedCornerShape(8.dp)
                                             )
                                             .background(color)
                                             .padding(2.dp)
@@ -202,7 +202,7 @@ fun SubTaskItem(
                                             verticalAlignment = Alignment.CenterVertically,
                                             horizontalArrangement = Arrangement.Center,
                                             modifier = Modifier
-                                                .clip(RoundedCornerShape(16.dp))
+                                                .clip(RoundedCornerShape(8.dp))
                                                 .background(color)
                                                 .padding(2.dp)
                                         ) {

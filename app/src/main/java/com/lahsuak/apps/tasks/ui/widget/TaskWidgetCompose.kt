@@ -4,6 +4,7 @@ import android.app.PendingIntent
 import android.app.TaskStackBuilder
 import android.content.Context
 import android.content.Intent
+import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.os.Build
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -22,7 +23,9 @@ import androidx.glance.appwidget.cornerRadius
 import androidx.glance.appwidget.provideContent
 import androidx.glance.appwidget.state.updateAppWidgetState
 import androidx.glance.background
+import androidx.glance.layout.Row
 import androidx.glance.layout.padding
+import androidx.glance.text.Text
 import com.lahsuak.apps.tasks.R
 import com.lahsuak.apps.tasks.ui.MainActivity
 import com.lahsuak.apps.tasks.ui.theme.lightBlue
@@ -34,7 +37,8 @@ object TaskWidgetCompose : GlanceAppWidget() {
     override suspend fun provideGlance(context: Context, id: GlanceId) {
         provideContent {
             Image(
-                provider = ImageProvider(R.drawable.ic_edit), stringResource(id = R.string.add_task),
+                provider = ImageProvider(R.drawable.ic_edit),
+                contentDescription = stringResource(id = R.string.add_task),
                 modifier = GlanceModifier
                     .background(lightBlue)
                     .padding(16.dp)
@@ -64,8 +68,10 @@ class TaskActionCallback : ActionCallback {
                 NavigationConstants.Key.ADD_UPDATE_TASK_DEEP_LINK.toUri(),
                 context,
                 MainActivity::class.java
-            )
-            val flag = if(Build.VERSION.SDK_INT > Build.VERSION_CODES.S){
+            ).apply {
+                flags = FLAG_ACTIVITY_NEW_TASK
+            }
+            val flag = if (Build.VERSION.SDK_INT > Build.VERSION_CODES.S) {
                 PendingIntent.FLAG_IMMUTABLE
             } else PendingIntent.FLAG_UPDATE_CURRENT
             val deepLinkPendingIntent: PendingIntent = TaskStackBuilder.create(context).run {

@@ -3,7 +3,6 @@ package com.lahsuak.apps.tasks
 import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
-import android.content.res.Configuration
 import com.lahsuak.apps.tasks.model.Category
 import com.lahsuak.apps.tasks.ui.theme.lightBlue
 import com.lahsuak.apps.tasks.ui.theme.lightGreen
@@ -11,12 +10,7 @@ import com.lahsuak.apps.tasks.ui.theme.lightPink
 import com.lahsuak.apps.tasks.ui.theme.lightPurple
 import com.lahsuak.apps.tasks.ui.theme.lightYellow
 import com.lahsuak.apps.tasks.util.AppConstants
-import com.lahsuak.apps.tasks.util.AppConstants.SharedPreference.LANGUAGE_DEFAULT_VALUE
-import com.lahsuak.apps.tasks.util.AppConstants.SharedPreference.LANGUAGE_SHARED_PREFERENCE_KEY
-import com.lahsuak.apps.tasks.util.AppConstants.SharedPreference.LANGUAGE_SHARED_PREFERENCE_LANGUAGE_KEY
 import com.lahsuak.apps.tasks.util.AppUtil.createNotificationWorkRequest
-import com.lahsuak.apps.tasks.util.AppUtil.getLanguage
-import com.lahsuak.apps.tasks.util.RuntimeLocaleChanger
 import dagger.hilt.android.HiltAndroidApp
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -27,22 +21,13 @@ import javax.inject.Named
 @HiltAndroidApp
 class TaskApp : Application() {
     companion object {
-        var mylang = getLanguage()
         lateinit var appContext: Context
         val categoryTypes = mutableListOf<Category>()
     }
 
     @Inject
-    @Named(AppConstants.SharedPreference.LANGUAGE_SHARED_PREFERENCE)
-    lateinit var preference: SharedPreferences
-
-    @Inject
     @Named(AppConstants.SharedPreference.DAILY_NOTIFICATION)
     lateinit var notificationPreference: SharedPreferences
-
-    override fun attachBaseContext(base: Context) {
-        super.attachBaseContext(RuntimeLocaleChanger.wrapContext(base, mylang))
-    }
 
     override fun onCreate() {
         super.onCreate()
@@ -71,7 +56,6 @@ class TaskApp : Application() {
                 .putBoolean(AppConstants.SharedPreference.DAILY_NOTIFICATION_KEY, true)
                 .apply()
         }
-        languageChange()
         initCategory()
     }
 
@@ -91,21 +75,5 @@ class TaskApp : Application() {
         categoryTypes.add(
             Category(4, getString(R.string.other), lightPurple.hashCode())
         )
-    }
-
-    override fun onConfigurationChanged(newConfig: Configuration) {
-        super.onConfigurationChanged(newConfig)
-        languageChange()
-    }
-
-    private fun languageChange() {
-        val langNo = preference.getString(LANGUAGE_SHARED_PREFERENCE_KEY, LANGUAGE_DEFAULT_VALUE)
-        if (langNo == LANGUAGE_DEFAULT_VALUE) {
-            if (mylang != getLanguage()) {
-                mylang = getLanguage()
-            }
-        } else {
-            mylang = preference.getString(LANGUAGE_SHARED_PREFERENCE_LANGUAGE_KEY, getLanguage())!!
-        }
     }
 }

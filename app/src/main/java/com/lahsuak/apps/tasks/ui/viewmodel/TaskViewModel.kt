@@ -1,31 +1,25 @@
 package com.lahsuak.apps.tasks.ui.viewmodel
 
 import android.content.Context
-import android.util.Log
-import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asFlow
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.lahsuak.apps.tasks.R
-import com.lahsuak.apps.tasks.util.preference.PreferenceManager
 import com.lahsuak.apps.tasks.data.model.SortOrder
 import com.lahsuak.apps.tasks.data.model.Task
 import com.lahsuak.apps.tasks.data.repository.TaskRepository
 import com.lahsuak.apps.tasks.model.TaskEvent
 import com.lahsuak.apps.tasks.util.AppConstants.SEARCH_INITIAL_VALUE
 import com.lahsuak.apps.tasks.util.AppConstants.SEARCH_QUERY
+import com.lahsuak.apps.tasks.util.preference.PreferenceManager
 import com.lahsuak.apps.tasks.util.toast
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
@@ -53,8 +47,7 @@ class TaskViewModel @Inject constructor(
     }.flatMapLatest { (query, filterPreferences) ->
         repository.getAllTasks(
             query,
-            filterPreferences.sortOrder,
-            filterPreferences.hideCompleted
+            filterPreferences.sortOrder
         )
     }.distinctUntilChanged()
 

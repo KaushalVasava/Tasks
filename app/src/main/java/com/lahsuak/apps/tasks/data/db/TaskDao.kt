@@ -12,69 +12,46 @@ interface TaskDao {
     fun getAllTasks(
         query: String,
         sortOrder: SortOrder,
-        hideCompleted: Boolean,
     ): Flow<List<Task>> =
         when (sortOrder) {
-            SortOrder.BY_NAME -> getAllTaskByName(query, hideCompleted)
-            SortOrder.BY_NAME_DESC -> getAllTaskByNameDesc(query, hideCompleted)
-            SortOrder.BY_DATE -> getAllTaskByDate(query, hideCompleted)
-            SortOrder.BY_DATE_DESC -> getAllTaskByDateDesc(query, hideCompleted)
-            SortOrder.BY_CATEGORY -> getAllTaskByCategory(query, hideCompleted)
-            SortOrder.BY_CATEGORY_DESC -> getAllTaskByCategoryDesc(query, hideCompleted)
+            SortOrder.BY_NAME -> getAllTaskByName(query)
+            SortOrder.BY_NAME_DESC -> getAllTaskByNameDesc(query)
+            SortOrder.BY_DATE -> getAllTaskByDate(query)
+            SortOrder.BY_DATE_DESC -> getAllTaskByDateDesc(query)
+            SortOrder.BY_CATEGORY -> getAllTaskByCategory(query)
+            SortOrder.BY_CATEGORY_DESC -> getAllTaskByCategoryDesc(query)
         }
 
     @Query(
-        "SELECT * FROM task_table WHERE (status!= :hideCompleted OR status = 0) " +
-                "AND title LIKE '%' || :searchQuery || '%' ORDER BY importance DESC,title ASC"
+        "SELECT * FROM task_table WHERE title LIKE '%' || :searchQuery || '%' ORDER BY importance DESC,title ASC"
     )
-    fun getAllTaskByName(
-        searchQuery: String, hideCompleted: Boolean,
-    ): Flow<List<Task>>
+    fun getAllTaskByName(searchQuery: String): Flow<List<Task>>
 
     @Query(
-        "SELECT * FROM task_table WHERE (status!= :hideCompleted OR status = 0) " +
-                "AND title LIKE '%' || :searchQuery || '%' ORDER BY importance DESC,title DESC"
+        "SELECT * FROM task_table WHERE title LIKE '%' || :searchQuery || '%' ORDER BY importance DESC,title DESC"
     )
-    fun getAllTaskByNameDesc(
-        searchQuery: String, hideCompleted: Boolean,
-    ): Flow<List<Task>>
+    fun getAllTaskByNameDesc(searchQuery: String): Flow<List<Task>>
 
     //date DESC
     @Query(
-        "SELECT * FROM task_table WHERE (status!= :hideCompleted OR status = 0) " +
-                "AND title LIKE '%' || :searchQuery || '%' ORDER BY importance DESC, start_date ASC"
+        "SELECT * FROM task_table WHERE title LIKE '%' || :searchQuery || '%' ORDER BY importance DESC, start_date ASC"
     )
-    fun getAllTaskByDate(
-        searchQuery: String,
-        hideCompleted: Boolean,
-    ): Flow<List<Task>>
+    fun getAllTaskByDate(searchQuery: String): Flow<List<Task>>
 
     @Query(
-        "SELECT * FROM task_table WHERE (status!= :hideCompleted OR status = 0) " +
-                "AND title LIKE '%' || :searchQuery || '%' ORDER BY importance DESC, start_date DESC"
+        "SELECT * FROM task_table WHERE title LIKE '%' || :searchQuery || '%' ORDER BY importance DESC, start_date DESC"
     )
-    fun getAllTaskByDateDesc(
-        searchQuery: String,
-        hideCompleted: Boolean,
-    ): Flow<List<Task>>
+    fun getAllTaskByDateDesc(searchQuery: String): Flow<List<Task>>
 
     @Query(
-        "SELECT * FROM task_table WHERE (status!= :hideCompleted OR status = 0) " +
-                "AND title LIKE '%' || :searchQuery || '%' ORDER BY importance DESC, color ASC"
+        "SELECT * FROM task_table WHERE title LIKE '%' || :searchQuery || '%' ORDER BY importance DESC, color ASC"
     )
-    fun getAllTaskByCategory(
-        searchQuery: String,
-        hideCompleted: Boolean,
-    ): Flow<List<Task>>
+    fun getAllTaskByCategory(searchQuery: String): Flow<List<Task>>
 
     @Query(
-        "SELECT * FROM task_table WHERE (status!= :hideCompleted OR status = 0) " +
-                "AND title LIKE '%' || :searchQuery || '%' ORDER BY importance DESC, color DESC"
+        "SELECT * FROM task_table WHERE title LIKE '%' || :searchQuery || '%' ORDER BY importance DESC, color DESC"
     )
-    fun getAllTaskByCategoryDesc(
-        searchQuery: String,
-        hideCompleted: Boolean,
-    ): Flow<List<Task>>
+    fun getAllTaskByCategoryDesc(searchQuery: String): Flow<List<Task>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(task: Task)
@@ -108,45 +85,40 @@ interface TaskDao {
     fun getAllSubTasks(
         id: Int,
         query: String,
-        sortOrder: SortOrder,
-        hideCompleted: Boolean,
+        sortOrder: SortOrder
     ): Flow<List<SubTask>> =
         when (sortOrder) {
-            SortOrder.BY_NAME -> getAllSubTaskByName(id, query, hideCompleted)
-            SortOrder.BY_NAME_DESC -> getAllSubTaskByNameDesc(id, query, hideCompleted)
-            SortOrder.BY_DATE -> getAllSubTaskByDate(id, query, hideCompleted)
-            SortOrder.BY_DATE_DESC -> getAllSubTaskByDateDesc(id, query, hideCompleted)
+            SortOrder.BY_NAME -> getAllSubTaskByName(id, query)
+            SortOrder.BY_NAME_DESC -> getAllSubTaskByNameDesc(id, query)
+            SortOrder.BY_DATE -> getAllSubTaskByDate(id, query)
+            SortOrder.BY_DATE_DESC -> getAllSubTaskByDateDesc(id, query)
             else -> {
-                getAllSubTaskByName(id, query, hideCompleted)
+                getAllSubTaskByName(id, query)
             }
         }
 
-    @Query("SELECT * FROM sub_task_table WHERE id=:id AND (isDone!= :hideCompleted OR isDone = 0) AND subTitle LIKE '%' || :searchQuery || '%' ORDER BY isImportant DESC, subTitle ASC")
+    @Query("SELECT * FROM sub_task_table WHERE id=:id AND subTitle LIKE '%' || :searchQuery || '%' ORDER BY isImportant DESC, subTitle ASC")
     fun getAllSubTaskByName(
         id: Int,
-        searchQuery: String,
-        hideCompleted: Boolean,
+        searchQuery: String
     ): Flow<List<SubTask>>
 
-    @Query("SELECT * FROM sub_task_table WHERE id=:id AND (isDone!= :hideCompleted OR isDone = 0) AND subTitle LIKE '%' || :searchQuery || '%' ORDER BY isImportant DESC,dateTime ASC")
+    @Query("SELECT * FROM sub_task_table WHERE id=:id AND subTitle LIKE '%' || :searchQuery || '%' ORDER BY isImportant DESC,dateTime ASC")
     fun getAllSubTaskByDate(
         id: Int,
-        searchQuery: String,
-        hideCompleted: Boolean,
+        searchQuery: String
     ): Flow<List<SubTask>>
 
-    @Query("SELECT * FROM sub_task_table WHERE id=:id AND (isDone!= :hideCompleted OR isDone = 0) AND subTitle LIKE '%' || :searchQuery || '%' ORDER BY isImportant DESC, subTitle DESC")
+    @Query("SELECT * FROM sub_task_table WHERE id=:id AND subTitle LIKE '%' || :searchQuery || '%' ORDER BY isImportant DESC, subTitle DESC")
     fun getAllSubTaskByNameDesc(
         id: Int,
-        searchQuery: String,
-        hideCompleted: Boolean,
+        searchQuery: String
     ): Flow<List<SubTask>>
 
-    @Query("SELECT * FROM sub_task_table WHERE id=:id AND (isDone!= :hideCompleted OR isDone = 0) AND subTitle LIKE '%' || :searchQuery || '%' ORDER BY isImportant DESC,dateTime DESC")
+    @Query("SELECT * FROM sub_task_table WHERE id=:id AND subTitle LIKE '%' || :searchQuery || '%' ORDER BY isImportant DESC,dateTime DESC")
     fun getAllSubTaskByDateDesc(
         id: Int,
-        searchQuery: String,
-        hideCompleted: Boolean,
+        searchQuery: String
     ): Flow<List<SubTask>>
 
     @Query("DELETE FROM sub_task_table WHERE isDone = 1 AND id=:taskId")

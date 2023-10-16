@@ -1,6 +1,5 @@
 package com.lahsuak.apps.tasks.ui.screens.components
 
-import android.content.SharedPreferences
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeOut
@@ -27,7 +26,6 @@ import androidx.compose.material.DismissValue
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.FixedThreshold
 import androidx.compose.material.SwipeToDismiss
-import androidx.compose.material.ThresholdConfig
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.rememberDismissState
@@ -38,6 +36,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -58,15 +57,9 @@ import androidx.compose.ui.unit.sp
 import com.lahsuak.apps.tasks.R
 import com.lahsuak.apps.tasks.TaskApp
 import com.lahsuak.apps.tasks.data.model.Task
-import com.lahsuak.apps.tasks.util.AppConstants.SharedPreference.FONT_SIZE_KEY
-import com.lahsuak.apps.tasks.util.AppConstants.SharedPreference.INITIAL_FONT_SIZE
-import com.lahsuak.apps.tasks.util.AppConstants.SharedPreference.SHOW_COPY_KEY
-import com.lahsuak.apps.tasks.util.AppConstants.SharedPreference.SHOW_REMINDER_KEY
-import com.lahsuak.apps.tasks.util.AppConstants.SharedPreference.SHOW_SUBTASK_KEY
-import com.lahsuak.apps.tasks.util.AppConstants.SharedPreference.TASK_PROGRESS_KEY
 import com.lahsuak.apps.tasks.util.AppUtil
 import com.lahsuak.apps.tasks.util.DateUtil
-import com.lahsuak.apps.tasks.util.rememberWindowSize
+import com.lahsuak.apps.tasks.util.preference.SettingPreferences
 import kotlinx.coroutines.delay
 
 @OptIn(
@@ -76,7 +69,7 @@ import kotlinx.coroutines.delay
 fun TaskItem(
     modifier: Modifier = Modifier,
     task: Task,
-    prefManager: SharedPreferences,
+    settingPreferences: SettingPreferences,
     isListViewEnable: Boolean,
     onImpSwipe: (Boolean) -> Unit,
     onCancelReminder: () -> Unit,
@@ -88,11 +81,22 @@ fun TaskItem(
     val color = Color(TaskApp.categoryTypes[task.color].color)
     val context = LocalContext.current
 
-    val showProgress = prefManager.getBoolean(TASK_PROGRESS_KEY, false)
-    val showReminder = prefManager.getBoolean(SHOW_REMINDER_KEY, true)
-    val showSubTask = prefManager.getBoolean(SHOW_SUBTASK_KEY, true)
-    val titleSize = prefManager.getString(FONT_SIZE_KEY, INITIAL_FONT_SIZE)!!.toFloat()
-    val showCopyIcon = prefManager.getBoolean(SHOW_COPY_KEY, true)
+    val showProgress by rememberSaveable {
+        mutableStateOf(settingPreferences.showProgress)
+    }
+    val showReminder by rememberSaveable {
+        mutableStateOf(settingPreferences.showReminder)
+    }
+    val showSubTask by rememberSaveable {
+        mutableStateOf(settingPreferences.showSubTask)
+    }
+    val showCopyIcon by rememberSaveable {
+        mutableStateOf(settingPreferences.showCopyIcon)
+    }
+    val titleSize by rememberSaveable {
+        mutableFloatStateOf(settingPreferences.fontSize.toFloat())
+    }
+
     var isExpanded by rememberSaveable {
         mutableStateOf(true)
     }
@@ -161,7 +165,7 @@ fun TaskItem(
                                         modifier = Modifier.padding(top = 8.dp),
                                     )
                                     Row {
-                                        if (task.subTaskList != null) {
+                                        if (showSubTask && task.subTaskList != null) {
                                             IconButton(onClick = {
                                                 // expand list
                                                 isExpanded = !isExpanded
@@ -213,7 +217,7 @@ fun TaskItem(
                                         verticalAlignment = Alignment.CenterVertically,
                                         horizontalArrangement = Arrangement.End,
                                         modifier = Modifier
-                                            .clip(RoundedCornerShape(16.dp))
+                                            .clip(RoundedCornerShape(8.dp))
                                             .background(color)
                                             .padding(2.dp)
                                     ) {
@@ -258,7 +262,7 @@ fun TaskItem(
                                             verticalAlignment = Alignment.CenterVertically,
                                             horizontalArrangement = Arrangement.Center,
                                             modifier = Modifier
-                                                .clip(RoundedCornerShape(16.dp))
+                                                .clip(RoundedCornerShape(8.dp))
                                                 .background(color)
                                                 .padding(2.dp)
                                         ) {

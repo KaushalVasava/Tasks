@@ -50,20 +50,7 @@ class SubTaskViewModel @Inject constructor(
         repository.getAllSubTasks(
             tid,
             query,
-            filterPreferences.sortOrder,
-            filterPreferences.hideCompleted
-        ).distinctUntilChanged()
-    }
-    private val subTasksFlow2 = combine(
-        taskId.asFlow(), searchQuery.asFlow(), preferencesFlow
-    ) { tId, query, filterPreferences ->
-        Triple(tId, query, filterPreferences)
-    }.flatMapLatest { (tid, query, filterPreferences) ->
-        repository.getAllSubTasks(
-            tid,
-            query,
-            filterPreferences.sortOrder,
-            false
+            filterPreferences.sortOrder
         ).distinctUntilChanged()
     }
 

@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
@@ -17,6 +18,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.ExperimentalMaterialApi
+//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
@@ -55,12 +57,10 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
-import androidx.fragment.app.FragmentManager
 import com.lahsuak.apps.tasks.R
 import com.lahsuak.apps.tasks.TaskApp
 import com.lahsuak.apps.tasks.data.model.Task
@@ -80,7 +80,6 @@ fun AddUpdateTaskScreen(
     taskViewModel: TaskViewModel,
     isNewTask: Boolean,
     taskId: String?,
-    fragmentManager: FragmentManager,
     sharedText: String?,
     onBottomSheetClick: () -> Unit,
 ) {
@@ -179,7 +178,8 @@ fun AddUpdateTaskScreen(
             trailingIcon = {
                 Icon(painterResource(R.drawable.ic_paste), stringResource(R.string.paste),
                     Modifier.clickable {
-                        AppUtil.pasteText(context)
+                        val pastedText = AppUtil.pasteText(context)
+                        title = pastedText
                     }
                 )
             }
@@ -355,9 +355,8 @@ fun AddUpdateTaskScreen(
                     .weight(1f)
                     .onFocusChanged {
                         if (it.hasFocus) {
-                            AppUtil.setDateTimeCompose(
-                                context,
-                                fragmentManager
+                            AppUtil.setDateTime(
+                                context
                             ) { calendar, time ->
                                 startDate = time
                                 task = Task(
@@ -384,9 +383,8 @@ fun AddUpdateTaskScreen(
                     .weight(1f)
                     .onFocusChanged {
                         if (it.hasFocus) {
-                            AppUtil.setDateTimeCompose(
+                            AppUtil.setDateTime(
                                 context,
-                                fragmentManager
                             ) { calendar, time ->
                                 endDate = time
                                 if (title.isNotEmpty()) {
@@ -415,7 +413,7 @@ fun AddUpdateTaskScreen(
         ) {
             TextButton(onClick = {
                 if (title.isNotEmpty()) {
-                    AppUtil.setDateTimeCompose(context, fragmentManager) { calendar, _ ->
+                    AppUtil.setDateTime(context) { calendar, _ ->
                         if (task != null) {
                             AppUtil.setReminderWorkRequest(
                                 context,

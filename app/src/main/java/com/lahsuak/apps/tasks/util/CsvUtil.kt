@@ -1,27 +1,13 @@
 package com.lahsuak.apps.tasks.util
 
+import com.lahsuak.apps.tasks.util.AppConstants.DEFAULT_ESCAPE_CHARACTER
+import com.lahsuak.apps.tasks.util.AppConstants.DEFAULT_LINE_END
+import com.lahsuak.apps.tasks.util.AppConstants.DEFAULT_QUOTE_CHARACTER
+import com.lahsuak.apps.tasks.util.AppConstants.DEFAULT_SEPARATOR
+import com.lahsuak.apps.tasks.util.AppConstants.NO_ESCAPE_CHARACTER
+import com.lahsuak.apps.tasks.util.AppConstants.NO_QUOTE_CHARACTER
+
 internal object CsvUtil {
-
-    /** The character used for escaping quotes.  */
-    const val DEFAULT_ESCAPE_CHARACTER = '"'
-
-    /** The default separator to use if none is supplied to the constructor.  */
-    const val DEFAULT_SEPARATOR = ';'
-
-    /**
-     * The default quote character to use if none is supplied to the
-     * constructor.
-     */
-    const val DEFAULT_QUOTE_CHARACTER = '"'
-
-    /** The quote constant to use when you wish to suppress all quoting.  */
-    const val NO_QUOTE_CHARACTER = '\u0000'
-
-    /** The escape constant to use when you wish to suppress all escaping.  */
-    const val NO_ESCAPE_CHARACTER = '\u0000'
-
-    /** Default line terminator uses platform encoding.  */
-    const val DEFAULT_LINE_END = "\n"
 
     /**
      * Constructs a Csv Writer with supplied separator, quote char, escape char and line ending.

@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.lahsuak.apps.tasks">
 
-    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
@@ -13,7 +12,9 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Tasks">
+        android:localeConfig="@xml/locales_config"
+        android:theme="@style/SplashScreen"
+        tools:targetApi="tiramisu">
         <activity
             android:name="com.lahsuak.apps.tasks.ui.MainActivity"
             android:exported="true"
@@ -29,13 +30,13 @@
                 <data android:mimeType="text/plain" />
             </intent-filter>
             <intent-filter>
-                <data android:scheme="https" android:host="myapp://kmv.com/shortcut/true" />
+                <data android:scheme="https" android:host="tasks://apps.com.lahsuak.apps.tasks/edittask/true" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>
             <intent-filter>
-                <data android:scheme="https" android:host="myapp://kmv.com/subtaskscreen/{task}/{has_notification}" />
+                <data android:scheme="https" android:host="tasks://apps.com.lahsuak.apps.tasks/subtaskscreen/{task}/{has_notification}" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <action android:name="android.intent.action.VIEW" />
@@ -45,13 +46,22 @@
 <!--                android:resource="@xml/shortcuts" />-->
         </activity>
 
+        <service
+            android:name="androidx.appcompat.app.AppLocalesMetadataHolderService"
+            android:enabled="false"
+            android:exported="false">
+            <meta-data
+                android:name="autoStoreLocales"
+                android:value="true" />
+        </service>
+
         <receiver android:name="com.lahsuak.apps.tasks.ui.widget.TaskWidgetReceiver" android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
             <meta-data
                 android:name="android.appwidget.provider"
-                android:resource="@xml/counter_widget_info" />
+                android:resource="@xml/task_widget" />
         </receiver>
     </application>
 

@@ -7,7 +7,6 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.expandVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -35,7 +34,9 @@ import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridS
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
+//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.ModalBottomSheetLayout
+//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
@@ -86,7 +87,6 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
@@ -98,9 +98,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
-import androidx.fragment.app.FragmentManager
 import androidx.navigation.NavController
-import androidx.preference.PreferenceManager
 import com.lahsuak.apps.tasks.R
 import com.lahsuak.apps.tasks.TaskApp
 import com.lahsuak.apps.tasks.data.model.Notification
@@ -117,13 +115,13 @@ import com.lahsuak.apps.tasks.ui.screens.dialog.AddUpdateSubTaskScreen
 import com.lahsuak.apps.tasks.ui.viewmodel.NotificationViewModel
 import com.lahsuak.apps.tasks.ui.viewmodel.SubTaskViewModel
 import com.lahsuak.apps.tasks.ui.viewmodel.TaskViewModel
-import com.lahsuak.apps.tasks.util.AppConstants
 import com.lahsuak.apps.tasks.util.AppUtil
 import com.lahsuak.apps.tasks.util.BackPressHandler
 import com.lahsuak.apps.tasks.util.DateUtil
 import com.lahsuak.apps.tasks.util.WindowSize
 import com.lahsuak.apps.tasks.util.WindowType
 import com.lahsuak.apps.tasks.util.preference.FilterPreferences
+import com.lahsuak.apps.tasks.util.preference.SettingPreferences
 import kotlinx.coroutines.launch
 import kotlin.random.Random
 
@@ -139,13 +137,11 @@ fun SubTaskScreen(
     subTaskViewModel: SubTaskViewModel,
     taskViewModel: TaskViewModel,
     notificationViewModel: NotificationViewModel,
-    fragmentManager: FragmentManager,
+    settingPreferences: SettingPreferences,
     windowSize: WindowSize,
     hasNotification: Boolean,
 ) {
-    val prefManager = PreferenceManager.getDefaultSharedPreferences(LocalContext.current)
-    val showVoiceTask =
-        prefManager.getBoolean(AppConstants.SharedPreference.SHOW_VOICE_TASK_KEY, true)
+    val showVoiceTask = settingPreferences.showVoiceIcon
 
     val sharedText by rememberSaveable {
         mutableStateOf(MainActivity.shareTxt)
@@ -156,7 +152,6 @@ fun SubTaskScreen(
     var subTaskId: Int? by rememberSaveable {
         mutableStateOf(null)
     }
-
     val lazyGridListState = rememberLazyStaggeredGridState()
 
     val isFabExtended by remember {
@@ -169,6 +164,7 @@ fun SubTaskScreen(
         mutableStateOf(false)
     }
     val sheetState = androidx.compose.material.rememberModalBottomSheetState(
+        skipHalfExpanded = true,
         initialValue = ModalBottomSheetValue.Hidden
     )
     val scope = rememberCoroutineScope()
@@ -181,7 +177,6 @@ fun SubTaskScreen(
         val preference by subTaskViewModel.preferencesFlow.collectAsState(
             initial = FilterPreferences(
                 sortOrder = SortOrder.BY_NAME,
-                hideCompleted = false,
                 viewType = false
             )
         )
@@ -372,17 +367,13 @@ fun SubTaskScreen(
             sheetBackgroundColor = MaterialTheme.colorScheme.surface,
             sheetState = sheetState,
             sheetContent = {
-                AnimatedVisibility(
-                    visible = isBottomSheetOpened,
-                    enter = expandVertically()
-                ) {
+                if(isBottomSheetOpened) {
                     AddUpdateSubTaskScreen(
                         sheetState = sheetState,
                         taskId = taskId,
                         subTaskId = subTaskId?.toString(),
                         isNewTask = isNewTask,
                         subTaskViewModel = subTaskViewModel,
-                        fragmentManager = fragmentManager,
                         sharedText = sharedText
                     ) {
                         scope.launch {
@@ -526,7 +517,7 @@ fun SubTaskScreen(
                         AnimatedVisibility(visible = !actionMode && showVoiceTask && !isSubTaskDone) {
                             FloatingActionButton(
                                 onClick = {
-                                    AppUtil.speakToAddTaskCompose(context, speakLauncher)
+                                    AppUtil.speakToAddTask(context, speakLauncher)
                                 }) {
                                 Icon(
                                     painterResource(R.drawable.ic_mic),
@@ -654,10 +645,7 @@ fun SubTaskScreen(
                                     endDate = it
                                 },
                                 setStartDate = {
-                                    AppUtil.setDateTimeCompose(
-                                        context,
-                                        fragmentManager
-                                    ) { calendar, time ->
+                                    AppUtil.setDateTime(context) { calendar, time ->
                                         startDate = time
                                         task = task.copy(
                                             startDate = calendar.timeInMillis
@@ -665,10 +653,7 @@ fun SubTaskScreen(
                                     }
                                 },
                                 setEndDate = {
-                                    AppUtil.setDateTimeCompose(
-                                        context,
-                                        fragmentManager
-                                    ) { calendar, time ->
+                                    AppUtil.setDateTime(context) { calendar, time ->
                                         endDate = time
                                         task = task.copy(endDate = calendar.timeInMillis)
                                         taskViewModel.update(task)
@@ -685,10 +670,7 @@ fun SubTaskScreen(
                                 },
                                 reminder = reminder,
                                 onReminderChange = {
-                                    AppUtil.setDateTimeCompose(
-                                        context,
-                                        fragmentManager
-                                    ) { calendar, _ ->
+                                    AppUtil.setDateTime(context) { calendar, _ ->
                                         AppUtil.setReminderWorkRequest(
                                             context,
                                             task.title,
@@ -790,7 +772,7 @@ fun SubTaskScreen(
                                         RoundedCornerShape(8.dp)
                                     ),
                                 subTask = subTask,
-                                prefManager = prefManager,
+                                settingPreferences = settingPreferences,
                                 color = color,
                                 onImpSwipe = {
                                     subTaskViewModel.updateSubTask(subTask.copy(isImportant = it))
@@ -917,6 +899,7 @@ fun SubtaskHeaderContent(
             maxItemsInEachRow = if (isLandscape) 3 else 1
         ) {
             SearchBar(
+                shape = RoundedCornerShape(16.dp),
                 query = searchQuery,
                 onQueryChange = { q ->
                     onQueryChange(q)

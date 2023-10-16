@@ -2,5 +2,15 @@
     <style name="Theme.Tasks" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="colorPrimary">@color/light_primary</item>
         <item name="colorSecondary">@color/light_primary</item>
+        <item name="colorPrimaryContainer">@color/light_container</item>
+        <item name="colorTertiaryContainer">@color/light_container</item>
+        <item name="colorSecondaryContainer">@color/light_container</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+    </style>
+    <style name="SplashScreen" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="android:windowBackground">@drawable/splash_screen</item>
+        <item name="colorPrimary">@color/light_primary</item>
+        <item name="background">@color/light_primary</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
 </resources>

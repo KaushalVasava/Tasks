@@ -7,7 +7,6 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.expandVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -35,7 +34,9 @@ import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridS
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
+//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.ModalBottomSheetLayout
+//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
@@ -94,9 +95,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
-import androidx.fragment.app.FragmentManager
 import androidx.navigation.NavController
-import androidx.preference.PreferenceManager
 import com.lahsuak.apps.tasks.R
 import com.lahsuak.apps.tasks.data.model.SortOrder
 import com.lahsuak.apps.tasks.data.model.Task
@@ -109,12 +108,12 @@ import com.lahsuak.apps.tasks.ui.screens.components.ShareDialog
 import com.lahsuak.apps.tasks.ui.screens.components.TaskItem
 import com.lahsuak.apps.tasks.ui.screens.dialog.AddUpdateTaskScreen
 import com.lahsuak.apps.tasks.ui.viewmodel.TaskViewModel
-import com.lahsuak.apps.tasks.util.AppConstants
 import com.lahsuak.apps.tasks.util.AppUtil
 import com.lahsuak.apps.tasks.util.DateUtil
 import com.lahsuak.apps.tasks.util.WindowSize
 import com.lahsuak.apps.tasks.util.WindowType
 import com.lahsuak.apps.tasks.util.preference.FilterPreferences
+import com.lahsuak.apps.tasks.util.preference.SettingPreferences
 import kotlinx.coroutines.launch
 import kotlin.random.Random
 
@@ -127,24 +126,20 @@ import kotlin.random.Random
 fun TaskScreen(
     navController: NavController,
     taskViewModel: TaskViewModel,
-    windowSize: WindowSize,
-    fragmentManager: FragmentManager,
+    settingsPreferences: SettingPreferences,
+    windowSize: WindowSize
 ) {
     var sharedText by rememberSaveable {
         mutableStateOf(MainActivity.shareTxt)
     }
-
-    val prefManager = PreferenceManager.getDefaultSharedPreferences(LocalContext.current)
-    val showVoiceTask =
-        prefManager.getBoolean(AppConstants.SharedPreference.SHOW_VOICE_TASK_KEY, true)
-
     val tasks by taskViewModel.tasksFlow.collectAsState(initial = emptyList())
     val taskEvents by taskViewModel.tasksEvent.collectAsState(TaskEvent.Initial)
     val preference by taskViewModel.preferencesFlow.collectAsState(
         initial = FilterPreferences(
-            sortOrder = SortOrder.BY_NAME, hideCompleted = false, viewType = false
+            sortOrder = SortOrder.BY_NAME, viewType = false
         )
     )
+    val showVoiceTask = settingsPreferences.showVoiceIcon
 
     var taskId: String? by rememberSaveable {
         mutableStateOf(null)
@@ -307,6 +302,7 @@ fun TaskScreen(
     }
 
     val sheetState = androidx.compose.material.rememberModalBottomSheetState(
+        skipHalfExpanded = true,
         initialValue = ModalBottomSheetValue.Hidden
     )
     val scope = rememberCoroutineScope()
@@ -344,16 +340,12 @@ fun TaskScreen(
         sheetBackgroundColor = MaterialTheme.colorScheme.surface,
         sheetState = sheetState,
         sheetContent = {
-            AnimatedVisibility(
-                visible = isBottomSheetOpened,
-                enter = expandVertically()
-            ) {
+            if( isBottomSheetOpened) {
                 AddUpdateTaskScreen(
                     sheetState,
                     taskViewModel = taskViewModel,
                     isNewTask = isNewTask,
                     taskId = taskId,
-                    fragmentManager = fragmentManager,
                     sharedText = sharedText
                 ) {
                     scope.launch {
@@ -475,7 +467,7 @@ fun TaskScreen(
                     ) {
                         AnimatedVisibility(visible = showVoiceTask && !isTaskDone) {
                             FloatingActionButton(onClick = {
-                                AppUtil.speakToAddTaskCompose(context, speakLauncher)
+                                AppUtil.speakToAddTask(context, speakLauncher)
                             }) {
                                 Icon(
                                     painterResource(R.drawable.ic_mic),
@@ -675,7 +667,7 @@ fun TaskScreen(
                                     RoundedCornerShape(8.dp)
                                 ),
                             task = task,
-                            prefManager = prefManager,
+                            settingPreferences = settingsPreferences,
                             isListViewEnable = isListViewEnable,
                             onImpSwipe = { isImp ->
                                 taskViewModel.update(task.copy(isImp = isImp))
@@ -758,15 +750,12 @@ fun HeaderContent(
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             SearchBar(
+                shape = RoundedCornerShape(16.dp),
                 query = searchQuery,
-                onQueryChange = { q ->
-                    onQueryChange(q)
-                },
+                onQueryChange = { q -> onQueryChange(q) },
                 onSearch = {},
                 active = false,
-                leadingIcon = {
-                    Icon(Icons.Default.Search, null)
-                },
+                leadingIcon = { Icon(Icons.Default.Search, null) },
                 trailingIcon = {
                     AnimatedVisibility(searchQuery.isNotEmpty()) {
                         Icon(
@@ -778,9 +767,7 @@ fun HeaderContent(
                         )
                     }
                 },
-                placeholder = {
-                    Text(stringResource(R.string.search_task))
-                },
+                placeholder = { Text(stringResource(R.string.search_task)) },
                 onActiveChange = {},
                 modifier = Modifier.weight(1f)
             ) {}

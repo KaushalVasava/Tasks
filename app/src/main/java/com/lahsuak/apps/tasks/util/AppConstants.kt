@@ -2,7 +2,7 @@ package com.lahsuak.apps.tasks.util
 
 object AppConstants {
     const val UPDATE_REQUEST_CODE = 101
-    //notfiication
+    //notification
     const val NOTIFICATION_CHANNEL_ID = "com.lahsuak.apps.mytask.notificationID"
     const val NOTIFICATION_CHANNEL_NAME = "Reminder"
     const val NOTIFICATION_CHANNEL_DESCRIPTION = "Task reminder"
@@ -33,7 +33,7 @@ object AppConstants {
     const val SEARCH_INITIAL_VALUE = ""
     const val TASK_ID = "taskId"
     const val SEPARATOR = " - "
-    const val PACKAGE = "package"
+
     const val DEPRECATION = "deprecation"
     const val SPLASH_SCREEN_TIME = 500L
     const val BACKUP_FILE_NAME = "Tasks.zip"
@@ -44,13 +44,9 @@ object AppConstants {
     object SharedPreference {
         //theme
         const val THEME_KEY = "theme_key"
-        const val THEME_DEFAULT = "-1"
+        const val DEFAULT_THEME = "-1"
 
-        //language
-        const val LANGUAGE_SHARED_PREFERENCE = "LANGUAGE"
-        const val LANGUAGE_SHARED_PREFERENCE_KEY = "selectedLang"
-        const val LANGUAGE_SHARED_PREFERENCE_LANGUAGE_KEY = "Language"
-        const val LANGUAGE_DEFAULT_VALUE = "-1"
+        const val DEFAULT_LANGUAGE_VALUE = "-1"
 
         //default preference keys
         const val FONT_SIZE_KEY = "font_size"
@@ -59,26 +55,13 @@ object AppConstants {
         const val SHOW_SUBTASK_KEY = "show_subtask"
         const val SHOW_REMINDER_KEY = "show_reminder"
         const val SHOW_VOICE_TASK_KEY = "show_voice_task_button"
-        const val INITIAL_FONT_SIZE = "18"
+        const val DEFAULT_FONT_SIZE = "18"
 
         //Daily notification
         const val DAILY_NOTIFICATION = "daily_notification"
         const val DAILY_NOTIFICATION_KEY = "daily_notification_key"
-
-        const val FEEDBACK = "feedback"
-        const val SHARE = "share"
-        const val MORE_APP = "more_app"
-        const val APP_VERSION = "app_version"
-        const val RATING = "rating"
-        const val LANGUAGE = "language"
-        const val DEVELOPER = "developer"
-        const val GITHUB = "github"
-        const val PRIVACY_POLICY = "privacy_policy"
-        const val FINGERPRINT = "fingerprint"
-
-        //Biometric
-        const val BIOMETRIC_SHARED_PREFERENCE = "biometric"
-        const val BIOMETRIC_ENABLE_KEY = "biometric_enable_key"
+        const val LANGUAGE_KEY = "language"
+        const val FINGERPRINT_KEY = "fingerprint"
     }
 
     object WorkManager {
@@ -91,4 +74,42 @@ object AppConstants {
         const val DAILY_TITLE_KEY = "daily_title_key"
         const val DAILY_MSG_KEY = "daily_msg_key"
     }
+    object BackUpRepo {
+        const val ID = "ID"
+        const val TITLE = "Title"
+        const val SID = "SID"
+        const val DATE_TIME = "Date time"
+        const val COMPLETED = "Completed"
+        const val IMP = "Imp"
+        const val REMINDER = "Reminder"
+        const val PROGRESS = "Progress"
+        const val SUBTASKS = "SubTasks"
+        const val COLOR = "Color"
+        const val START_DATE = "StartDate"
+        const val END_DATE = "EndDate"
+        const val TASK_DIR = "tasks_dir"
+        const val CSV_TASK_FILE_NAME = "tasks.csv"
+        const val CSV_SUBTASK_FILE_NAME = "subtasks.csv"
+    }
+
+    /** The character used for escaping quotes.  */
+    const val DEFAULT_ESCAPE_CHARACTER = '"'
+
+    /** The default separator to use if none is supplied to the constructor.  */
+    const val DEFAULT_SEPARATOR = ';'
+
+    /**
+     * The default quote character to use if none is supplied to the
+     * constructor.
+     */
+    const val DEFAULT_QUOTE_CHARACTER = '"'
+
+    /** The quote constant to use when you wish to suppress all quoting.  */
+    const val NO_QUOTE_CHARACTER = '\u0000'
+
+    /** The escape constant to use when you wish to suppress all escaping.  */
+    const val NO_ESCAPE_CHARACTER = '\u0000'
+
+    /** Default line terminator uses platform encoding.  */
+    const val DEFAULT_LINE_END = "\n"
 }

@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.ExperimentalMaterialApi
+//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
@@ -36,7 +37,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.fragment.app.FragmentManager
 import com.lahsuak.apps.tasks.R
 import com.lahsuak.apps.tasks.data.model.SubTask
 import com.lahsuak.apps.tasks.ui.screens.components.CheckBoxWithText
@@ -54,7 +54,6 @@ fun AddUpdateSubTaskScreen(
     subTaskId: String?,
     isNewTask: Boolean,
     subTaskViewModel: SubTaskViewModel,
-    fragmentManager: FragmentManager,
     sharedText: String?,
     onSaveClick: () -> Unit,
 ) {
@@ -132,7 +131,8 @@ fun AddUpdateSubTaskScreen(
                 Icon(painterResource( R.drawable.ic_paste), stringResource(
                      R.string.paste),
                 Modifier.clickable {
-                    AppUtil.pasteText(context)
+                    val pastedText = AppUtil.pasteText(context)
+                    title = pastedText
                 })
             }
         )
@@ -158,7 +158,7 @@ fun AddUpdateSubTaskScreen(
         ) {
             TextButton(onClick = {
                 if (title.isNotEmpty()) {
-                    AppUtil.setDateTimeCompose(context, fragmentManager) { calendar, _ ->
+                    AppUtil.setDateTime(context) { calendar, _ ->
                         if (subTask != null) {
                             AppUtil.setReminderWorkRequest(
                                 context,

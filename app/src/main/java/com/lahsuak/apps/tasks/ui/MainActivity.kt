@@ -4,13 +4,17 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.IntentSender
-import android.content.SharedPreferences
-import android.content.res.Configuration
+import android.content.pm.PackageManager
+import android.content.res.Configuration.*
+import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.View
+import androidx.activity.compose.ManagedActivityResultLauncher
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.background
@@ -18,10 +22,17 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.luminance
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
+import androidx.core.content.ContextCompat
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.compose.rememberNavController
-import androidx.preference.PreferenceManager
 import com.google.accompanist.systemuicontroller.SystemUiController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.google.android.material.snackbar.Snackbar
@@ -33,103 +44,136 @@ import com.google.android.play.core.install.model.InstallStatus
 import com.google.android.play.core.install.model.UpdateAvailability
 import com.lahsuak.apps.tasks.R
 import com.lahsuak.apps.tasks.TaskApp
-import com.lahsuak.apps.tasks.TaskApp.Companion.mylang
 import com.lahsuak.apps.tasks.ui.navigation.TaskNavHost
 import com.lahsuak.apps.tasks.ui.theme.TaskAppTheme
 import com.lahsuak.apps.tasks.ui.viewmodel.NotificationViewModel
+import com.lahsuak.apps.tasks.ui.viewmodel.SettingsViewModel
 import com.lahsuak.apps.tasks.ui.viewmodel.SubTaskViewModel
 import com.lahsuak.apps.tasks.ui.viewmodel.TaskViewModel
 import com.lahsuak.apps.tasks.util.AppConstants
 import com.lahsuak.apps.tasks.util.AppConstants.SHARE_FORMAT
-import com.lahsuak.apps.tasks.util.AppConstants.SharedPreference.BIOMETRIC_ENABLE_KEY
-import com.lahsuak.apps.tasks.util.AppConstants.SharedPreference.LANGUAGE_SHARED_PREFERENCE
-import com.lahsuak.apps.tasks.util.AppConstants.SharedPreference.LANGUAGE_SHARED_PREFERENCE_LANGUAGE_KEY
-import com.lahsuak.apps.tasks.util.AppConstants.SharedPreference.THEME_DEFAULT
-import com.lahsuak.apps.tasks.util.AppConstants.SharedPreference.THEME_KEY
 import com.lahsuak.apps.tasks.util.AppConstants.UPDATE_REQUEST_CODE
-import com.lahsuak.apps.tasks.util.AppUtil.getLanguage
-import com.lahsuak.apps.tasks.util.RuntimeLocaleChanger
 import com.lahsuak.apps.tasks.util.biometric.BiometricAuthListener
 import com.lahsuak.apps.tasks.util.biometric.BiometricUtil
+import com.lahsuak.apps.tasks.util.preference.SettingPreferences
 import com.lahsuak.apps.tasks.util.rememberWindowSize
 import com.lahsuak.apps.tasks.util.toast
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
-import javax.inject.Named
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity() ,BiometricAuthListener{
+class MainActivity : AppCompatActivity() {
     private val taskViewModel: TaskViewModel by viewModels()
     private val subTaskViewModel: SubTaskViewModel by viewModels()
     private val notificationViewModel: NotificationViewModel by viewModels()
+    private val settingViewModel: SettingsViewModel by viewModels()
     private lateinit var appUpdateManager: AppUpdateManager
-
-    @Inject
-    @Named(LANGUAGE_SHARED_PREFERENCE)
-    lateinit var preference: SharedPreferences
-    @Inject
-    @Named(AppConstants.SharedPreference.BIOMETRIC_SHARED_PREFERENCE)
-    lateinit var bioMetricPreference: SharedPreferences
+    private lateinit var view: View
 
     companion object {
         var activityContext: Context? = null
         var shareTxt: String? = null
     }
 
-    override fun attachBaseContext(base: Context) {
-        super.attachBaseContext(RuntimeLocaleChanger.wrapContext(base, mylang))
-    }
-
-    override fun onConfigurationChanged(newConfig: Configuration) {
-        super.onConfigurationChanged(newConfig)
-        val lang = preference.getString(LANGUAGE_SHARED_PREFERENCE_LANGUAGE_KEY, getLanguage())!!
-        RuntimeLocaleChanger.overrideLocale(this, lang)
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setTheme(R.style.Theme_Tasks)
         activityContext = this
-        if(bioMetricPreference.getBoolean(BIOMETRIC_ENABLE_KEY, false)){
-            Log.d("TAG", "onCreate: open biometric")
-            BiometricUtil.showBiometricPrompt(
-                activity = this,
-                listener = this
-            )
-        }
+
+        observePreferences()
         appUpdateManager = AppUpdateManagerFactory.create(this)
         checkUpdate()
         appUpdateManager.registerListener(appUpdateListener)
 
         setContent {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                RequestPermission()
+            }
+            view = LocalView.current
             val navController = rememberNavController()
             TaskAppTheme {
                 SetupTransparentSystemUi(
                     systemUiController = rememberSystemUiController(),
                     actualBackgroundColor = MaterialTheme.colorScheme.surface
                 )
+                val settingsPreferences by settingViewModel.preferencesFlow.collectAsState(
+                    initial = SettingPreferences(
+                        theme = AppConstants.SharedPreference.DEFAULT_THEME,
+                        fontSize = AppConstants.SharedPreference.DEFAULT_FONT_SIZE,
+                        showVoiceIcon = true,
+                        showCopyIcon = true,
+                        showProgress = false,
+                        showReminder = true,
+                        showSubTask = true,
+                        fingerPrintEnable = false,
+                        language = AppConstants.SharedPreference.DEFAULT_LANGUAGE_VALUE
+                    )
+                )
                 Surface(Modifier.background(MaterialTheme.colorScheme.background)) {
                     TaskNavHost(
                         taskViewModel,
                         subTaskViewModel,
                         notificationViewModel,
+                        settingViewModel,
                         navController,
-                        fragmentManager = supportFragmentManager,
+                        settingPreferences = settingsPreferences,
                         windowSize = rememberWindowSize(),
                     )
                 }
             }
         }
-        val sharedPreference = PreferenceManager.getDefaultSharedPreferences(this)
-        val selectedTheme = sharedPreference.getString(THEME_KEY, THEME_DEFAULT)!!.toInt()
-
-        AppCompatDelegate.setDefaultNightMode(selectedTheme)
         if (intent?.action == Intent.ACTION_SEND) {
             if (SHARE_FORMAT == intent.type) {
                 shareTxt = intent.getStringExtra(Intent.EXTRA_TEXT)
             }
         }
     }
+
+    private fun observePreferences() {
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                settingViewModel.preferencesFlow.collect { value ->
+                    if (value.fingerPrintEnable && !settingViewModel.initAuth.value) {
+                        BiometricUtil.showBiometricPrompt(
+                            activity = this@MainActivity,
+                            listener = object : BiometricAuthListener {
+                                override fun onBiometricAuthSuccess() {
+                                    settingViewModel.updateAuth(true)
+                                }
+
+                                override fun onUserCancelled() {
+                                    finish()
+                                }
+
+                                override fun onErrorOccurred() {
+                                    toast { getString(R.string.something_went_wrong) }
+                                    finish()
+                                }
+                            }
+                        )
+                    }
+                }
+            }
+        }
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                settingViewModel.preferencesFlow.collectLatest { preference ->
+                    val theme = preference.theme.toInt()
+                    val currentNightMode =
+                        resources.configuration.uiMode and UI_MODE_NIGHT_MASK
+                    //32 = dark mode and 16 = light mode
+                    if (currentNightMode / 16 != if (theme == -1) {
+                            0
+                        } else theme
+                    ) {
+                        AppCompatDelegate.setDefaultNightMode(theme)
+                    }
+                }
+            }
+        }
+    }
+
 
     @Composable
     internal fun SetupTransparentSystemUi(
@@ -151,6 +195,42 @@ class MainActivity : AppCompatActivity() ,BiometricAuthListener{
             )
         }
     }
+
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    @Composable
+    private fun RequestPermission() {
+        val launcher: ManagedActivityResultLauncher<String, Boolean> =
+            rememberLauncherForActivityResult(
+                ActivityResultContracts.RequestPermission()
+            ) { isGranted: Boolean ->
+                if (isGranted) {
+                    /* no-op */
+                } else {
+                    toast {
+                        getString(R.string.user_cancelled_the_operation)
+                    }
+                }
+            }
+
+        when (PackageManager.PERMISSION_GRANTED) {
+            ContextCompat.checkSelfPermission(
+                LocalContext.current,
+                android.Manifest.permission.POST_NOTIFICATIONS
+            ),
+            -> {
+                // Some works that require permission
+            }
+
+            else -> {
+                // Asking for permission
+                SideEffect {
+                    launcher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
+                }
+            }
+        }
+
+    }
+
     private fun checkUpdate() {
         val appUpdateInfoTask = appUpdateManager.appUpdateInfo
 
@@ -172,7 +252,6 @@ class MainActivity : AppCompatActivity() ,BiometricAuthListener{
 
     private val appUpdateListener = InstallStateUpdatedListener { state ->
         if (state.installStatus() == InstallStatus.DOWNLOADED) {
-            val view = findViewById<View>(R.id.my_container)
             Snackbar.make(
                 view,
                 getString(R.string.new_app_ready),
@@ -201,17 +280,5 @@ class MainActivity : AppCompatActivity() ,BiometricAuthListener{
         super.onDestroy()
         appUpdateManager.unregisterListener(appUpdateListener)
         activityContext = null
-    }
-
-    override fun onBiometricAuthSuccess() {
-       //Successful
-    }
-
-    override fun onUserCancelled() {
-        finish()
-    }
-
-    override fun onErrorOccurred() {
-        finish()
     }
 }

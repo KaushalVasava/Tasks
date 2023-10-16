@@ -3,15 +3,10 @@ package com.lahsuak.apps.tasks.util
 import android.annotation.SuppressLint
 import android.app.*
 import android.content.*
-import android.content.res.Resources
 import android.net.Uri
-import android.os.Build
-import android.provider.Settings
 import android.speech.RecognizerIntent
 import androidx.activity.result.ActivityResultLauncher
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.FragmentActivity
-import androidx.fragment.app.FragmentManager
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
@@ -19,7 +14,6 @@ import androidx.work.workDataOf
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.lahsuak.apps.tasks.BuildConfig
 import com.lahsuak.apps.tasks.R
-import com.lahsuak.apps.tasks.TaskApp
 import com.lahsuak.apps.tasks.data.model.SubTask
 import com.lahsuak.apps.tasks.data.model.Task
 import com.lahsuak.apps.tasks.util.AppConstants.MARKET_PLACE_HOLDER
@@ -34,15 +28,12 @@ import java.util.concurrent.TimeUnit
 object AppUtil {
     private const val FIRST = "1. "
     private const val COPY_TAG = "Copied Text"
-    const val UNDERSCORE = "_"
     fun setClipboard(context: Context, text: String) {
         val clipboard =
             context.getSystemService(AppCompatActivity.CLIPBOARD_SERVICE) as ClipboardManager
         val clip = ClipData.newPlainText(COPY_TAG, text)
         clipboard.setPrimaryClip(clip)
-        context.toast {
-            context.getString(R.string.text_copied, text)
-        }
+        context.toast { context.getString(R.string.text_copied, text) }
     }
 
     fun pasteText(context: Context): String {
@@ -129,64 +120,9 @@ object AppUtil {
         }
     }
 
+
     fun setDateTime(
-        activity: FragmentActivity,
-        doWork: (calendar: Calendar, time: String) -> Unit,
-    ) {
-        val mCalendar = Calendar.getInstance()
-        val formatter = SimpleDateFormat(AppConstants.TIME_FORMAT, Locale.getDefault())
-        var hour = formatter.format(mCalendar.time).substring(0, 2).trim().toInt()
-        val min = formatter.format(mCalendar.time).substring(3, 5).trim().toInt()
-
-        val isAm = formatter.format(mCalendar.time).substring(6).trim().lowercase()
-
-        if (isAm == activity.getString(R.string.pm_format))
-            hour += 12
-
-        val materialTimePicker: MaterialTimePicker = MaterialTimePicker.Builder()
-            .setTitleText(activity.getString(R.string.set_time))
-            .setHour(hour)
-            .setMinute(min)
-            .build()
-        val dateListener =
-            DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
-                mCalendar.set(Calendar.YEAR, year)
-                mCalendar.set(Calendar.MONTH, monthOfYear)
-                mCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
-
-                materialTimePicker.show(
-                    activity.supportFragmentManager,
-                    activity.getString(R.string.set_time)
-                )
-                // dialog update the TextView accordingly
-                materialTimePicker.addOnPositiveButtonClickListener {
-                    val pickedHour: Int = materialTimePicker.hour
-                    val pickedMinute: Int = materialTimePicker.minute
-
-                    mCalendar.set(Calendar.HOUR_OF_DAY, pickedHour)
-                    mCalendar.set(Calendar.MINUTE, pickedMinute)
-                    mCalendar.set(Calendar.SECOND, 0)
-
-                    val time = DateFormat.getDateTimeInstance(
-                        DateFormat.MEDIUM,
-                        DateFormat.SHORT
-                    ).format(mCalendar.time)
-                    doWork(mCalendar, time)
-                }
-            }
-        val datePickerDialog = DatePickerDialog(
-            activity,
-            dateListener,
-            mCalendar.get(Calendar.YEAR),
-            mCalendar.get(Calendar.MONTH),
-            mCalendar.get(Calendar.DAY_OF_MONTH)
-        )
-        datePickerDialog.show()
-    }
-
-    fun setDateTimeCompose(
         context: Context,
-        supportFragmentManager: FragmentManager,
         doWork: (calendar: Calendar, time: String) -> Unit,
     ) {
         val mCalendar = Calendar.getInstance()
@@ -211,7 +147,7 @@ object AppUtil {
                 mCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
 
                 materialTimePicker.show(
-                    supportFragmentManager,
+                    (context as AppCompatActivity).supportFragmentManager,
                     context.getString(R.string.set_time)
                 )
                 // dialog update the TextView accordingly
@@ -329,7 +265,7 @@ object AppUtil {
     }
 
     @SuppressLint("QueryPermissionsNeeded")
-    fun speakToAddTaskCompose(context: Context, speakLauncher: ActivityResultLauncher<Intent>) {
+    fun speakToAddTask(context: Context, speakLauncher: ActivityResultLauncher<Intent>) {
         val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
         intent.putExtra(
             RecognizerIntent.EXTRA_LANGUAGE_MODEL,
@@ -342,26 +278,6 @@ object AppUtil {
             context.toast {
                 context.getString(R.string.speech_not_support)
             }
-        }
-    }
-
-    fun getLanguage(): String {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            Resources.getSystem().configuration.locales[0].toString().substring(0, 2)
-        } else {
-            @Suppress(AppConstants.DEPRECATION)
-            Resources.getSystem().configuration.locale.toString().substring(0, 2)
-        }
-    }
-
-    fun openSettingsPage(activity: Activity?) {
-        activity ?: return
-        activity.runActivityCatching {
-            val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-            val uri: Uri =
-                Uri.fromParts(AppConstants.PACKAGE, TaskApp.appContext.packageName, null)
-            intent.data = uri
-            activity.startActivity(intent)
         }
     }
 
@@ -380,21 +296,6 @@ object AppUtil {
         return sendtxt
     }
 }
-
-inline fun Context?.runActivityCatching(block: () -> Unit) {
-    this ?: return
-    try {
-        block()
-    } catch (e: ActivityNotFoundException) {
-        e.logError()
-        this.toast { this.getString(R.string.no_application_found) }
-    }
-}
-
-fun String.toCamelCase(): String {
-    return this.substring(0, 1).uppercase() + this.substring(1)
-}
-
 
 fun Context.getSizeInDp(): Float {
     return resources.displayMetrics.widthPixels / resources.displayMetrics.density

@@ -43,8 +43,9 @@ fun LinearProgressStatus(
             progress = animProgress,
             color = color,
             trackColor = trackColor,
-            strokeCap = StrokeCap.Round,
-            modifier = modifier.size(width, height).clip(RoundedCornerShape(16.dp))
+            strokeCap = StrokeCap.Square,
+            modifier = modifier.size(width, height)
+                .clip(RoundedCornerShape(8.dp))
         )
         if (text != null)
             Text(text, fontSize = 14.sp)
