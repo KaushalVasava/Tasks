@@ -48,7 +48,6 @@
     <string name="reminder"> تذكير </string>
     <string name="add_task_by_speak"> أضف مهمة عن طريق التحدث </string>
     <string name="save"> حفظ </string>
-    <string name="cancel_timer"> إلغاء المؤقت </string>
     <string name="overdue"> متأخر </string>
 
     <string name="mark_as_completed"> وضع علامة كمكتملة </string>
@@ -119,4 +118,41 @@
     <string name="back"> للخلف </string>
     <string name="feedback_from_app"> تعليقات من٪ s،٪ s </string>
     <string name="add_task_or_subtask"> إضافة مهمة أو مهمة فرعية جديدة </string>
+    <string name = "name"> الاسم ⬇ </string>
+    <string name = "name_desc"> الاسم ⬆ </string>
+    <string name = "date"> التاريخ ⬇ </string>
+    <string name = "date_desc"> التاريخ ⬆ </string>
+    <string name = "category"> الفئة ⬇ </string>
+    <string name = "category_desc"> الفئة ⬆ </string>
+    <string name = "start_date"> تاريخ البدء </string>
+    <string name = "end_date"> تاريخ الانتهاء </string>
+    <string name = "select_project_end_date"> حدد تاريخ انتهاء المشروع </string>
+    <string name = "select_project_start_date"> حدد تاريخ بدء المشروع </string>
+    <string name = "no_notification"> لا توجد إشعارات بعد </string>
+    <string name = "notifications"> الإخطارات </string>
+    <string name = "sort_by_old_to_new"> قديم إلى جديد </string>
+    <string name = "pending"> المهام المعلقة <b>٪ d </b> </string>
+    <string name = "completed"> المهام المكتملة <b>٪ d </b> </string>
+
+    <string name = "overview"> نظرة عامة </string>
+    <string name = "good_morning"> مرحبًا عزيزي </string>
+    <string name = "notification_daily_desc"> مهامك معلقة ، عليك إنهاءها بسرعة </string>
+    <string name = "show_voice_to_add_task_option"> إظهار الصوت لإضافة خيار مهمة </string>
+    <string name="task_not_completed_yet">المهمة لم تكتمل بعد</string>
+    <string name="general">عام</string>
+    <string name="category_txt">الفئة</string>
+    <string name="paste">لصق</string>
+    <string name="delete_all_notifications">حذف جميع الإشعارات</string>
+    <string name="confirm_notification_msg">هل تريد حذف كافة الإشعارات؟</string>
+    <string name="sort_expand_collapse_button">زر فرز التوسيع/الطي</string>
+    <string name="layout_view_change_button">زر تغيير طريقة عرض التخطيط</string>
+    <string name="show_copy">إظهار أيقونة النسخ في مهمة فردية</string>
+    <string name="visit_github">تفضل بزيارة GitHub</string>
+    <string name="privacy_policy">سياسة الخصوصية</string>
+    <string name="prompt_info_title">مصادقة تطبيق المهمة</string>
+    <string name="prompt_info_subtitle">تسجيل الدخول باستخدام مصادقة بصمة الإصبع</string>
+    <string name="app_lock">قفل التطبيقات</string>
+    <string name="restore_data">استعادة البيانات</string>
+    <string name="backup_data">بيانات النسخ الاحتياطي</string>
+    <string name="security_and_data">الأمان والبيانات</string>
 </resources>

@@ -51,7 +51,6 @@
     <string name="reminder">Pengingat</string>
     <string name="add_task_by_speak">Tambahkan tugas dengan berbicara</string>
     <string name="save">Simpan</string>
-    <string name="cancel_timer">Batalkan pengatur waktu</string>
     <string name="overdue">Terlambat</string>
 
     <string name="mark_as_completed">Tandai sebagai selesai</string>
@@ -121,4 +120,42 @@
     <string name="back">Retour</string>
     <string name="feedback_from_app">Commentaires de %s, %s</string>
     <string name="add_task_or_subtask">Tambahkan tugas atau subtugas baru</string>
+
+    <string name="name">Nama ⬇</string>
+    <string name="name_desc">Nama ⬆</string>
+    <string name="date">Tanggal ⬇</string>
+    <string name="date_desc">Tanggal ⬆</string>
+    <string name="category">Kategori ⬇</string>
+    <string name="category_desc">Kategori ⬆</string>
+    <string name="start_date">Tanggal mulai</string>
+    <string name="end_date">Tanggal akhir</string>
+    <string name="select_project_end_date">Pilih tanggal akhir proyek</string>
+    <string name="select_project_start_date">Pilih tanggal mulai proyek</string>
+    <string name="no_notification">Belum ada notifikasi</string>
+    <string name="notifications">Pemberitahuan</string>
+    <string name="sort_by_old_to_new">Lama ke baru</string>
+    <string name="pending">Tugas yang tertunda <b>%d</b></string>
+    <string name="completed">Menyelesaikan tugas <b>%d</b></string>
+
+    <string name="overview">Ikhtisar</string>
+    <string name="good_morning">Halo sayang</string>
+    <string name="notification_daily_desc">Tugas Anda tertunda, Anda harus menyelesaikannya dengan cepat</string>
+    <string name="show_voice_to_add_task_option">Tampilkan suara untuk menambahkan opsi tugas</string>
+    <string name="task_not_completed_yet">Tugas belum selesai</string>
+    <string name="general">Umum</string>
+    <string name="category_txt">Kategori</string>
+    <string name="paste">Tempel</string>
+    <string name="delete_all_notifications">Hapus semua notifikasi</string>
+    <string name="confirm_notification_msg">Apakah Anda ingin menghapus semua notifikasi?</string>
+    <string name="sort_expand_collapse_button">Tombol Urutkan perluas/ciutkan</string>
+    <string name="layout_view_change_button">Tombol perubahan tampilan tata letak</string>
+    <string name="show_copy">Tampilkan ikon salin pada tugas individual</string>
+    <string name="visit_github">Kunjungi GitHub</string>
+    <string name="privacy_policy">Kebijakan privasi</string>
+    <string name="prompt_info_title">Otentikasi Aplikasi Tugas</string>
+    <string name="prompt_info_subtitle">Masuk dengan autentikasi sidik jari</string>
+    <string name="app_lock">Kunci aplikasi</string>
+    <string name="restore_data">Pulihkan Data</string>
+    <string name="backup_data">Data Cadangan</string>
+    <string name="security_and_data">Keamanan dan Data</string>
 </resources>

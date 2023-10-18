@@ -48,7 +48,6 @@
     <string name="reminder">リマインダー</string>
     <string name="add_task_by_speak">話すことでタスクを追加する</string>
     <string name="save">保存</string>
-    <string name="cancel_timer">タイマーをキャンセル</string>
     <string name="overdue">期限切れ</string>
 
     <string name="mark_as_completed">完了としてマーク</string>
@@ -119,4 +118,42 @@
     <string name="back">戻る</string>
     <string name="feedback_from_app">%s、%s からのフィードバック</string>
     <string name="add_task_or_subtask">新しいタスクまたはサブタスクを追加します</string>
+
+    <string name="name">名前 ⬇</string>
+    <string name="name_desc">名前 ⬆</string>
+    <string name="date" >日付 ⬇</string>
+    <string name="date_desc">日付 ⬆</string>
+    <string name="category">カテゴリ ⬇</string>
+    <string name="category_desc">カテゴリ ⬆</string>
+    <string name="start_date">開始日</string>
+    <string name="end_date">終了日</string>
+    <string name="select_project_end_date">プロジェクトの終了日を選択してください</string>
+    <string name="select_project_start_date">プロジェクトの開始日を選択してください</string>
+    <string name="no_notification">通知はまだありません</string>
+    <string name="notifications">通知</string>
+    <string name="sort_by_old_to_new">古いものから新しいものへ</string>
+    <string name="pending">保留中のタスク <b>%d</b></string>
+    <string name="completed">完了したタスク <b>%d</b></string>
+
+    <string name="overview">概要</string>
+    <string name="good_morning">こんにちは</string>
+    <string name="notification_daily_desc">タスクは保留中です。すぐに完了する必要があります</string>
+    <string name="show_voice_to_add_task_option">タスク オプションを追加するための音声を表示</string>
+    <string name="task_not_completed_yet">タスクはまだ完了していません</string>
+    <string name="general">全般</string>
+    <string name="category_txt">カテゴリ</string>
+    <string name="paste">貼り付け</string>
+    <string name="delete_all_notifications">すべての通知を削除</string>
+    <string name="confirm_notification_msg">すべての通知を削除しますか?</string>
+    <string name="sort_expand_collapse_button">並べ替えの展開/折りたたみボタン</string>
+    <string name="layout_view_change_button">レイアウトビュー変更ボタン</string>
+    <string name="show_copy">個々のタスクにコピー アイコンを表示する</string>
+    <string name="visit_github">GitHub にアクセス</string>
+    <string name="privacy_policy">プライバシー ポリシー</string>
+    <string name="prompt_info_title">タスクアプリ認証</string>
+    <string name="prompt_info_subtitle">指紋認証でログイン</string>
+    <string name="app_lock">アプリのロック</string>
+    <string name="restore_data">データの復元</string>
+    <string name="backup_data">バックアップデータ</string>
+    <string name="security_and_data">セキュリティとデータ</string>
 </resources>

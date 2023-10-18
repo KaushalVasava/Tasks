@@ -51,7 +51,6 @@
     <string name="reminder">অনুস্মারক</string>
     <string name="add_task_by_speak">কথা বলে কাজ যোগ করুন</string>
     <string name="save">সংরক্ষণ করুন</string>৷
-    <string name="cancel_timer">টাইমার বাতিল করুন</string>
     <string name="overdue"> ওভারডিউ</string>
 
     <string name="mark_as_completed">সম্পূর্ণ হিসেবে চিহ্নিত করুন</string>
@@ -122,4 +121,42 @@
     <string name="back">ফিরে</string>
     <string name="feedback_from_app">%s, %s থেকে প্রতিক্রিয়া</string>
     <string name="add_task_or_subtask">নতুন টাস্ক বা সাবটাস্ক যোগ করুন</string>
+
+    <string name="name">নাম ⬇</string>
+    <string name="name_desc">নাম ⬆</string>
+    <string name="date">তারিখ ⬇</string>
+    <string name="date_desc">তারিখ ⬆</string>
+    <string name="category">বিভাগ ⬇</string>
+    <string name="category_desc">বিভাগ ⬆</string>
+    <string name="start_date"> শুরুর তারিখ</string>
+    <string name="end_date">শেষ তারিখ</string>
+    <string name="select_project_end_date">প্রকল্পের শেষ তারিখ নির্বাচন করুন</string>
+    <string name="select_project_start_date">প্রকল্প শুরুর তারিখ নির্বাচন করুন</string>
+    <string name="no_notification">এখনও কোনো বিজ্ঞপ্তি নেই</string>
+    <string name="notifications">বিজ্ঞপ্তি</string>
+    <string name="sort_by_old_to_new">পুরাতন থেকে নতুন</string>
+    <string name="pending">অমীমাংসিত কাজগুলি <b>%d</b></string>
+    <string name="completed">সমাপ্ত কাজগুলি <b>%d</b></string>
+
+    <string name="overview">ওভারভিউ</string>
+    <string name="good_morning">হ্যালো প্রিয়</string>
+    <string name="notification_daily_desc">আপনার কাজগুলি মুলতুবি আছে, আপনাকে সেগুলি দ্রুত শেষ করতে হবে</string>
+    <string name="show_voice_to_add_task_option">টাস্ক বিকল্প যোগ করতে ভয়েস দেখান</string>
+    <string name = "task_not_completed_yet"> টাস্কটি এখনো শেষ হয়নি</string>
+    <string name="general">সাধারণ</string>
+    <string name = "category_txt">বিভাগ</string>
+    <string name="paste">পেস্ট করুন</string>
+    <string name="delete_all_notifications">সমস্ত বিজ্ঞপ্তি মুছুন</string>
+    <string name="confirm_notification_msg">আপনি কি সমস্ত বিজ্ঞপ্তি মুছতে চান?</string>
+    <string name="sort_expand_collapse_button">বাছাই প্রসারিত/সংকোচন বোতাম</string>
+    <string name="layout_view_change_button">লেআউট ভিউ পরিবর্তন বোতাম</string>
+    <string name="show_copy">স্বতন্ত্র টাস্কে কপি আইকন দেখান</string>
+    <string name="visit_github">GitHub এ যান</string>
+    <string name="privacy_policy">গোপনীয়তা নীতি</string>
+    <string name="prompt_info_title">টাস্ক অ্যাপ প্রমাণীকরণ</string>
+    <string name="prompt_info_subtitle">আঙ্গুলের ছাপ প্রমাণীকরণের মাধ্যমে লগইন করুন</string>
+    <string name="app_lock">অ্যাপ লক</string>
+    <string name="restore_data">ডেটা পুনরুদ্ধার করুন</string>
+    <string name="backup_data">ব্যাকআপ ডেটা</string>৷
+    <string name="security_and_data">নিরাপত্তা এবং ডেটা</string>৷
 </resources>

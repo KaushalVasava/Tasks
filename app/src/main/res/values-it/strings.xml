@@ -51,7 +51,6 @@
     <string name="reminder">Promemoria</string>
     <string name="add_task_by_speak">Aggiungi attività parlando</string>
     <string name="save">Salva</string>
-    <string name="cancel_timer">Annulla timer</string>
     <string name="overdue">Scaduto</string>
 
     <string name="mark_as_completed">Segna come completato</string>
@@ -122,4 +121,42 @@
     <string name="back">Indietro</string>
     <string name="feedback_from_app">Feedback da %s, %s</string>
     <string name="add_task_or_subtask">Aggiungi nuova attività o sottoattività</string>
+
+    <string name="name">Nome ⬇</string>
+    <string name="name_desc">Nome ⬆</string>
+    <string name="date" >Data ⬇</string>
+    <string name="date_desc">Data ⬆</string>
+    <string name="category">Categoria ⬇</string>
+    <string name="category_desc">Categoria ⬆</string>
+    <string name="start_date">Data di inizio</string>
+    <string name="end_date">Data di fine</string>
+    <string name="select_project_end_date">Seleziona la data di fine del progetto</string>
+    <string name="select_project_start_date">Seleziona la data di inizio del progetto</string>
+    <string name="no_notification">Ancora nessuna notifica</string>
+    <string name="notifications">Notifiche</string>
+    <string name="sort_by_old_to_new">Da vecchio a nuovo</string>
+    <string name="pending">Attività in sospeso <b>%d</b></string>
+    <string name="completed">Attività completate <b>%d</b></string>
+
+    <string name="overview">Panoramica</string>
+    <string name="good_morning">Ciao cara</string>
+    <string name="notification_daily_desc">Le tue attività sono in sospeso, devi completarle in fretta</string>
+    <string name="show_voice_to_add_task_option">Mostra l\'opzione voce per aggiungere attività</string>
+    <string name="task_not_completed_yet">L\'attività non è stata ancora completata</string>
+    <string name="general">Generale</string>
+    <string name="category_txt">Categoria</string>
+    <string name="paste">Incolla</string>
+    <string name="delete_all_notifications">Elimina tutte le notifiche</string>
+    <string name="confirm_notification_msg">Vuoi eliminare tutte le notifiche?</string>
+    <string name="sort_expand_collapse_button">Pulsante Ordina espandi/comprimi</string>
+    <string name="layout_view_change_button">Pulsante di modifica della vista layout</string>
+    <string name="show_copy">Mostra l\'icona di copia sulla singola attività</string>
+    <string name="visit_github">Visita GitHub</string>
+    <string name="privacy_policy">Informativa sulla privacy</string>
+    <string name="prompt_info_title">Autenticazione app attività</string>
+    <string name="prompt_info_subtitle">Accedi con l\'autenticazione tramite impronta digitale</string>
+    <string name="app_lock">Blocco app</string>
+    <string name="restore_data">Ripristina dati</string>
+    <string name="backup_data">Dati di backup</string>
+    <string name="security_and_data">Sicurezza e dati</string>
 </resources>

@@ -3,5 +3,6 @@
     <item android:drawable="@drawable/splash_screen_background" />
     <item
         android:drawable="@drawable/ic_add_task2"
-        android:gravity="center" />
+        android:gravity="center"
+        />
 </layer-list>

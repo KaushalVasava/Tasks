@@ -11,7 +11,7 @@
         android:layout_centerInParent="true"
         android:backgroundTint="#3578E6"
         android:src = "@drawable/ic_edit"
-        app:tint="@color/white"
+        app:tint="@android:color/white"
         android:background="@drawable/background_progress"
         android:contentDescription="@string/create_task" />
 

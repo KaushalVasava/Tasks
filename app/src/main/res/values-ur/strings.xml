@@ -23,8 +23,6 @@
     <string name="attachment_summary_on">آنے والی ای میلز کے لیے خودکار طور پر منسلکات ڈاؤن لوڈ کریں
     </string>
     <string name="attachment_summary_off">صرف منسلکات ڈاؤن لوڈ کریں جب دستی طور پر درخواست کی جائے</string>
-
-
     <string name="feedback_text">فیڈ بیک بھیجیں، اگر ایپ کریش ہوتی رہتی ہے \'ایپ ڈیٹا کو صاف کریں\' یا اسے ای میل بھیجیں</string>
     <string name="rating_text">یہ ایپ پسند ہے؟ ہمیں Google Play Store میں بتائیں کہ ہم اسے اور بھی بہتر کیسے بنا سکتے ہیں</string>
     <string name="more_app_text">دیگر ایپس کو چیک کریں</string>
@@ -51,7 +49,6 @@
     <string name="reminder"> یاد دہانی</string>
     <string name="add_task_by_speak"> بول کر کام شامل کریں</string>
     <string name="save">محفوظ کریں</string>
-    <string name="cancel_timer"> ٹائمر منسوخ کریں</string>
     <string name="overdue"> زائد المیعاد</string>
 
     <string name="mark_as_completed">مکمل کے طور پر نشان زد کریں</string>
@@ -122,4 +119,42 @@
     <string name = "back"> پیچھے</string>
     <string name="feedback_from_app">%s، %s کی طرف سے تاثرات</string>
     <string name="add_task_or_subtask">نیا کام یا ذیلی کام شامل کریں</string>
+
+    <string name="name">نام ⬇</string>
+    <string name="name_desc">نام ⬆</string>
+    <string name="date">تاریخ ⬇</string>
+    <string name="date_desc">تاریخ ⬆</string>
+    <string name="category">زمرہ ⬇</string>
+    <string name="category_desc">زمرہ ⬆</string>
+    <string name = "start_date"> آغاز کی تاریخ</string>
+    <string name = "end_date">اختتام کی تاریخ</string>
+    <string name="select_project_end_date">منتخب کریں پراجیکٹ کی اختتامی تاریخ</string>
+    <string name="select_project_start_date">منتخب کریں پراجیکٹ شروع ہونے کی تاریخ</string>
+    <string name="no_notification">ابھی تک کوئی اطلاع نہیں ہے</string>
+    <string name="notifications">اطلاعات</string>
+    <string name="sort_by_old_to_new">پرانا سے نیا</string>
+    <string name="pending">زیر التواء کام <b>%d</b></string>
+    <string name="completed">مکمل کام <b>%d</b></string>
+
+    <string name = "overview"> مجموعی جائزہ</string>
+    <string name="good_morning">ہیلو عزیز</string>
+    <string name="notification_daily_desc">آپ کے کام زیر التواء ہیں، آپ کو انہیں جلدی سے مکمل کرنا ہوگا</string>
+    <string name="show_voice_to_add_task_option">ٹاسک آپشن شامل کرنے کے لیے آواز دکھائیں</string>
+    <string name="task_not_completed_yet">کام ابھی تک مکمل نہیں ہوا ہے</string>
+    <string name = "general"> جنرل</string>
+    <string name="category_txt">زمرہ</string>
+    <string name="paste">چسپاں کریں</string>
+    <string name="delete_all_notifications">تمام اطلاعات کو حذف کریں</string>
+    <string name="confirm_notification_msg">کیا آپ تمام اطلاعات کو حذف کرنا چاہتے ہیں؟</string>
+    <string name="sort_expand_collapse_button">چھانٹیں پھیلائیں/کم کریں بٹن</string>
+    <string name="layout_view_change_button">لے آؤٹ ویو میں تبدیلی کا بٹن</string>
+    <string name="show_copy">انفرادی کام پر کاپی آئیکن دکھائیں</string>
+    <string name="visit_github">GitHub ملاحظہ کریں</string>
+    <string name = "privacy_policy"> رازداری کی پالیسی</string>
+    <string name = "prompt_info_title">ٹاسک ایپ کی توثیق</string>
+    <string name = "prompt_info_subtitle"> فنگر پرنٹ کی توثیق کے ساتھ لاگ ان کریں</string>
+    <string name="app_lock">ایپ لاک</string>
+    <string name="restore_data">ڈیٹا بحال کریں</string>
+    <string name = "backup_data"> بیک اپ ڈیٹا</string>
+    <string name = "security_and_data">سیکیورٹی اور ڈیٹا</string>
 </resources>

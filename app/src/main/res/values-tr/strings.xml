@@ -51,7 +51,6 @@
     <string name="reminder">Hatırlatıcı</string>
     <string name="add_task_by_speak">Konuşarak görev ekleyin</string>
     <string name="save">Kaydet</string>
-    <string name="cancel_timer">Zamanlayıcıyı iptal et</string>
     <string name="overdue">Gecikti</string>
 
     <string name="mark_as_completed">Tamamlandı olarak işaretle</string>
@@ -122,4 +121,42 @@
     <string name="back">Geri</string>
     <string name="feedback_from_app">%s, %s\'den geri bildirim</string>
     <string name="add_task_or_subtask">Yeni görev veya alt görev ekle</string>
+
+    <string name="name">Ad ⬇</string>
+    <string name="name_desc">Ad ⬆</string>
+    <string name="date" >Tarih ⬇</string>
+    <string name="date_desc">Tarih ⬆</string>
+    <string name="category">Kategori ⬇</string>
+    <string name="category_desc">Kategori ⬆</string>
+    <string name="start_date">Başlangıç tarihi</string>
+    <string name="end_date">Bitiş tarihi</string>
+    <string name="select_project_end_date">Proje bitiş tarihini seçin</string>
+    <string name="select_project_start_date">Proje başlangıç tarihini seçin</string>
+    <string name="no_notification">Henüz bildirim yok</string>
+    <string name="notifications">Bildirimler</string>
+    <string name="sort_by_old_to_new">Eskiden yeniye</string>
+    <string name="pending">Bekleyen görevler <b>%d</b></string>
+    <string name="completed">Tamamlanan görevler <b>%d</b></string>
+
+    <string name="overview">Genel Bakış</string>
+    <string name="good_morning">Merhaba canım</string>
+    <string name="notification_daily_desc">Görevleriniz beklemede, onları hızlı bir şekilde bitirmeniz gerekiyor</string>
+    <string name="show_voice_to_add_task_option">Görev seçeneği eklemek için sesi göster</string>
+    <string name="task_not_completed_yet">Görev henüz tamamlanmadı</string>
+    <string name="general">Genel</string>
+    <string name="category_txt">Kategori</string>
+    <string name="paste">Yapıştır</string>
+    <string name="delete_all_notifications">Tüm bildirimleri sil</string>
+    <string name="confirm_notification_msg">Tüm bildirimleri silmek istiyor musunuz?</string>
+    <string name="sort_expand_collapse_button">Sıralamayı genişlet/daralt düğmesi</string>
+    <string name="layout_view_change_button">Yerleşim görünümünü değiştirme düğmesi</string>
+    <string name="show_copy">Kopyalama simgesini bireysel görevde göster</string>
+    <string name="visit_github">GitHub\'ı ziyaret edin</string>
+    <string name="privacy_policy">Gizlilik politikası</string>
+    <string name="prompt_info_title">Görev Uygulaması Kimlik Doğrulaması</string>
+    <string name="prompt_info_subtitle">Parmak izi kimlik doğrulamasıyla giriş yapın</string>
+    <string name="app_lock">Uygulama kilidi</string>
+    <string name="restore_data">Verileri Geri Yükle</string>
+    <string name="backup_data">Verileri Yedekle</string>
+    <string name="security_and_data">Güvenlik ve Veriler</string>
 </resources>

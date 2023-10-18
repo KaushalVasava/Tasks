@@ -23,7 +23,6 @@
     <string name="attachment_summary_on">आने वाले ईमेल के लिए अटैचमेंट अपने आप डाउनलोड करें</string>
     <string name="attachment_summary_off">मैन्युअल रूप से अनुरोध किए जाने पर ही अटैचमेंट डाउनलोड करें</string>
 
-
     <string name="feedback_text">फ़ीडबैक भेजें, अगर ऐप क्रैश हो रहा है \'ऐप डेटा साफ़ करें\' या इसे एक ईमेल भेजें</string>
     <string name="rating_text">इस ऐप को पसंद करते हैं? हमें Google Play Store में बताएं कि हम इसे और बेहतर कैसे बना सकते हैं</string>
     <string name="more_app_text">अन्य ऐप्स देखें</string>
@@ -50,7 +49,6 @@
     <string name="reminder">अनुस्मारक</string>
     <string name="add_task_by_speak">बोलकर कार्य जोड़ें</string>
     <string name="save">सहेजें</string>
-    <string name="cancel_timer">टाइमर रद्द करें</string>
     <string name="overdue">अतिदेय</string>
 
     <string name="mark_as_completed">पूर्ण के रूप में चिह्नित करें</string>
@@ -121,4 +119,41 @@
     <string name="back">वापस</string>
     <string name="feedback_from_app">%s, %s से प्रतिक्रिया</string>
     <string name="add_task_or_subtask">नया कार्य या उपकार्य जोड़ें</string>
+
+    <string name="name">नाम ⬇</string>
+    <string name="name_desc">नाम ⬆</string>
+    <string name="date">दिनांक ⬇</string>
+    <string name="date_desc">दिनांक ⬆</string>
+    <string name="category">श्रेणी ⬇</string>
+    <string name="category_desc">श्रेणी ⬆</string>
+    <string name="start_date">प्रारंभ तिथि</string>
+    <string name="end_date">अंतिम तिथि</string>
+    <string name="select_project_end_date">प्रोजेक्ट समाप्ति तिथि चुनें</string>
+    <string name="select_project_start_date">प्रोजेक्ट प्रारंभ तिथि चुनें</string>
+    <string name="no_notification">अभी तक कोई सूचना नहीं</string>
+    <string name="notifications">नोटिफिकेशन</string>
+    <string name="sort_by_old_to_new">पुराने से नया</string>
+    <string name="pending">लंबित कार्य <b>%d</b></string>
+    <string name="completed">पूर्ण कार्य <b>%d</b></string>
+    <string name="overview">अवलोकन</string>
+    <string name="good_morning">नमस्कार प्रिय</string>
+    <string name="notification_daily_desc">आपके कार्य लंबित हैं, आपको उन्हें जल्दी से पूरा करना होगा</string>
+    <string name='show_voice_to_add_task_option'>कार्य विकल्प जोड़ने के लिए आवाज दिखाएं</string>
+    <string name='task_not_completed_yet'>कार्य अभी तक पूरा नहीं हुआ है</string>
+    <string name="general">सामान्य</string>
+    <string name="category_txt">श्रेणी</string>
+    <string name="paste">पेस्ट करें</string>
+    <string name="delete_all_notifications">सभी सूचनाएं हटाएं</string>
+    <string name="confirm_notification_msg">क्या आप सभी सूचनाएं हटाना चाहते हैं?</string>
+    <string name="sort_expand_collapse_button">विस्तारित करें/संक्षिप्त करें बटन</string>
+    <string name="layout_view_change_button">लेआउट दृश्य परिवर्तन बटन</string>
+    <string name="show_copy">व्यक्तिगत कार्य पर कॉपी आइकन दिखाएं</string>
+    <string name="visit_github">GitHub पर जाएं</string>
+    <string name="privacy_policy">गोपनीयता नीति</string>
+    <string name='prompt_info_title'>कार्य ऐप प्रमाणीकरण</string>
+    <string name='prompt_info_subtitle'>फ़िंगरप्रिंट प्रमाणीकरण के साथ लॉगिन करें</string>
+    <string name='app_lock'>ऐप लॉक</string>
+    <string name='restore_data'>डेटा पुनर्स्थापित करें</string>
+    <string name='backup_data'>बैकअप डेटा</string>
+    <string name='security_and_data'>सुरक्षा और डेटा</string>
 </resources>

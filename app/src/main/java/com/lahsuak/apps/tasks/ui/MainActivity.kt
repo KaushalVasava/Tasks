@@ -1,102 +1,284 @@
 package com.lahsuak.apps.tasks.ui
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.content.res.Configuration
+import android.content.IntentSender
+import android.content.pm.PackageManager
+import android.content.res.Configuration.*
+import android.os.Build
 import android.os.Bundle
+import android.view.View
+import androidx.activity.compose.ManagedActivityResultLauncher
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.core.view.WindowInsetsControllerCompat
-import androidx.navigation.NavController
-import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.setupActionBarWithNavController
-import androidx.preference.PreferenceManager
-import com.lahsuak.apps.tasks.TaskApp.Companion.mylang
+import androidx.compose.foundation.background
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.luminance
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
+import androidx.core.content.ContextCompat
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.compose.rememberNavController
+import com.google.accompanist.systemuicontroller.SystemUiController
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.google.android.material.snackbar.Snackbar
+import com.google.android.play.core.appupdate.AppUpdateManager
+import com.google.android.play.core.appupdate.AppUpdateManagerFactory
+import com.google.android.play.core.install.InstallStateUpdatedListener
+import com.google.android.play.core.install.model.AppUpdateType
+import com.google.android.play.core.install.model.InstallStatus
+import com.google.android.play.core.install.model.UpdateAvailability
 import com.lahsuak.apps.tasks.R
-import com.lahsuak.apps.tasks.util.AppConstants.LANGUAGE_SHARED_PREFERENCE
-import com.lahsuak.apps.tasks.util.AppConstants.LANGUAGE_SHARED_PREFERENCE_LANGUAGE_KEY
+import com.lahsuak.apps.tasks.TaskApp
+import com.lahsuak.apps.tasks.ui.navigation.TaskNavHost
+import com.lahsuak.apps.tasks.ui.theme.TaskAppTheme
+import com.lahsuak.apps.tasks.ui.viewmodel.NotificationViewModel
+import com.lahsuak.apps.tasks.ui.viewmodel.SettingsViewModel
+import com.lahsuak.apps.tasks.ui.viewmodel.SubTaskViewModel
+import com.lahsuak.apps.tasks.ui.viewmodel.TaskViewModel
+import com.lahsuak.apps.tasks.util.AppConstants
 import com.lahsuak.apps.tasks.util.AppConstants.SHARE_FORMAT
-import com.lahsuak.apps.tasks.util.AppConstants.THEME_DEFAULT
-import com.lahsuak.apps.tasks.util.AppConstants.THEME_KEY
-import com.lahsuak.apps.tasks.util.RuntimeLocaleChanger
-import com.lahsuak.apps.tasks.util.AppUtil.getLanguage
-import com.lahsuak.apps.tasks.util.AppUtil.setClipboard
-import com.lahsuak.apps.tasks.databinding.ActivityMainBinding
+import com.lahsuak.apps.tasks.util.AppConstants.UPDATE_REQUEST_CODE
+import com.lahsuak.apps.tasks.util.biometric.BiometricAuthListener
+import com.lahsuak.apps.tasks.util.biometric.BiometricUtil
+import com.lahsuak.apps.tasks.util.preference.SettingPreferences
+import com.lahsuak.apps.tasks.util.rememberWindowSize
+import com.lahsuak.apps.tasks.util.toast
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
-    private var _binding: ActivityMainBinding? = null
-    private val binding: ActivityMainBinding
-        get() = _binding!!
-    private lateinit var navController: NavController
+    private val taskViewModel: TaskViewModel by viewModels()
+    private val subTaskViewModel: SubTaskViewModel by viewModels()
+    private val notificationViewModel: NotificationViewModel by viewModels()
+    private val settingViewModel: SettingsViewModel by viewModels()
+    private lateinit var appUpdateManager: AppUpdateManager
+    private lateinit var view: View
 
     companion object {
+        var activityContext: Context? = null
         var shareTxt: String? = null
-        var isWidgetClick = false
-    }
-
-    override fun attachBaseContext(base: Context) {
-        super.attachBaseContext(RuntimeLocaleChanger.wrapContext(base, mylang))
-    }
-
-    override fun onConfigurationChanged(newConfig: Configuration) {
-        super.onConfigurationChanged(newConfig)
-        val pref = getSharedPreferences(LANGUAGE_SHARED_PREFERENCE, MODE_PRIVATE)
-        val lang = pref.getString(LANGUAGE_SHARED_PREFERENCE_LANGUAGE_KEY, getLanguage())!!
-        RuntimeLocaleChanger.overrideLocale(this, lang)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setTheme(R.style.Theme_Tasks)
-        _binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        activityContext = this
 
-        val sp = PreferenceManager.getDefaultSharedPreferences(this)
-        val selectedTheme = sp.getString(THEME_KEY, THEME_DEFAULT)!!.toInt()
+        observePreferences()
+        appUpdateManager = AppUpdateManagerFactory.create(this)
+        checkUpdate()
+        appUpdateManager.registerListener(appUpdateListener)
 
-        AppCompatDelegate.setDefaultNightMode(selectedTheme)
-
-        //shared text received from other apps
+        setContent {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                RequestPermission()
+            }
+            view = LocalView.current
+            val navController = rememberNavController()
+            TaskAppTheme {
+                SetupTransparentSystemUi(
+                    systemUiController = rememberSystemUiController(),
+                    actualBackgroundColor = MaterialTheme.colorScheme.surface
+                )
+                val settingsPreferences by settingViewModel.preferencesFlow.collectAsState(
+                    initial = SettingPreferences(
+                        theme = AppConstants.SharedPreference.DEFAULT_THEME,
+                        fontSize = AppConstants.SharedPreference.DEFAULT_FONT_SIZE,
+                        showVoiceIcon = true,
+                        showCopyIcon = true,
+                        showProgress = false,
+                        showReminder = true,
+                        showSubTask = true,
+                        fingerPrintEnable = false,
+                        language = AppConstants.SharedPreference.DEFAULT_LANGUAGE_VALUE
+                    )
+                )
+                Surface(Modifier.background(MaterialTheme.colorScheme.background)) {
+                    TaskNavHost(
+                        taskViewModel,
+                        subTaskViewModel,
+                        notificationViewModel,
+                        settingViewModel,
+                        navController,
+                        settingPreferences = settingsPreferences,
+                        windowSize = rememberWindowSize(),
+                    )
+                }
+            }
+        }
         if (intent?.action == Intent.ACTION_SEND) {
             if (SHARE_FORMAT == intent.type) {
                 shareTxt = intent.getStringExtra(Intent.EXTRA_TEXT)
             }
         }
-
-        //this is for transparent status bar and navigation bar
-        WindowInsetsControllerCompat(window, window.decorView).isAppearanceLightStatusBars =
-            true
-        WindowInsetsControllerCompat(window, window.decorView).isAppearanceLightNavigationBars =
-            true
-        setSupportActionBar(binding.toolbar)
-
-        binding.toolbar.setOnLongClickListener {
-            if (navController.currentDestination?.id == R.id.subTaskFragment) {
-                setClipboard(this, binding.toolbar.title.toString())
-            }
-            true
-        }
-
-        val navHostFragment =
-            (supportFragmentManager.findFragmentById(R.id.my_container) as NavHostFragment)
-        navController = navHostFragment.navController
-        setupActionBarWithNavController(navController)
-        val listener = NavController.OnDestinationChangedListener { _, destination, _ ->
-            if (destination.id != R.id.taskFragment) {
-                binding.toolbar.setNavigationIcon(R.drawable.ic_back)
-            }
-        }
-        navController.addOnDestinationChangedListener(listener)
     }
 
-    override fun onSupportNavigateUp(): Boolean {
-        return navController.navigateUp() || super.onSupportNavigateUp()
+    private fun observePreferences() {
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                settingViewModel.preferencesFlow.collect { value ->
+                    if (value.fingerPrintEnable && !settingViewModel.initAuth.value) {
+                        BiometricUtil.showBiometricPrompt(
+                            activity = this@MainActivity,
+                            listener = object : BiometricAuthListener {
+                                override fun onBiometricAuthSuccess() {
+                                    settingViewModel.updateAuth(true)
+                                }
+
+                                override fun onUserCancelled() {
+                                    finish()
+                                }
+
+                                override fun onErrorOccurred() {
+                                    toast { getString(R.string.something_went_wrong) }
+                                    finish()
+                                }
+                            }
+                        )
+                    }
+                }
+            }
+        }
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                settingViewModel.preferencesFlow.collectLatest { preference ->
+                    val theme = preference.theme.toInt()
+                    val currentNightMode =
+                        resources.configuration.uiMode and UI_MODE_NIGHT_MASK
+                    //32 = dark mode and 16 = light mode
+                    if (currentNightMode / 16 != if (theme == -1) {
+                            0
+                        } else theme
+                    ) {
+                        AppCompatDelegate.setDefaultNightMode(theme)
+                    }
+                }
+            }
+        }
+    }
+
+
+    @Composable
+    internal fun SetupTransparentSystemUi(
+        systemUiController: SystemUiController = rememberSystemUiController(),
+        actualBackgroundColor: androidx.compose.ui.graphics.Color,
+    ) {
+        val minLuminanceForDarkIcons = .5f
+
+        SideEffect {
+            systemUiController.setStatusBarColor(
+                color = actualBackgroundColor,
+                darkIcons = actualBackgroundColor.luminance() > minLuminanceForDarkIcons
+            )
+
+            systemUiController.setNavigationBarColor(
+                color = actualBackgroundColor,
+                darkIcons = actualBackgroundColor.luminance() > minLuminanceForDarkIcons,
+                navigationBarContrastEnforced = false
+            )
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    @Composable
+    private fun RequestPermission() {
+        val launcher: ManagedActivityResultLauncher<String, Boolean> =
+            rememberLauncherForActivityResult(
+                ActivityResultContracts.RequestPermission()
+            ) { isGranted: Boolean ->
+                if (isGranted) {
+                    /* no-op */
+                } else {
+                    toast {
+                        getString(R.string.user_cancelled_the_operation)
+                    }
+                }
+            }
+
+        when (PackageManager.PERMISSION_GRANTED) {
+            ContextCompat.checkSelfPermission(
+                LocalContext.current,
+                android.Manifest.permission.POST_NOTIFICATIONS
+            ),
+            -> {
+                // Some works that require permission
+            }
+
+            else -> {
+                // Asking for permission
+                SideEffect {
+                    launcher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
+                }
+            }
+        }
+
+    }
+
+    private fun checkUpdate() {
+        val appUpdateInfoTask = appUpdateManager.appUpdateInfo
+
+        appUpdateInfoTask.addOnSuccessListener { appUpdateInfo ->
+            if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
+                && appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE)
+            ) {
+                try {
+                    appUpdateManager.startUpdateFlowForResult(
+                        appUpdateInfo, AppUpdateType.FLEXIBLE,
+                        this, UPDATE_REQUEST_CODE
+                    )
+                } catch (exception: IntentSender.SendIntentException) {
+                    toast { exception.message.toString() }
+                }
+            }
+        }
+    }
+
+    private val appUpdateListener = InstallStateUpdatedListener { state ->
+        if (state.installStatus() == InstallStatus.DOWNLOADED) {
+            Snackbar.make(
+                view,
+                getString(R.string.new_app_ready),
+                Snackbar.LENGTH_INDEFINITE
+            ).setAction(getString(R.string.restart)) {
+                appUpdateManager.completeUpdate()
+            }.show()
+        }
+    }
+
+
+    @Deprecated("Deprecated in Java")
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        @Suppress(AppConstants.DEPRECATION)
+        super.onActivityResult(requestCode, resultCode, data)
+        if (data == null) return
+        if (requestCode == UPDATE_REQUEST_CODE) {
+            toast { getString(R.string.downloading_start) }
+            if (resultCode != Activity.RESULT_OK) {
+                TaskApp.appContext.toast { getString(R.string.update_failed) }
+            }
+        }
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        _binding = null
+        appUpdateManager.unregisterListener(appUpdateListener)
+        activityContext = null
     }
 }

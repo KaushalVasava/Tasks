@@ -50,7 +50,6 @@
     <string name="reminder">Напоминание</string>
     <string name="add_task_by_speak">Добавить задачу, произнеся речь</string>
     <string name="save">Сохранить</string>
-    <string name="cancel_timer">Отменить таймер</string>
     <string name="overdue">Просрочено</string>
 
     <string name="mark_as_completed">Отметить как выполненное</string>
@@ -121,4 +120,42 @@
     <string name="back">Назад</string>
     <string name="feedback_from_app">Отзыв от %s, %s</string>
     <string name="add_task_or_subtask">Adicionar nova tarefa ou subtarefa</string>
+
+    <string name="name">Имя ⬇</string>
+    <string name="name_desc">Имя ⬆</string>
+    <string name="date" >Дата ⬇</string>
+    <string name="date_desc">Дата ⬆</string>
+    <string name="category">Категория ⬇</string>
+    <string name="category_desc">Категория ⬆</string>
+    <string name="start_date">Дата начала</string>
+    <string name="end_date">Дата окончания</string>
+    <string name="select_project_end_date">Выберите дату окончания проекта</string>
+    <string name="select_project_start_date">Выберите дату начала проекта</string>
+    <string name="no_notification">Уведомлений пока нет</string>
+    <string name="notifications">Уведомления</string>
+    <string name="sort_by_old_to_new">От старого к новому</string>
+    <string name="pending">Отложенные задачи <b>%d</b></string>
+    <string name="completed">Выполненные задачи <b>%d</b></string>
+
+    <string name="overview">Обзор</string>
+    <string name="good_morning">Привет, дорогая</string>
+    <string name="notification_daily_desc">Ваши задачи находятся на рассмотрении, вы должны закончить их быстро</string>
+    <string name="show_voice_to_add_task_option">Показать голос для добавления опции задачи</string>
+    <string name="task_not_completed_yet">Задача еще не выполнена</string>
+    <string name="general">Общие</string>
+    <string name="category_txt">Категория</string>
+    <string name="paste">Вставить</string>
+    <string name="delete_all_notifications">Удалить все уведомления</string>
+    <string name="confirm_notification_msg">Хотите удалить все уведомления?</string>
+    <string name="sort_expand_collapse_button">Кнопка "Сортировка развернуть/свернуть"</string>
+    <string name="layout_view_change_button">Кнопка изменения вида макета</string>
+    <string name="show_copy">Показывать значок копирования для отдельной задачи</string>
+    <string name="visit_github">Посетить GitHub</string>
+    <string name="privacy_policy">Политика конфиденциальности</string>
+    <string name="prompt_info_title">Аутентификация приложения-задачи</string>
+    <string name="prompt_info_subtitle">Войти с аутентификацией по отпечатку пальца</string>
+    <string name="app_lock">Блокировка приложения</string>
+    <string name="restore_data">Восстановить данные</string>
+    <string name="backup_data">Данные резервной копии</string>
+    <string name="security_and_data">Безопасность и данные</string>
 </resources>

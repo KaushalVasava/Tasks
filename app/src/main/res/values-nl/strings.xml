@@ -51,7 +51,6 @@
     <string name="reminder">Herinnering</string>
     <string name="add_task_by_speak">Taak toevoegen door te spreken</string>
     <string name="save">Opslaan</string>
-    <string name="cancel_timer">Timer annuleren</string>
     <string name="overdue">Te laat</string>
 
     <string name="mark_as_completed">Markeer als voltooid</string>
@@ -121,4 +120,42 @@
     <string name="back">Terug</string>
     <string name="feedback_from_app">Feedback van %s, %s</string>
     <string name="add_task_or_subtask">Nieuwe taak of subtaak toevoegen</string>
+
+    <string name="name">Naam ⬇</string>
+    <string name="name_desc">Naam ⬆</string>
+    <string name="date" >Datum ⬇</string>
+    <string name="date_desc">Datum ⬆</string>
+    <string name="category">Categorie ⬇</string>
+    <string name="category_desc">Categorie ⬆</string>
+    <string name="start_date">Startdatum</string>
+    <string name="end_date">Einddatum</string>
+    <string name="select_project_end_date">Selecteer de einddatum van het project</string>
+    <string name="select_project_start_date">Startdatum project selecteren</string>
+    <string name="no_notification">Nog geen meldingen</string>
+    <string name="notifications">Meldingen</string>
+    <string name="sort_by_old_to_new">Oud naar nieuw</string>
+    <string name="pending">Taken in behandeling <b>%d</b></string>
+    <string name="completed">Voltooide taken <b>%d</b></string>
+
+    <string name="overview">Overzicht</string>
+    <string name="good_morning">Hallo schat</string>
+    <string name="notification_daily_desc">Je taken zijn in behandeling, je moet ze snel afmaken</string>
+    <string name="show_voice_to_add_task_option">Toon stem om taakoptie toe te voegen</string>
+    <string name="task_not_completed_yet">De taak is nog niet voltooid</string>
+    <string name="general">Algemeen</string>
+    <string name="category_txt">Categorie</string>
+    <string name="paste">Plakken</string>
+    <string name="delete_all_notifications">Verwijder alle meldingen</string>
+    <string name="confirm_notification_msg">Wil je alle meldingen verwijderen?</string>
+    <string name="sort_expand_collapse_button">Sorteer knop uitvouwen/samenvouwen</string>
+    <string name="layout_view_change_button">Knop voor het wijzigen van de lay-outweergave</string>
+    <string name="show_copy">Kopieerpictogram weergeven voor individuele taak</string>
+    <string name="visit_github">Bezoek GitHub</string>
+    <string name="privacy_policy">Privacybeleid</string>
+    <string name="prompt_info_title">Taak-app-authenticatie</string>
+    <string name="prompt_info_subtitle">Log in met vingerafdrukauthenticatie</string>
+    <string name="app_lock">App-vergrendeling</string>
+    <string name="restore_data">Gegevens herstellen</string>
+    <string name="backup_data">Back-upgegevens</string>
+    <string name="security_and_data">Beveiliging en gegevens</string>
 </resources>

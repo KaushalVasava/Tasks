@@ -51,7 +51,6 @@
     <string name="reminder">Erinnerung</string>
     <string name="add_task_by_speak">Aufgabe durch Sprechen hinzufügen</string>
     <string name="save">Speichern</string>
-    <string name="cancel_timer">Timer abbrechen</string>
     <string name="overdue">Überfällig</string>
 
     <string name="mark_as_completed">Als abgeschlossen markieren</string>
@@ -122,4 +121,42 @@
     <string name="back">Zurück</string>
     <string name="feedback_from_app">Feedback von %s, %s</string>
     <string name="add_task_or_subtask">Neue Aufgabe oder Unteraufgabe hinzufügen</string>
+
+    <string name="name">Name ⬇</string>
+    <string name="name_desc">Name ⬆</string>
+    <string name="date" >Datum ⬇</string>
+    <string name="date_desc">Datum ⬆</string>
+    <string name="category">Kategorie ⬇</string>
+    <string name="category_desc">Kategorie ⬆</string>
+    <string name="start_date">Startdatum</string>
+    <string name="end_date">Enddatum</string>
+    <string name="select_project_end_date">Enddatum des Projekts auswählen</string>
+    <string name="select_project_start_date">Startdatum des Projekts auswählen</string>
+    <string name="no_notification">Noch keine Benachrichtigungen</string>
+    <string name="notifications">Benachrichtigungen</string>
+    <string name="sort_by_old_to_new">Alt nach neu</string>
+    <string name="pending">Ausstehende Aufgaben <b>%d</b></string>
+    <string name="completed">Abgeschlossene Aufgaben <b>%d</b></string>
+
+    <string name="overview">Übersicht</string>
+    <string name="good_morning">Hallo Schatz</string>
+    <string name="notification_daily_desc">Ihre Aufgaben stehen noch aus, Sie müssen sie schnell erledigen</string>
+    <string name="show_voice_to_add_task_option">Option „Stimme zum Hinzufügen einer Aufgabe anzeigen“</string>
+    <string name="task_not_completed_yet">Die Aufgabe wurde noch nicht abgeschlossen</string>
+    <string name="general">Allgemein</string>
+    <string name="category_txt">Kategorie</string>
+    <string name="paste">Einfügen</string>
+    <string name="delete_all_notifications">Alle Benachrichtigungen löschen</string>
+    <string name="confirm_notification_msg">Möchten Sie alle Benachrichtigungen löschen?</string>
+    <string name="sort_expand_collapse_button">Schaltfläche zum Erweitern/Reduzieren der Sortierung</string>
+    <string name="layout_view_change_button">Schaltfläche zum Ändern der Layoutansicht</string>
+    <string name="show_copy">Kopiersymbol für einzelne Aufgabe anzeigen</string>
+    <string name="visit_github">Besuchen Sie GitHub</string>
+    <string name="privacy_policy">Datenschutzerklärung</string>
+    <string name="prompt_info_title">Aufgaben-App-Authentifizierung</string>
+    <string name="prompt_info_subtitle">Anmeldung mit Fingerabdruck-Authentifizierung</string>
+    <string name="app_lock">App-Sperre</string>
+    <string name="restore_data">Daten wiederherstellen</string>
+    <string name="backup_data">Sicherungsdaten</string>
+    <string name="security_and_data">Sicherheit und Daten</string>
 </resources>

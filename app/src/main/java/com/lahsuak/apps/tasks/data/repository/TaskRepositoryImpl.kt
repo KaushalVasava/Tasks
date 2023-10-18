@@ -1,6 +1,6 @@
 package com.lahsuak.apps.tasks.data.repository
 
-import com.lahsuak.apps.tasks.data.SortOrder
+import com.lahsuak.apps.tasks.data.model.SortOrder
 import com.lahsuak.apps.tasks.data.db.TaskDao
 import com.lahsuak.apps.tasks.data.model.SubTask
 import com.lahsuak.apps.tasks.data.model.Task
@@ -22,10 +22,9 @@ class TaskRepositoryImpl(private val dao: TaskDao) : TaskRepository {
 
     override fun getAllTasks(
         searchQuery: String,
-        sortOrder: SortOrder,
-        hideCompleted: Boolean,
+        sortOrder: SortOrder
     ): Flow<List<Task>> {
-        return dao.getAllTasks(searchQuery, sortOrder, hideCompleted)
+        return dao.getAllTasks(searchQuery, sortOrder)
     }
 
     override suspend fun getById(id: Int): Task {
@@ -58,9 +57,8 @@ class TaskRepositoryImpl(private val dao: TaskDao) : TaskRepository {
         id: Int,
         query: String,
         sortOrder: SortOrder,
-        hideCompleted: Boolean,
     ): Flow<List<SubTask>> {
-        return dao.getAllSubTasks(id, query, sortOrder, hideCompleted)
+        return dao.getAllSubTasks(id, query, sortOrder)
     }
 
     override suspend fun deleteAllCompletedSubTask(id: Int) {

@@ -49,7 +49,6 @@
     <string name="reminder">알림</string>
     <string name="add_task_by_speak">말하여 작업 추가</string>
     <string name="save">저장</string>
-    <string name="cancel_timer">타이머 취소</string>
     <string name="overdue">연기</string>
 
     <string name="mark_as_completed">완료로 표시</string>
@@ -119,4 +118,42 @@
     <string name="back">뒤로</string>
     <string name="feedback_from_app">%s님, %s님의 피드백</string>
     <string name="add_task_or_subtask">새 작업 또는 하위 작업 추가</string>
+
+    <string name="name">이름 ⬇</string>
+    <string name="name_desc">이름 ⬆</string>
+    <string name="date" >날짜 ⬇</string>
+    <string name="date_desc">날짜 ⬆</string>
+    <string name="category">카테고리 ⬇</string>
+    <string name="category_desc">카테고리 ⬆</string>
+    <string name="start_date">시작일</string>
+    <string name="end_date">종료일</string>
+    <string name="select_project_end_date">프로젝트 종료 날짜 선택</string>
+    <string name="select_project_start_date">프로젝트 시작 날짜 선택</string>
+    <string name="no_notification">아직 알림이 없습니다</string>
+    <string name="notifications">알림</string>
+    <string name="sort_by_old_to_new">오래된 것에서 새로운 것으로</string>
+    <string name="pending">보류 중인 작업 <b>%d</b></string>
+    <string name="completed">완료된 작업 <b>%d</b></string>
+
+    <string name="overview">개요</string>
+    <string name="good_morning">안녕하세요.</string>
+    <string name="notification_daily_desc">작업이 대기 중입니다. 빨리 완료해야 합니다</string>
+    <string name="show_voice_to_add_task_option">작업 옵션 추가를 위한 음성 표시</string>
+    <string name="task_not_completed_yet">작업이 아직 완료되지 않았습니다</string>
+    <string name="general">일반</string>
+    <string name="category_txt">범주</string>
+    <string name="paste">붙여넣기</string>
+    <string name="delete_all_notifications">모든 알림 삭제</string>
+    <string name="confirm_notification_msg">모든 알림을 삭제하시겠습니까?</string>
+    <string name="sort_expand_collapse_button">확장/축소 버튼 정렬</string>
+    <string name="layout_view_change_button">레이아웃 보기 변경 버튼</string>
+    <string name="show_copy">개별 작업에 복사 아이콘 표시</string>
+    <string name="visit_github">GitHub 방문</string>
+    <string name="privacy_policy">개인정보 보호정책</string>
+    <string name="prompt_info_title">태스크앱 인증</string>
+    <string name="prompt_info_subtitle">지문인증으로 로그인</string>
+    <string name="app_lock">앱 잠금</string>
+    <string name="restore_data">데이터 복원</string>
+    <string name="backup_data">데이터 백업</string>
+    <string name="security_and_data">보안 및 데이터</string>
 </resources>

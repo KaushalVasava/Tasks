@@ -51,7 +51,6 @@
     <string name="reminder">Lembrete</string>
     <string name="add_task_by_speak">Adicionar tarefa falando</string>
     <string name="save">Salvar</string>
-    <string name="cancel_timer">Cancelar temporizador</string>
     <string name="overdue">Atrasado</string>
 
     <string name="mark_as_completed">Marcar como concluído</string>
@@ -121,4 +120,42 @@
     <string name="back">Voltar</string>
     <string name="feedback_from_app">Feedback de %s, %s</string>
     <string name="add_task_or_subtask">Adicionar nova tarefa ou subtarefa</string>
+
+    <string name="name">Nome ⬇</string>
+    <string name="name_desc">Nome ⬆</string>
+    <string name="date" >Data ⬇</string>
+    <string name="date_desc">Data ⬆</string>
+    <string name="category">Categoria ⬇</string>
+    <string name="category_desc">Categoria ⬆</string>
+    <string name="start_date">Data de início</string>
+    <string name="end_date">Data final</string>
+    <string name="select_project_end_date">Selecione a data de término do projeto</string>
+    <string name="select_project_start_date">Selecione a data de início do projeto</string>
+    <string name="no_notification">Nenhuma notificação ainda</string>
+    <string name="notifications">Notificações</string>
+    <string name="sort_by_old_to_new">Do antigo para o novo</string>
+    <string name="pending">Tarefas pendentes <b>%d</b></string>
+    <string name="completed">Tarefas concluídas <b>%d</b></string>
+
+    <string name="overview">Visão geral</string>
+    <string name="good_morning">Olá querida</string>
+    <string name="notification_daily_desc">Suas tarefas estão pendentes, você deve finalizá-las rapidamente</string>
+    <string name="show_voice_to_add_task_option">Mostrar voz para adicionar opção de tarefa</string>
+    <string name="task_not_completed_yet">A tarefa ainda não foi concluída</string>
+    <string name="general">Geral</string>
+    <string name="category_txt">Categoria</string>
+    <string name="paste">Colar</string>
+    <string name="delete_all_notifications">Excluir todas as notificações</string>
+    <string name="confirm_notification_msg">Deseja excluir todas as notificações?</string>
+    <string name="sort_expand_collapse_button">Botão Classificar expandir/recolher</string>
+    <string name="layout_view_change_button">Botão de alteração da visualização do layout</string>
+    <string name="show_copy">Mostrar ícone de cópia em tarefa individual</string>
+    <string name="visit_github">Visite o GitHub</string>
+    <string name="privacy_policy">Política de privacidade</string>
+    <string name="prompt_info_title">Autenticação de aplicativo de tarefa</string>
+    <string name="prompt_info_subtitle">Login com autenticação de impressão digital</string>
+    <string name="app_lock">Bloqueio de aplicativo</string>
+    <string name="restore_data">Restaurar dados</string>
+    <string name="backup_data">Dados de backup</string>
+    <string name="security_and_data">Segurança e dados</string>
 </resources>

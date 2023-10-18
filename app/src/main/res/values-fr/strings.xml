@@ -51,7 +51,6 @@
     <string name="reminder">Rappel</string>
     <string name="add_task_by_speak">Ajouter une tâche en parlant</string>
     <string name="save">Enregistrer</string>
-    <string name="cancel_timer">Annuler le minuteur</string>
     <string name="overdue">En retard</string>
 
     <string name="mark_as_completed">Marquer comme terminé</string>
@@ -122,4 +121,42 @@
     <string name="back">Retour</string>
     <string name="feedback_from_app">Commentaires de %s, %s</string>
     <string name="add_task_or_subtask">Ajouter une nouvelle tâche ou sous-tâche</string>
+
+    <string name="name">Nom ⬇</string>
+    <string name="name_desc">Nom ⬆</string>
+    <string name="date">Date ⬇</string>
+    <string name="date_desc">Date ⬆</string>
+    <string name="category">Catégorie ⬇</string>
+    <string name="category_desc">Catégorie ⬆</string>
+    <string name="start_date">Date de début</string>
+    <string name="end_date">Date de fin</string>
+    <string name="select_project_end_date">Sélectionner la date de fin du projet</string>
+    <string name="select_project_start_date">Sélectionner la date de début du projet</string>
+    <string name="no_notification">Aucune notification pour le moment</string>
+    <string name="notifications">Notifications</string>
+    <string name="sort_by_old_to_new">Ancien à nouveau</string>
+    <string name="pending">Tâches en attente <b>%d</b></string>
+    <string name="completed">Tâches terminées <b>%d</b></string>
+
+    <string name="overview">Aperçu</string>
+    <string name="good_morning">Bonjour mon cher</string>
+    <string name="notification_daily_desc">Vos tâches sont en attente, vous devez les terminer rapidement</string>
+    <string name="show_voice_to_add_task_option">Afficher la voix pour ajouter l\'option de tâche</string>
+    <string name="task_not_completed_yet">La tâche n\'est pas encore terminée</string>
+    <string name="general">Général</string>
+    <string name="category_txt">Catégorie</string>
+    <string name="paste">Coller</string>
+    <string name="delete_all_notifications">Supprimer toutes les notifications</string>
+    <string name="confirm_notification_msg">Voulez-vous supprimer toutes les notifications ?</string>
+    <string name="sort_expand_collapse_button">Bouton de tri développer/réduire</string>
+    <string name="layout_view_change_button">Bouton de changement de vue de mise en page</string>
+    <string name="show_copy">Afficher l\'icône de copie sur une tâche individuelle</string>
+    <string name="visit_github">Visitez GitHub</string>
+    <string name="privacy_policy">Politique de confidentialité</string>
+    <string name="prompt_info_title">Authentification de l\'application de tâche</string>
+    <string name="prompt_info_subtitle">Connexion avec authentification par empreinte digitale</string>
+    <string name="app_lock">Verrouillage de l\'application</string>
+    <string name="restore_data">Restaurer les données</string>
+    <string name="backup_data">Données de sauvegarde</string>
+    <string name="security_and_data">Sécurité et données</string>
 </resources>
