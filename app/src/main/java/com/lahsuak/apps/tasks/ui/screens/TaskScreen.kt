@@ -127,7 +127,7 @@ fun TaskScreen(
     navController: NavController,
     taskViewModel: TaskViewModel,
     settingsPreferences: SettingPreferences,
-    windowSize: WindowSize
+    windowSize: WindowSize,
 ) {
     var sharedText by rememberSaveable {
         mutableStateOf(MainActivity.shareTxt)
@@ -214,7 +214,7 @@ fun TaskScreen(
     var isSnackBarShow by rememberSaveable {
         mutableStateOf(false)
     }
-    var openDialog by remember { mutableStateOf(false) }
+    var openDeleteDialog by remember { mutableStateOf(false) }
     val undoMsg = stringResource(R.string.undo)
     val snackBarMsg = stringResource(R.string.task_deleted)
 
@@ -231,9 +231,9 @@ fun TaskScreen(
         selectedItems.clear()
     }
 
-    if (isSnackBarShow) {
-        when (val event = taskEvents) {
-            is TaskEvent.ShowUndoDeleteTaskMessage -> {
+    when (val event = taskEvents) {
+        is TaskEvent.ShowUndoDeleteTaskMessage -> {
+            if (isSnackBarShow) {
                 LaunchedEffect(Unit) {
                     val snackBarResult = snackBarHostState.showSnackbar(
                         message = snackBarMsg,
@@ -251,39 +251,38 @@ fun TaskScreen(
                     isSnackBarShow = false
                 }
             }
-
-            TaskEvent.NavigateToAllCompletedScreen -> {
-                if (openDialog) {
-                    AlertDialog(
-                        onDismissRequest = { openDialog = false },
-                        title = { Text(text = stringResource(R.string.confirm_deletion)) },
-                        text = { Text(stringResource(R.string.delete_completed_task)) },
-                        confirmButton = {
-                            TextButton(
-                                onClick = {
-                                    openDialog = false
-                                    taskViewModel.deleteCompletedTask()
-                                    resetSelectionMode()
-                                }
-                            ) {
-                                Text(stringResource(R.string.delete))
-                            }
-                        },
-                        dismissButton = {
-                            TextButton(
-                                onClick = {
-                                    openDialog = false
-                                }
-                            ) {
-                                Text(stringResource(R.string.cancel))
-                            }
-                        },
-                    )
-                }
-            }
-
-            TaskEvent.Initial -> {}
         }
+
+        TaskEvent.NavigateToAllCompletedScreen -> {
+            if (openDeleteDialog) {
+                AlertDialog(
+                    onDismissRequest = { openDeleteDialog = false },
+                    title = { Text(text = stringResource(R.string.confirm_deletion)) },
+                    text = { Text(stringResource(R.string.delete_completed_task)) },
+                    confirmButton = {
+                        TextButton(
+                            onClick = {
+                                openDeleteDialog = false
+                                taskViewModel.deleteCompletedTask()
+                            }
+                        ) {
+                            Text(stringResource(R.string.delete))
+                        }
+                    },
+                    dismissButton = {
+                        TextButton(
+                            onClick = {
+                                openDeleteDialog = false
+                            }
+                        ) {
+                            Text(stringResource(R.string.cancel))
+                        }
+                    },
+                )
+            }
+        }
+
+        TaskEvent.Initial -> {}
     }
 
     BackHandler(
@@ -340,7 +339,7 @@ fun TaskScreen(
         sheetBackgroundColor = MaterialTheme.colorScheme.surface,
         sheetState = sheetState,
         sheetContent = {
-            if( isBottomSheetOpened) {
+            if (isBottomSheetOpened) {
                 AddUpdateTaskScreen(
                     sheetState,
                     taskViewModel = taskViewModel,
@@ -397,12 +396,13 @@ fun TaskScreen(
                                     }
                                 }) {
                                     Icon(
-                                        painterResource(
-                                            if (selectedItems.size == tasks.size)
-                                                R.drawable.ic_select_all_on
-                                            else R.drawable.ic_select_all
-                                        ),
-                                        stringResource(R.string.select_all)
+                                        painterResource(R.drawable.ic_select_all),
+                                        stringResource(R.string.select_all),
+                                        tint = if (selectedItems.size == tasks.size) {
+                                            MaterialTheme.colorScheme.primary
+                                        } else {
+                                            Color.White
+                                        }
                                     )
                                 }
                                 IconButton(onClick = {
@@ -410,6 +410,7 @@ fun TaskScreen(
                                     selectedItems.map {
                                         taskViewModel.delete(it)
                                     }
+                                    resetSelectionMode()
                                 }) {
                                     Icon(
                                         painterResource(R.drawable.ic_delete),
@@ -480,7 +481,7 @@ fun TaskScreen(
                                 containerColor = MaterialTheme.colorScheme.errorContainer,
                                 onClick = {
                                     taskViewModel.onDeleteAllCompletedClick()
-                                    openDialog = true
+                                    openDeleteDialog = true
                                 },
                             ) {
                                 Icon(

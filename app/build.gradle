@@ -113,4 +113,6 @@ dependencies {
     //rate dialog
     implementation 'com.github.hotchemi:android-rate:1.0.1'
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.10'
+
+    implementation("androidx.core:core-splashscreen:1.0.1")
 }

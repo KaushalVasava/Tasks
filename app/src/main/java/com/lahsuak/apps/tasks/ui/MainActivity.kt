@@ -17,17 +17,24 @@ import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -46,6 +53,7 @@ import com.lahsuak.apps.tasks.R
 import com.lahsuak.apps.tasks.TaskApp
 import com.lahsuak.apps.tasks.ui.navigation.TaskNavHost
 import com.lahsuak.apps.tasks.ui.theme.TaskAppTheme
+import com.lahsuak.apps.tasks.ui.viewmodel.MainViewModel
 import com.lahsuak.apps.tasks.ui.viewmodel.NotificationViewModel
 import com.lahsuak.apps.tasks.ui.viewmodel.SettingsViewModel
 import com.lahsuak.apps.tasks.ui.viewmodel.SubTaskViewModel
@@ -64,6 +72,7 @@ import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
+    private val mainViewModel: MainViewModel by viewModels()
     private val taskViewModel: TaskViewModel by viewModels()
     private val subTaskViewModel: SubTaskViewModel by viewModels()
     private val notificationViewModel: NotificationViewModel by viewModels()
@@ -74,6 +83,18 @@ class MainActivity : AppCompatActivity() {
     companion object {
         var activityContext: Context? = null
         var shareTxt: String? = null
+    }
+
+    private val appUpdateListener = InstallStateUpdatedListener { state ->
+        if (state.installStatus() == InstallStatus.DOWNLOADED) {
+            Snackbar.make(
+                view,
+                getString(R.string.new_app_ready),
+                Snackbar.LENGTH_INDEFINITE
+            ).setAction(getString(R.string.restart)) {
+                appUpdateManager.completeUpdate()
+            }.show()
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -97,6 +118,7 @@ class MainActivity : AppCompatActivity() {
                     systemUiController = rememberSystemUiController(),
                     actualBackgroundColor = MaterialTheme.colorScheme.surface
                 )
+                val isScreenLoaded by mainViewModel.isScreenLoaded.collectAsState()
                 val settingsPreferences by settingViewModel.preferencesFlow.collectAsState(
                     initial = SettingPreferences(
                         theme = AppConstants.SharedPreference.DEFAULT_THEME,
@@ -111,15 +133,25 @@ class MainActivity : AppCompatActivity() {
                     )
                 )
                 Surface(Modifier.background(MaterialTheme.colorScheme.background)) {
-                    TaskNavHost(
-                        taskViewModel,
-                        subTaskViewModel,
-                        notificationViewModel,
-                        settingViewModel,
-                        navController,
-                        settingPreferences = settingsPreferences,
-                        windowSize = rememberWindowSize(),
-                    )
+                    if (isScreenLoaded) {
+                        TaskNavHost(
+                            taskViewModel,
+                            subTaskViewModel,
+                            notificationViewModel,
+                            settingViewModel,
+                            navController,
+                            settingPreferences = settingsPreferences,
+                            windowSize = rememberWindowSize(),
+                        )
+                    } else {
+                        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center, ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.ic_add_task),
+                                contentDescription = null,
+                                modifier = Modifier.size(120.dp)
+                            )
+                        }
+                    }
                 }
             }
         }
@@ -139,6 +171,7 @@ class MainActivity : AppCompatActivity() {
                             activity = this@MainActivity,
                             listener = object : BiometricAuthListener {
                                 override fun onBiometricAuthSuccess() {
+                                    mainViewModel.update(true)
                                     settingViewModel.updateAuth(true)
                                 }
 
@@ -152,6 +185,8 @@ class MainActivity : AppCompatActivity() {
                                 }
                             }
                         )
+                    } else {
+                        mainViewModel.update(true)
                     }
                 }
             }
@@ -249,19 +284,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-
-    private val appUpdateListener = InstallStateUpdatedListener { state ->
-        if (state.installStatus() == InstallStatus.DOWNLOADED) {
-            Snackbar.make(
-                view,
-                getString(R.string.new_app_ready),
-                Snackbar.LENGTH_INDEFINITE
-            ).setAction(getString(R.string.restart)) {
-                appUpdateManager.completeUpdate()
-            }.show()
-        }
-    }
-
 
     @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
