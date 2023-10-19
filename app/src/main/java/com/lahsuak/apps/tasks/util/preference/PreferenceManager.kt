@@ -8,7 +8,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
-import com.lahsuak.apps.tasks.data.model.SortOrder
+import com.lahsuak.apps.tasks.model.SortOrder
 import com.lahsuak.apps.tasks.util.AppConstants
 import com.lahsuak.apps.tasks.util.AppConstants.SharedPreference.DEFAULT_FONT_SIZE
 import com.lahsuak.apps.tasks.util.AppConstants.SharedPreference.DEFAULT_LANGUAGE_VALUE

@@ -5,7 +5,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.lifecycle.*
 import com.lahsuak.apps.tasks.R
-import com.lahsuak.apps.tasks.data.model.SortOrder
+import com.lahsuak.apps.tasks.model.SortOrder
 import com.lahsuak.apps.tasks.data.model.SubTask
 import com.lahsuak.apps.tasks.data.model.Task
 import com.lahsuak.apps.tasks.data.repository.TaskRepository

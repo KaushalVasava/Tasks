@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asFlow
 import androidx.lifecycle.viewModelScope
 import com.lahsuak.apps.tasks.R
-import com.lahsuak.apps.tasks.data.model.SortOrder
+import com.lahsuak.apps.tasks.model.SortOrder
 import com.lahsuak.apps.tasks.data.model.Task
 import com.lahsuak.apps.tasks.data.repository.TaskRepository
 import com.lahsuak.apps.tasks.model.TaskEvent

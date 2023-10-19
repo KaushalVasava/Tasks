@@ -1,0 +1,104 @@
+[versions]
+composeActivity = "1.8.0"
+composeVersion = "1.5.3"
+appCompat = "1.6.1"
+androidMaterial = "1.10.0"
+androidMaterialCompose = "1.6.0-alpha07"
+androidMaterial3Compose = "1.2.0-alpha09"
+androidxCore = "1.12.0"
+androidxNav = "2.7.4"
+lifecycleViewmodelKtx = "2.6.2"
+viewmodelCompose = "2.6.2"
+androidxDataStore = "1.0.0"
+appWidget = "1.0.0"
+systemuicontroller = "0.32.0"
+biometric = "1.1.0"
+playCore = "1.10.3"
+androidxTest = "1.5.0"
+
+# Gradle plugins
+gradlePlugins-agp = "8.1.2"
+
+#hilt
+hilt = "2.48.1"
+hiltCompiler = "1.0.0"
+
+# testing
+junit = "4.13.2"
+espresso-core = "3.5.1"
+core-testing = "2.2.0"
+# verification
+kotlinGradlePlugin = "1.9.10"
+kotlin = "1.9.10"
+ksp = "1.9.10-1.0.13"
+
+lifecycle = "2.6.2"
+room = "2.5.2"
+workManager = "2.8.1"
+#rating
+rating = "1.0.1"
+
+#leak canery
+leakcanary = "2.10"
+
+
+[libraries]
+androidx-appCompat = { module = "androidx.appcompat:appcompat", version.ref = "appCompat" }
+activity-compose = { module = "androidx.activity:activity-compose", version.ref = "composeActivity" }
+androidx-core-coreKtx = { module = "androidx.core:core-ktx", version.ref = "androidxCore" }
+androidx-lifecycle-livedata-ktx = { module = "androidx.lifecycle:lifecycle-livedata-ktx", version.ref = "lifecycleViewmodelKtx" }
+compose-ui = { module = "androidx.compose.ui:ui", version.ref = "composeVersion" }
+compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "composeVersion" }
+androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "androidxNav" }
+androidx-datastorePref = { module = "androidx.datastore:datastore-preferences", version.ref = "androidxDataStore" }
+hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hilt" }
+lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "lifecycleViewmodelKtx" }
+viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "viewmodelCompose"}
+
+system-controller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "systemuicontroller" }
+
+glance-appwidget = { module = "androidx.glance:glance-appwidget", version.ref = "appWidget" }
+biometric = { module = "androidx.biometric:biometric", version.ref = "biometric" }
+workManager = { module = "androidx.work:work-runtime-ktx", version.ref = "workManager"}
+androidx-lifecycle-lifecycleRuntimeKtx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycle" }
+android-play-core = { module = "com.google.android.play:core", version.ref = "playCore"}
+rating = { module = "com.github.hotchemi:android-rate", version.ref = "rating"}
+leak-canery = { module = "com.squareup.leakcanary:leakcanary-android", version.ref = "leakcanary"}
+
+#material
+google-android-material-material = { module = "com.google.android.material:material", version.ref = "androidMaterial" }
+google-compose-material-material = { module = "androidx.compose.material:material", version.ref = "androidMaterialCompose" }
+google-compose-material-material3 = { module = "androidx.compose.material3:material3", version.ref = "androidMaterial3Compose" }
+
+# Room stuff
+androidx-room-roomCompiler = { module = "androidx.room:room-compiler", version.ref = "room" }
+androidx-room-roomKtx = { module = "androidx.room:room-ktx", version.ref = "room" }
+androidx-room-core-testing = { module = "androidx.arch.core:core-testing", version.ref = "core-testing" }
+
+# Testing
+androidx-test-core = { module = "androidx.test:core", version.ref = "androidxTest" }
+androidx-junit= { module = "junit:junit", version.ref = "androidxTest" }
+androidx-test-ext-junit = { module = "androidx.test.ext:junit", version.ref = "androidxTest" }
+compose-ui-test-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "composeVersion" }
+compose-ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest", version.ref = "composeVersion" }
+compose-ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4", version.ref = "composeVersion" }
+
+#gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle" }
+junit-junit = { module = "junit:junit", version.ref = "junit" }
+espresso ={ module = "androidx.test.espresso:espresso-core", version.ref = "espresso-core" }
+
+# DI stuff
+google-hiltAndroid = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
+google-hiltCompiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hilt" }
+androidx-hiltCompiler = { module = "androidx.hilt:hilt-compiler", version.ref = "hiltCompiler" }
+
+kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlinGradlePlugin" }
+
+#[bundles]
+
+[plugins]
+#gradle = { id = "com.android.tools.build:gradle", version.ref = "gradlePlugins-agp"}
+androidApplication = { id = "com.android.application", version.ref = "gradlePlugins-agp" }
+hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+kotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }

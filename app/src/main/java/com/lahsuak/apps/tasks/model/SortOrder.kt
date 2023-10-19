@@ -1,4 +1,4 @@
-package com.lahsuak.apps.tasks.data.model
+package com.lahsuak.apps.tasks.model
 
 import com.lahsuak.apps.tasks.R
 import com.lahsuak.apps.tasks.ui.MainActivity.Companion.activityContext

@@ -102,7 +102,7 @@ import androidx.navigation.NavController
 import com.lahsuak.apps.tasks.R
 import com.lahsuak.apps.tasks.TaskApp
 import com.lahsuak.apps.tasks.data.model.Notification
-import com.lahsuak.apps.tasks.data.model.SortOrder
+import com.lahsuak.apps.tasks.model.SortOrder
 import com.lahsuak.apps.tasks.data.model.SubTask
 import com.lahsuak.apps.tasks.model.SubTaskEvent
 import com.lahsuak.apps.tasks.ui.MainActivity
@@ -301,16 +301,16 @@ fun SubTaskScreen(
         var isSnackBarShow by rememberSaveable {
             mutableStateOf(false)
         }
-        var openDialog by remember { mutableStateOf(false) }
+        var openDeleteDialog by remember { mutableStateOf(false) }
         val undoMsg = stringResource(R.string.undo)
         val snackBarMsg = stringResource(R.string.task_deleted)
         val snackBarHostState = remember {
             SnackbarHostState()
         }
 
-        if (isSnackBarShow) {
-            when (val event = subTaskEvents) {
-                is SubTaskEvent.ShowUndoDeleteTaskMessage -> {
+        when (val event = subTaskEvents) {
+            is SubTaskEvent.ShowUndoDeleteTaskMessage -> {
+                if (isSnackBarShow) {
                     LaunchedEffect(Unit) {
                         val snackBarResult = snackBarHostState.showSnackbar(
                             message = snackBarMsg,
@@ -328,46 +328,45 @@ fun SubTaskScreen(
                         isSnackBarShow = false
                     }
                 }
-
-                SubTaskEvent.NavigateToAllCompletedScreen -> {
-                    if (openDialog) {
-                        AlertDialog(
-                            onDismissRequest = { openDialog = false },
-                            title = { Text(text = stringResource(R.string.confirm_deletion)) },
-                            text = { Text(stringResource(R.string.delete_completed_task)) },
-                            confirmButton = {
-                                TextButton(
-                                    onClick = {
-                                        openDialog = false
-                                        subTaskViewModel.deleteAllCompletedSubTasks(task.id)
-                                        resetSelectionMode()
-                                    }
-                                ) {
-                                    Text(stringResource(R.string.delete))
-                                }
-                            },
-                            dismissButton = {
-                                TextButton(
-                                    onClick = {
-                                        openDialog = false
-                                    }
-                                ) {
-                                    Text(stringResource(R.string.cancel))
-                                }
-                            },
-                        )
-                    }
-                }
-
-                SubTaskEvent.Initial -> {}
             }
+
+            SubTaskEvent.NavigateToAllCompletedScreen -> {
+                if (openDeleteDialog) {
+                    AlertDialog(
+                        onDismissRequest = { openDeleteDialog = false },
+                        title = { Text(text = stringResource(R.string.confirm_deletion)) },
+                        text = { Text(stringResource(R.string.delete_completed_task)) },
+                        confirmButton = {
+                            TextButton(
+                                onClick = {
+                                    openDeleteDialog = false
+                                    subTaskViewModel.deleteAllCompletedSubTasks(task.id)
+                                }
+                            ) {
+                                Text(stringResource(R.string.delete))
+                            }
+                        },
+                        dismissButton = {
+                            TextButton(
+                                onClick = {
+                                    openDeleteDialog = false
+                                }
+                            ) {
+                                Text(stringResource(R.string.cancel))
+                            }
+                        },
+                    )
+                }
+            }
+
+            SubTaskEvent.Initial -> {}
         }
 
         ModalBottomSheetLayout(
             sheetBackgroundColor = MaterialTheme.colorScheme.surface,
             sheetState = sheetState,
             sheetContent = {
-                if(isBottomSheetOpened) {
+                if (isBottomSheetOpened) {
                     AddUpdateSubTaskScreen(
                         sheetState = sheetState,
                         taskId = taskId,
@@ -429,11 +428,14 @@ fun SubTaskScreen(
                                     }) {
                                         Icon(
                                             painterResource(
-                                                if (selectedItems.size == subTasks.size)
-                                                    R.drawable.ic_select_all_on
-                                                else R.drawable.ic_select_all
+                                                R.drawable.ic_select_all
                                             ),
-                                            stringResource(R.string.select_all)
+                                            stringResource(R.string.select_all),
+                                            tint = if (selectedItems.size == subTasks.size) {
+                                                MaterialTheme.colorScheme.primary
+                                            } else {
+                                                Color.White
+                                            }
                                         )
                                     }
                                     IconButton(onClick = {
@@ -441,6 +443,7 @@ fun SubTaskScreen(
                                         selectedItems.map {
                                             subTaskViewModel.deleteSubTask(it)
                                         }
+                                        resetSelectionMode()
                                     }) {
                                         Icon(
                                             painterResource(R.drawable.ic_delete),
@@ -530,7 +533,7 @@ fun SubTaskScreen(
                                 containerColor = MaterialTheme.colorScheme.errorContainer,
                                 onClick = {
                                     subTaskViewModel.onDeleteAllCompletedClick()
-                                    openDialog = true
+                                    openDeleteDialog = true
                                 }
                             ) {
                                 Icon(

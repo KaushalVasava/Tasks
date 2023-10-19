@@ -1,6 +1,6 @@
 package com.lahsuak.apps.tasks.data.repository
 
-import com.lahsuak.apps.tasks.data.model.SortOrder
+import com.lahsuak.apps.tasks.model.SortOrder
 import com.lahsuak.apps.tasks.data.db.TaskDao
 import com.lahsuak.apps.tasks.data.model.SubTask
 import com.lahsuak.apps.tasks.data.model.Task
