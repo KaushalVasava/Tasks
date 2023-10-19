@@ -1,13 +1,10 @@
 package com.lahsuak.apps.tasks.data.model
 
-import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.lahsuak.apps.tasks.util.AppConstants
-import kotlinx.parcelize.Parcelize
 
-@Parcelize
 @Entity(tableName = AppConstants.TASK_TABLE)
 data class Task(
     @PrimaryKey(autoGenerate = true) val id: Int,
@@ -20,4 +17,4 @@ data class Task(
     @ColumnInfo(name = "color") val color: Int = 0,
     @ColumnInfo(name = "start_date") var startDate: Long? = null,
     @ColumnInfo(name = "endDate") var endDate: Long? = null
-) : Parcelable
+)
