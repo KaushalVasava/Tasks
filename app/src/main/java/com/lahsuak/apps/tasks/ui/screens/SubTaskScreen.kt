@@ -598,7 +598,7 @@ fun SubTaskScreen(
                             }
                         ) {
                             Image(
-                                painterResource(R.drawable.ic_add_task2),
+                                painterResource(R.drawable.ic_add_task),
                                 contentDescription = stringResource(
                                     R.string.add_task
                                 ),

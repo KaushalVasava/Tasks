@@ -84,7 +84,7 @@ object NotificationUtil {
         }
         val deepLinkIntent = Intent(
             Intent.ACTION_VIEW,
-            "myapp://kmv.com/subtaskscreen/${task.id}/true".toUri(),
+            "tasks://apps.com.lahsuak.apps.tasks/subtaskscreen/${task.id}/true".toUri(),
             context,
             MainActivity::class.java
         )
