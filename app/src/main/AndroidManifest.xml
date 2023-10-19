@@ -36,7 +36,7 @@
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>
             <intent-filter>
-                <data android:scheme="https" android:host="tasks://apps.com.lahsuak.apps.tasks/subtaskscreen/{task}/{has_notification}" />
+                <data android:scheme="https" android:host="tasks://apps.com.lahsuak.apps.tasks/subtaskscreen/{task_id}/{has_notification}" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <action android:name="android.intent.action.VIEW" />
