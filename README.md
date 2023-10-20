@@ -80,12 +80,11 @@ You can choose your font size as per your choice.
 
 [![playstore_logo (1)](https://user-images.githubusercontent.com/49050597/144359511-fd4cc136-3d9f-45d5-8598-506a45f8d170.png)](https://play.google.com/store/apps/details?id=com.lahsuak.apps.tasks)
 
-![githubss2](https://github.com/KaushalVasava/Tasks/assets/49050597/5463f610-0b54-439b-ab3e-4ae1d9242786)
-![githubss1](https://github.com/KaushalVasava/Tasks/assets/49050597/09e155ff-82a4-4feb-8d3b-452a4590476b)
 
 
 ![Untitled design (1)](https://github.com/KaushalVasava/Tasks/assets/49050597/1166b0c2-3977-4df2-8dd3-9979a6f454c6)
 
+![githubss2](https://github.com/KaushalVasava/Tasks/assets/49050597/1bb0cff1-3cfe-43c0-b6bf-d70b7756ce42)
 
 # Contribution
 You can contribute this project. Just Solve issue or update code and raise PR. I'll do code review and merge your changes into main branch.
