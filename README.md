@@ -77,8 +77,7 @@ You can choose your font size as per your choice.
 
 # Click here to Download App :
 
-
-[![playstore_logo (1)](https://user-images.githubusercontent.com/49050597/144359511-fd4cc136-3d9f-45d5-8598-506a45f8d170.png)](https://play.google.com/store/apps/details?id=com.lahsuak.apps.tasks)
+[![ic_playstore_github](https://github.com/KaushalVasava/Tasks/assets/49050597/3613c84c-d948-404c-866b-070f3ccbd381)](https://play.google.com/store/apps/details?id=com.lahsuak.apps.tasks)
 
 
 # Screenshots
