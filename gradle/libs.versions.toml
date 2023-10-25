@@ -13,7 +13,7 @@ androidxDataStore = "1.0.0"
 appWidget = "1.0.0"
 systemuicontroller = "0.32.0"
 biometric = "1.1.0"
-playCore = "1.10.3"
+playCore = "2.1.0"
 androidxTest = "1.5.0"
 
 # Gradle plugins
@@ -61,7 +61,7 @@ glance-appwidget = { module = "androidx.glance:glance-appwidget", version.ref = 
 biometric = { module = "androidx.biometric:biometric", version.ref = "biometric" }
 workManager = { module = "androidx.work:work-runtime-ktx", version.ref = "workManager"}
 androidx-lifecycle-lifecycleRuntimeKtx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycle" }
-android-play-core = { module = "com.google.android.play:core", version.ref = "playCore"}
+android-play-core = { module = "com.google.android.play:app-update-ktx", version.ref = "playCore"}
 rating = { module = "com.github.hotchemi:android-rate", version.ref = "rating"}
 leak-canery = { module = "com.squareup.leakcanary:leakcanary-android", version.ref = "leakcanary"}
 

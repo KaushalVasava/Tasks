@@ -12,6 +12,7 @@ import android.view.View
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
+import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
@@ -45,6 +46,8 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.play.core.appupdate.AppUpdateManager
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
+import com.google.android.play.core.appupdate.AppUpdateOptions
+import com.google.android.play.core.common.IntentSenderForResultStarter
 import com.google.android.play.core.install.InstallStateUpdatedListener
 import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.InstallStatus
@@ -80,6 +83,29 @@ class MainActivity : AppCompatActivity() {
     private lateinit var appUpdateManager: AppUpdateManager
     private lateinit var view: View
 
+    private val updateLauncher = registerForActivityResult(
+        ActivityResultContracts.StartIntentSenderForResult()
+    ) { result ->
+            // handle callback
+        if (result.data == null) return@registerForActivityResult
+        if (result.resultCode == UPDATE_REQUEST_CODE) {
+            toast { getString(R.string.downloading_start) }
+            if (result.resultCode != Activity.RESULT_OK) {
+                TaskApp.appContext.toast { getString(R.string.update_failed) }
+            }
+        }
+    }
+
+    private val updateResultStarter =
+        IntentSenderForResultStarter { intent, _, fillInIntent, flagsMask, flagsValues, _, _ ->
+            val request = IntentSenderRequest.Builder(intent)
+                .setFillInIntent(fillInIntent)
+                .setFlags(flagsValues, flagsMask)
+                .build()
+
+            updateLauncher.launch(request)
+        }
+
     companion object {
         var activityContext: Context? = null
         var shareTxt: String? = null
@@ -106,7 +132,6 @@ class MainActivity : AppCompatActivity() {
         appUpdateManager = AppUpdateManagerFactory.create(this)
         checkUpdate()
         appUpdateManager.registerListener(appUpdateListener)
-
         setContent {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 RequestPermission()
@@ -268,32 +293,20 @@ class MainActivity : AppCompatActivity() {
 
     private fun checkUpdate() {
         val appUpdateInfoTask = appUpdateManager.appUpdateInfo
-
         appUpdateInfoTask.addOnSuccessListener { appUpdateInfo ->
             if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
                 && appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE)
             ) {
                 try {
                     appUpdateManager.startUpdateFlowForResult(
-                        appUpdateInfo, AppUpdateType.FLEXIBLE,
-                        this, UPDATE_REQUEST_CODE
+                        appUpdateInfo,
+                        updateResultStarter,
+                        AppUpdateOptions.newBuilder(AppUpdateType.FLEXIBLE).build(),
+                        UPDATE_REQUEST_CODE
                     )
                 } catch (exception: IntentSender.SendIntentException) {
                     toast { exception.message.toString() }
                 }
-            }
-        }
-    }
-
-    @Deprecated("Deprecated in Java")
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        @Suppress(AppConstants.DEPRECATION)
-        super.onActivityResult(requestCode, resultCode, data)
-        if (data == null) return
-        if (requestCode == UPDATE_REQUEST_CODE) {
-            toast { getString(R.string.downloading_start) }
-            if (resultCode != Activity.RESULT_OK) {
-                TaskApp.appContext.toast { getString(R.string.update_failed) }
             }
         }
     }
