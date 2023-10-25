@@ -143,7 +143,7 @@ fun SubTaskScreen(
 ) {
     val showVoiceTask = settingPreferences.showVoiceIcon
 
-    val sharedText by rememberSaveable {
+    var sharedText by rememberSaveable {
         mutableStateOf(MainActivity.shareTxt)
     }
 
@@ -519,18 +519,20 @@ fun SubTaskScreen(
                     ) {
                         AnimatedVisibility(visible = !actionMode && showVoiceTask && !isSubTaskDone) {
                             FloatingActionButton(
+                                containerColor = color,
                                 onClick = {
                                     AppUtil.speakToAddTask(context, speakLauncher)
                                 }) {
                                 Icon(
                                     painterResource(R.drawable.ic_mic),
-                                    stringResource(R.string.add_task)
+                                    stringResource(R.string.add_task),
+                                    tint = MaterialTheme.colorScheme.surface
                                 )
                             }
                         }
                         AnimatedVisibility(visible = isSubTaskDone) {
                             FloatingActionButton(
-                                containerColor = MaterialTheme.colorScheme.errorContainer,
+                                containerColor = MaterialTheme.colorScheme.error,
                                 onClick = {
                                     subTaskViewModel.onDeleteAllCompletedClick()
                                     openDeleteDialog = true
@@ -545,9 +547,11 @@ fun SubTaskScreen(
                         AnimatedVisibility(visible = !actionMode && !isSubTaskDone) {
                             if (isFabExtended) {
                                 ExtendedFloatingActionButton(
+                                    containerColor = color,
                                     onClick = {
                                         subTaskId = null
                                         isNewTask = true
+                                        sharedText = null
                                         scope.launch {
                                             isBottomSheetOpened = true
                                             sheetState.show()
@@ -558,22 +562,27 @@ fun SubTaskScreen(
                                     icon = {
                                         Icon(
                                             painterResource(R.drawable.ic_create),
-                                            stringResource(R.string.add_task)
+                                            stringResource(R.string.add_task),
+                                            tint = MaterialTheme.colorScheme.surface
                                         )
                                     }
                                 )
                             } else {
-                                FloatingActionButton(onClick = {
-                                    subTaskId = null
-                                    isNewTask = true
-                                    scope.launch {
-                                        isBottomSheetOpened = true
-                                        sheetState.show()
-                                    }
-                                }) {
+                                FloatingActionButton(
+                                    containerColor = color,
+                                    onClick = {
+                                        subTaskId = null
+                                        isNewTask = true
+                                        sharedText = null
+                                        scope.launch {
+                                            isBottomSheetOpened = true
+                                            sheetState.show()
+                                        }
+                                    }) {
                                     Icon(
                                         painterResource(R.drawable.ic_create),
-                                        stringResource(R.string.add_task)
+                                        stringResource(R.string.add_task),
+                                        tint = MaterialTheme.colorScheme.surface
                                     )
                                 }
                             }

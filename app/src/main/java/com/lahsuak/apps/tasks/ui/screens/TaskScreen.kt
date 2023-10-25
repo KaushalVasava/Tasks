@@ -1,5 +1,7 @@
 package com.lahsuak.apps.tasks.ui.screens
 
+//noinspection UsingMaterialAndMaterial3Libraries
+//noinspection UsingMaterialAndMaterial3Libraries
 import android.app.Activity
 import android.speech.RecognizerIntent
 import androidx.activity.compose.BackHandler
@@ -34,9 +36,7 @@ import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridS
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
-//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.ModalBottomSheetLayout
-//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
@@ -97,8 +97,8 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
 import androidx.navigation.NavController
 import com.lahsuak.apps.tasks.R
-import com.lahsuak.apps.tasks.model.SortOrder
 import com.lahsuak.apps.tasks.data.model.Task
+import com.lahsuak.apps.tasks.model.SortOrder
 import com.lahsuak.apps.tasks.model.TaskEvent
 import com.lahsuak.apps.tasks.ui.MainActivity
 import com.lahsuak.apps.tasks.ui.navigation.NavigationItem
@@ -178,11 +178,6 @@ fun TaskScreen(
         }
     }
 
-    val lazyGridListState = rememberLazyStaggeredGridState()
-
-    val isFabExtended by remember {
-        derivedStateOf { lazyGridListState.firstVisibleItemIndex != 0 }
-    }
     var isListViewEnable by rememberSaveable {
         mutableStateOf(preference.viewType)
     }
@@ -310,10 +305,15 @@ fun TaskScreen(
         var openDialog by rememberSaveable {
             mutableStateOf(true)
         }
+
         ShareDialog(
             tasks,
             openDialog = openDialog,
-            onDialogStatusChange = { openDialog = it },
+            onDialogStatusChange = {
+                openDialog = it
+                MainActivity.shareTxt = null
+                sharedText = null
+            },
             onTaskAddButtonClick = {
                 taskId = null
                 isNewTask = true
@@ -332,6 +332,7 @@ fun TaskScreen(
         ) {
             openDialog = false
             sharedText = null
+            MainActivity.shareTxt = null
         }
     }
 
@@ -354,6 +355,13 @@ fun TaskScreen(
                 }
             }
         }) {
+
+        val lazyGridListState = rememberLazyStaggeredGridState()
+
+        val isFabExtended by remember {
+            derivedStateOf { lazyGridListState.firstVisibleItemIndex != 0 }
+        }
+
         Scaffold(
             topBar = {
                 if (actionMode) {
@@ -448,7 +456,6 @@ fun TaskScreen(
                                     )
                                 }
                             }
-
                         }
                     )
                 }
@@ -467,9 +474,11 @@ fun TaskScreen(
                             Arrangement.SpaceBetween,
                     ) {
                         AnimatedVisibility(visible = showVoiceTask && !isTaskDone) {
-                            FloatingActionButton(onClick = {
-                                AppUtil.speakToAddTask(context, speakLauncher)
-                            }) {
+                            FloatingActionButton(
+                                containerColor = MaterialTheme.colorScheme.primary,
+                                onClick = {
+                                    AppUtil.speakToAddTask(context, speakLauncher)
+                                }) {
                                 Icon(
                                     painterResource(R.drawable.ic_mic),
                                     stringResource(R.string.add_task)
@@ -478,7 +487,7 @@ fun TaskScreen(
                         }
                         AnimatedVisibility(visible = isTaskDone) {
                             FloatingActionButton(
-                                containerColor = MaterialTheme.colorScheme.errorContainer,
+                                containerColor = MaterialTheme.colorScheme.error,
                                 onClick = {
                                     taskViewModel.onDeleteAllCompletedClick()
                                     openDeleteDialog = true
@@ -497,6 +506,7 @@ fun TaskScreen(
                                         taskId = null
                                         isNewTask = true
                                         isBottomSheetOpened = true
+                                        sharedText = null
                                         scope.launch {
                                             sheetState.show()
                                         }
@@ -511,14 +521,17 @@ fun TaskScreen(
                                     }
                                 )
                             } else {
-                                FloatingActionButton(onClick = {
-                                    taskId = null
-                                    isNewTask = true
-                                    isBottomSheetOpened = true
-                                    scope.launch {
-                                        sheetState.show()
-                                    }
-                                }) {
+                                FloatingActionButton(
+                                    containerColor = MaterialTheme.colorScheme.primary,
+                                    onClick = {
+                                        taskId = null
+                                        isNewTask = true
+                                        isBottomSheetOpened = true
+                                        sharedText = null
+                                        scope.launch {
+                                            sheetState.show()
+                                        }
+                                    }) {
                                     Icon(
                                         painterResource(R.drawable.ic_create),
                                         stringResource(R.string.add_task)
@@ -704,7 +717,6 @@ fun TaskScreen(
                 }
             }
         }
-
     }
 }
 

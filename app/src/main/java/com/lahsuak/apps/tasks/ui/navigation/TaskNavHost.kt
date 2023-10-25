@@ -12,9 +12,9 @@ import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
 import com.lahsuak.apps.tasks.ui.screens.NotificationScreen
 import com.lahsuak.apps.tasks.ui.screens.OverviewScreen
-import com.lahsuak.apps.tasks.ui.screens.settings.SettingScreen
 import com.lahsuak.apps.tasks.ui.screens.SubTaskScreen
 import com.lahsuak.apps.tasks.ui.screens.TaskScreen
+import com.lahsuak.apps.tasks.ui.screens.settings.SettingScreen
 import com.lahsuak.apps.tasks.ui.viewmodel.NotificationViewModel
 import com.lahsuak.apps.tasks.ui.viewmodel.SettingsViewModel
 import com.lahsuak.apps.tasks.ui.viewmodel.SubTaskViewModel
