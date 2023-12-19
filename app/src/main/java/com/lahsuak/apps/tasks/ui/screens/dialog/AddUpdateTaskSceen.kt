@@ -158,6 +158,7 @@ fun AddUpdateTaskScreen(
             .systemBarsPadding()
     ) {
         Spacer(Modifier.height(8.dp))
+
         RoundedOutlinedTextField(
             value = title,
             onValueChange = {
@@ -451,7 +452,7 @@ fun AddUpdateTaskScreen(
                         val updateTask = task!!.copy(
                             title = title.trim(),
                             isImp = isImp,
-                            startDate = System.currentTimeMillis(),
+                            startDate = task!!.startDate ?: System.currentTimeMillis(),
                             endDate = task!!.endDate,
                             reminder = reminder,
                             color = TaskApp.categoryTypes.indexOfFirst {

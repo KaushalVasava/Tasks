@@ -15,7 +15,6 @@ object AppConstants {
     const val SUB_TASK_TABLE = "sub_task_table"
     const val NOTIFICATION_TABLE = "notification_table"
 
-
     const val TIME_FORMAT = "hh:mm a"
     const val DATE_FORMAT = "dd MM, yy"
     const val REMINDER_DATE_TIME_FORMAT = "dd MMM, yy hh:mm a"
@@ -24,8 +23,6 @@ object AppConstants {
     const val SHARE_FORMAT = "text/plain"
     const val SORT_ORDER = "sort_order"
     const val SORT_ORDER2 = "sort_order2"
-    const val HIDE_COMPLETED = "hide_completed"
-    const val HIDE_COMPLETED2 = "hide_completed2"
     const val SETTING = "SETTING_FOR_TASK_APP"
     const val DATABASE_NAME = "task_database"
     const val VIEW_TYPE = "VIEW_TYPE"
@@ -34,12 +31,13 @@ object AppConstants {
     const val TASK_ID = "taskId"
     const val SEPARATOR = " - "
 
-    const val DEPRECATION = "deprecation"
     const val SPLASH_SCREEN_TIME = 500L
     const val BACKUP_FILE_NAME = "Tasks.zip"
     const val ANY_MIME_TYPE = "*/*"
     const val BACKUP = "backup"
     const val RESTORE = "restore"
+    const val INSTAGRAM_URL = "https://www.instagram.com/kaushalvasava_apps/"
+
     // Preferences key
     object SharedPreference {
         //theme

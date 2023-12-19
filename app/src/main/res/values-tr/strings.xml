@@ -159,4 +159,5 @@
     <string name="restore_data">Verileri Geri Yükle</string>
     <string name="backup_data">Verileri Yedekle</string>
     <string name="security_and_data">Güvenlik ve Veriler</string>
+    <string name="follow_instagram">Beni Instagram\'da takip et</string>
 </resources>

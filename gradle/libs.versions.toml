@@ -1,12 +1,12 @@
 [versions]
-composeActivity = "1.8.0"
-composeVersion = "1.5.3"
+composeActivity = "1.8.2"
+composeVersion = "1.5.4"
 appCompat = "1.6.1"
-androidMaterial = "1.10.0"
-androidMaterialCompose = "1.6.0-alpha07"
-androidMaterial3Compose = "1.2.0-alpha09"
+androidMaterial = "1.11.0"
+androidMaterialCompose = "1.6.0-beta03"
+androidMaterial3Compose = "1.2.0-beta01"
 androidxCore = "1.12.0"
-androidxNav = "2.7.4"
+androidxNav = "2.7.5"
 lifecycleViewmodelKtx = "2.6.2"
 viewmodelCompose = "2.6.2"
 androidxDataStore = "1.0.0"
@@ -14,27 +14,27 @@ appWidget = "1.0.0"
 systemuicontroller = "0.32.0"
 biometric = "1.1.0"
 playCore = "2.1.0"
-androidxTest = "1.5.0"
+androidxTest = "4.13.2"
 
 # Gradle plugins
-gradlePlugins-agp = "8.1.2"
+gradlePlugins-agp = "8.1.0"
 
 #hilt
 hilt = "2.48.1"
-hiltCompiler = "1.0.0"
+hiltCompiler = "1.1.0"
 
 # testing
 junit = "4.13.2"
 espresso-core = "3.5.1"
 core-testing = "2.2.0"
 # verification
-kotlinGradlePlugin = "1.9.10"
-kotlin = "1.9.10"
-ksp = "1.9.10-1.0.13"
+#kotlinGradlePlugin = "1.9.10"
+kotlin = "1.9.20"
+ksp = "1.9.20-1.0.14"
 
-lifecycle = "2.6.2"
-room = "2.5.2"
-workManager = "2.8.1"
+#lifecycle = "2.6.2"
+room = "2.6.1"
+workManager = "2.9.0"
 #rating
 rating = "1.0.1"
 
@@ -60,7 +60,7 @@ system-controller = { module = "com.google.accompanist:accompanist-systemuicontr
 glance-appwidget = { module = "androidx.glance:glance-appwidget", version.ref = "appWidget" }
 biometric = { module = "androidx.biometric:biometric", version.ref = "biometric" }
 workManager = { module = "androidx.work:work-runtime-ktx", version.ref = "workManager"}
-androidx-lifecycle-lifecycleRuntimeKtx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycle" }
+#androidx-lifecycle-lifecycleRuntimeKtx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycle" }
 android-play-core = { module = "com.google.android.play:app-update-ktx", version.ref = "playCore"}
 rating = { module = "com.github.hotchemi:android-rate", version.ref = "rating"}
 leak-canery = { module = "com.squareup.leakcanary:leakcanary-android", version.ref = "leakcanary"}
@@ -76,8 +76,6 @@ androidx-room-roomKtx = { module = "androidx.room:room-ktx", version.ref = "room
 androidx-room-core-testing = { module = "androidx.arch.core:core-testing", version.ref = "core-testing" }
 
 # Testing
-androidx-test-core = { module = "androidx.test:core", version.ref = "androidxTest" }
-androidx-junit= { module = "junit:junit", version.ref = "androidxTest" }
 androidx-test-ext-junit = { module = "androidx.test.ext:junit", version.ref = "androidxTest" }
 compose-ui-test-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "composeVersion" }
 compose-ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest", version.ref = "composeVersion" }
@@ -89,10 +87,9 @@ espresso ={ module = "androidx.test.espresso:espresso-core", version.ref = "espr
 
 # DI stuff
 google-hiltAndroid = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
-google-hiltCompiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hilt" }
 androidx-hiltCompiler = { module = "androidx.hilt:hilt-compiler", version.ref = "hiltCompiler" }
 
-kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlinGradlePlugin" }
+#kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlinGradlePlugin" }
 
 #[bundles]
 

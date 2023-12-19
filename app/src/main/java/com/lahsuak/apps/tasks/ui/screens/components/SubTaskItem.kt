@@ -130,6 +130,7 @@ fun SubTaskItem(
                                     onCompletedTask(it)
                                     isChecked = it
                                 },
+                                activeColor = color,
                                 modifier = Modifier
                                     .size(40.dp)
                                     .align(Alignment.CenterVertically)

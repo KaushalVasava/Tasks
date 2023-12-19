@@ -1,5 +1,4 @@
 <resources>
-    <!-- Reply Preference -->
     <string-array name="font_entries">
         <item>@string/very_small</item>
         <item>@string/medium_small</item>
@@ -49,7 +48,6 @@
         <item>Русский (Russian)</item>
         <item>Español (Spanish)</item>
         <item>Türk (Turkish)</item>
-        <item>(Urdu) اردو</item>
     </string-array>
 
     <string-array name="language_values">
@@ -72,6 +70,5 @@
         <item>ru</item>
         <item>es</item>
         <item>tr</item>
-        <item>ur</item>
     </string-array>
 </resources>
