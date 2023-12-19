@@ -1,7 +1,5 @@
 package com.lahsuak.apps.tasks.ui.screens
 
-//noinspection UsingMaterialAndMaterial3Libraries
-//noinspection UsingMaterialAndMaterial3Libraries
 import android.app.Activity
 import android.speech.RecognizerIntent
 import androidx.activity.compose.BackHandler
@@ -36,7 +34,9 @@ import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridS
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
+//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.ModalBottomSheetLayout
+//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
@@ -502,6 +502,7 @@ fun TaskScreen(
                         AnimatedVisibility(visible = !isTaskDone) {
                             if (isFabExtended) {
                                 ExtendedFloatingActionButton(
+                                    containerColor = MaterialTheme.colorScheme.primary,
                                     onClick = {
                                         taskId = null
                                         isNewTask = true

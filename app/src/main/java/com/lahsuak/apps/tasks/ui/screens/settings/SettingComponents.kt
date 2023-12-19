@@ -2,6 +2,7 @@ package com.lahsuak.apps.tasks.ui.screens.settings
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.annotation.DrawableRes
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -70,7 +71,10 @@ fun DropDownPreference(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(8.dp)
+                .semantics(mergeDescendants = true) {}
+                .toggleable(isDropDownExpanded, onValueChange = {
+                    isDropDownExpanded = it
+                })
         ) {
             if (icon != null) {
                 Icon(
@@ -87,12 +91,7 @@ fun DropDownPreference(
                     Row(
                         Modifier
                             .padding(horizontal = 8.dp)
-                            .clip(RoundedCornerShape(8.dp))
-                            .background(MaterialTheme.colorScheme.surfaceVariant)
-                            .semantics(mergeDescendants = true) {}
-                            .toggleable(isDropDownExpanded, onValueChange = {
-                                isDropDownExpanded = it
-                            }),
+                            .clip(RoundedCornerShape(8.dp)),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(4.dp)
                     ) {
@@ -143,18 +142,18 @@ fun ClickPreference(
     placeHolder: String? = null,
     onClick: () -> Unit,
 ) {
-    Card {
+    Card(onClick = { onClick() }) {
         Row(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
-                .clickable { onClick() }
                 .fillMaxWidth()
                 .padding(8.dp)
         ) {
             if (icon != null) {
-                Icon(
-                    painterResource(id = icon), contentDescription = null,
+                Image(
+                    painterResource(id = icon),
+                    contentDescription = null,
                     modifier = Modifier.padding(4.dp)
                 )
             }

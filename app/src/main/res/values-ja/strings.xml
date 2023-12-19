@@ -156,4 +156,5 @@
     <string name="restore_data">データの復元</string>
     <string name="backup_data">バックアップデータ</string>
     <string name="security_and_data">セキュリティとデータ</string>
+    <string name="follow_instagram">インスタグラムでフォローしてください</string>
 </resources>

@@ -156,4 +156,5 @@
     <string name="restore_data">데이터 복원</string>
     <string name="backup_data">데이터 백업</string>
     <string name="security_and_data">보안 및 데이터</string>
+    <string name="follow_instagram">인스타그램에서 나를 팔로우하세요</string>
 </resources>

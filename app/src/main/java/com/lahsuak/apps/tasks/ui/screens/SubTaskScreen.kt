@@ -216,7 +216,7 @@ fun SubTaskScreen(
             taskViewModel.update(
                 task.copy(
                     progress = progress,
-                    startDate = System.currentTimeMillis(),
+                    startDate = task.startDate ?: System.currentTimeMillis(),
                     subTaskList = AppUtil.getSubTasks(subTasks.map { it.subTitle })
                 )
             )
@@ -470,7 +470,8 @@ fun SubTaskScreen(
                                     taskViewModel.update(
                                         task.copy(
                                             progress = progress,
-                                            startDate = System.currentTimeMillis(),
+                                            startDate = task.startDate
+                                                ?: System.currentTimeMillis(),
                                             subTaskList = AppUtil.getSubTasks(subTasks.map { it.subTitle })
                                         )
                                     )
@@ -557,7 +558,10 @@ fun SubTaskScreen(
                                             sheetState.show()
                                         }
                                     }, text = {
-                                        Text(stringResource(R.string.add_task))
+                                        Text(
+                                            stringResource(R.string.add_task),
+                                            color = MaterialTheme.colorScheme.surface
+                                        )
                                     },
                                     icon = {
                                         Icon(

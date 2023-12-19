@@ -156,4 +156,5 @@
     <string name='restore_data'>डेटा पुनर्स्थापित करें</string>
     <string name='backup_data'>बैकअप डेटा</string>
     <string name='security_and_data'>सुरक्षा और डेटा</string>
+    <string name="follow_instagram">मुझे इंस्टाग्राम पर फॉलो करें</string>
 </resources>

@@ -13,7 +13,7 @@ android {
         applicationId = "com.lahsuak.apps.tasks"
         minSdk = 21
         targetSdk = 34
-        versionCode = 23
+        versionCode = 24
         versionName = "1.0.3"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -24,7 +24,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.3"
+        kotlinCompilerExtensionVersion = "1.5.4"
     }
     bundle {
         language {

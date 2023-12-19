@@ -201,7 +201,7 @@ fun AddUpdateSubTaskScreen(
                         val newTask = subTask.copy(
                             subTitle = title.trim(),
                             isImportant = isImp,
-                            dateTime = System.currentTimeMillis(),
+                            dateTime =  subTask.dateTime ?: System.currentTimeMillis(),
                             reminder = reminder
                         )
                         subTaskViewModel.updateSubTask(newTask)

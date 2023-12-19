@@ -22,15 +22,15 @@ fun CircleCheckbox(
     onCheckedChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
+    activeColor: Color = MaterialTheme.colorScheme.primary,
 ) {
-    val color = MaterialTheme.colorScheme
     val icon =
         if (checked) painterResource(id = R.drawable.ic_checked)
         else painterResource(id = R.drawable.ic_unchecked)
     val tint =
-        if (checked) color.primary.copy(alpha = 0.8f)
-        else color.onSurface.copy(alpha = 0.8f)
-    val background = if (checked) color.surface else Color.Transparent
+        if (checked) activeColor.copy(alpha = 0.8f)
+        else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f)
+    val background = if (checked) MaterialTheme.colorScheme.surface else Color.Transparent
 
     IconButton(
         onClick = { onCheckedChange(!checked) },
