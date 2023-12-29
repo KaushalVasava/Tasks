@@ -7,9 +7,9 @@ Tasks app is an ads-free to-do list, planner & task app for managing and organiz
 
 
 # Screenshots
-![Untitled design (1)](https://github.com/KaushalVasava/Tasks/assets/49050597/1166b0c2-3977-4df2-8dd3-9979a6f454c6)
 
-![githubss2](https://github.com/KaushalVasava/Tasks/assets/49050597/1bb0cff1-3cfe-43c0-b6bf-d70b7756ce42)
+![5](https://github.com/KaushalVasava/Tasks/assets/49050597/9310c158-a0cd-4684-93ff-4857f2d81a69)
+![6](https://github.com/KaushalVasava/Tasks/assets/49050597/f80dca34-440b-405b-9714-4ff223ce0ec6)
 
 # Video
 https://youtu.be/yIsCbZgqG-4?si=v7qwV2CuUhkwTkxK
