@@ -5,6 +5,10 @@ Tasks app is an ads-free to-do list, planner & task app for managing and organiz
 
 [![ic_playstore_github](https://github-production-user-asset-6210df.s3.amazonaws.com/49050597/276943414-3613c84c-d948-404c-866b-070f3ccbd381.png)](https://play.google.com/store/apps/details?id=com.lahsuak.apps.tasks)
 
+# Support me
+If you like my work you can support me via 
+
+[![buymecoffee1 (2)](https://github.com/KaushalVasava/Tasks/assets/49050597/327844b7-b9a4-4c5d-beb7-e9e177c82880)](https://www.buymeacoffee.com/kaushal.developer)
 
 # Screenshots
 
