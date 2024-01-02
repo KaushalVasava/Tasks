@@ -592,6 +592,9 @@ fun SubTaskScreen(
                             }
                         }
                     }
+                },
+                snackbarHost = {
+                    androidx.compose.material3.SnackbarHost(snackBarHostState)
                 }
             ) { paddingValues ->
                 if (subTasks.isEmpty()) {
@@ -813,7 +816,7 @@ fun SubTaskScreen(
                                 if (!actionMode) {
                                     if (isDone) {
                                         subTaskViewModel.onSubTaskSwiped(subTask)
-                                        isSnackBarShow = false
+                                        isSnackBarShow = true
                                     } else {
                                         subTaskViewModel.setSubTask(subTask)
                                         isNewTask = false
@@ -827,6 +830,9 @@ fun SubTaskScreen(
                             }
                         }
                         Spacer(Modifier.height(8.dp))
+                    }
+                    item(span = StaggeredGridItemSpan.FullLine) {
+                        Row(Modifier.fillMaxWidth().height(60.dp)){}
                     }
                 }
             }
@@ -843,7 +849,6 @@ fun SubTaskScreen(
                         sheetState.show()
                     }
                     MainActivity.shareTxt = null
-//                    sharedText = null
                 }
             }
         }

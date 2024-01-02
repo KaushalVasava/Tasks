@@ -19,7 +19,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -54,6 +53,7 @@ fun SettingScreen(
         initial = SettingPreferences(
             theme = DEFAULT_THEME,
             fontSize = DEFAULT_FONT_SIZE,
+            swipeGestureEnable = true,
             showVoiceIcon = true,
             showCopyIcon = true,
             showProgress = false,
@@ -173,6 +173,17 @@ fun SettingScreen(
                                 settingViewModel.onFontSizeChange(item as String, context)
                             }
                         ) {},
+
+                        SettingItem(
+                            title = "Swipe Gesture Enable",
+                            placeholder = if (preference.swipeGestureEnable) enable else disable,
+                            icon = R.drawable.ic_swipe,
+                            type = PreferenceType.SWITCH,
+                            initialValue = preference.swipeGestureEnable,
+                            action = { _, _ -> }
+                        ) {
+                            settingViewModel.onSwipePreferenceChange(it, context)
+                        },
                         SettingItem(
                             title = context.getString(R.string.show_voice_to_add_task_option),
                             placeholder = if (preference.showVoiceIcon) enable else disable,

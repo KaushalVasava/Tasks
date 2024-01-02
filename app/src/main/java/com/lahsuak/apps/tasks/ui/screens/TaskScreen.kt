@@ -716,6 +716,9 @@ fun TaskScreen(
                     }
                     Spacer(Modifier.height(8.dp))
                 }
+                item(span = StaggeredGridItemSpan.FullLine) {
+                    Row(Modifier.fillMaxWidth().height(60.dp)){}
+                }
             }
         }
     }

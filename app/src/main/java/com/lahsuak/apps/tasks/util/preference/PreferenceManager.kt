@@ -68,6 +68,7 @@ class PreferenceManager @Inject constructor(@ApplicationContext context: Context
         .map { preferences ->
             val theme = preferences[PreferencesKeys.THEME] ?: DEFAULT_THEME
             val fontSize = preferences[PreferencesKeys.FONT_SIZE] ?: DEFAULT_FONT_SIZE
+            val swipeGestureEnable = preferences[PreferencesKeys.SWIPE_GESTURE] ?: true
             val showVoice = preferences[PreferencesKeys.VOICE] ?: true
             val showReminder = preferences[PreferencesKeys.REMINDER] ?: true
             val showCopy = preferences[PreferencesKeys.COPY] ?: true
@@ -79,6 +80,7 @@ class PreferenceManager @Inject constructor(@ApplicationContext context: Context
             SettingPreferences(
                 theme,
                 fontSize,
+                swipeGestureEnable,
                 showVoice,
                 showCopy,
                 showProgress,
@@ -122,6 +124,11 @@ class PreferenceManager @Inject constructor(@ApplicationContext context: Context
     suspend fun updateVoiceIconVisibility(isVisible: Boolean, context: Context) {
         context.dataStore.edit { preferences ->
             preferences[PreferencesKeys.VOICE] = isVisible
+        }
+    }
+    suspend fun updateSwipeIconVisibility(isVisible: Boolean, context: Context) {
+        context.dataStore.edit { preferences ->
+            preferences[PreferencesKeys.SWIPE_GESTURE] = isVisible
         }
     }
 
@@ -168,6 +175,7 @@ class PreferenceManager @Inject constructor(@ApplicationContext context: Context
 
         val THEME = stringPreferencesKey(AppConstants.SharedPreference.THEME_KEY)
         val FONT_SIZE = stringPreferencesKey(AppConstants.SharedPreference.FONT_SIZE_KEY)
+        val SWIPE_GESTURE = booleanPreferencesKey(AppConstants.SharedPreference.SWIPE_GESTURE_KEY)
         val VOICE = booleanPreferencesKey(AppConstants.SharedPreference.SHOW_VOICE_TASK_KEY)
         val REMINDER = booleanPreferencesKey(AppConstants.SharedPreference.SHOW_REMINDER_KEY)
         val PROGRESS = booleanPreferencesKey(AppConstants.SharedPreference.TASK_PROGRESS_KEY)

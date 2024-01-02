@@ -5,7 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentSender
 import android.content.pm.PackageManager
-import android.content.res.Configuration.*
+import android.content.res.Configuration.UI_MODE_NIGHT_MASK
 import android.os.Build
 import android.os.Bundle
 import android.view.View
@@ -148,6 +148,7 @@ class MainActivity : AppCompatActivity() {
                     initial = SettingPreferences(
                         theme = AppConstants.SharedPreference.DEFAULT_THEME,
                         fontSize = AppConstants.SharedPreference.DEFAULT_FONT_SIZE,
+                        swipeGestureEnable = true,
                         showVoiceIcon = true,
                         showCopyIcon = true,
                         showProgress = false,
