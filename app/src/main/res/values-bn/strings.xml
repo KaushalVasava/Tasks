@@ -159,5 +159,7 @@
     <string name="restore_data">ডেটা পুনরুদ্ধার করুন</string>
     <string name="backup_data">ব্যাকআপ ডেটা</string>৷
     <string name="security_and_data">নিরাপত্তা এবং ডেটা</string>
-    <string name="follow_instagram">ইনস্টাগ্রামে আমাকে অনুসরণ করুন</string>৷
+    <string name="follow_instagram">ইনস্টাগ্রামে আমাকে অনুসরণ করুন</string>
+    <string name="donate">আমাকে সমর্থন করুন</string>
+    <string name="donate_me_desc">আপনি যদি আমার অ্যাপটি পছন্দ করেন এবং এই অ্যাপটি উন্নত করতে আমাকে সহায়তা করতে চান তাহলে অনুগ্রহ করে কিছু অর্থ দান করুন</string>
 </resources>

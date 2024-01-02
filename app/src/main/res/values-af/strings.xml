@@ -159,4 +159,6 @@
     <string name="backup_data">Rugsteundata</string>
     <string name="security_and_data">Sekuriteit en data</string>
     <string name="follow_instagram">Volg my op die Instagram</string>
-</resources>
+    <string name="donate">Ondersteun my</string>
+    <string name="donate_me_desc">As jy van my toepassing hou en my wil ondersteun om hierdie toepassing te verbeter, skenk asseblief \'n geldjie</string>
+ </resources>

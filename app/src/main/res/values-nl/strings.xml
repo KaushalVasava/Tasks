@@ -159,4 +159,6 @@
     <string name="backup_data">Back-upgegevens</string>
     <string name="security_and_data">Beveiliging en gegevens</string>
     <string name="follow_instagram">Volg mij op Instagram</string>
+    <string name="donate">Steun mij</string>
+    <string name="donate_me_desc">Als je mijn app leuk vindt en me wilt steunen bij het verbeteren van deze app, doneer dan alsjeblieft wat geld</string>
 </resources>

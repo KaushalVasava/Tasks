@@ -157,4 +157,6 @@
     <string name='backup_data'>बैकअप डेटा</string>
     <string name='security_and_data'>सुरक्षा और डेटा</string>
     <string name="follow_instagram">मुझे इंस्टाग्राम पर फॉलो करें</string>
+    <string name='donate'>मेरा समर्थन करें</string>
+    <string name = "donate_me_desc">यदि आपको मेरा ऐप पसंद है और आप इस ऐप को बेहतर बनाने में मेरा समर्थन करना चाहते हैं तो कृपया कुछ पैसे दान करें</string>
 </resources>

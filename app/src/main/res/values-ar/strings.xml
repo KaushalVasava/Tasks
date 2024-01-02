@@ -156,4 +156,6 @@
     <string name="backup_data">بيانات النسخ الاحتياطي</string>
     <string name="security_and_data">الأمان والبيانات</string>
     <string name="follow_instagram">تابعوني على الانستغرام</string>
+    <string name="donate">ادعمني</string>
+    <string name="donate_me_desc">إذا أعجبك تطبيقي وتريد دعمي في تحسين هذا التطبيق، فيرجى التبرع ببعض المال</string>
 </resources>

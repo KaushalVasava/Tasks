@@ -314,6 +314,15 @@ fun SettingScreen(
                     category = context.getString(R.string.more),
                     items = listOf(
                         SettingItem(
+                            title = context.getString(R.string.donate),
+                            placeholder = context.getString(R.string.donate_me_desc),
+                            icon = R.drawable.ic_coffee,
+                            type = PreferenceType.NORMAL,
+                            action = { _, _ ->
+                                AppUtil.openWebsite(context, AppConstants.DONATION)
+                            }
+                        ) {},
+                        SettingItem(
                             title = context.getString(R.string.share_app),
                             placeholder = context.getString(R.string.share_text),
                             icon = R.drawable.ic_share,

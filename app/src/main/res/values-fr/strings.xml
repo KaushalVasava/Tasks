@@ -24,7 +24,6 @@
     </string>
     <string name="attachment_summary_off">Télécharger uniquement les pièces jointes sur demande manuelle</string>
 
-
     <string name="feedback_text">Envoyer des commentaires, si l\'application continue de planter \'Effacer les données de l\'application\' ou envoyez-lui un e-mail</string>
     <string name="rating_text">Vous aimez cette application ? Faites-nous savoir sur Google Play Store comment nous pouvons l\'améliorer</string>
     <string name="more_app_text">Découvrez d\'autres applications</string>
@@ -160,4 +159,6 @@
     <string name="backup_data">Données de sauvegarde</string>
     <string name="security_and_data">Sécurité et données</string>
     <string name="follow_instagram">Suivez-moi sur Instagram</string>
+    <string name="donate">Soutenez-moi</string>
+    <string name="donate_me_desc">Si vous aimez mon application et souhaitez me soutenir dans l\'amélioration de cette application, veuillez donner de l\'argent</string>
 </resources>

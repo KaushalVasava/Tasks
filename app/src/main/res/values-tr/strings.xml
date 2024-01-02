@@ -160,4 +160,6 @@
     <string name="backup_data">Verileri Yedekle</string>
     <string name="security_and_data">Güvenlik ve Veriler</string>
     <string name="follow_instagram">Beni Instagram\'da takip et</string>
+    <string name="donate">Beni destekleyin</string>
+    <string name="donate_me_desc">Uygulamamı beğendiyseniz ve bu uygulamayı geliştirmemde bana destek olmak istiyorsanız lütfen biraz para bağışlayın</string>
 </resources>

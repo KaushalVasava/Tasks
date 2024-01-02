@@ -37,6 +37,7 @@ object AppConstants {
     const val BACKUP = "backup"
     const val RESTORE = "restore"
     const val INSTAGRAM_URL = "https://www.instagram.com/kaushalvasava_apps/"
+    const val DONATION = "https://www.buymeacoffee.com/kaushal.developer"
 
     // Preferences key
     object SharedPreference {

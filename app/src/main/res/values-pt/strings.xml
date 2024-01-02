@@ -159,4 +159,6 @@
     <string name="backup_data">Dados de backup</string>
     <string name="security_and_data">Segurança e dados</string>
     <string name="follow_instagram">Siga-me no Instagram</string>
+    <string name="donate">Apoie-me</string>
+    <string name="donate_me_desc">Se você gosta do meu aplicativo e deseja me apoiar para melhorá-lo, doe algum dinheiro</string>
 </resources>
