@@ -57,6 +57,9 @@ class SettingsViewModel @Inject constructor(
         preferenceManager.updateFontSize(fontSize, context)
     }
 
+    fun onSwipePreferenceChange(isVisible: Boolean, context: Context) = viewModelScope.launch {
+        preferenceManager.updateSwipeIconVisibility(isVisible, context)
+    }
     fun onVoiceIconChange(isVisible: Boolean, context: Context) = viewModelScope.launch {
         preferenceManager.updateVoiceIconVisibility(isVisible, context)
     }

@@ -162,8 +162,8 @@ fun AddUpdateSubTaskScreen(
                         if (subTask != null) {
                             AppUtil.setReminderWorkRequest(
                                 context,
-                                subTask.subTitle,
-                                subTask,
+                                title.trim(),
+                                subTask.copy(subTitle = title.trim()),
                                 calendar
                             )
                             subTask.reminder = calendar.timeInMillis
@@ -201,7 +201,7 @@ fun AddUpdateSubTaskScreen(
                         val newTask = subTask.copy(
                             subTitle = title.trim(),
                             isImportant = isImp,
-                            dateTime =  subTask.dateTime ?: System.currentTimeMillis(),
+                            dateTime = System.currentTimeMillis(),
                             reminder = reminder
                         )
                         subTaskViewModel.updateSubTask(newTask)

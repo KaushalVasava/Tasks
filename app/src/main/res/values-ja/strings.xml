@@ -157,4 +157,6 @@
     <string name="backup_data">バックアップデータ</string>
     <string name="security_and_data">セキュリティとデータ</string>
     <string name="follow_instagram">インスタグラムでフォローしてください</string>
+    <string name="donate">サポートしてください</string>
+    <string name="donate_me_desc">私のアプリが気に入って、このアプリの改善をサポートしたい場合は、お金を寄付してください</string>
 </resources>

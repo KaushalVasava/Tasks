@@ -37,7 +37,9 @@ object AppConstants {
     const val BACKUP = "backup"
     const val RESTORE = "restore"
     const val INSTAGRAM_URL = "https://www.instagram.com/kaushalvasava_apps/"
+    const val DONATION = "https://www.buymeacoffee.com/kaushal.developer"
 
+    const val DEEP_LINK_SUBTASK  = "tasks://com.lahsuak.apps.tasks/subtaskscreen/"
     // Preferences key
     object SharedPreference {
         //theme
@@ -52,6 +54,7 @@ object AppConstants {
         const val SHOW_COPY_KEY = "show_copy"
         const val SHOW_SUBTASK_KEY = "show_subtask"
         const val SHOW_REMINDER_KEY = "show_reminder"
+        const val SWIPE_GESTURE_KEY = "swipe_gesture_key"
         const val SHOW_VOICE_TASK_KEY = "show_voice_task_button"
         const val DEFAULT_FONT_SIZE = "18"
 

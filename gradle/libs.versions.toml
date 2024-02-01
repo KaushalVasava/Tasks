@@ -1,14 +1,14 @@
 [versions]
 composeActivity = "1.8.2"
-composeVersion = "1.5.4"
+composeVersion = "1.6.0"
 appCompat = "1.6.1"
 androidMaterial = "1.11.0"
-androidMaterialCompose = "1.6.0-beta03"
-androidMaterial3Compose = "1.2.0-beta01"
+androidMaterialCompose = "1.6.0"
+androidMaterial3Compose = "1.2.0-rc01"
 androidxCore = "1.12.0"
-androidxNav = "2.7.5"
-lifecycleViewmodelKtx = "2.6.2"
-viewmodelCompose = "2.6.2"
+androidxNav = "2.7.6"
+lifecycleViewmodelKtx = "2.7.0"
+viewmodelCompose = "2.7.0"
 androidxDataStore = "1.0.0"
 appWidget = "1.0.0"
 systemuicontroller = "0.32.0"
@@ -17,7 +17,7 @@ playCore = "2.1.0"
 androidxTest = "4.13.2"
 
 # Gradle plugins
-gradlePlugins-agp = "8.1.0"
+gradlePlugins-agp = "8.2.2"
 
 #hilt
 hilt = "2.48.1"
@@ -29,17 +29,16 @@ espresso-core = "3.5.1"
 core-testing = "2.2.0"
 # verification
 #kotlinGradlePlugin = "1.9.10"
-kotlin = "1.9.20"
+kotlin = "1.9.21"
 ksp = "1.9.20-1.0.14"
 
 #lifecycle = "2.6.2"
 room = "2.6.1"
 workManager = "2.9.0"
-#rating
-rating = "1.0.1"
 
 #leak canery
 leakcanary = "2.10"
+reviewKtx = "2.0.1"
 
 
 [libraries]
@@ -62,7 +61,6 @@ biometric = { module = "androidx.biometric:biometric", version.ref = "biometric"
 workManager = { module = "androidx.work:work-runtime-ktx", version.ref = "workManager"}
 #androidx-lifecycle-lifecycleRuntimeKtx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycle" }
 android-play-core = { module = "com.google.android.play:app-update-ktx", version.ref = "playCore"}
-rating = { module = "com.github.hotchemi:android-rate", version.ref = "rating"}
 leak-canery = { module = "com.squareup.leakcanary:leakcanary-android", version.ref = "leakcanary"}
 
 #material
@@ -88,6 +86,7 @@ espresso ={ module = "androidx.test.espresso:espresso-core", version.ref = "espr
 # DI stuff
 google-hiltAndroid = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
 androidx-hiltCompiler = { module = "androidx.hilt:hilt-compiler", version.ref = "hiltCompiler" }
+review-ktx = { group = "com.google.android.play", name = "review-ktx", version.ref = "reviewKtx" }
 
 #kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlinGradlePlugin" }
 
