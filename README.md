@@ -1,5 +1,5 @@
 # Task App
-Tasks app is an ads-free to-do list, planner & task app for managing and organizing your daily tasks, to-do lists, notes, reminders, checklists, calendar events, grocery lists, and much more.
+Tasks app is todo list, planner & task app for managing and organizing your daily tasks, to-do lists, notes, reminders, checklists, calendar events, grocery lists, and much more.
 
 # Click here to Download App :
 
