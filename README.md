@@ -20,15 +20,25 @@ https://youtu.be/yIsCbZgqG-4?si=v7qwV2CuUhkwTkxK
 
 # Special Features:
 🗓️ ALL-IN-ONE PLANNER FOR GETTING THINGS DONE
+
 🌈📂 Categories by Colors
+
 🔗🌐📞Link to Open URL and Call
+
 📈 Progress View
+
 🌐 Multi-Language supports
+
 🔄🔁 Backup & Restore
+
 🔒 App lock
+
 📊 Task Overview: 
+
 ⏰🔔 Reminders & Notifications:
+
 🅰 Custom Font Size:
+
 
 # Following Android component you will learn:
 - Kotlin
