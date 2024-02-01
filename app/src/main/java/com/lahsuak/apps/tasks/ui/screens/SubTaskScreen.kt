@@ -102,8 +102,8 @@ import androidx.navigation.NavController
 import com.lahsuak.apps.tasks.R
 import com.lahsuak.apps.tasks.TaskApp
 import com.lahsuak.apps.tasks.data.model.Notification
-import com.lahsuak.apps.tasks.model.SortOrder
 import com.lahsuak.apps.tasks.data.model.SubTask
+import com.lahsuak.apps.tasks.model.SortOrder
 import com.lahsuak.apps.tasks.model.SubTaskEvent
 import com.lahsuak.apps.tasks.ui.MainActivity
 import com.lahsuak.apps.tasks.ui.navigation.NavigationItem

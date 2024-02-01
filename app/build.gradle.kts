@@ -13,7 +13,7 @@ android {
         applicationId = "com.lahsuak.apps.tasks"
         minSdk = 21
         targetSdk = 34
-        versionCode = 26
+        versionCode = 27
         versionName = "1.0.5"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -24,7 +24,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.4"
+        kotlinCompilerExtensionVersion = "1.5.6"
     }
     bundle {
         language {
@@ -79,6 +79,7 @@ dependencies {
     implementation(libs.biometric)
     //work manager
     implementation(libs.workManager)
+    implementation(libs.review.ktx)
     //testing
     testImplementation(libs.junit.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)
@@ -100,7 +101,6 @@ dependencies {
     implementation(libs.androidx.datastorePref)
     // Play core library
     implementation(libs.android.play.core)
-    //rate dialog
-    implementation(libs.rating)
+    //review
     debugImplementation(libs.leak.canery)
 }

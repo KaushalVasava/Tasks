@@ -39,6 +39,7 @@ object AppConstants {
     const val INSTAGRAM_URL = "https://www.instagram.com/kaushalvasava_apps/"
     const val DONATION = "https://www.buymeacoffee.com/kaushal.developer"
 
+    const val DEEP_LINK_SUBTASK  = "tasks://com.lahsuak.apps.tasks/subtaskscreen/"
     // Preferences key
     object SharedPreference {
         //theme

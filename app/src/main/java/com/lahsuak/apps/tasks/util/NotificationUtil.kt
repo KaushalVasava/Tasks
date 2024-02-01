@@ -11,7 +11,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Build
-import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -84,7 +83,7 @@ object NotificationUtil {
         }
         val deepLinkIntent = Intent(
             Intent.ACTION_VIEW,
-            "tasks://apps.com.lahsuak.apps.tasks/subtaskscreen/${task.id}/true".toUri(),
+            "${AppConstants.DEEP_LINK_SUBTASK}${task.id}/true".toUri(),
             context,
             MainActivity::class.java
         )

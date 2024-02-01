@@ -9,6 +9,7 @@ import android.content.res.Configuration.UI_MODE_NIGHT_MASK
 import android.os.Build
 import android.os.Bundle
 import android.view.View
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
@@ -52,6 +53,9 @@ import com.google.android.play.core.install.InstallStateUpdatedListener
 import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.InstallStatus
 import com.google.android.play.core.install.model.UpdateAvailability
+import com.google.android.play.core.review.ReviewInfo
+import com.google.android.play.core.review.ReviewManager
+import com.google.android.play.core.review.ReviewManagerFactory
 import com.lahsuak.apps.tasks.R
 import com.lahsuak.apps.tasks.TaskApp
 import com.lahsuak.apps.tasks.ui.navigation.TaskNavHost
@@ -82,11 +86,13 @@ class MainActivity : AppCompatActivity() {
     private val settingViewModel: SettingsViewModel by viewModels()
     private lateinit var appUpdateManager: AppUpdateManager
     private lateinit var view: View
+    private var reviewInfo: ReviewInfo? = null
+    private lateinit var reviewManager: ReviewManager
 
     private val updateLauncher = registerForActivityResult(
         ActivityResultContracts.StartIntentSenderForResult()
     ) { result ->
-            // handle callback
+        // handle callback
         if (result.data == null) return@registerForActivityResult
         if (result.resultCode == UPDATE_REQUEST_CODE) {
             toast { getString(R.string.downloading_start) }
@@ -127,11 +133,22 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setTheme(R.style.Theme_Tasks)
         activityContext = this
+        activateReviewInfo()
 
         observePreferences()
         appUpdateManager = AppUpdateManagerFactory.create(this)
         checkUpdate()
         appUpdateManager.registerListener(appUpdateListener)
+
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (isEnabled) {
+                    isEnabled = false
+                    startReviewFlow()
+                }
+            }
+        })
+
         setContent {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 RequestPermission()
@@ -170,7 +187,7 @@ class MainActivity : AppCompatActivity() {
                             windowSize = rememberWindowSize(),
                         )
                     } else {
-                        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center, ) {
+                        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                             Image(
                                 painter = painterResource(id = R.drawable.ic_add_task),
                                 contentDescription = null,
@@ -309,6 +326,22 @@ class MainActivity : AppCompatActivity() {
                     toast { exception.message.toString() }
                 }
             }
+        }
+    }
+
+    private fun activateReviewInfo() {
+        reviewManager = ReviewManagerFactory.create(this)
+        val reviewTask = reviewManager.requestReviewFlow()
+        reviewTask.addOnCompleteListener {
+            if (it.isSuccessful) {
+                reviewInfo = it.result
+            }
+        }
+    }
+
+    private fun startReviewFlow() {
+        if (reviewInfo != null) {
+            reviewManager.launchReviewFlow(this, reviewInfo!!)
         }
     }
 
