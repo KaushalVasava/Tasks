@@ -19,45 +19,16 @@ If you like my work you can support me via
 https://youtu.be/yIsCbZgqG-4?si=v7qwV2CuUhkwTkxK
 
 # Special Features:
-
 🗓️ ALL-IN-ONE PLANNER FOR GETTING THINGS DONE
-Create and set reminders with a voice to your to-do list.
-For better productivity, we added link previews, direct calls, one-time reminders, and sub-tasks.
-
-🌈📂 Categories by Colors:
-This tasks app has categories to categorize your tasks according to your needs and it is colorful so you can easily manage and distinguish it. There are five colors Blue, Green, Pink, Yellow, and Purple.
-
-🔗🌐📞Link to Open URL and Call:
-You can directly open the website from your tasks and directly call someone using this functionality.
-
-📈 Progress View:
-The My Tasks app has this unique feature. Progress view is useful when you want to get every task updated.
-- The progress view shows your task's progress in percentage.
-- You can make sub-tasks for your tasks or to-do and get notifications when you want. Progress view gives you details of task progress how many tasks or sub-tasks are completed and how many are pending.
-Go to settings and make sure you enable the ‘Show tasks progress of individual task’ feature.
-
-🌐 Multi-Language supports:
-This Tasks app supports multiple languages such as African, Arabic, Bengali, Chinese, Dutch, English, French, Greek, German, Hindi, Italian, Indonesian, Japanese, Korean, Portuguese, Russian, Spanish, Turkish, and Urdu.
-You don't have to worry about languages, you have to just create a task or tasks or to-do list app and achieve your daily goals.
-
-🔄🔁 Backup & Restore:
-You can save and restore your data using backup and restore functionality.
-- Backup data to save your tasks.
-- when you accidentally lose your data then you can restore data using this functionality.
-
-🔒 App lock:
-The app provides app lock functionality to protect your tasks from an unknown person.
-
+🌈📂 Categories by Colors
+🔗🌐📞Link to Open URL and Call
+📈 Progress View
+🌐 Multi-Language supports
+🔄🔁 Backup & Restore
+🔒 App lock
 📊 Task Overview: 
-The app provides you a section for viewing your task details using a calendar and seeing details as per date.
-
 ⏰🔔 Reminders & Notifications:
-Make a reminder of your task or tasks or to-do list and get notified whenever you want. You will be notified via notification.
-- When you add reminders then they will be visible in a colored view on the task item.
-- When your reminder timer is gone it will show in red color your reminder as overdue.
-
 🅰 Custom Font Size:
-You can choose your font size as per your choice.
 
 # Following Android component you will learn:
 - Kotlin
