@@ -1,5 +1,7 @@
 package com.lahsuak.apps.tasks.ui.screens
 
+//noinspection UsingMaterialAndMaterial3Libraries
+//noinspection UsingMaterialAndMaterial3Libraries
 import android.app.Activity
 import android.speech.RecognizerIntent
 import androidx.activity.compose.BackHandler
@@ -34,9 +36,7 @@ import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridS
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
-//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.ModalBottomSheetLayout
-//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
@@ -57,6 +57,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SearchBar
+import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
@@ -220,7 +221,7 @@ fun SubTaskScreen(
                     subTaskList = AppUtil.getSubTasks(subTasks.map { it.subTitle })
                 )
             )
-            navController.popBackStack()
+            navController.navigateUp()
         }
 
         val context = LocalContext.current
@@ -475,7 +476,7 @@ fun SubTaskScreen(
                                             subTaskList = AppUtil.getSubTasks(subTasks.map { it.subTitle })
                                         )
                                     )
-                                    navController.popBackStack()
+                                    navController.navigateUp()
                                 }) {
                                     Icon(
                                         painterResource(R.drawable.ic_back),
@@ -597,41 +598,6 @@ fun SubTaskScreen(
                     androidx.compose.material3.SnackbarHost(snackBarHostState)
                 }
             ) { paddingValues ->
-                if (subTasks.isEmpty()) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(paddingValues),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center,
-                            modifier = Modifier.clickable {
-                                subTaskId = null
-                                isNewTask = true
-                                scope.launch {
-                                    isBottomSheetOpened = true
-                                    sheetState.show()
-                                }
-                            }
-                        ) {
-                            Image(
-                                painterResource(R.drawable.ic_add_task),
-                                contentDescription = stringResource(
-                                    R.string.add_task
-                                ),
-                                colorFilter = ColorFilter.tint(color)
-                            )
-                            Spacer(modifier = Modifier.height(4.dp))
-                            Text(
-                                stringResource(R.string.create_new_sub_task),
-                                textAlign = TextAlign.Center
-                            )
-                        }
-                    }
-                }
-
                 LazyVerticalStaggeredGrid(
                     state = lazyGridListState,
                     modifier = Modifier.padding(paddingValues),
@@ -740,6 +706,38 @@ fun SubTaskScreen(
                             )
                         }
                     }
+                    item(span = StaggeredGridItemSpan.FullLine) {
+                        if (subTasks.isEmpty()) {
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Center,
+                                modifier = Modifier
+                                    .padding(paddingValues)
+                                    .fillMaxSize()
+                                    .clickable {
+                                        subTaskId = null
+                                        isNewTask = true
+                                        scope.launch {
+                                            isBottomSheetOpened = true
+                                            sheetState.show()
+                                        }
+                                    }
+                            ) {
+                                Image(
+                                    painterResource(R.drawable.ic_add_task),
+                                    contentDescription = stringResource(
+                                        R.string.add_task
+                                    ),
+                                    colorFilter = ColorFilter.tint(color)
+                                )
+                                Spacer(modifier = Modifier.height(4.dp))
+                                Text(
+                                    stringResource(R.string.create_new_sub_task),
+                                    textAlign = TextAlign.Center
+                                )
+                            }
+                        }
+                    }
                     items(
                         subTasks.filter { t -> isSubTaskDone == t.isDone }
                             .sortedByDescending { t -> t.isImportant },
@@ -832,7 +830,11 @@ fun SubTaskScreen(
                         Spacer(Modifier.height(8.dp))
                     }
                     item(span = StaggeredGridItemSpan.FullLine) {
-                        Row(Modifier.fillMaxWidth().height(60.dp)){}
+                        Row(
+                            Modifier
+                                .fillMaxWidth()
+                                .height(60.dp)
+                        ) {}
                     }
                 }
             }
@@ -944,76 +946,161 @@ fun SubtaskHeaderContent(
                 placeholder = {
                     Text(stringResource(R.string.search_subtask))
                 },
+                colors = SearchBarDefaults.colors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
                 onActiveChange = {},
                 modifier = Modifier.weight(1f)
             ) {}
             if (isLandscape) {
                 Spacer(modifier = Modifier.width(8.dp))
             }
-            Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .align(Alignment.CenterVertically)
-            ) {
-                Row(
-                    Modifier
-                        .clip(RoundedCornerShape(8.dp))
-                        .background(
-                            MaterialTheme.colorScheme.surfaceVariant
-                        )
-                        .onGloballyPositioned { coordinates ->
-                            //This value is used to assign to the DropDown the same width
-                            mTextFieldSize = coordinates.size.toSize()
-                        }
-                        .toggleable(value = isDropDownExpanded) {
-                            isDropDownExpanded = !isDropDownExpanded
-                        }
-                        .semantics(mergeDescendants = true) {}
-                        .padding(4.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
+            if(searchQuery.isBlank()) {
+                Column(
+                    modifier = Modifier
+                        .weight(1f)
+                        .align(Alignment.CenterVertically)
                 ) {
-                    Text(stringResource(R.string.sorting_option), fontSize = 12.sp)
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Text(
-                        selectedSort,
-                        fontWeight = FontWeight.SemiBold,
-                        modifier = Modifier.weight(1f),
-                        textAlign = TextAlign.Center,
-                        fontSize = 12.sp
-                    )
-                    Icon(
-                        if (isDropDownExpanded)
-                            Icons.Filled.KeyboardArrowUp
-                        else
-                            Icons.Filled.KeyboardArrowDown,
-                        contentDescription = stringResource(R.string.sort_expand_collapse_button),
-                        Modifier.padding(end = 4.dp)
-                    )
-                }
-                DropdownMenu(
-                    expanded = isDropDownExpanded,
-                    onDismissRequest = { isDropDownExpanded = false },
-                    modifier = Modifier.width(with(LocalDensity.current)
-                    { mTextFieldSize.width.toDp() })
-                ) {
-                    sortTypes.forEachIndexed { index, type ->
-                        DropdownMenuItem(
-                            text = { Text(text = type) },
-                            onClick = {
-                                onSortChange(index)
-                                isDropDownExpanded = false
+                    Row(
+                        Modifier
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(
+                                MaterialTheme.colorScheme.surfaceVariant
+                            )
+                            .onGloballyPositioned { coordinates ->
+                                //This value is used to assign to the DropDown the same width
+                                mTextFieldSize = coordinates.size.toSize()
                             }
+                            .toggleable(value = isDropDownExpanded) {
+                                isDropDownExpanded = !isDropDownExpanded
+                            }
+                            .semantics(mergeDescendants = true) {}
+                            .padding(4.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(stringResource(R.string.sorting_option), fontSize = 12.sp)
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text(
+                            selectedSort,
+                            fontWeight = FontWeight.SemiBold,
+                            modifier = Modifier.weight(1f),
+                            textAlign = TextAlign.Center,
+                            fontSize = 12.sp
                         )
+                        Icon(
+                            if (isDropDownExpanded)
+                                Icons.Filled.KeyboardArrowUp
+                            else
+                                Icons.Filled.KeyboardArrowDown,
+                            contentDescription = stringResource(R.string.sort_expand_collapse_button),
+                            Modifier.padding(end = 4.dp)
+                        )
+                    }
+                    DropdownMenu(
+                        expanded = isDropDownExpanded,
+                        onDismissRequest = { isDropDownExpanded = false },
+                        modifier = Modifier.width(with(LocalDensity.current)
+                        { mTextFieldSize.width.toDp() })
+                    ) {
+                        sortTypes.forEachIndexed { index, type ->
+                            DropdownMenuItem(
+                                text = { Text(text = type) },
+                                onClick = {
+                                    onSortChange(index)
+                                    isDropDownExpanded = false
+                                }
+                            )
+                        }
                     }
                 }
             }
-            Row(
-                modifier = Modifier
-                    .weight(1f),
-                horizontalArrangement = Arrangement.End,
-                verticalAlignment = Alignment.CenterVertically,
+            AnimatedVisibility(searchQuery.isBlank()) {
+                Row(
+                    Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceAround
+                ) {
+                    RoundedOutlinedTextField(
+                        value = startDate,
+                        onValueChange = {
+                            onStartDateChange(it)
+                        },
+                        leadingIcon = {
+                            Icon(
+                                painterResource(R.drawable.ic_calendar_small),
+                                contentDescription = null
+                            )
+                        },
+                        placeholder = {
+                            Text(stringResource(R.string.start_date), fontSize = 12.sp)
+                        },
+                        modifier = Modifier
+                            .weight(1f)
+                            .onFocusChanged {
+                                if (it.hasFocus) {
+                                    setStartDate()
+                                }
+                            },
+                        textStyle = TextStyle(fontSize = 12.sp)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    RoundedOutlinedTextField(
+                        value = endDate,
+                        onValueChange = {
+                            onEndDateChange(it)
+                        },
+                        leadingIcon = {
+                            Icon(
+                                painterResource(R.drawable.ic_calendar_small),
+                                contentDescription = null
+                            )
+                        },
+                        placeholder = {
+                            Text(stringResource(R.string.end_date), fontSize = 12.sp)
+                        },
+                        modifier = Modifier
+                            .weight(1f)
+                            .onFocusChanged {
+                                if (it.hasFocus) {
+                                    setEndDate()
+                                }
+                            },
+                        textStyle = TextStyle(fontSize = 12.sp)
+                    )
+                }
+            }
+        }
+        Spacer(modifier = Modifier.height(8.dp))
+        AnimatedVisibility(searchQuery.isBlank()) {
+            FlowRow(
+                Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalArrangement = Arrangement.Center
             ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    TextButton(onClick = { onReminderChange() }) {
+                        Icon(
+                            painterResource(R.drawable.ic_reminder_small),
+                            null,
+                            tint = color
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
+                        if (reminder != null) {
+                            val diff = DateUtil.getTimeDiff(reminder)
+                            val (timeColor, text) = if (diff < 0) {
+                                Color.Red to stringResource(R.string.overdue)
+                            } else
+                                color to DateUtil.getDate(reminder)
+                            Text(text, color = timeColor)
+                        } else {
+                            Text(stringResource(R.string.add_date_time), color = MaterialTheme.colorScheme.onPrimaryContainer)
+                        }
+                    }
+                    if (reminder != null) {
+                        Spacer(Modifier.width(2.dp))
+                        Icon(painterResource(R.drawable.ic_cancel), null, Modifier.clickable {
+                            onReminderCancel()
+                        })
+                    }
+                }
                 TextButton(onClick = { shareTask() }) {
                     Icon(
                         painterResource(R.drawable.ic_share),
@@ -1023,105 +1110,30 @@ fun SubtaskHeaderContent(
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(stringResource(R.string.share), color = color)
                 }
-                IconButton(onClick = { onViewChange(!isListViewEnable) }) {
-                    Icon(
-                        if (isListViewEnable)
-                            painterResource(R.drawable.ic_list_view)
-                        else
-                            painterResource(R.drawable.ic_grid_view),
-                        contentDescription = stringResource(R.string.layout_view_change_button),
-                        tint = color
-                    )
+                val modifier1 = if (isLandscape) Modifier else Modifier.fillMaxWidth()
+                Row(
+                    modifier = modifier1,
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.End
+                ) {
+                    ChipGroup(
+                        items = status,
+                        selectedIndex = selectedStatusIndex,
+                        selectedContainerColor = color
+                    ) { index ->
+                        onStatusChange(index != 0)
+                    }
+                    IconButton(onClick = { onViewChange(!isListViewEnable) }) {
+                        Icon(
+                            if (isListViewEnable)
+                                painterResource(R.drawable.ic_list_view)
+                            else
+                                painterResource(R.drawable.ic_grid_view),
+                            contentDescription = stringResource(R.string.layout_view_change_button),
+                            tint = color
+                        )
+                    }
                 }
-            }
-        }
-        Spacer(modifier = Modifier.height(8.dp))
-        Row(
-            Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceAround
-        ) {
-            RoundedOutlinedTextField(
-                value = startDate,
-                onValueChange = {
-                    onStartDateChange(it)
-                },
-                leadingIcon = {
-                    Icon(
-                        painterResource(R.drawable.ic_calendar_small),
-                        contentDescription = null
-                    )
-                },
-                placeholder = {
-                    Text(stringResource(R.string.start_date), fontSize = 12.sp)
-                },
-                modifier = Modifier
-                    .weight(1f)
-                    .onFocusChanged {
-                        if (it.hasFocus) {
-                            setStartDate()
-                        }
-                    },
-                textStyle = TextStyle(fontSize = 12.sp)
-            )
-            Spacer(modifier = Modifier.width(8.dp))
-            RoundedOutlinedTextField(
-                value = endDate,
-                onValueChange = {
-                    onEndDateChange(it)
-                },
-                leadingIcon = {
-                    Icon(
-                        painterResource(R.drawable.ic_calendar_small),
-                        contentDescription = null
-                    )
-                },
-                placeholder = {
-                    Text(stringResource(R.string.end_date), fontSize = 12.sp)
-                },
-                modifier = Modifier
-                    .weight(1f)
-                    .onFocusChanged {
-                        if (it.hasFocus) {
-                            setEndDate()
-                        }
-                    },
-                textStyle = TextStyle(fontSize = 12.sp)
-            )
-        }
-        Row(
-            Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            TextButton(onClick = { onReminderChange() }) {
-                Icon(
-                    painterResource(R.drawable.ic_reminder_small),
-                    null,
-                    tint = color
-                )
-                if (reminder != null) {
-                    val diff = DateUtil.getTimeDiff(reminder)
-                    val (timeColor, text) = if (diff < 0) {
-                        Color.Red to stringResource(R.string.overdue)
-                    } else
-                        color to DateUtil.getDate(reminder)
-                    Text(text, color = timeColor)
-                } else {
-                    Text(stringResource(R.string.add_date_time), color = color)
-                }
-            }
-            if (reminder != null) {
-                Spacer(Modifier.width(8.dp))
-                Icon(painterResource(R.drawable.ic_cancel), null, Modifier.clickable {
-                    onReminderCancel()
-                })
-            }
-            ChipGroup(
-                items = status,
-                selectedIndex = selectedStatusIndex,
-                selectedContainerColor = color
-            ) { index ->
-                onStatusChange(index != 0)
             }
         }
     }

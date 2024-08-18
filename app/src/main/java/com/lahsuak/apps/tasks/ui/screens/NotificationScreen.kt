@@ -108,7 +108,7 @@ fun NotificationScreen(
             TopAppBar(
                 title = { Text(stringResource(R.string.notifications)) },
                 navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
+                    IconButton(onClick = { navController.navigateUp() }) {
                         Icon(
                             painterResource(R.drawable.ic_back),
                             stringResource(R.string.back)

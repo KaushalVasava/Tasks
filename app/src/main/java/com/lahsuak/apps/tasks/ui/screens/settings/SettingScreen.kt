@@ -423,7 +423,7 @@ fun SettingScreen(
                 Text(stringResource(id = R.string.settings))
             }, navigationIcon = {
                 IconButton(onClick = {
-                    navController.popBackStack()
+                    navController.navigateUp()
                 }) {
                     Icon(
                         painterResource(id = R.drawable.ic_back),

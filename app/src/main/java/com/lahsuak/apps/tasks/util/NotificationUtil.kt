@@ -18,6 +18,7 @@ import androidx.core.net.toUri
 import com.lahsuak.apps.tasks.R
 import com.lahsuak.apps.tasks.data.model.Task
 import com.lahsuak.apps.tasks.ui.MainActivity
+import com.lahsuak.apps.tasks.util.NavigationConstants.Key.ADD_UPDATE_TASK_DEEP_LINK
 
 object NotificationUtil {
     @SuppressLint("MissingPermission")
@@ -83,7 +84,11 @@ object NotificationUtil {
         }
         val deepLinkIntent = Intent(
             Intent.ACTION_VIEW,
-            "${AppConstants.DEEP_LINK_SUBTASK}${task.id}/true".toUri(),
+            if(parentTitle!=null) {
+                "${AppConstants.DEEP_LINK_SUBTASK}${task.id}/true".toUri()
+            } else {
+                ADD_UPDATE_TASK_DEEP_LINK.toUri()
+            },
             context,
             MainActivity::class.java
         )

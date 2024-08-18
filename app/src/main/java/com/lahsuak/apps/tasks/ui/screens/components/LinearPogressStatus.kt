@@ -40,12 +40,12 @@ fun LinearProgressStatus(
     )
     Box(contentAlignment = Alignment.Center) {
         LinearProgressIndicator(
-            progress = animProgress,
+            progress = { animProgress },
+            modifier = modifier.size(width, height)
+                .clip(RoundedCornerShape(8.dp)),
             color = color,
             trackColor = trackColor,
             strokeCap = StrokeCap.Square,
-            modifier = modifier.size(width, height)
-                .clip(RoundedCornerShape(8.dp))
         )
         if (text != null)
             Text(text, fontSize = 14.sp)

@@ -68,10 +68,10 @@ class PreferenceManager @Inject constructor(@ApplicationContext context: Context
         .map { preferences ->
             val theme = preferences[PreferencesKeys.THEME] ?: DEFAULT_THEME
             val fontSize = preferences[PreferencesKeys.FONT_SIZE] ?: DEFAULT_FONT_SIZE
-            val swipeGestureEnable = preferences[PreferencesKeys.SWIPE_GESTURE] ?: true
+            val swipeGestureEnable = preferences[PreferencesKeys.SWIPE_GESTURE] ?: false
             val showVoice = preferences[PreferencesKeys.VOICE] ?: true
             val showReminder = preferences[PreferencesKeys.REMINDER] ?: true
-            val showCopy = preferences[PreferencesKeys.COPY] ?: true
+            val showCopy = preferences[PreferencesKeys.COPY] ?: false
             val showProgress = preferences[PreferencesKeys.PROGRESS] ?: false
             val showSubTask = preferences[PreferencesKeys.SUBTASK] ?: true
             val fingerprintEnabled = preferences[PreferencesKeys.FINGERPRINT] ?: false

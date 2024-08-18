@@ -1,5 +1,7 @@
 package com.lahsuak.apps.tasks.ui.screens
 
+//noinspection UsingMaterialAndMaterial3Libraries
+//noinspection UsingMaterialAndMaterial3Libraries
 import android.app.Activity
 import android.speech.RecognizerIntent
 import androidx.activity.compose.BackHandler
@@ -34,9 +36,7 @@ import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridS
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
-//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.ModalBottomSheetLayout
-//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
@@ -56,6 +56,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SearchBar
+import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -579,28 +580,10 @@ fun TaskScreen(
                     }
                 }
             }
-
-            LazyVerticalStaggeredGrid(
-                state = lazyGridListState,
-                modifier = Modifier.padding(paddingValue),
-                contentPadding = PaddingValues(horizontal = 8.dp),
-                columns = StaggeredGridCells.Fixed(
-                    if (isListViewEnable) {
-                        when (windowSize.width) {
-                            WindowType.Compact -> 2
-                            WindowType.Medium -> 3
-                            WindowType.Expanded -> 4
-                        }
-                    } else {
-                        when (windowSize.width) {
-                            WindowType.Compact -> 1
-                            WindowType.Medium -> 2
-                            WindowType.Expanded -> 3
-                        }
-                    }
-                ),
+            Column(
+                modifier = Modifier.padding(paddingValue)
             ) {
-                item(span = StaggeredGridItemSpan.FullLine) {
+                if (windowSize.width < windowSize.height) {
                     AnimatedVisibility(!actionMode) {
                         HeaderContent(
                             tasks.filter { it.isDone }.size,
@@ -633,91 +616,155 @@ fun TaskScreen(
                             onProgressBarClick = {
                                 navController.navigate(NavigationItem.Overview.route)
                             },
-                            modifier = Modifier.fillMaxWidth()
+                            modifier = Modifier
+                                .padding(horizontal = 8.dp)
                         )
                     }
                 }
-                items(
-                    tasks.filter { t -> isTaskDone == t.isDone }
-                        .sortedByDescending { t -> t.isImp },
-                    key = { t ->
-                        t.id + Random.nextInt()
-                    }
-                ) { task ->
-                    val isSelected = selectedItems.contains(task)
-                    Row(
-                        Modifier
-                            .animateItemPlacement()
-                            .padding(4.dp)
-                    ) {
-                        TaskItem(
-                            Modifier
-                                .combinedClickable(
-                                    onClick = {
-                                        if (actionMode) {
-                                            if (isSelected)
-                                                selectedItems.remove(task)
-                                            else
-                                                selectedItems.add(task)
-                                        } else {
-                                            taskViewModel.setTask(task)
-                                            navController.navigate("${NavigationItem.SubTask.route}/${task.id}/false")
-                                        }
-                                    },
-                                    onLongClick = {
-                                        if (actionMode) {
-                                            if (isSelected)
-                                                selectedItems.remove(task)
-                                            else
-                                                selectedItems.add(task)
-                                        } else {
-                                            actionMode = true
-                                            selectedItems.add(task)
-                                        }
-                                    },
-                                )
-                                .border(
-                                    if (isSelected) 2.dp else (-1).dp,
-                                    color = MaterialTheme.colorScheme.primary,
-                                    RoundedCornerShape(8.dp)
-                                ),
-                            task = task,
-                            settingPreferences = settingsPreferences,
-                            isListViewEnable = isListViewEnable,
-                            onImpSwipe = { isImp ->
-                                taskViewModel.update(task.copy(isImp = isImp))
-                            },
-                            onCancelReminder = {
-                                if (!actionMode) {
-                                    taskViewModel.update(task.copy(reminder = null))
-                                }
-                            },
-                            onCompletedTask = { isCompleted ->
-                                if (!actionMode) {
-                                    taskViewModel.onTaskCheckedChanged(task, isCompleted)
-                                }
+                LazyVerticalStaggeredGrid(
+                    state = lazyGridListState,
+                    contentPadding = PaddingValues(horizontal = 8.dp),
+                    columns = StaggeredGridCells.Fixed(
+                        if (isListViewEnable) {
+                            when (windowSize.width) {
+                                WindowType.Compact -> 2
+                                WindowType.Medium -> 3
+                                WindowType.Expanded -> 4
                             }
-                        ) { isDone ->
-                            if (!actionMode) {
-                                if (isDone) {
-                                    taskViewModel.onTaskSwiped(task)
-                                    isSnackBarShow = true
-                                } else {
-                                    taskViewModel.setTask(task)
-                                    taskId = task.id.toString()
-                                    isNewTask = false
-                                    scope.launch {
-                                        isBottomSheetOpened = true
-                                        sheetState.show()
+                        } else {
+                            when (windowSize.width) {
+                                WindowType.Compact -> 1
+                                WindowType.Medium -> 2
+                                WindowType.Expanded -> 3
+                            }
+                        }
+                    ),
+                ) {
+                    if (windowSize.width > windowSize.height) {
+                        item(span = StaggeredGridItemSpan.FullLine) {
+                            AnimatedVisibility(!actionMode) {
+                                HeaderContent(
+                                    tasks.filter { it.isDone }.size,
+                                    tasks.size,
+                                    searchQuery = searchQuery,
+                                    onQueryChange = {
+                                        searchQuery = it
+                                        taskViewModel.searchQuery.value = it
+                                    },
+                                    isListViewEnable = isListViewEnable,
+                                    onViewChange = {
+                                        isListViewEnable = it
+                                        taskViewModel.onViewTypeChanged(it, context)
+                                    },
+                                    onStatusChange = {
+                                        isTaskDone = it
+                                    },
+                                    status = status,
+                                    selectedStatusIndex = if (isTaskDone) 1 else 0,
+                                    sortTypes = sortTypes,
+                                    selectedSort = selectedSort,
+                                    onSortChange = { index ->
+                                        selectedSortIndex = index
+                                        selectedSort = sortTypes[selectedSortIndex]
+                                        taskViewModel.onSortOrderSelected(
+                                            SortOrder.getOrder(index),
+                                            context
+                                        )
+                                    },
+                                    onProgressBarClick = {
+                                        navController.navigate(NavigationItem.Overview.route)
+                                    },
+                                    modifier = Modifier.fillMaxWidth()
+                                )
+                            }
+                        }
+                    }
+                    items(
+                        tasks.filter { t -> isTaskDone == t.isDone }
+                            .sortedByDescending { t -> t.isImp },
+                        key = { t ->
+                            t.id + Random.nextInt()
+                        }
+                    ) { task ->
+                        val isSelected = selectedItems.contains(task)
+                        Row(
+                            Modifier
+                                .animateItemPlacement()
+                                .padding(4.dp)
+                        ) {
+                            TaskItem(
+                                Modifier
+                                    .combinedClickable(
+                                        onClick = {
+                                            if (actionMode) {
+                                                if (isSelected)
+                                                    selectedItems.remove(task)
+                                                else
+                                                    selectedItems.add(task)
+                                            } else {
+                                                taskViewModel.setTask(task)
+                                                navController.navigate("${NavigationItem.SubTask.route}/${task.id}/false")
+                                            }
+                                        },
+                                        onLongClick = {
+                                            if (actionMode) {
+                                                if (isSelected)
+                                                    selectedItems.remove(task)
+                                                else
+                                                    selectedItems.add(task)
+                                            } else {
+                                                actionMode = true
+                                                selectedItems.add(task)
+                                            }
+                                        },
+                                    )
+                                    .border(
+                                        if (isSelected) 2.dp else (-1).dp,
+                                        color = MaterialTheme.colorScheme.primary,
+                                        RoundedCornerShape(8.dp)
+                                    ),
+                                task = task,
+                                settingPreferences = settingsPreferences,
+                                isListViewEnable = isListViewEnable,
+                                onImpSwipe = { isImp ->
+                                    taskViewModel.update(task.copy(isImp = isImp))
+                                },
+                                onCancelReminder = {
+                                    if (!actionMode) {
+                                        taskViewModel.update(task.copy(reminder = null))
+                                    }
+                                },
+                                onCompletedTask = { isCompleted ->
+                                    if (!actionMode) {
+                                        taskViewModel.onTaskCheckedChanged(task, isCompleted)
+                                    }
+                                }
+                            ) { isDone ->
+                                if (!actionMode) {
+                                    if (isDone) {
+                                        taskViewModel.onTaskSwiped(task)
+                                        isSnackBarShow = true
+                                    } else {
+                                        taskViewModel.setTask(task)
+                                        taskId = task.id.toString()
+                                        isNewTask = false
+                                        scope.launch {
+                                            isBottomSheetOpened = true
+                                            sheetState.show()
+                                        }
                                     }
                                 }
                             }
                         }
+                        Spacer(Modifier.height(8.dp))
                     }
-                    Spacer(Modifier.height(8.dp))
-                }
-                item(span = StaggeredGridItemSpan.FullLine) {
-                    Row(Modifier.fillMaxWidth().height(60.dp)){}
+                    item(span = StaggeredGridItemSpan.FullLine) {
+                        Row(
+                            Modifier
+                                .fillMaxWidth()
+                                .height(60.dp)
+                        ) {}
+                    }
                 }
             }
         }
@@ -784,88 +831,93 @@ fun HeaderContent(
                         )
                     }
                 },
+                colors = SearchBarDefaults.colors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
                 placeholder = { Text(stringResource(R.string.search_task)) },
                 onActiveChange = {},
                 modifier = Modifier.weight(1f)
             ) {}
-            Column(
-                Modifier
-                    .weight(1f)
-                    .align(Alignment.CenterVertically)
-            ) {
-                Row(
+            if(searchQuery.isBlank()) {
+                Column(
                     Modifier
-                        .clip(RoundedCornerShape(8.dp))
-                        .background(MaterialTheme.colorScheme.surfaceVariant)
-                        .onGloballyPositioned { coordinates ->
-                            //This value is used to assign to the DropDown the same width
-                            mTextFieldSize = coordinates.size.toSize()
-                        }
-                        .toggleable(value = isDropDownExpanded) {
-                            isDropDownExpanded = !isDropDownExpanded
-                        }
-                        .semantics(mergeDescendants = true) {}
-                        .padding(4.dp),
-                    verticalAlignment = Alignment.CenterVertically
+                        .weight(1f)
+                        .align(Alignment.CenterVertically)
                 ) {
-                    Text(stringResource(R.string.sorting_option), fontSize = 12.sp)
-                    Spacer(Modifier.width(4.dp))
-                    Text(
-                        selectedSort,
-                        fontWeight = FontWeight.SemiBold,
-                        modifier = Modifier.weight(1f),
-                        textAlign = TextAlign.Center,
-                        fontSize = 12.sp
-                    )
-                    Icon(
-                        if (isDropDownExpanded)
-                            Icons.Filled.KeyboardArrowUp
-                        else
-                            Icons.Filled.KeyboardArrowDown,
-                        stringResource(R.string.sort_expand_collapse_button),
-                        Modifier.padding(end = 4.dp)
-                    )
-                }
-                DropdownMenu(
-                    expanded = isDropDownExpanded,
-                    onDismissRequest = { isDropDownExpanded = false },
-                    modifier = Modifier.width(with(LocalDensity.current)
-                    { mTextFieldSize.width.toDp() })
-                ) {
-                    sortTypes.forEachIndexed { index, type ->
-                        DropdownMenuItem(
-                            text = { Text(text = type) },
-                            onClick = {
-                                onSortChange(index)
-                                isDropDownExpanded = false
+                    Row(
+                        Modifier
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(MaterialTheme.colorScheme.surfaceVariant)
+                            .onGloballyPositioned { coordinates ->
+                                //This value is used to assign to the DropDown the same width
+                                mTextFieldSize = coordinates.size.toSize()
                             }
+                            .toggleable(value = isDropDownExpanded) {
+                                isDropDownExpanded = !isDropDownExpanded
+                            }
+                            .semantics(mergeDescendants = true) {}
+                            .padding(4.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(stringResource(R.string.sorting_option), fontSize = 12.sp)
+                        Spacer(Modifier.width(4.dp))
+                        Text(
+                            selectedSort,
+                            fontWeight = FontWeight.SemiBold,
+                            modifier = Modifier.weight(1f),
+                            textAlign = TextAlign.Center,
+                            fontSize = 12.sp
                         )
+                        Icon(
+                            if (isDropDownExpanded)
+                                Icons.Filled.KeyboardArrowUp
+                            else
+                                Icons.Filled.KeyboardArrowDown,
+                            stringResource(R.string.sort_expand_collapse_button),
+                            Modifier.padding(end = 4.dp)
+                        )
+                    }
+                    DropdownMenu(
+                        expanded = isDropDownExpanded,
+                        onDismissRequest = { isDropDownExpanded = false },
+                        modifier = Modifier.width(with(LocalDensity.current)
+                        { mTextFieldSize.width.toDp() })
+                    ) {
+                        sortTypes.forEachIndexed { index, type ->
+                            DropdownMenuItem(
+                                text = { Text(text = type) },
+                                onClick = {
+                                    onSortChange(index)
+                                    isDropDownExpanded = false
+                                }
+                            )
+                        }
                     }
                 }
             }
         }
 
-        Row(
-            horizontalArrangement = Arrangement.End,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            ChipGroup(
-                items = status,
-                selectedIndex = selectedStatusIndex
-            ) { index ->
-                onStatusChange(index != 0)
-            }
-            IconButton(onClick = {
-                onViewChange(!isListViewEnable)
-            }) {
-                Icon(
-                    if (isListViewEnable)
-                        painterResource(R.drawable.ic_list_view)
-                    else
-                        painterResource(R.drawable.ic_grid_view),
-                    stringResource(R.string.layout_view_change_button),
-                    tint = MaterialTheme.colorScheme.primary
-                )
+        AnimatedVisibility(visible = searchQuery.isBlank()) {
+            Row(
+                horizontalArrangement = Arrangement.End,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                ChipGroup(
+                    items = status,
+                    selectedIndex = selectedStatusIndex
+                ) { index ->
+                    onStatusChange(index != 0)
+                }
+                IconButton(onClick = {
+                    onViewChange(!isListViewEnable)
+                }) {
+                    Icon(
+                        if (isListViewEnable)
+                            painterResource(R.drawable.ic_list_view)
+                        else
+                            painterResource(R.drawable.ic_grid_view),
+                        stringResource(R.string.layout_view_change_button),
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                }
             }
         }
     }

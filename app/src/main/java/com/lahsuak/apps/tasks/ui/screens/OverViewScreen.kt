@@ -96,7 +96,7 @@ fun OverviewScreen(
             title = { Text(stringResource(R.string.overview)) },
             navigationIcon = {
                 IconButton(onClick = {
-                    navController.popBackStack()
+                    navController.navigateUp()
                 }) {
                     Icon(
                         painterResource(R.drawable.ic_back),
