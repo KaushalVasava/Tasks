@@ -40,23 +40,31 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import com.lahsuak.apps.tasks.R
 import com.lahsuak.apps.tasks.data.model.SubTask
 import com.lahsuak.apps.tasks.util.AppUtil
 import com.lahsuak.apps.tasks.util.DateUtil
+import com.lahsuak.apps.tasks.util.URLEmbeddedTask
+import com.lahsuak.apps.tasks.util.hasLink
+import com.lahsuak.apps.tasks.util.hasPhoneNumber
 import com.lahsuak.apps.tasks.util.preference.SettingPreferences
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @OptIn(
     ExperimentalMaterialApi::class
@@ -199,7 +207,26 @@ fun SwipeItem(
     onEditIconClick: (Boolean) -> Unit,
     onCancelReminder: () -> Unit,
 ) {
+    val hasLink by rememberSaveable {
+        mutableStateOf(subTask.subTitle.hasLink())
+    }
+    val hasPhoneNumber by rememberSaveable {
+        mutableStateOf(subTask.subTitle.hasPhoneNumber())
+    }
+
+    var url: String? by rememberSaveable {
+        mutableStateOf(subTask.subTitle)
+    }
     val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
+
+    LaunchedEffect(key1 = Unit) {
+        if (hasLink && url.isNullOrEmpty().not()) {
+            coroutineScope.launch (Dispatchers.IO){
+                url = URLEmbeddedTask().getResult(url!!).thumbnailURL
+            }
+        }
+    }
     Column(
         modifier
             .fillMaxWidth()
@@ -235,17 +262,38 @@ fun SwipeItem(
                         Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        LinkifyText(
-                            subTask.subTitle,
-                            titleSize,
-                            MaterialTheme.colorScheme.onSurface,
-                            textDecoration = isChecked,
-                            modifier = Modifier
-                                .fillMaxWidth(
-                                    if (isListViewEnable) 0.8f else 0.9f
+                        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(top = 8.dp)) {
+                            AnimatedVisibility(visible = hasLink) {
+                                AsyncImage(
+                                    model = url,
+                                    contentDescription = null,
+                                    modifier = Modifier
+                                        .clip(RoundedCornerShape(4.dp))
+                                        .background(Color.White)
+                                        .size(24.dp),
+                                    contentScale = ContentScale.Crop
                                 )
-                                .padding(top = 8.dp),
-                        )
+                            }
+                            AnimatedVisibility(visible = !hasLink && hasPhoneNumber) {
+                                AsyncImage(
+                                    model = R.drawable.ic_phone,
+                                    contentDescription = null,
+                                    modifier = Modifier
+                                        .clip(RoundedCornerShape(4.dp))
+                                        .background(Color.White)
+                                        .size(24.dp),
+                                    contentScale = ContentScale.Crop
+                                )
+                            }
+                            Spacer(modifier = Modifier.width(8.dp))
+                            LinkifyText(
+                                subTask.subTitle,
+                                titleSize,
+                                MaterialTheme.colorScheme.onSurface,
+                                textDecoration = isChecked,
+                                modifier = Modifier.fillMaxWidth(if (isListViewEnable) 0.8f else 0.9f)
+                            )
+                        }
                         IconButton(onClick = {
                             onEditIconClick(isChecked)
                         }, Modifier.widthIn(min = 48.dp)) {
