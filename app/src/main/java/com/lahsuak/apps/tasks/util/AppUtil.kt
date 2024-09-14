@@ -5,6 +5,11 @@ import android.app.*
 import android.content.*
 import android.net.Uri
 import android.speech.RecognizerIntent
+import android.text.Spanned
+import android.text.style.URLSpan
+import android.util.Log
+import android.util.Patterns
+import android.widget.TextView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.appcompat.app.AppCompatActivity
 import androidx.work.OneTimeWorkRequestBuilder
@@ -322,3 +327,20 @@ object AppUtil {
 fun Context.getSizeInDp(): Float {
     return resources.displayMetrics.widthPixels / resources.displayMetrics.density
 }
+
+
+fun String.hasLink(): Boolean {
+    // Regex pattern for detecting URLs in a string
+    val urlPattern = Patterns.WEB_URL
+    val matcher = urlPattern.matcher(this)
+    return matcher.find()
+}
+
+fun String.hasPhoneNumber(): Boolean {
+    // Use Android's built-in phone number pattern
+    val phonePattern = Patterns.PHONE
+    val matcher = phonePattern.matcher(this)
+    return matcher.find()
+}
+
+

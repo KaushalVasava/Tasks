@@ -13,8 +13,8 @@ android {
         applicationId = "com.lahsuak.apps.tasks"
         minSdk = 21
         targetSdk = 34
-        versionCode = 28
-        versionName = "1.0.6"
+        versionCode = 29
+        versionName = "1.0.7"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -103,4 +103,6 @@ dependencies {
     implementation(libs.android.play.core)
     //review
     debugImplementation(libs.leak.canery)
+    implementation("com.github.nguyencse:urlembeddedview:1.0.2")
+    implementation("io.coil-kt:coil-compose:2.7.0")
 }

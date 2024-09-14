@@ -52,6 +52,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -60,13 +61,19 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import com.lahsuak.apps.tasks.R
 import com.lahsuak.apps.tasks.TaskApp
 import com.lahsuak.apps.tasks.data.model.Task
 import com.lahsuak.apps.tasks.util.AppUtil
 import com.lahsuak.apps.tasks.util.DateUtil
+import com.lahsuak.apps.tasks.util.URLEmbeddedTask
+import com.lahsuak.apps.tasks.util.hasLink
+import com.lahsuak.apps.tasks.util.hasPhoneNumber
 import com.lahsuak.apps.tasks.util.preference.SettingPreferences
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -83,8 +90,6 @@ fun TaskItem(
     val isLandScape =
         LocalConfiguration.current.screenHeightDp < LocalConfiguration.current.screenWidthDp
     val color = Color(TaskApp.categoryTypes[task.color].color)
-    val context = LocalContext.current
-
     val showProgress by rememberSaveable {
         mutableStateOf(settingPreferences.showProgress)
     }
@@ -238,8 +243,24 @@ fun SwipeItem(
     onEditIconClick: (Boolean) -> Unit,
     onCancelReminder: () -> Unit,
 ) {
+    val hasLink by rememberSaveable {
+        mutableStateOf(task.title.hasLink())
+    }
+    val hasPhoneNumber by rememberSaveable {
+        mutableStateOf(task.title.hasPhoneNumber())
+    }
     val context = LocalContext.current
+    var url: String? by rememberSaveable {
+        mutableStateOf(task.title)
+    }
 
+    LaunchedEffect(key1 = Unit) {
+        if (hasLink && url.isNullOrEmpty().not()) {
+            withContext(Dispatchers.IO) {
+                url = URLEmbeddedTask().getResult(url!!).thumbnailURL
+            }
+        }
+    }
     Column(
         modifier
             .fillMaxWidth()
@@ -275,13 +296,37 @@ fun SwipeItem(
                         Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        LinkifyText(
-                            task.title,
-                            titleSize,
-                            MaterialTheme.colorScheme.onSurface,
-                            textDecoration = isChecked,
-                            modifier = Modifier.padding(top = 8.dp),
-                        )
+                        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(top = 8.dp)) {
+                            AnimatedVisibility(visible = hasLink) {
+                                AsyncImage(
+                                    model = url,
+                                    contentDescription = null,
+                                    modifier = Modifier
+                                        .clip(RoundedCornerShape(4.dp))
+                                        .background(Color.White)
+                                        .size(24.dp),
+                                    contentScale = ContentScale.Crop
+                                )
+                            }
+                            AnimatedVisibility(visible = !hasLink && hasPhoneNumber) {
+                                AsyncImage(
+                                    model = R.drawable.ic_phone,
+                                    contentDescription = null,
+                                    modifier = Modifier
+                                        .clip(RoundedCornerShape(4.dp))
+                                        .background(Color.White)
+                                        .size(24.dp),
+                                    contentScale = ContentScale.Crop
+                                )
+                            }
+                            Spacer(modifier = Modifier.width(8.dp))
+                            LinkifyText(
+                                task.title,
+                                titleSize,
+                                MaterialTheme.colorScheme.onSurface,
+                                textDecoration = isChecked
+                            )
+                        }
                         Row {
                             if (showSubTask && task.subTaskList != null) {
                                 IconButton(onClick = {
