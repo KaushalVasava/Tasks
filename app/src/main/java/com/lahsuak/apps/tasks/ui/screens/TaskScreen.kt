@@ -623,7 +623,7 @@ fun TaskScreen(
                 }
                 LazyVerticalStaggeredGrid(
                     state = lazyGridListState,
-                    contentPadding = PaddingValues(horizontal = 8.dp),
+                    contentPadding = PaddingValues(start = 8.dp, end = 8.dp, bottom = 60.dp),
                     columns = StaggeredGridCells.Fixed(
                         if (isListViewEnable) {
                             when (windowSize.width) {
@@ -757,13 +757,6 @@ fun TaskScreen(
                             }
                         }
                         Spacer(Modifier.height(8.dp))
-                    }
-                    item(span = StaggeredGridItemSpan.FullLine) {
-                        Row(
-                            Modifier
-                                .fillMaxWidth()
-                                .height(60.dp)
-                        ) {}
                     }
                 }
             }
