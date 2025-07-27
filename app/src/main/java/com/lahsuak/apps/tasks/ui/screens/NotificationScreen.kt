@@ -165,7 +165,7 @@ fun NotificationScreen(
                 items(tempNotifications, key = {
                     it.id
                 }) {
-                    Row(Modifier.animateItemPlacement()) {
+                    Row(Modifier.animateItem()) {
                         NotificationItem(notification = it)
                     }
                 }

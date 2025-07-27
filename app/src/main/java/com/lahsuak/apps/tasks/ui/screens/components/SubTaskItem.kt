@@ -20,21 +20,13 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-//noinspection UsingMaterialAndMaterial3Libraries
-import androidx.compose.material.DismissDirection
-//noinspection UsingMaterialAndMaterial3Libraries
-import androidx.compose.material.DismissValue
-import androidx.compose.material.ExperimentalMaterialApi
-//noinspection UsingMaterialAndMaterial3Libraries
-import androidx.compose.material.FixedThreshold
-//noinspection UsingMaterialAndMaterial3Libraries
-import androidx.compose.material.SwipeToDismiss
-//noinspection UsingMaterialAndMaterial3Libraries
-import androidx.compose.material.rememberDismissState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SwipeToDismissBox
+import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -66,9 +58,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-@OptIn(
-    ExperimentalMaterialApi::class
-)
 @Composable
 fun SubTaskItem(
     modifier: Modifier = Modifier,
@@ -100,9 +89,9 @@ fun SubTaskItem(
     }
 
     var show by rememberSaveable { mutableStateOf(true) }
-    val dismissState = rememberDismissState(
-        confirmStateChange = {
-            if (isSwipeGestureEnable && (it == DismissValue.DismissedToStart || it == DismissValue.DismissedToEnd)) {
+    val dismissState = rememberSwipeToDismissBoxState(
+        confirmValueChange = {
+            if (isSwipeGestureEnable && (it == SwipeToDismissBoxValue.StartToEnd || it == SwipeToDismissBoxValue.EndToStart)) {
                 show = false
                 true
             } else
@@ -113,12 +102,12 @@ fun SubTaskItem(
         AnimatedVisibility(
             show, exit = fadeOut(spring())
         ) {
-            SwipeToDismiss(
+            SwipeToDismissBox(
                 state = dismissState,
-                background = {
+                backgroundContent = {
                     DismissBackground(dismissState)
                 },
-                dismissContent = {
+                content = {
                     SwipeItem(
                         modifier,
                         subTask,
@@ -142,9 +131,9 @@ fun SubTaskItem(
                         }
                     )
                 },
-                dismissThresholds = {
-                    FixedThreshold(120.dp)
-                }
+//                dismissThresholds = {
+//                    FixedThreshold(120.dp)
+//                }
             )
         }
     } else {
@@ -175,11 +164,10 @@ fun SubTaskItem(
         if (!show) {
             delay(800)
             when (dismissState.dismissDirection) {
-                DismissDirection.EndToStart -> {
+                SwipeToDismissBoxValue.EndToStart -> {
                     onEditIconClick(true)
                 }
-
-                DismissDirection.StartToEnd -> {
+                SwipeToDismissBoxValue.StartToEnd -> {
                     onImpSwipe(!subTask.isImportant)
                 }
 

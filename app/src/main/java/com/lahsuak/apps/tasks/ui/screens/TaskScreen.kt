@@ -1,7 +1,5 @@
 package com.lahsuak.apps.tasks.ui.screens
 
-//noinspection UsingMaterialAndMaterial3Libraries
-//noinspection UsingMaterialAndMaterial3Libraries
 import android.app.Activity
 import android.speech.RecognizerIntent
 import androidx.activity.compose.BackHandler
@@ -9,7 +7,6 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -35,9 +32,6 @@ import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ModalBottomSheetLayout
-import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
@@ -51,9 +45,12 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LargeFloatingActionButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.SearchBarDefaults
@@ -65,6 +62,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -120,8 +118,6 @@ import kotlin.random.Random
 
 @OptIn(
     ExperimentalMaterial3Api::class,
-    ExperimentalFoundationApi::class,
-    ExperimentalMaterialApi::class
 )
 @Composable
 fun TaskScreen(
@@ -183,7 +179,7 @@ fun TaskScreen(
         mutableStateOf(preference.viewType)
     }
     val context = LocalContext.current
-
+    val scope = rememberCoroutineScope()
     val snackBarHostState = remember {
         SnackbarHostState()
     }
@@ -296,11 +292,9 @@ fun TaskScreen(
         }
     }
 
-    val sheetState = androidx.compose.material.rememberModalBottomSheetState(
-        skipHalfExpanded = true,
-        initialValue = ModalBottomSheetValue.Hidden
+    val sheetState = rememberModalBottomSheetState(
+        skipPartiallyExpanded = true
     )
-    val scope = rememberCoroutineScope()
 
     if (sharedText != null && tasks.isNotEmpty()) {
         var openDialog by rememberSaveable {
@@ -337,25 +331,60 @@ fun TaskScreen(
         }
     }
 
-    ModalBottomSheetLayout(
-        sheetBackgroundColor = MaterialTheme.colorScheme.surface,
-        sheetState = sheetState,
-        sheetContent = {
-            if (isBottomSheetOpened) {
-                AddUpdateTaskScreen(
-                    sheetState,
-                    taskViewModel = taskViewModel,
-                    isNewTask = isNewTask,
-                    taskId = taskId,
-                    sharedText = sharedText
-                ) {
-                    scope.launch {
+    // Replace ModalBottomSheetLayout with ModalBottomSheet
+    if (isBottomSheetOpened) { // Control visibility of the bottom sheet
+        ModalBottomSheet(
+            onDismissRequest = {
+                scope.launch {
+                    sheetState.hide()
+                    isBottomSheetOpened = false
+                }
+            },
+            sheetState = sheetState,
+            // You can customize the sheet's appearance further using Modifier and containerColor
+            //  modifier = Modifier.fillMaxHeight(0.7f) // Example: Limit height
+            //  containerColor = MaterialTheme.colorScheme.surface, // Already the default
+        ) {
+            // It's generally recommended to keep the content of the bottom sheet
+            // outside the conditional rendering of ModalBottomSheet itself for better state management.
+            // However, your existing structure with AddUpdateTaskScreen inside can still work.
+            AddUpdateTaskScreen(
+                // Pass the M3 sheetState if AddUpdateTaskScreen needs to interact with it directly
+                // If it only needs to know when to close, the onDismiss callback is enough.
+                // sheetState = sheetState, // Uncomment if needed by AddUpdateTaskScreen
+                taskViewModel = taskViewModel,
+                isNewTask = isNewTask,
+                taskId = taskId,
+                sharedText = sharedText
+            ) {
+                scope.launch {
+                    if (sheetState.isVisible) { // Check if sheet is actually visible before trying to hide
                         sheetState.hide()
-                        isBottomSheetOpened = false
                     }
+                    isBottomSheetOpened = false
                 }
             }
-        }) {
+        }
+    }
+//    ModalBottomSheetLayout(
+//        sheetBackgroundColor = MaterialTheme.colorScheme.surface,
+//        sheetState = sheetState,
+//        sheetContent = {
+//            if (isBottomSheetOpened) {
+//                AddUpdateTaskScreen(
+//                    sheetState,
+//                    taskViewModel = taskViewModel,
+//                    isNewTask = isNewTask,
+//                    taskId = taskId,
+//                    sharedText = sharedText
+//                ) {
+//                    scope.launch {
+//                        sheetState.hide()
+//                        isBottomSheetOpened = false
+//                    }
+//                }
+//            }
+//        }) {
 
         val lazyGridListState = rememberLazyStaggeredGridState()
 
@@ -523,8 +552,9 @@ fun TaskScreen(
                                     }
                                 )
                             } else {
-                                FloatingActionButton(
+                                LargeFloatingActionButton (
                                     containerColor = MaterialTheme.colorScheme.primary,
+                                    shape = FloatingActionButtonDefaults.largeShape, // Changed here
                                     onClick = {
                                         taskId = null
                                         isNewTask = true
@@ -546,7 +576,8 @@ fun TaskScreen(
             },
             snackbarHost = {
                 SnackbarHost(snackBarHostState)
-            }
+            },
+//            contentWindowInsets = WindowInsets.safeContent
         ) { paddingValue ->
             if (tasks.isEmpty()) {
                 Box(
@@ -689,7 +720,7 @@ fun TaskScreen(
                         val isSelected = selectedItems.contains(task)
                         Row(
                             Modifier
-                                .animateItemPlacement()
+                                .animateItem()
                                 .padding(4.dp)
                         ) {
                             TaskItem(
@@ -761,7 +792,7 @@ fun TaskScreen(
                 }
             }
         }
-    }
+//    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)

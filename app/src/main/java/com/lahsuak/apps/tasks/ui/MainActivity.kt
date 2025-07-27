@@ -13,6 +13,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
@@ -132,6 +133,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setTheme(R.style.Theme_Tasks)
+        enableEdgeToEdge() // Add this line.
+
         activityContext = this
         activateReviewInfo()
 
@@ -150,6 +153,9 @@ class MainActivity : AppCompatActivity() {
         })
 
         setContent {
+//            val layoutDirection = LocalLayoutDirection.current
+//            val displayCutout = WindowInsets.displayCutout.asPaddingValues()
+
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 RequestPermission()
             }

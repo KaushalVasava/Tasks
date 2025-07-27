@@ -3,16 +3,17 @@ plugins {
     alias(libs.plugins.kotlinAndroid)
     alias(libs.plugins.hilt)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.kotlin.compose)
 }
 
 android {
-    compileSdk = 34
+    compileSdk = 35
     namespace = "com.lahsuak.apps.tasks"
 
     defaultConfig {
         applicationId = "com.lahsuak.apps.tasks"
         minSdk = 21
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 29
         versionName = "1.0.7"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -67,10 +68,10 @@ dependencies {
     implementation(libs.androidx.appCompat)
     implementation(libs.activity.compose)
     implementation(libs.google.android.material.material)
-    implementation(libs.google.compose.material.material)
     implementation(libs.compose.ui)
     implementation(libs.compose.ui.tooling.preview)
     implementation(libs.google.compose.material.material3)
+    implementation(libs.androidx.material.icon)
     implementation(libs.system.controller)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.viewmodel.compose)

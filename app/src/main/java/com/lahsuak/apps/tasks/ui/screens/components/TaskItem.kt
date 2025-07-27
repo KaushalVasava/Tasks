@@ -14,7 +14,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -26,19 +25,16 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.DismissDirection
-import androidx.compose.material.DismissState
-import androidx.compose.material.DismissValue
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.FixedThreshold
-import androidx.compose.material.SwipeToDismiss
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.rememberDismissState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SwipeToDismissBox
+import androidx.compose.material3.SwipeToDismissBoxState
+import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -76,7 +72,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun TaskItem(
     modifier: Modifier = Modifier,
@@ -117,9 +112,9 @@ fun TaskItem(
         mutableStateOf(task.isDone)
     }
     var show by remember { mutableStateOf(true) }
-    val dismissState = rememberDismissState(
-        confirmStateChange = {
-            if (isSwipeGestureEnable && (it == DismissValue.DismissedToEnd || it == DismissValue.DismissedToStart)) {
+    val dismissState = rememberSwipeToDismissBoxState(
+        confirmValueChange = {
+            if (isSwipeGestureEnable && (it == SwipeToDismissBoxValue.StartToEnd || it == SwipeToDismissBoxValue.EndToStart)) {
                 show = false
                 true
             } else
@@ -130,12 +125,12 @@ fun TaskItem(
         AnimatedVisibility(
             show, exit = fadeOut(spring())
         ) {
-            SwipeToDismiss(
+            SwipeToDismissBox(
                 state = dismissState,
-                background = {
+                backgroundContent = {
                     DismissBackground(dismissState)
                 },
-                dismissContent = {
+                content = {
                     SwipeItem(
                         modifier,
                         task,
@@ -164,9 +159,6 @@ fun TaskItem(
                         },
                         onCancelReminder = { onCancelReminder() }
                     )
-                },
-                dismissThresholds = {
-                    FixedThreshold(120.dp)
                 }
             )
         }
@@ -205,11 +197,11 @@ fun TaskItem(
         if (!show) {
             delay(800)
             when (dismissState.dismissDirection) {
-                DismissDirection.EndToStart -> {
+                SwipeToDismissBoxValue.EndToStart -> {
                     onEditIconClick(true)
                 }
 
-                DismissDirection.StartToEnd -> {
+                SwipeToDismissBoxValue.StartToEnd -> {
                     onImpSwipe(!task.isImp)
                 }
 
@@ -218,12 +210,11 @@ fun TaskItem(
                 }
             }
         } else {
-            dismissState.animateTo(DismissValue.Default)
+            dismissState.dismiss(SwipeToDismissBoxValue.Settled)
         }
     }
 }
 
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun SwipeItem(
     modifier: Modifier,
@@ -468,13 +459,12 @@ fun SwipeItem(
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun DismissBackground(dismissState: DismissState) {
+fun DismissBackground(dismissState: SwipeToDismissBoxState) {
     val color = when (dismissState.dismissDirection) {
-        DismissDirection.StartToEnd -> Color(0xFF039BE5)
-        DismissDirection.EndToStart -> Color(0xFFFF1744)
-        null -> Color.Transparent
+        SwipeToDismissBoxValue.StartToEnd -> Color(0xFF039BE5)
+        SwipeToDismissBoxValue.EndToStart -> Color(0xFFFF1744)
+        SwipeToDismissBoxValue.Settled -> Color.Transparent
     }
     val direction = dismissState.dismissDirection
 
@@ -486,14 +476,14 @@ fun DismissBackground(dismissState: DismissState) {
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        if (direction == DismissDirection.StartToEnd)
+        if (direction == SwipeToDismissBoxValue.StartToEnd)
             Icon(
                 // make sure add baseline_archive_24 resource to drawable folder
                 painter = painterResource(R.drawable.ic_pin),
                 contentDescription = stringResource(id = R.string.important_task)
             )
         Spacer(modifier = Modifier)
-        if (direction == DismissDirection.EndToStart)
+        if (direction == SwipeToDismissBoxValue.EndToStart)
             Icon(
                 Icons.Default.Delete,
                 contentDescription = stringResource(id = R.string.delete)
