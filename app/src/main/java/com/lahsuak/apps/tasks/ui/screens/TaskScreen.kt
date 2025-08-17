@@ -854,7 +854,7 @@ fun HeaderContent(
                                 isDropDownExpanded = !isDropDownExpanded
                             }
                             .semantics(mergeDescendants = true) {}
-                            .padding(4.dp),
+                            .padding(horizontal = 8.dp, vertical = 4.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(stringResource(R.string.sorting_option), fontSize = 12.sp)
@@ -872,7 +872,6 @@ fun HeaderContent(
                             else
                                 Icons.Filled.KeyboardArrowDown,
                             stringResource(R.string.sort_expand_collapse_button),
-                            Modifier.padding(end = 4.dp)
                         )
                     }
                     DropdownMenu(

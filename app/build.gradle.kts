@@ -6,15 +6,15 @@ plugins {
 }
 
 android {
-    compileSdk = 34
+    compileSdk = 35
     namespace = "com.lahsuak.apps.tasks"
 
     defaultConfig {
         applicationId = "com.lahsuak.apps.tasks"
         minSdk = 21
-        targetSdk = 34
-        versionCode = 28
-        versionName = "1.0.6"
+        targetSdk = 35
+        versionCode = 29
+        versionName = "1.0.7"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 

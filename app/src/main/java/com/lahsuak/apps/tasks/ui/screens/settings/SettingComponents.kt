@@ -4,7 +4,6 @@ import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -39,6 +38,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.lahsuak.apps.tasks.R
@@ -71,6 +71,7 @@ fun DropDownPreference(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
+                .padding(8.dp)
                 .semantics(mergeDescendants = true) {}
                 .toggleable(isDropDownExpanded, onValueChange = {
                     isDropDownExpanded = it
@@ -90,7 +91,6 @@ fun DropDownPreference(
                 ) {
                     Row(
                         Modifier
-                            .padding(horizontal = 8.dp)
                             .clip(RoundedCornerShape(8.dp)),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(4.dp)
@@ -99,7 +99,7 @@ fun DropDownPreference(
                             items[selectedItem].first,
                             fontWeight = FontWeight.SemiBold,
                             modifier = Modifier.weight(1f),
-                            textAlign = TextAlign.Center,
+                            textAlign = TextAlign.End,
                             fontSize = 14.sp
                         )
                         Icon(
@@ -112,6 +112,7 @@ fun DropDownPreference(
                         )
                     }
                     DropdownMenu(
+                        offset = DpOffset(x = (-10000).dp, y = 0.dp),
                         expanded = isDropDownExpanded,
                         onDismissRequest = { isDropDownExpanded = false }
                     ) {

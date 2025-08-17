@@ -973,7 +973,7 @@ fun SubtaskHeaderContent(
                                 isDropDownExpanded = !isDropDownExpanded
                             }
                             .semantics(mergeDescendants = true) {}
-                            .padding(4.dp),
+                            .padding(horizontal = 8.dp, vertical = 4.dp),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
@@ -992,7 +992,6 @@ fun SubtaskHeaderContent(
                             else
                                 Icons.Filled.KeyboardArrowDown,
                             contentDescription = stringResource(R.string.sort_expand_collapse_button),
-                            Modifier.padding(end = 4.dp)
                         )
                     }
                     DropdownMenu(

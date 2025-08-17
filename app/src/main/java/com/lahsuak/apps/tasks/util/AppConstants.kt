@@ -36,7 +36,7 @@ object AppConstants {
     const val ANY_MIME_TYPE = "*/*"
     const val BACKUP = "backup"
     const val RESTORE = "restore"
-    const val INSTAGRAM_URL = "https://www.instagram.com/kaushalvasava_apps/"
+    const val INSTAGRAM_URL = "https://www.instagram.com/kaushalvasava.tech/"
     const val DONATION = "https://www.buymeacoffee.com/kaushal.developer"
 
     const val DEEP_LINK_SUBTASK  = "tasks://com.lahsuak.apps.tasks/subtaskscreen/"

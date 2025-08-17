@@ -130,6 +130,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        if (Build.VERSION_CODES.VANILLA_ICE_CREAM >= Build.VERSION.SDK_INT) {
+            theme.applyStyle(R.style.OptOutEdgeToEdgeEnforcement, /* force */ false)
+        }
         super.onCreate(savedInstanceState)
         setTheme(R.style.Theme_Tasks)
         activityContext = this
