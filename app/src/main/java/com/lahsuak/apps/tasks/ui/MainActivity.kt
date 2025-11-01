@@ -1,7 +1,6 @@
 package com.lahsuak.apps.tasks.ui
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.content.IntentSender
 import android.content.pm.PackageManager
@@ -113,7 +112,6 @@ class MainActivity : AppCompatActivity() {
         }
 
     companion object {
-        var activityContext: Context? = null
         var shareTxt: String? = null
     }
 
@@ -135,7 +133,6 @@ class MainActivity : AppCompatActivity() {
         }
         super.onCreate(savedInstanceState)
         setTheme(R.style.Theme_Tasks)
-        activityContext = this
         activateReviewInfo()
 
         observePreferences()
@@ -158,7 +155,7 @@ class MainActivity : AppCompatActivity() {
             }
             view = LocalView.current
             val navController = rememberNavController()
-            TaskAppTheme {
+            TaskAppTheme{
                 SetupTransparentSystemUi(
                     systemUiController = rememberSystemUiController(),
                     actualBackgroundColor = MaterialTheme.colorScheme.surface
@@ -284,9 +281,7 @@ class MainActivity : AppCompatActivity() {
             rememberLauncherForActivityResult(
                 ActivityResultContracts.RequestPermission()
             ) { isGranted: Boolean ->
-                if (isGranted) {
-                    /* no-op */
-                } else {
+                if (!isGranted) {
                     toast {
                         getString(R.string.user_cancelled_the_operation)
                     }
@@ -343,14 +338,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun startReviewFlow() {
-        if (reviewInfo != null) {
-            reviewManager.launchReviewFlow(this, reviewInfo!!)
+        reviewInfo?.let {
+            reviewManager.launchReviewFlow(this, it)
         }
     }
 
     override fun onDestroy() {
         super.onDestroy()
         appUpdateManager.unregisterListener(appUpdateListener)
-        activityContext = null
     }
 }
