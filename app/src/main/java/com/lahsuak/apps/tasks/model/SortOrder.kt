@@ -1,15 +1,15 @@
 package com.lahsuak.apps.tasks.model
 
 import com.lahsuak.apps.tasks.R
-import com.lahsuak.apps.tasks.TaskApp
+import com.lahsuak.apps.tasks.TaskApp.Companion.appContext
 
 enum class SortOrder(val type: String) {
-    BY_NAME(TaskApp.appContext.getString(R.string.name)),
-    BY_NAME_DESC(TaskApp.appContext.getString(R.string.name_desc)),
-    BY_DATE(TaskApp.appContext.getString(R.string.date)),
-    BY_DATE_DESC(TaskApp.appContext.getString(R.string.date_desc)),
-    BY_CATEGORY(TaskApp.appContext.getString(R.string.category)),
-    BY_CATEGORY_DESC(TaskApp.appContext.getString(R.string.category_desc))
+    BY_NAME(appContext.getString(R.string.name)),
+    BY_NAME_DESC(appContext.getString(R.string.name_desc)),
+    BY_DATE(appContext.getString(R.string.date)),
+    BY_DATE_DESC(appContext.getString(R.string.date_desc)),
+    BY_CATEGORY(appContext.getString(R.string.category)),
+    BY_CATEGORY_DESC(appContext.getString(R.string.category_desc))
     ;
 
     companion object {

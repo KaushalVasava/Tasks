@@ -39,6 +39,18 @@ class TaskRepositoryImpl(private val dao: TaskDao) : TaskRepository {
         dao.deleteAllTask()
     }
 
+    override fun getTasksByDate(startOfDay: Long, endOfDay: Long): Flow<List<Task>> {
+        return dao.getTasksByDate(startOfDay, endOfDay)
+    }
+
+    override fun getTasksInDateRange(startDate: Long, endDate: Long): Flow<List<Task>> {
+        return dao.getTasksInDateRange(startDate, endDate)
+    }
+
+    override fun getTasksWithReminderOnDate(startOfDay: Long, endOfDay: Long): Flow<List<Task>> {
+        return dao.getTasksWithReminderOnDate(startOfDay, endOfDay)
+    }
+
     //subtask methods
 
     override suspend fun insertSubTask(subTask: SubTask) {

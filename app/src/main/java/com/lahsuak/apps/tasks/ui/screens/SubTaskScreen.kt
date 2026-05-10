@@ -519,8 +519,13 @@ fun SubTaskScreen(
                         horizontalArrangement =
                         if (isSubTaskDone)
                             Arrangement.Center
-                        else
-                            Arrangement.SpaceBetween,
+                        else {
+                            if (showVoiceTask) {
+                                Arrangement.SpaceBetween
+                            } else {
+                                Arrangement.End
+                            }
+                        }
                     ) {
                         AnimatedVisibility(visible = !actionMode && showVoiceTask && !isSubTaskDone) {
                             FloatingActionButton(

@@ -65,17 +65,13 @@ fun DropDownPreference(
             } else ind
         )
     }
-    Card {
+    Card(onClick = { isDropDownExpanded = !isDropDownExpanded }) {
         Row(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp)
-                .semantics(mergeDescendants = true) {}
-                .toggleable(isDropDownExpanded, onValueChange = {
-                    isDropDownExpanded = it
-                })
         ) {
             if (icon != null) {
                 Icon(

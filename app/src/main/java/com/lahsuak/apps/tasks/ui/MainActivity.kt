@@ -1,13 +1,13 @@
 package com.lahsuak.apps.tasks.ui
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.content.IntentSender
 import android.content.pm.PackageManager
 import android.content.res.Configuration.UI_MODE_NIGHT_MASK
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.ManagedActivityResultLauncher
@@ -36,7 +36,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
@@ -65,11 +64,14 @@ import com.lahsuak.apps.tasks.R
 import com.lahsuak.apps.tasks.TaskApp
 import com.lahsuak.apps.tasks.ui.navigation.TaskNavHost
 import com.lahsuak.apps.tasks.ui.theme.TaskAppTheme
+import com.lahsuak.apps.tasks.ui.viewmodel.CalendarViewModel
 import com.lahsuak.apps.tasks.ui.viewmodel.MainViewModel
 import com.lahsuak.apps.tasks.ui.viewmodel.NotificationViewModel
 import com.lahsuak.apps.tasks.ui.viewmodel.SettingsViewModel
 import com.lahsuak.apps.tasks.ui.viewmodel.SubTaskViewModel
 import com.lahsuak.apps.tasks.ui.viewmodel.TaskViewModel
+import com.lahsuak.apps.tasks.ui.widget.TaskWidgetUpdater
+import javax.inject.Inject
 import com.lahsuak.apps.tasks.util.AppConstants
 import com.lahsuak.apps.tasks.util.AppConstants.SHARE_FORMAT
 import com.lahsuak.apps.tasks.util.AppConstants.UPDATE_REQUEST_CODE
@@ -89,6 +91,9 @@ class MainActivity : AppCompatActivity() {
     private val subTaskViewModel: SubTaskViewModel by viewModels()
     private val notificationViewModel: NotificationViewModel by viewModels()
     private val settingViewModel: SettingsViewModel by viewModels()
+    private val calendarViewModel: CalendarViewModel by viewModels()
+    @Inject
+    lateinit var widgetUpdater: TaskWidgetUpdater
     private lateinit var appUpdateManager: AppUpdateManager
     private lateinit var view: View
     private var reviewInfo: ReviewInfo? = null
@@ -119,6 +124,8 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         var shareTxt: String? = null
+        const val EXTRA_OPEN_ADD_TASK_FROM_WIDGET = "extra_open_add_task_from_widget"
+        var openAddTaskFromWidget = false
     }
 
     private val appUpdateListener = InstallStateUpdatedListener { state ->
@@ -143,6 +150,9 @@ class MainActivity : AppCompatActivity() {
         checkUpdate()
         appUpdateManager.registerListener(appUpdateListener)
 
+        // Update widgets when app starts
+        widgetUpdater.updateTaskWidgets(applicationContext)
+
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 if (isEnabled) {
@@ -152,12 +162,15 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
+        processIntent(intent)
+
         setContent {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 RequestPermission()
             }
             view = LocalView.current
             val navController = rememberNavController()
+
             TaskAppTheme {
                 SetupTransparentSystemUi(
                     systemUiController = rememberSystemUiController(),
@@ -178,10 +191,8 @@ class MainActivity : AppCompatActivity() {
                         language = AppConstants.SharedPreference.DEFAULT_LANGUAGE_VALUE
                     )
                 )
-                Surface(Modifier
-                    .background(MaterialTheme.colorScheme.background)
-                    .windowInsetsPadding(WindowInsets.safeDrawing)
-                ) {
+                Surface(Modifier.background(MaterialTheme.colorScheme.background)
+                    .windowInsetsPadding(WindowInsets.safeDrawing)) {
                     if (isScreenLoaded) {
                         TaskNavHost(
                             taskViewModel,
@@ -204,10 +215,22 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-        if (intent?.action == Intent.ACTION_SEND) {
-            if (SHARE_FORMAT == intent.type) {
-                shareTxt = intent.getStringExtra(Intent.EXTRA_TEXT)
-            }
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        processIntent(intent)
+    }
+
+    private fun processIntent(intent: Intent?) {
+        intent ?: return
+        if (intent.action == Intent.ACTION_SEND && SHARE_FORMAT == intent.type) {
+            shareTxt = intent.getStringExtra(Intent.EXTRA_TEXT)
+        }
+        if (intent.getBooleanExtra(EXTRA_OPEN_ADD_TASK_FROM_WIDGET, false)) {
+            openAddTaskFromWidget = true
+            intent.removeExtra(EXTRA_OPEN_ADD_TASK_FROM_WIDGET)
         }
     }
 
@@ -277,7 +300,7 @@ class MainActivity : AppCompatActivity() {
             )
 
             systemUiController.setNavigationBarColor(
-                color = Color.Transparent,
+                color = actualBackgroundColor,
                 darkIcons = actualBackgroundColor.luminance() > minLuminanceForDarkIcons,
                 navigationBarContrastEnforced = false
             )
@@ -291,9 +314,7 @@ class MainActivity : AppCompatActivity() {
             rememberLauncherForActivityResult(
                 ActivityResultContracts.RequestPermission()
             ) { isGranted: Boolean ->
-                if (isGranted) {
-                    /* no-op */
-                } else {
+                if (!isGranted) {
                     toast {
                         getString(R.string.user_cancelled_the_operation)
                     }
@@ -350,8 +371,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun startReviewFlow() {
-        if (reviewInfo != null) {
-            reviewManager.launchReviewFlow(this, reviewInfo!!)
+        reviewInfo?.let {
+            reviewManager.launchReviewFlow(this, it)
         }
     }
 
