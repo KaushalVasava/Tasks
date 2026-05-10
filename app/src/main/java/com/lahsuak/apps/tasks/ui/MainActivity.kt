@@ -1,13 +1,17 @@
 package com.lahsuak.apps.tasks.ui
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.content.IntentSender
 import android.content.pm.PackageManager
 import android.content.res.Configuration.UI_MODE_NIGHT_MASK
+import android.hardware.biometrics.BiometricPrompt.BIOMETRIC_ERROR_HW_NOT_PRESENT
+import android.hardware.biometrics.BiometricPrompt.BIOMETRIC_ERROR_HW_UNAVAILABLE
+import android.hardware.biometrics.BiometricPrompt.BIOMETRIC_ERROR_LOCKOUT
+import android.hardware.biometrics.BiometricPrompt.BIOMETRIC_ERROR_LOCKOUT_PERMANENT
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.ManagedActivityResultLauncher
@@ -20,6 +24,7 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.biometric.BiometricPrompt.ERROR_NEGATIVE_BUTTON
+import androidx.biometric.BiometricPrompt.ERROR_USER_CANCELED
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -64,14 +69,12 @@ import com.lahsuak.apps.tasks.R
 import com.lahsuak.apps.tasks.TaskApp
 import com.lahsuak.apps.tasks.ui.navigation.TaskNavHost
 import com.lahsuak.apps.tasks.ui.theme.TaskAppTheme
-import com.lahsuak.apps.tasks.ui.viewmodel.CalendarViewModel
 import com.lahsuak.apps.tasks.ui.viewmodel.MainViewModel
 import com.lahsuak.apps.tasks.ui.viewmodel.NotificationViewModel
 import com.lahsuak.apps.tasks.ui.viewmodel.SettingsViewModel
 import com.lahsuak.apps.tasks.ui.viewmodel.SubTaskViewModel
 import com.lahsuak.apps.tasks.ui.viewmodel.TaskViewModel
 import com.lahsuak.apps.tasks.ui.widget.TaskWidgetUpdater
-import javax.inject.Inject
 import com.lahsuak.apps.tasks.util.AppConstants
 import com.lahsuak.apps.tasks.util.AppConstants.SHARE_FORMAT
 import com.lahsuak.apps.tasks.util.AppConstants.UPDATE_REQUEST_CODE
@@ -83,6 +86,7 @@ import com.lahsuak.apps.tasks.util.toast
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -91,7 +95,6 @@ class MainActivity : AppCompatActivity() {
     private val subTaskViewModel: SubTaskViewModel by viewModels()
     private val notificationViewModel: NotificationViewModel by viewModels()
     private val settingViewModel: SettingsViewModel by viewModels()
-    private val calendarViewModel: CalendarViewModel by viewModels()
     @Inject
     lateinit var widgetUpdater: TaskWidgetUpdater
     private lateinit var appUpdateManager: AppUpdateManager
@@ -248,15 +251,31 @@ class MainActivity : AppCompatActivity() {
                                 }
 
                                 override fun onUserCancelled() {
-                                    finish()
                                 }
 
-                                override fun onErrorOccurred(errorCode: Int, errorMessage: String) {
+                               override fun onErrorOccurred(errorCode: Int, errorMessage: String) {
                                     Log.d("TAG", "onErrorOccurred: $errorCode")
-                                    if (errorCode != ERROR_NEGATIVE_BUTTON)  {
-                                        toast { getString(R.string.something_went_wrong) }
-                                    } else {
-                                        finish()
+                                    when (errorCode) {
+                                        BIOMETRIC_ERROR_LOCKOUT -> {
+                                            toast { getString(R.string.biometric_lockout) } // Add string resource for lockout message
+                                            // Optionally, allow retry after a delay or guide user to settings
+                                        }
+                                        BIOMETRIC_ERROR_LOCKOUT_PERMANENT -> {
+                                            toast { getString(R.string.biometric_permanent_lockout) }
+                                            finish()
+                                        }
+                                        BIOMETRIC_ERROR_HW_UNAVAILABLE,
+                                        BIOMETRIC_ERROR_HW_NOT_PRESENT -> {
+                                            toast { getString(R.string.biometric_hw_unavailable) }
+                                            // Don't finish; user can try later
+                                        }
+                                        ERROR_NEGATIVE_BUTTON, ERROR_USER_CANCELED -> {
+                                            finish()
+                                        }
+                                        else -> {
+                                            toast { getString(R.string.something_went_wrong) }
+                                            finish()
+                                        }
                                     }
                                 }
                             }

@@ -59,7 +59,7 @@ interface TaskDao {
     fun getAllTaskByCategoryDesc(searchQuery: String): Flow<List<Task>>
 
     @Query(
-        "SELECT * FROM task_table WHERE status = 0 ORDER BY start_date ASC, title COLLATE NOCASE ASC LIMIT :limit"
+        "SELECT * FROM task_table WHERE status = 0 ORDER BY start_date DESC, title COLLATE NOCASE ASC LIMIT :limit"
     )
     suspend fun getPendingTasksSnapshot(limit: Int): List<Task>
 

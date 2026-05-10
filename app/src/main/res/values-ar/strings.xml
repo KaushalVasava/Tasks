@@ -158,4 +158,11 @@
     <string name="follow_instagram">تابعوني على الانستغرام</string>
     <string name="donate">ادعمني</string>
     <string name="donate_me_desc">إذا أعجبك تطبيقي وتريد دعمي في تحسين هذا التطبيق، فيرجى التبرع ببعض المال</string>
+    <string name="data_export_successfully">تم تصدير البيانات بنجاح!</string>
+    <string name="data_import_successfully">تم استيراد البيانات بنجاح!</string>
+    <string name="biometric_lockout">تم قفل المصادقة البيومترية مؤقتاً بسبب كثرة محاولات الفشل. يُرجى المحاولة مرة أخرى لاحقاً.</string>
+    <string name="biometric_permanent_lockout">تم قفل المصادقة البيومترية بشكل دائم. يُرجى استخدام بيانات اعتماد الجهاز أو إعادة تعيين إعدادات المصادقة البيومترية من الإعدادات.</string>
+    <string name="biometric_hw_unavailable">أجهزة المصادقة البيومترية غير متاحة. يُرجى المحاولة مرة أخرى لاحقاً.</string>
+    <string name="add_update_task">إضافة/تحديث مهمة</string>
+    <string name="add_update_sub_task">إضافة/تحديث مهمة فرعية</string>
 </resources>

@@ -162,4 +162,11 @@
     <string name="follow_instagram">Seguimi su Instagram</string>
     <string name="donate">Sostienimi</string>
     <string name="donate_me_desc">Se ti piace la mia app e vuoi supportarmi nel migliorarla, per favore dona un po\' di soldi</string>
+    <string name="data_export_successfully">Dati esportati con successo!</string>
+    <string name="data_import_successfully">Dati importati con successo!</string>
+    <string name="biometric_lockout">L\'autenticazione biometrica è temporaneamente bloccata a causa di troppi tentativi falliti. Riprova più tardi.</string>
+    <string name="biometric_permanent_lockout">L\'autenticazione biometrica è bloccata in modo permanente. Utilizza le credenziali del dispositivo o reimposta i dati biometrici nelle impostazioni.</string>
+    <string name="biometric_hw_unavailable">L\'hardware biometrico non è disponibile. Per favore riprova più tardi.</string>
+    <string name="add_update_task">Aggiungi/Aggiorna attività</string>
+    <string name="add_update_sub_task">Aggiungi/Aggiorna attività secondaria</string>
 </resources>

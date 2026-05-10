@@ -2,9 +2,6 @@ package com.lahsuak.apps.tasks.ui.screens.settings
 
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
-import androidx.biometric.BiometricPrompt.ERROR_CANCELED
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -29,7 +26,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.lahsuak.apps.tasks.BuildConfig
 import com.lahsuak.apps.tasks.R
 import com.lahsuak.apps.tasks.ui.viewmodel.SettingsViewModel
 import com.lahsuak.apps.tasks.util.AppConstants
@@ -126,6 +122,14 @@ fun SettingScreen(
                     }
                     Spacer(modifier = Modifier.height(8.dp))
                 }
+            }
+
+            item {
+                Text(
+                    text = context.getString(R.string.made_in_india),
+                    textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                    modifier = Modifier.fillParentMaxWidth(),
+                )
             }
         }
     }

@@ -1,12 +1,17 @@
 package com.lahsuak.apps.tasks.util
 
 import android.annotation.SuppressLint
-import android.app.*
-import android.content.*
+import android.app.DatePickerDialog
+import android.content.ActivityNotFoundException
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import android.speech.RecognizerIntent
 import androidx.activity.result.ActivityResultLauncher
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.net.toUri
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
@@ -22,7 +27,8 @@ import com.lahsuak.apps.tasks.util.worker.NotificationWorker
 import com.lahsuak.apps.tasks.util.worker.ReminderWorker
 import java.text.DateFormat
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Calendar
+import java.util.Locale
 import java.util.concurrent.TimeUnit
 
 object AppUtil {
@@ -133,12 +139,12 @@ object AppUtil {
                     url = url.substring(0, url.length - 1)
                 }
                 val username: String = url.substring(url.lastIndexOf(SUFFIX_END) + 1)
-                intent.data = Uri.parse(INSTAGRAM_USER+username)
+                intent.data = (INSTAGRAM_USER + username).toUri()
                 intent.setPackage(INSTAGRAM_ANDROID)
                 context.startActivity(intent)
             }
         } catch (e: Exception) {
-            intent.data = Uri.parse(url)
+            intent.data = url.toUri()
             context.startActivity(intent)
         }
     }

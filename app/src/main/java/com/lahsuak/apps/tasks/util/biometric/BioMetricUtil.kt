@@ -69,7 +69,7 @@ object BiometricUtil {
             override fun onAuthenticationFailed() {
                 super.onAuthenticationFailed()
                 listener.onUserCancelled()
-                Log.w(this.javaClass.simpleName, "Authentication failed for an unknown reason")
+                Log.d("TAG", "Authentication failed for an unknown reason")
             }
 
             override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
@@ -88,7 +88,7 @@ object BiometricUtil {
         activity: Activity,
         listener: BiometricAuthListener,
         cryptoObject: BiometricPrompt.CryptoObject? = null,
-        allowDeviceCredential: Boolean = false,
+        allowDeviceCredential: Boolean = true,
     ) {
         // Prepare BiometricPrompt Dialog
         val promptInfo = setBiometricPromptInfo(

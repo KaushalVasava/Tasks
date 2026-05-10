@@ -159,4 +159,11 @@
     <string name="follow_instagram">インスタグラムでフォローしてください</string>
     <string name="donate">サポートしてください</string>
     <string name="donate_me_desc">私のアプリが気に入って、このアプリの改善をサポートしたい場合は、お金を寄付してください</string>
+    <string name="data_export_successfully">データは正常にエクスポートされました!</string>
+    <string name="data_import_successfully">データは正常にインポートされました!</string>
+    <string name="biometric_lockout">試行の失敗回数が多すぎるため、生体認証が一時的にロックされています。後でもう一度試してください。</string>
+    <string name="biometric_permanent_lockout">生体認証は永続的にロックされています。デバイスの認証情報を使用するか、設定で生体認証をリセットしてください。</string>
+    <string name="biometric_hw_unavailable">生体認証ハードウェアが利用できません。後でもう一度試してください。</string>
+    <string name="add_update_task">タスクの追加/更新</string>
+    <string name="add_update_sub_task">サブタスクの追加/更新</string>
 </resources>

@@ -12,11 +12,11 @@ import androidx.lifecycle.viewModelScope
 import com.lahsuak.apps.tasks.BuildConfig
 import com.lahsuak.apps.tasks.R
 import com.lahsuak.apps.tasks.data.db.TaskDatabase
-import com.lahsuak.apps.tasks.model.SortOrder
 import com.lahsuak.apps.tasks.data.model.SubTask
 import com.lahsuak.apps.tasks.data.model.Task
 import com.lahsuak.apps.tasks.data.repository.BackupRepository
 import com.lahsuak.apps.tasks.data.repository.TaskRepository
+import com.lahsuak.apps.tasks.model.SortOrder
 import com.lahsuak.apps.tasks.ui.screens.settings.PreferenceType
 import com.lahsuak.apps.tasks.ui.screens.settings.SettingItem
 import com.lahsuak.apps.tasks.ui.screens.settings.SettingModel
@@ -27,14 +27,12 @@ import com.lahsuak.apps.tasks.util.biometric.BiometricAuthListener
 import com.lahsuak.apps.tasks.util.biometric.BiometricUtil
 import com.lahsuak.apps.tasks.util.preference.PreferenceManager
 import com.lahsuak.apps.tasks.util.preference.SettingPreferences
-import com.lahsuak.apps.tasks.util.toast
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import javax.inject.Inject
@@ -299,28 +297,32 @@ class SettingsViewModel @Inject constructor(
                         type = PreferenceType.SWITCH,
                         action = { _, _ -> },
                         onCheckedChange = { checked ->
-                            BiometricUtil.showBiometricPrompt(
-                                activity = (context as AppCompatActivity),
-                                listener = object : BiometricAuthListener {
-                                    override fun onBiometricAuthSuccess() {
-                                        onFingerPrintChange(checked, context)
-                                    }
-
-                                    override fun onUserCancelled() {
-                                        context.toast {
-                                            context.getString(R.string.user_cancelled_the_operation)
+                            if(checked) {
+                                BiometricUtil.showBiometricPrompt(
+                                    activity = (context as AppCompatActivity),
+                                    listener = object : BiometricAuthListener {
+                                        override fun onBiometricAuthSuccess() {
+                                            onFingerPrintChange(checked, context)
+                                            updateAuth(true)
                                         }
-                                    }
 
-                                    override fun onErrorOccurred() {
-                                        context.toast {
-                                            context.getString(R.string.something_went_wrong)
+                                        override fun onUserCancelled() {
                                         }
-                                    }
-                                },
-                                cryptoObject = null,
-                                allowDeviceCredential = true
-                            )
+
+                                        override fun onErrorOccurred(
+                                            errorCode: Int,
+                                            errorMessage: String
+                                        ) {
+                                        }
+
+                                    },
+                                    cryptoObject = null,
+                                    allowDeviceCredential = true
+                                )
+                            } else {
+                                onFingerPrintChange(checked, context)
+                                updateAuth(false)
+                            }
                         }
                     ),
                     SettingItem(
@@ -485,13 +487,6 @@ class SettingsViewModel @Inject constructor(
                         id = "version_setting",
                         title = context.getString(R.string.current_version),
                         placeholder = BuildConfig.VERSION_NAME,
-                        type = PreferenceType.NORMAL,
-                        action = { _, _ -> },
-                        onCheckedChange = {}
-                    ),
-                    SettingItem(
-                        id = "made_in_india_setting",
-                        title = context.getString(R.string.made_in_india),
                         type = PreferenceType.NORMAL,
                         action = { _, _ -> },
                         onCheckedChange = {}

@@ -162,4 +162,11 @@
     <string name="follow_instagram">在 Instagram 上关注我</string>
     <string name="donate">支持我</string>
     <string name="donate_me_desc">如果您喜欢我的应用程序并希望支持我改进此应用程序，请捐赠一些钱</string>
+    <string name="data_export_successfully">数据导出成功！</string>
+    <string name="data_import_successfully">数据导入成功！</string>
+    <string name="biometric_lockout">由于尝试失败次数过多，生物识别身份验证被暂时锁定。稍后再试。</string>
+    <string name="biometric_permanent_lockout">生物识别身份验证永久锁定。请使用设备凭据或在设置中重置生物识别信息。</string>
+    <string name="biometric_hw_unavailable">生物识别硬件不可用。请稍后重试。</string>
+    <string name="add_update_task">添加/更新任务</string>
+    <string name="add_update_sub_task">添加/更新子任务</string>
 </resources>

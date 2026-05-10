@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">משימות</string>
+    <string name="task_progress">%1$d/%2$d משימות הושלמו</string>
+    <string name="subtask_progress">%1$d/%2$d תת-משימות הושלמו</string>
+    <string name="task_completed">משימה הושלמה</string>
+    <string name="add_task">הוסף משימה</string>
+    <string name="enter_title">הזן כותרת</string>
+    <string name="important_task">משימה חשובה</string>
+    <string name="edit_delete_task">ערוך/מחק משימה</string>
+    <string name="create_task">צור משימה</string>
+    <!-- כותרות העדפות -->
+    <string name="messages_header">הודעות</string>
+    <string name="sync_header">סנכרון</string>
+
+    <!-- העדפות הודעות -->
+    <string name="signature_title">החתימה שלך</string>
+    <string name="reply_title">פעולת תשובה ברירת מחדל</string>
+
+    <!-- העדפות סנכרון -->
+    <string name="sync_title">סנכרן אימייל מעת לעת</string>
+    <string name="attachment_title">הורד קבצים מצורפים נכנסים</string>
+    <string name="attachment_summary_on">הורד אוטומטית קבצים מצורפים עבור אימיילים נכנסים</string>
+    <string name="attachment_summary_off">הורד קבצים מצורפים רק כאשר מתבקשים ידנית</string>
+    <string name="feedback_text">שלח משוב באינסטגרם, טוויטר או בדואר. אם האפליקציה קורסת שוב ושוב, \'נקה נתוני אפליקציה\' מהגדרות האפליקציה</string>
+    <string name="rating_text">אהבתם את האפליקציה הזו? ספרו לנו בחנות Google Play כיצד נוכל לשפר אותה עוד יותר</string>
+    <string name="more_app_text">לחצו כאן כדי לראות את האפליקציות האחרות שלי</string>
+    <string name="share_text">שתפו את האפליקציה עם חברים ובני משפחה</string>
+    <string name="developer">מפתח</string> <string name="developer_name">קאושאל ואסאבה</string> <string name="about">אודות</string> <string name="current_version">גרסה נוכחית</string> <string name="more">עוד</string> <string name="market_string" translatable="false">market://search?q=pub:קאושאל ואסאבה</string> <string name="market_developer_string" translatable="false">http://play.google.com/store/apps/developer?id=Kaushal Vasava</string> <string name="play_store_share" translatable="false">https://play.google.com/store/apps/details?id=</string> <string name="contact_support">צור קשר עם התמיכה</string> <string name="rating">דרג את האפליקציה</string> <string name="more_apps">אפליקציות נוספות</string> <string name="share_app">שתף משימות</string> <string name="delete_completed_task">מחק את כל המשימות שהושלמו</string> <string name="hide_completed_task">הסתר משימות שהושלמו</string> <string name="settings">הגדרות</string> <string name="sorting_option">מיין לפי</string> <string name="sort_by_name">מיין לפי שם</string> <string name="sort_by_creation_date">מיין לפי תאריך יצירה</string> <string name="search">חיפוש</string> <string name="select_all">בחר הכל</string> <string name="delete">מחק</string> <string name="add_date_time">הוסף תאריך/שעה</string> <string name="reminder">תזכורת</string> <string name="add_task_by_speak">הוסף משימה לפי מדבר</string> <string name="save">שמור</string> <string name="overdue">איחור</string>
+
+    <string name="mark_as_completed">סמן כהושלם</string> <string name="new_task">משימה חדשה</string> <string name="create_new_sub_task">לחץ כאן כדי להוסיף משימת משנה חדשה</string> <string name="create_new_task">לחץ כאן כדי להוסיף משימה חדשה</string> <string name="task_deleted">המשימה נמחקה</string> <string name="undo">בטל</string> <string name="cancel">בטל</string> <string name="confirm_deletion">אשר מחיקה</string> <string name="delete_all_task">האם ברצונך למחוק את כל המשימות?</string> <string name="notify_delete">המשימות נמחקו בהצלחה</string> <string name="please_select_task">אנא בחר משימה</string> <string name="search_task">חיפוש משימה</string> <string name="speech_not_support">המכשיר שלך אינו נתמך לקלט דיבור</string>
+    <string name="search_subtask">חיפוש תת-משימה</string>
+    <string name="share">שתף</string>
+    <string name="delete_task">האם ברצונך למחוק?</string>
+    <string name="empty_task">המשימה ריקה</string>
+    <string name="set_time">הגדר זמן</string>
+    <string name="cancel_reminder">התזכורת בוטלה!</string>
+    <string name="progress_setting">הצג התקדמות משימה של משימה בודדת</string>
+    <string name="reminder_setting">הצג תזכורת של משימה בודדת</string>
+    <string name="font_size">גודל גופן</string>
+    <string name="enable">הפעלה</string>
+    <string name="disable">השבתה</string>
+    <string name="subtask_of_task">הצגת תת-משימות של משימה בודדת</string>
+    <string name="grid_view">תצוגת רשת</string>
+    <string name="list_view">תצוגת רשימה</string>
+    <string name="theme">ערכת נושא</string>
+    <string name="pm_format">pm</string> <string name="language">שפה</string> <string name="copy_text">העתקה</string> <string name="something_went_wrong">משהו השתבש!</string> <string name="share_by">שתף לפי</string> <string name="text_copied">%s הועתק</string> <string name="write_suggestions">אנא כתבו את ההצעות או הבעיות שלכם</string> <!-- גודל גופן --> <string name="very_small">קטן מאוד</string> <string name="medium_small">בינוני קטן</string> <string name="small">קטן</string> <string name="medium">בינוני</string> <string name="large">גדול</string> <string name="huge">ענק</string> <string name="follow_system">מעקב אחר המערכת</string> <string name="light">בהיר</string> <string name="dark">כהה</string> <string name="permission_denied">הרשאה נדחתה</string> <string name="open_settings">פתח הגדרות</string> <string name="no_application_found">האפליקציה לא נמצאה</string> <string name="user_cancelled_the_operation">אנא אפשר הרשאת התראות מההגדרות, אחרת התזכורת שלך לא תפעל!!</string> <string name="downloading_start">ההורדה החלה</string> <string name="update_failed">עדכון נכשל</string> <string name="restart">הפעלה מחדש</string> <string name="new_app_ready">אפליקציה חדשה מוכנה</string> <string name="task_selected" formatted="false">%d/%d נבחרו</string> <string name="or">או</string> <string name="select_task">בחר משימה</string>
+    <string name="active">פעיל</string>
+    <string name="done">בוצע</string>
+    <string name="home">בית</string>
+    <string name="personal">אישי</string>
+    <string name="school">בית ספר</string>
+    <string name="work">עבודה</string>
+    <string name="other">אחר</string> <string name="back">חזרה</string> <string name="feedback_from_app">משוב מ- %s, %s</string> <string name="add_task_or_subtask">הוסף משימה או תת-משימה חדשה</string>
+    <string name="made_in_india" translatable="false">נוצר עם ❤️ בהודו \uD83C\uDDEE\uD83C\uDDF3</string>
+
+    <string name="percentage" translatable="false">%d %%</string>
+
+    <!-- סוג מיון-->
+    <string name="name">שם ⬇</string>
+    <string name="name_desc">שם ⬆</string>
+    <string name="date">תאריך ⬇</string>
+    <string name="date_desc">תאריך ⬆</string>
+    <string name="category">קטגוריה ⬇</string>
+    <string name="category_desc">קטגוריה ⬆</string>
+    <string name="start_date">תאריך התחלה</string>
+    <string name="end_date">תאריך סיום</string>
+    <string name="select_project_end_date">בחר תאריך סיום של הפרויקט</string>
+    <string name="select_project_start_date">בחר תאריך התחלה של הפרויקט</string>
+    <string name="no_notification">אין עדיין התראות</string>
+    <string name="notifications">התראות</string>
+    <string name="sort_by_old_to_new">ישן לחדש</string>
+    <string name="pending">משימות ממתינות <b>%d</b></string>
+    <string name="completed">משימות שהושלמו <b>%d</b></string>
+    <string name="overview">סקירה כללית</string>
+    <string name="good_morning">שלום יקר/ה</string>
+    <string name="notification_daily_desc">המשימות שלך ממתינות, עליך לסיים אותן במהירות</string>
+    <string name="show_voice_to_add_task_option">הצג קול כדי להוסיף אפשרות משימה</string>
+    <string name="task_not_completed_yet">המשימה עדיין לא הושלמה</string>
+    <string name="general">כללי</string>
+    <string name="category_txt">קטגוריה</string> <string name="paste">הדבק</string> <string name="delete_all_notifications">מחק את כל ההתראות</string>
+    <string name="confirm_notification_msg">האם ברצונך למחוק את כל ההתראות?</string>
+    <string name="sort_expand_collapse_button">כפתור מיון להרחבה/צמצום</string>
+    <string name="layout_view_change_button">כפתור שינוי תצוגת פריסה</string>
+    <string name="show_copy">הצגת סמל העתקה במשימה בודדת</string>
+    <string name="visit_github">בקר ב-GitHub</string>
+    <string name="privacy_policy">מדיניות פרטיות</string>
+    <string name="portfolio" translatable="false">https://zaap.bio/KaushalVasava</string>
+    <string name="github_link" translatable="false">https://github.com/KaushalVasava</string>
+    <string name="privacy_policy_link" translatable="false">https://doc-hosting.flycricket.io/tasks-to-do-list-reminders/a4486a8e-2c2b-4ae8-8ade-59c845a8276e/privacy</string>
+
+    <string name="prompt_info_title">אימות אפליקציית משימות</string>
+    <string name="prompt_info_subtitle">התחברות באמצעות טביעת אצבע אימות</string> <string name="app_lock">נעילת אפליקציה</string> <string name="restore_data">שחזור נתונים</string> <string name="backup_data">גיבוי נתונים</string> <string name="security_and_data">אבטחה ונתונים</string> <string name="follow_instagram">עקבו אחרי באינסטגרם</string> <string name="donate">תמכו בי</string> <string name="donate_me_desc">אם אתם אוהבים את האפליקציה שלי ורוצים לתמוך בי בשיפור האפליקציה, אנא תרמו כסף</string> <string name="swipe_gesture" translatable="false">הפעלת תנועת החלקה</string> <string name="widget_description" translatable="false">הצג את המשימות הממתינות שלך במבט חטוף</string> <string name="no_tasks_yet" translatable="false">אין עדיין משימות</string> <string name="tap_to_add_first_task" translatable="false">הקישו על + כדי להוסיף המשימה הראשונה שלך</string>
+    <string name="view_all_tasks" translatable="false">הצג את כל המשימות →</string>
+    <string name="quick_task" translatable="false">משימה מהירה</string>
+    <string name="data_export_successfully">הנתונים יוצאו בהצלחה!</string>
+    <string name="data_import_successfully">הנתונים יובאו בהצלחה!</string>
+    <string name="biometric_lockout">אימות ביומטרי נעול זמנית עקב ניסיונות כושלים רבים מדי. נסה שוב מאוחר יותר.</string>
+    <string name="biometric_permanent_lockout">אימות ביומטרי נעול לצמיתות. אנא השתמש בפרטי המכשיר או אפס את המידע הביומטרי בהגדרות.</string>
+    <string name="biometric_hw_unavailable">חומרה ביומטרית אינה זמינה. אנא נסה שוב מאוחר יותר.</string>
+    <string name="add_update_task">הוסף/עדכן משימה</string>
+    <string name="add_update_sub_task">הוסף/עדכן משימה משנה</string>
+</resources>

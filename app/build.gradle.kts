@@ -13,8 +13,8 @@ android {
         applicationId = "com.lahsuak.apps.tasks"
         minSdk = 21
         targetSdk = 36
-        versionCode = 29
-        versionName = "1.0.7"
+        versionCode = 30
+        versionName = "1.0.8"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 

@@ -159,4 +159,11 @@
     <string name="follow_instagram">인스타그램에서 나를 팔로우하세요</string>
     <string name="donate">저를 응원해주세요</string>
     <string name="donate_me_desc">내 앱이 마음에 들고 이 앱을 개선하는 데 도움을 주고 싶다면 돈을 기부해 주세요</string>
+    <string name="data_export_successfully">데이터를 성공적으로 내보냈습니다!</string>
+    <string name="data_import_successfully">데이터를 성공적으로 가져왔습니다!</string>
+    <string name="biometric_lockout">시도 실패 횟수가 너무 많아 생체 인증이 일시적으로 잠겼습니다. 나중에 다시 시도하세요.</string>
+    <string name="biometric_permanent_lockout">생체 인증이 영구적으로 잠겨 있습니다. 설정에서 장치 자격 증명을 사용하거나 생체 인식을 재설정하세요.</string>
+    <string name="biometric_hw_unavailable">생체 인식 하드웨어를 사용할 수 없습니다. 나중에 다시 시도해 주세요.</string>
+    <string name="add_update_task">작업 추가/업데이트</string>
+    <string name="add_update_sub_task">하위 작업 추가/업데이트</string>
 </resources>

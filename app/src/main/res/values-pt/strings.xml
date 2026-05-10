@@ -161,4 +161,11 @@
     <string name="follow_instagram">Siga-me no Instagram</string>
     <string name="donate">Apoie-me</string>
     <string name="donate_me_desc">Se você gosta do meu aplicativo e deseja me apoiar para melhorá-lo, doe algum dinheiro</string>
+    <string name="data_export_successfully">Dados exportados com sucesso!</string>
+    <string name="data_import_successfully">Dados importados com sucesso!</string>
+    <string name="biometric_lockout">A autenticação biométrica está temporariamente bloqueada devido a muitas tentativas malsucedidas. Tente novamente mais tarde.</string>
+    <string name="biometric_permanent_lockout">A autenticação biométrica está permanentemente bloqueada. Use as credenciais do dispositivo ou redefina a biometria nas configurações.</string>
+    <string name="biometric_hw_unavailable">O hardware biométrico não está disponível. Tente novamente mais tarde.</string>
+    <string name="add_update_task">Adicionar/Atualizar Tarefa</string>
+    <string name="add_update_sub_task">Adicionar/atualizar subtarefa</string>
 </resources>

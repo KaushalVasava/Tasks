@@ -1,5 +1,6 @@
 package com.lahsuak.apps.tasks.ui.screens.dialog
 
+//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -18,7 +19,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.ExperimentalMaterialApi
-//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
@@ -47,8 +47,8 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalHapticFeedback
@@ -162,8 +162,7 @@ fun AddUpdateTaskScreen(
             .imePadding()
     ) {
         Spacer(Modifier.height(16.dp))
-        Text(
-            "Add/Update Task",
+        Text(context.getString(R.string.add_update_task),
             fontSize = 18.sp,
             fontWeight = FontWeight.SemiBold,
             modifier = Modifier

@@ -161,4 +161,11 @@
     <string name="follow_instagram">Volg mij op Instagram</string>
     <string name="donate">Steun mij</string>
     <string name="donate_me_desc">Als je mijn app leuk vindt en me wilt steunen bij het verbeteren van deze app, doneer dan alsjeblieft wat geld</string>
+    <string name="data_export_successfully">Gegevens succesvol geëxporteerd!</string>
+    <string name="data_import_successfully">Gegevens geïmporteerd met succes!</string>
+    <string name="biometric_lockout">Biometrische authenticatie is tijdelijk vergrendeld vanwege te veel mislukte pogingen. Probeer het later opnieuw.</string>
+    <string name="biometric_permanent_lockout">Biometrische authenticatie is permanent vergrendeld. Gebruik de inloggegevens van het apparaat of reset de biometrie in de instellingen.</string>
+    <string name="biometric_hw_unavailable">Biometrische hardware is niet beschikbaar. Probeer het later opnieuw.</string>
+    <string name="add_update_task">Taak toevoegen/bijwerken</string>
+    <string name="add_update_sub_task">Subtaak toevoegen/bijwerken</string>
 </resources>

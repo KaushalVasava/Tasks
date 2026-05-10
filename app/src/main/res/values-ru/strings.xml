@@ -161,4 +161,11 @@
     <string name="follow_instagram">Следуйте за мной в Instagram</string>
     <string name="donate">Поддержите меня</string>
     <string name="donate_me_desc">Если вам нравится мое приложение и вы хотите поддержать меня в его улучшении, пожертвуйте немного денег</string>
+    <string name="data_export_successfully">Данные успешно экспортированы!</string>
+    <string name="data_import_successfully">Данные успешно импортированы!</string>
+    <string name="biometric_lockout">Биометрическая аутентификация временно заблокирована из-за превышения количества неудачных попыток. Повторите попытку позже.</string>
+    <string name="biometric_permanent_lockout">Биометрическая аутентификация заблокирована без возможности восстановления. Пожалуйста, используйте учетные данные устройства или сбросьте настройки биометрии в настройках.</string>
+    <string name="biometric_hw_unavailable">Биометрическое оборудование недоступно. Пожалуйста, повторите попытку позже.</string>
+    <string name="add_update_task">Добавить/обновить задачу</string>
+    <string name="add_update_sub_task">Добавить/обновить подзадачу</string>
 </resources>

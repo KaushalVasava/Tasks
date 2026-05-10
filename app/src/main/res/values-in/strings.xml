@@ -161,4 +161,11 @@
     <string name="follow_instagram">Ikuti saya di Instagram</string>
     <string name="donate">Dukung saya</string>
     <string name="donate_me_desc">Jika Anda menyukai aplikasi saya dan ingin mendukung saya dalam meningkatkan aplikasi ini, silakan sumbangkan sejumlah uang</string>
+    <string name="data_export_successfully">Data berhasil diekspor!</string>
+    <string name="data_import_successfully">Data berhasil diimpor!</string>
+    <string name="biometric_lockout">Otentikasi biometrik dikunci sementara karena terlalu banyak upaya yang gagal. Coba lagi nanti.</string>
+    <string name="biometric_permanent_lockout">Otentikasi biometrik dikunci secara permanen. Harap gunakan kredensial perangkat atau setel ulang biometrik di setelan.</string>
+    <string name="biometric_hw_unavailable">Perangkat keras biometrik tidak tersedia. Silakan coba lagi nanti.</string>
+    <string name="add_update_task">Tambah/Perbarui Tugas</string>
+    <string name="add_update_sub_task">Tambahkan/Perbarui Sub Tugas</string>
 </resources>

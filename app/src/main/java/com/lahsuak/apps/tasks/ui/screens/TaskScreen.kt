@@ -23,14 +23,11 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridItemSpan
@@ -87,8 +84,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -103,8 +100,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
 import androidx.navigation.NavController
-import com.lahsuak.apps.tasks.ui.components.CompactWeekView
-import java.time.LocalDate
 import com.lahsuak.apps.tasks.R
 import com.lahsuak.apps.tasks.data.model.Task
 import com.lahsuak.apps.tasks.model.SortOrder
@@ -149,40 +144,6 @@ fun TaskScreen(
         )
     )
     val showVoiceTask = settingsPreferences.showVoiceIcon
-    
-    // Date filtering state
-    val selectedDate by taskViewModel.selectedDate.collectAsState()
-    
-    // Calculate task counts by date for week view
-    val taskCountMap = remember(tasks) {
-        tasks.groupBy { task ->
-            task.startDate?.let { millis ->
-                LocalDate.ofInstant(
-                    java.time.Instant.ofEpochMilli(millis),
-                    java.time.ZoneId.systemDefault()
-                )
-            }
-        }.filterKeys { it != null }
-            .mapKeys { it.key!! }
-            .mapValues { it.value.size }
-    }
-    
-    // Filter tasks by selected date
-    val filteredTasks = remember(tasks, selectedDate) {
-        if (selectedDate != null) {
-            tasks.filter { task ->
-                task.startDate?.let { millis ->
-                    val taskDate = LocalDate.ofInstant(
-                        java.time.Instant.ofEpochMilli(millis),
-                        java.time.ZoneId.systemDefault()
-                    )
-                    taskDate == selectedDate
-                } ?: false
-            }
-        } else {
-            tasks
-        }
-    }
 
     var taskId: String? by rememberSaveable {
         mutableStateOf(null)
@@ -446,7 +407,7 @@ fun TaskScreen(
                                 stringResource(
                                     R.string.task_selected,
                                     selectedItems.size,
-                                    filteredTasks.filter { t -> isTaskDone == t.isDone }.size
+                                    tasks.size
                                 ),
                                 fontFamily = FontFamily.SansSerif,
                                 fontWeight = FontWeight.SemiBold
@@ -465,19 +426,18 @@ fun TaskScreen(
                         },
                         actions = {
                             Row {
-                                val visibleTasks = filteredTasks.filter { t -> isTaskDone == t.isDone }
                                 IconButton(onClick = {
-                                    if (selectedItems.size == visibleTasks.size) {
+                                    if (selectedItems.size == tasks.size) {
                                         selectedItems.clear()
                                     } else {
                                         selectedItems.clear()
-                                        selectedItems.addAll(visibleTasks)
+                                        selectedItems.addAll(tasks)
                                     }
                                 }) {
                                     Icon(
                                         painterResource(R.drawable.ic_select_all),
                                         stringResource(R.string.select_all),
-                                        tint = if (selectedItems.size == visibleTasks.size) {
+                                        tint = if (selectedItems.size == tasks.size) {
                                             MaterialTheme.colorScheme.primary
                                         } else {
                                             Color.White
@@ -502,87 +462,29 @@ fun TaskScreen(
                 } else {
                     TopAppBar(
                         title = {
-                            if (isSearchActive) {
-                                SearchBar(
-                                    shape = RoundedCornerShape(16.dp),
-                                    query = searchQuery,
-                                    onQueryChange = { q ->
-                                        searchQuery = q
-                                        taskViewModel.searchQuery.value = q
-                                    },
-                                    onSearch = {},
-                                    active = false,
-                                    leadingIcon = { Icon(Icons.Default.Search, null) },
-                                    trailingIcon = {
-                                        AnimatedVisibility(searchQuery.isNotEmpty()) {
-                                            IconButton(onClick = {
-                                                searchQuery = ""
-                                                taskViewModel.searchQuery.value = ""
-                                            }) {
-                                                Icon(
-                                                    Icons.Default.Close,
-                                                    stringResource(R.string.search_task)
-                                                )
-                                            }
-                                        }
-                                    },
-                                    colors = SearchBarDefaults.colors(
-                                        containerColor = MaterialTheme.colorScheme.surfaceVariant
-                                    ),
-                                    placeholder = { Text(stringResource(R.string.search_task)) },
-                                    onActiveChange = {},
-                                    modifier = Modifier.fillMaxWidth()
-                                ) {}
-                            } else {
-                                Text(
-                                    DateUtil.getToolbarDateTime(System.currentTimeMillis()),
-                                    fontFamily = FontFamily.SansSerif,
-                                    fontWeight = FontWeight.SemiBold
-                                )
-                            }
+                            Text(
+                                DateUtil.getToolbarDateTime(System.currentTimeMillis()),
+                                fontFamily = FontFamily.SansSerif,
+                                fontWeight = FontWeight.SemiBold
+                            )
                         },
                         actions = {
                             Row {
-                                if (isSearchActive) {
-                                    IconButton(onClick = {
-                                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                        isSearchActive = false
-                                        searchQuery = ""
-                                        taskViewModel.searchQuery.value = ""
-                                    }) {
-                                        Icon(
-                                            Icons.Default.Close,
-                                            stringResource(R.string.search_task)
-                                        )
-                                    }
-                                } else {
-                                    IconButton(onClick = {
-                                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                        isSearchActive = true
-                                    }) {
-                                        Icon(
-                                            Icons.Default.Search,
-                                            stringResource(R.string.search_task)
-                                        )
-                                    }
-                                    IconButton(onClick = {
-                                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                        navController.navigate(NavigationItem.Notification.route)
-                                    }) {
-                                        Icon(
-                                            painterResource(R.drawable.ic_reminder),
-                                            stringResource(R.string.notifications)
-                                        )
-                                    }
-                                    IconButton(onClick = {
-                                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                        navController.navigate(NavigationItem.Setting.route)
-                                    }) {
-                                        Icon(
-                                            painterResource(R.drawable.ic_settings),
-                                            stringResource(R.string.settings)
-                                        )
-                                    }
+                                IconButton(onClick = {
+                                    navController.navigate(NavigationItem.Notification.route)
+                                }) {
+                                    Icon(
+                                        painterResource(R.drawable.ic_reminder),
+                                        stringResource(R.string.notifications)
+                                    )
+                                }
+                                IconButton(onClick = {
+                                    navController.navigate(NavigationItem.Setting.route)
+                                }) {
+                                    Icon(
+                                        painterResource(R.drawable.ic_settings),
+                                        stringResource(R.string.settings)
+                                    )
                                 }
                             }
                         }
@@ -724,7 +626,11 @@ fun TaskScreen(
                         HeaderContent(
                             tasks.filter { it.isDone }.size,
                             tasks.size,
-                            isSearchActive = isSearchActive,
+                            searchQuery = searchQuery,
+                            onQueryChange = {
+                                searchQuery = it
+                                taskViewModel.searchQuery.value = it
+                            },
                             isListViewEnable = isListViewEnable,
                             onViewChange = {
                                 isListViewEnable = it
@@ -746,16 +652,8 @@ fun TaskScreen(
                                 )
                             },
                             onProgressBarClick = {
-                                navController.navigate(NavigationItem.Calendar.route)
+                                navController.navigate(NavigationItem.Overview.route)
                             },
-                            selectedDate = selectedDate,
-                            onDateSelected = { date ->
-                                taskViewModel.selectDate(date)
-                            },
-                            onClearFilter = {
-                                taskViewModel.clearDateSelection()
-                            },
-                            taskCountMap = taskCountMap,
                             modifier = Modifier
                                 .padding(horizontal = 8.dp)
                         )
@@ -786,7 +684,11 @@ fun TaskScreen(
                                 HeaderContent(
                                     tasks.filter { it.isDone }.size,
                                     tasks.size,
-                                    isSearchActive = isSearchActive,
+                                    searchQuery = searchQuery,
+                                    onQueryChange = {
+                                        searchQuery = it
+                                        taskViewModel.searchQuery.value = it
+                                    },
                                     isListViewEnable = isListViewEnable,
                                     onViewChange = {
                                         isListViewEnable = it
@@ -808,23 +710,15 @@ fun TaskScreen(
                                         )
                                     },
                                     onProgressBarClick = {
-                                        navController.navigate(NavigationItem.Calendar.route)
+                                        navController.navigate(NavigationItem.Overview.route)
                                     },
-                                    selectedDate = selectedDate,
-                                    onDateSelected = { date ->
-                                        taskViewModel.selectDate(date)
-                                    },
-                                    onClearFilter = {
-                                        taskViewModel.clearDateSelection()
-                                    },
-                                    taskCountMap = taskCountMap,
                                     modifier = Modifier.fillMaxWidth()
                                 )
                             }
                         }
                     }
                     items(
-                        filteredTasks.filter { t -> isTaskDone == t.isDone }
+                        tasks.filter { t -> isTaskDone == t.isDone }
                             .sortedByDescending { t -> t.isImp },
                         key = { t ->
                             t.id + Random.nextInt()
@@ -920,7 +814,8 @@ fun TaskScreen(
 fun HeaderContent(
     completedTask: Int,
     totalTask: Int,
-    isSearchActive: Boolean,
+    searchQuery: String,
+    onQueryChange: (String) -> Unit,
     isListViewEnable: Boolean,
     onViewChange: (Boolean) -> Unit,
     onStatusChange: (Boolean) -> Unit,
@@ -930,10 +825,6 @@ fun HeaderContent(
     selectedSort: String,
     onSortChange: (Int) -> Unit,
     onProgressBarClick: () -> Unit,
-    selectedDate: LocalDate?,
-    onDateSelected: (LocalDate) -> Unit,
-    onClearFilter: () -> Unit,
-    taskCountMap: Map<LocalDate, Int>,
     modifier: Modifier = Modifier,
 ) {
     var isDropDownExpanded by rememberSaveable {
@@ -943,7 +834,7 @@ fun HeaderContent(
     val width = LocalConfiguration.current.screenWidthDp.dp
 
     Column(modifier) {
-        if (totalTask > 0 && !isSearchActive) {
+        if (totalTask > 0) {
             LinearProgressStatus(
                 modifier = Modifier.clickable {
                     onProgressBarClick()
@@ -954,31 +845,40 @@ fun HeaderContent(
                 width = width,
                 height = 24.dp,
             )
-            
-            // Compact Week View
-            CompactWeekView(
-                selectedDate = selectedDate,
-                onDateSelected = onDateSelected,
-                onClearFilter = onClearFilter,
-                taskCountMap = taskCountMap,
-                modifier = Modifier.padding(top = 4.dp)
-            )
         }
-        
-        AnimatedVisibility(visible = !isSearchActive) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    stringResource(R.string.sorting_option),
-                    fontSize = 12.sp,
-                    modifier = Modifier.padding(end = 4.dp)
-                )
-                
+        FlowRow(
+            Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            SearchBar(
+                shape = RoundedCornerShape(16.dp),
+                query = searchQuery,
+                onQueryChange = { q -> onQueryChange(q) },
+                onSearch = {},
+                active = false,
+                leadingIcon = { Icon(Icons.Default.Search, null) },
+                trailingIcon = {
+                    AnimatedVisibility(searchQuery.isNotEmpty()) {
+                        Icon(
+                            Icons.Default.Close,
+                            null,
+                            modifier = Modifier.clickable {
+                                onQueryChange("")
+                            }
+                        )
+                    }
+                },
+                colors = SearchBarDefaults.colors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
+                placeholder = { Text(stringResource(R.string.search_task)) },
+                onActiveChange = {},
+                modifier = Modifier.weight(1f)
+            ) {}
+            if(searchQuery.isBlank()) {
                 Column(
-                    modifier = Modifier.weight(1f)
+                    Modifier
+                        .weight(1f)
+                        .align(Alignment.CenterVertically)
                 ) {
                     Row(
                         Modifier
@@ -996,6 +896,8 @@ fun HeaderContent(
                             .padding(horizontal = 8.dp, vertical = 4.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
+                        Text(stringResource(R.string.sorting_option), fontSize = 12.sp)
+                        Spacer(Modifier.width(4.dp))
                         Text(
                             selectedSort,
                             fontWeight = FontWeight.SemiBold,
@@ -1031,11 +933,7 @@ fun HeaderContent(
             }
         }
 
-        AnimatedVisibility(visible = !isSearchActive) {
-            Spacer(modifier = Modifier.height(8.dp))
-        }
-
-        AnimatedVisibility(visible = !isSearchActive) {
+        AnimatedVisibility(visible = searchQuery.isBlank()) {
             Row(
                 horizontalArrangement = Arrangement.End,
                 modifier = Modifier.fillMaxWidth()

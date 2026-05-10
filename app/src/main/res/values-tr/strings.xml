@@ -162,4 +162,11 @@
     <string name="follow_instagram">Beni Instagram\'da takip et</string>
     <string name="donate">Beni destekleyin</string>
     <string name="donate_me_desc">Uygulamamı beğendiyseniz ve bu uygulamayı geliştirmemde bana destek olmak istiyorsanız lütfen biraz para bağışlayın</string>
+    <string name="data_export_successfully">Veriler başarıyla dışa aktarıldı!</string>
+    <string name="data_import_successfully">Veriler başarıyla içe aktarıldı!</string>
+    <string name="biometric_lockout">Biyometrik kimlik doğrulama, çok sayıda başarısız deneme nedeniyle geçici olarak kilitlendi. Daha sonra tekrar deneyin.</string>
+    <string name="biometric_permanent_lockout">Biyometrik kimlik doğrulama kalıcı olarak kilitlendi. Lütfen cihaz kimlik bilgilerini kullanın veya ayarlarda biyometriyi sıfırlayın.</string>
+    <string name="biometric_hw_unavailable">Biyometrik donanım kullanılamıyor. Lütfen daha sonra tekrar deneyin.</string>
+    <string name="add_update_task">Görev Ekle/Güncelle</string>
+    <string name="add_update_sub_task">Alt Görev Ekle/Güncelle</string>
 </resources>

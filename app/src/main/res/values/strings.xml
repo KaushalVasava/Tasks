@@ -174,6 +174,11 @@
     <string name="tap_to_add_first_task" translatable="false">Tap + to add your first task</string>
     <string name="view_all_tasks" translatable="false">View all tasks →</string>
     <string name="quick_task" translatable="false">Quick Task</string>
-    <string name="data_export_sucessfully">Data exported successfully!</string>
-    <string name="data_import_sucessfully">Data imported successfully!</string>
+    <string name="data_export_successfully">Data exported successfully!</string>
+    <string name="data_import_successfully">Data imported successfully!</string>
+    <string name="biometric_lockout">Biometric authentication is temporarily locked due to too many failed attempts. Try again later.</string>
+    <string name="biometric_permanent_lockout">Biometric authentication is permanently locked. Please use device credentials or reset biometrics in settings.</string>
+    <string name="biometric_hw_unavailable">Biometric hardware is unavailable. Please try again later.</string>
+    <string name="add_update_task">Add/Update Task</string>
+    <string name="add_update_sub_task">Add/Update Sub Task</string>
 </resources>

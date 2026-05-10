@@ -146,7 +146,7 @@ class BackupRepository(
                         }
                     }
                     context.toast {
-                        context.getString(R.string.data_export_sucessfully)
+                        context.getString(R.string.data_export_successfully)
                     }
                     // delete the backup directory
                     backupDir.deleteRecursively()
@@ -266,7 +266,7 @@ class BackupRepository(
                         database.dao.insertSubTask(subTask)
                     }
                     context.toast {
-                        context.getString(R.string.data_import_sucessfully)
+                        context.getString(R.string.data_import_successfully)
                     }
                     // delete the restore directory
                     restoreDir.deleteRecursively()

@@ -158,5 +158,12 @@
     <string name='security_and_data'>सुरक्षा और डेटा</string>
     <string name="follow_instagram">मुझे इंस्टाग्राम पर फॉलो करें</string>
     <string name='donate'>मेरा समर्थन करें</string>
-    <string name = "donate_me_desc">यदि आपको मेरा ऐप पसंद है और आप इस ऐप को बेहतर बनाने में मेरा समर्थन करना चाहते हैं तो कृपया कुछ पैसे दान करें</string>
+    <string name="donate_me_desc">यदि आपको मेरा ऐप पसंद है और आप इस ऐप को बेहतर बनाने में मेरा समर्थन करना चाहते हैं तो कृपया कुछ पैसे दान करें</string>
+    <string name="data_export_successfully">डेटा सफलतापूर्वक निर्यात किया गया!</string>
+    <string name="data_import_successfully">डेटा सफलतापूर्वक आयात किया गया!</string>
+    <string name="biometric_lockout">बहुत अधिक असफल प्रयासों के कारण बायोमेट्रिक प्रमाणीकरण अस्थायी रूप से लॉक हो गया है। बाद में पुनः प्रयास करें।</string>
+    <string name='biometric_permanent_lockout'>बायोमेट्रिक प्रमाणीकरण स्थायी रूप से लॉक कर दिया गया है। कृपया सेटिंग्स में डिवाइस क्रेडेंशियल्स का उपयोग करें या बायोमेट्रिक्स रीसेट करें।</string>
+    <string name='biometric_hw_unavailable'>बायोमेट्रिक हार्डवेयर अनुपलब्ध है। कृपया बाद में पुनः प्रयास करें।</string>
+    <string name='add_update_task'>कार्य जोड़ें/अपडेट करें</string>
+    <string name='add_update_sub_task'>उप कार्य जोड़ें/अपडेट करें</string>
 </resources>

@@ -162,4 +162,11 @@
     <string name="follow_instagram">ইনস্টাগ্রামে আমাকে অনুসরণ করুন</string>
     <string name="donate">আমাকে সমর্থন করুন</string>
     <string name="donate_me_desc">আপনি যদি আমার অ্যাপটি পছন্দ করেন এবং এই অ্যাপটি উন্নত করতে আমাকে সহায়তা করতে চান তাহলে অনুগ্রহ করে কিছু অর্থ দান করুন</string>
+    <string name="data_export_successfully">ডেটা সফলভাবে এক্সপোর্ট করা হয়েছে!</string>
+    <string name="data_import_successfully">ডেটা সফলভাবে ইম্পোর্ট করা হয়েছে!</string>
+    <string name="biometric_lockout">অত্যধিক ব্যর্থ প্রচেষ্টার কারণে বায়োমেট্রিক প্রমাণীকরণ সাময়িকভাবে লক হয়ে গেছে। অনুগ্রহ করে পরে আবার চেষ্টা করুন।</string>
+    <string name="biometric_permanent_lockout">বায়োমেট্রিক প্রমাণীকরণ স্থায়ীভাবে লক হয়ে গেছে। অনুগ্রহ করে ডিভাইসের ক্রেডেনশিয়াল ব্যবহার করুন অথবা সেটিংস থেকে বায়োমেট্রিক রিসেট করুন।</string>
+    <string name="biometric_hw_unavailable">বায়োমেট্রিক হার্ডওয়্যারটি উপলব্ধ নয়। অনুগ্রহ করে পরে আবার চেষ্টা করুন।</string>
+    <string name="add_update_task">কাজ যোগ/হালনাগাদ করুন</string>
+    <string name="add_update_sub_task">উপ-কাজ যোগ/হালনাগাদ করুন</string>
 </resources>

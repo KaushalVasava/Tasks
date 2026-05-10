@@ -161,4 +161,11 @@
     <string name="follow_instagram">Suivez-moi sur Instagram</string>
     <string name="donate">Soutenez-moi</string>
     <string name="donate_me_desc">Si vous aimez mon application et souhaitez me soutenir dans l\'amélioration de cette application, veuillez donner de l\'argent</string>
+    <string name="data_export_successfully">Données exportées avec succès !</string>
+    <string name="data_import_successfully">Données importées avec succès !</string>
+    <string name="biometric_lockout">L\'authentification biométrique est temporairement verrouillée en raison d\'un trop grand nombre de tentatives infructueuses. Réessayez plus tard.</string>
+    <string name="biometric_permanent_lockout">L\'authentification biométrique est verrouillée de manière permanente. Veuillez utiliser les identifiants de l\'appareil ou réinitialiser les données biométriques dans les paramètres.</string>
+    <string name="biometric_hw_unavailable">Le matériel biométrique n\'est pas disponible. Veuillez réessayer plus tard.</string>
+    <string name="add_update_task">Ajouter/mettre à jour une tâche</string>
+    <string name="add_update_sub_task">Ajouter/mettre à jour une sous-tâche</string>
 </resources>
