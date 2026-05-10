@@ -39,19 +39,9 @@
                 <data android:scheme="https" />
                 <data android:host="tasks://com.lahsuak.apps.tasks/edittask/true" />
             </intent-filter>
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data android:scheme="http" />
-                <data android:scheme="https" />
-                <data android:host="tasks://com.lahsuak.apps.tasks/subtaskscreen/{task_id}/{has_notification}" />
-            </intent-filter>
-<!--            <meta-data-->
-<!--                android:name="android.app.shortcuts"-->
-<!--                android:resource="@xml/shortcuts" />-->
+            <!--            <meta-data-->
+            <!--                android:name="android.app.shortcuts"-->
+            <!--                android:resource="@xml/shortcuts" />-->
         </activity>
 
         <service
@@ -63,7 +53,9 @@
                 android:value="true" />
         </service>
 
-        <receiver android:name="com.lahsuak.apps.tasks.ui.widget.TaskWidgetReceiver" android:exported="true">
+        <receiver
+            android:name="com.lahsuak.apps.tasks.ui.widget.TaskWidgetReceiver"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>

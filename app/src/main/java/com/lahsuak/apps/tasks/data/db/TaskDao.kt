@@ -58,6 +58,26 @@ interface TaskDao {
     )
     fun getAllTaskByCategoryDesc(searchQuery: String): Flow<List<Task>>
 
+    @Query(
+        "SELECT * FROM task_table WHERE status = 0 ORDER BY start_date ASC, title COLLATE NOCASE ASC LIMIT :limit"
+    )
+    suspend fun getPendingTasksSnapshot(limit: Int): List<Task>
+
+    @Query(
+        "SELECT * FROM task_table WHERE start_date >= :startOfDay AND start_date < :endOfDay"
+    )
+    fun getTasksByDate(startOfDay: Long, endOfDay: Long): Flow<List<Task>>
+
+    @Query(
+        "SELECT * FROM task_table WHERE start_date >= :startDate AND start_date < :endDate"
+    )
+    fun getTasksInDateRange(startDate: Long, endDate: Long): Flow<List<Task>>
+
+    @Query(
+        "SELECT * FROM task_table WHERE reminder >= :startOfDay AND reminder < :endOfDay AND reminder IS NOT NULL"
+    )
+    fun getTasksWithReminderOnDate(startOfDay: Long, endOfDay: Long): Flow<List<Task>>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(task: Task)
 

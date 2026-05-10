@@ -11,6 +11,8 @@ import com.lahsuak.apps.tasks.data.repository.NotificationRepository
 import com.lahsuak.apps.tasks.data.repository.NotificationRepositoryImpl
 import com.lahsuak.apps.tasks.data.repository.TaskRepository
 import com.lahsuak.apps.tasks.data.repository.TaskRepositoryImpl
+import com.lahsuak.apps.tasks.ui.widget.TaskWidgetRepository
+import com.lahsuak.apps.tasks.ui.widget.TaskWidgetUpdater
 import com.lahsuak.apps.tasks.util.AppConstants
 import com.lahsuak.apps.tasks.util.AppConstants.DATABASE_NAME
 import dagger.Module
@@ -110,6 +112,18 @@ object AppModule {
             AppConstants.SharedPreference.DAILY_NOTIFICATION,
             Context.MODE_PRIVATE
         )
+
+    @Provides
+    @Singleton
+    fun provideTaskWidgetRepository(db: TaskDatabase): TaskWidgetRepository {
+        return TaskWidgetRepository(db.dao)
+    }
+
+    @Provides
+    @Singleton
+    fun provideTaskWidgetUpdater(): TaskWidgetUpdater {
+        return TaskWidgetUpdater()
+    }
 
 }
 

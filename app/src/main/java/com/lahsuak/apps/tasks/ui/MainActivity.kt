@@ -1,7 +1,6 @@
 package com.lahsuak.apps.tasks.ui
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.content.IntentSender
 import android.content.pm.PackageManager
@@ -22,8 +21,11 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -60,11 +62,14 @@ import com.lahsuak.apps.tasks.R
 import com.lahsuak.apps.tasks.TaskApp
 import com.lahsuak.apps.tasks.ui.navigation.TaskNavHost
 import com.lahsuak.apps.tasks.ui.theme.TaskAppTheme
+import com.lahsuak.apps.tasks.ui.viewmodel.CalendarViewModel
 import com.lahsuak.apps.tasks.ui.viewmodel.MainViewModel
 import com.lahsuak.apps.tasks.ui.viewmodel.NotificationViewModel
 import com.lahsuak.apps.tasks.ui.viewmodel.SettingsViewModel
 import com.lahsuak.apps.tasks.ui.viewmodel.SubTaskViewModel
 import com.lahsuak.apps.tasks.ui.viewmodel.TaskViewModel
+import com.lahsuak.apps.tasks.ui.widget.TaskWidgetUpdater
+import javax.inject.Inject
 import com.lahsuak.apps.tasks.util.AppConstants
 import com.lahsuak.apps.tasks.util.AppConstants.SHARE_FORMAT
 import com.lahsuak.apps.tasks.util.AppConstants.UPDATE_REQUEST_CODE
@@ -84,6 +89,9 @@ class MainActivity : AppCompatActivity() {
     private val subTaskViewModel: SubTaskViewModel by viewModels()
     private val notificationViewModel: NotificationViewModel by viewModels()
     private val settingViewModel: SettingsViewModel by viewModels()
+    private val calendarViewModel: CalendarViewModel by viewModels()
+    @Inject
+    lateinit var widgetUpdater: TaskWidgetUpdater
     private lateinit var appUpdateManager: AppUpdateManager
     private lateinit var view: View
     private var reviewInfo: ReviewInfo? = null
@@ -113,8 +121,9 @@ class MainActivity : AppCompatActivity() {
         }
 
     companion object {
-        var activityContext: Context? = null
         var shareTxt: String? = null
+        const val EXTRA_OPEN_ADD_TASK_FROM_WIDGET = "extra_open_add_task_from_widget"
+        var openAddTaskFromWidget = false
     }
 
     private val appUpdateListener = InstallStateUpdatedListener { state ->
@@ -130,18 +139,17 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        if (Build.VERSION_CODES.VANILLA_ICE_CREAM >= Build.VERSION.SDK_INT) {
-            theme.applyStyle(R.style.OptOutEdgeToEdgeEnforcement, /* force */ false)
-        }
         super.onCreate(savedInstanceState)
         setTheme(R.style.Theme_Tasks)
-        activityContext = this
         activateReviewInfo()
 
         observePreferences()
         appUpdateManager = AppUpdateManagerFactory.create(this)
         checkUpdate()
         appUpdateManager.registerListener(appUpdateListener)
+        
+        // Update widgets when app starts
+        widgetUpdater.updateTaskWidgets(applicationContext)
 
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
@@ -152,12 +160,20 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
+        processIntent(intent)
+
         setContent {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 RequestPermission()
             }
             view = LocalView.current
             val navController = rememberNavController()
+
+//            LaunchedEffect(Unit) {
+//                intent?.let {
+//                    navController.handleDeepLink(it)
+//                }
+//            }
             TaskAppTheme {
                 SetupTransparentSystemUi(
                     systemUiController = rememberSystemUiController(),
@@ -178,13 +194,15 @@ class MainActivity : AppCompatActivity() {
                         language = AppConstants.SharedPreference.DEFAULT_LANGUAGE_VALUE
                     )
                 )
-                Surface(Modifier.background(MaterialTheme.colorScheme.background)) {
+                Surface(Modifier.background(MaterialTheme.colorScheme.background)
+                    .windowInsetsPadding(WindowInsets.safeDrawing)) {
                     if (isScreenLoaded) {
                         TaskNavHost(
                             taskViewModel,
                             subTaskViewModel,
                             notificationViewModel,
                             settingViewModel,
+                            calendarViewModel,
                             navController,
                             settingPreferences = settingsPreferences,
                             windowSize = rememberWindowSize(),
@@ -201,10 +219,22 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-        if (intent?.action == Intent.ACTION_SEND) {
-            if (SHARE_FORMAT == intent.type) {
-                shareTxt = intent.getStringExtra(Intent.EXTRA_TEXT)
-            }
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        processIntent(intent)
+    }
+
+    private fun processIntent(intent: Intent?) {
+        intent ?: return
+        if (intent.action == Intent.ACTION_SEND && SHARE_FORMAT == intent.type) {
+            shareTxt = intent.getStringExtra(Intent.EXTRA_TEXT)
+        }
+        if (intent.getBooleanExtra(EXTRA_OPEN_ADD_TASK_FROM_WIDGET, false)) {
+            openAddTaskFromWidget = true
+            intent.removeExtra(EXTRA_OPEN_ADD_TASK_FROM_WIDGET)
         }
     }
 
@@ -284,9 +314,7 @@ class MainActivity : AppCompatActivity() {
             rememberLauncherForActivityResult(
                 ActivityResultContracts.RequestPermission()
             ) { isGranted: Boolean ->
-                if (isGranted) {
-                    /* no-op */
-                } else {
+                if (!isGranted) {
                     toast {
                         getString(R.string.user_cancelled_the_operation)
                     }
@@ -343,14 +371,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun startReviewFlow() {
-        if (reviewInfo != null) {
-            reviewManager.launchReviewFlow(this, reviewInfo!!)
+        reviewInfo?.let {
+            reviewManager.launchReviewFlow(this, it)
         }
     }
 
     override fun onDestroy() {
         super.onDestroy()
         appUpdateManager.unregisterListener(appUpdateListener)
-        activityContext = null
     }
 }

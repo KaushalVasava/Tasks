@@ -24,6 +24,12 @@ interface TaskRepository {
 
     suspend fun deleteAllTasks()
 
+    fun getTasksByDate(startOfDay: Long, endOfDay: Long): Flow<List<Task>>
+
+    fun getTasksInDateRange(startDate: Long, endDate: Long): Flow<List<Task>>
+
+    fun getTasksWithReminderOnDate(startOfDay: Long, endOfDay: Long): Flow<List<Task>>
+
     //subtask methods
     suspend fun insertSubTask(subTask: SubTask)
 

@@ -11,12 +11,15 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Build
+import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.net.toUri
 import com.lahsuak.apps.tasks.R
+import com.lahsuak.apps.tasks.data.model.Notification
 import com.lahsuak.apps.tasks.data.model.Task
+import com.lahsuak.apps.tasks.data.repository.NotificationRepository
 import com.lahsuak.apps.tasks.ui.MainActivity
 import com.lahsuak.apps.tasks.util.NavigationConstants.Key.ADD_UPDATE_TASK_DEEP_LINK
 
@@ -70,6 +73,7 @@ object NotificationUtil {
         startDate: Long,
         endDate: Long,
     ) {
+        Log.d("TAG", "NotificationUtil: $id")
         createNotificationChannel(
             context,
             AppConstants.NOTIFICATION_CHANNEL_ID,
@@ -82,25 +86,28 @@ object NotificationUtil {
             val lastDate = if (endDate == -1L) null else endDate
             Task(id, title, isDone, startDate = startDate, endDate = lastDate)
         }
+        val link = if (parentTitle!=null) {
+            "${AppConstants.DEEP_LINK_SUBTASK}${task.id}/true"
+        } else {
+            ADD_UPDATE_TASK_DEEP_LINK
+        }
+
+        Log.d("TAG", "createNotification: $link")
         val deepLinkIntent = Intent(
             Intent.ACTION_VIEW,
-            if(parentTitle!=null) {
-                "${AppConstants.DEEP_LINK_SUBTASK}${task.id}/true".toUri()
-            } else {
-                ADD_UPDATE_TASK_DEEP_LINK.toUri()
-            },
+            link.toUri(),
             context,
             MainActivity::class.java
         )
-        val flag = if (Build.VERSION.SDK_INT > Build.VERSION_CODES.S) {
-            PendingIntent.FLAG_IMMUTABLE
-        } else PendingIntent.FLAG_UPDATE_CURRENT
+        deepLinkIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+        val flag = PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         val deepLinkPendingIntent: PendingIntent = TaskStackBuilder.create(context).run {
             addNextIntentWithParentStack(deepLinkIntent)
             getPendingIntent(0, flag)
         }
 //        deepLinkPendingIntent.send()
 
+        Log.d("TAG", "createNotification: task : $task")
         val notification = NotificationCompat.Builder(context, AppConstants.NOTIFICATION_CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_reminder)
             .setContentTitle(title)
@@ -112,7 +119,7 @@ object NotificationUtil {
             .build()
 
         if (isPermissionGranted(context)) {
-            NotificationManagerCompat.from(context).notify(1, notification)
+            NotificationManagerCompat.from(context).notify(task.id, notification)
         }
     }
 

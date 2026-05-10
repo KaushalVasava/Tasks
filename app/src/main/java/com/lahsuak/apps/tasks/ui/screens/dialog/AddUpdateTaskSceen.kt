@@ -48,8 +48,10 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -84,6 +86,7 @@ fun AddUpdateTaskScreen(
     onBottomSheetClick: () -> Unit,
 ) {
     val keyboard = LocalSoftwareKeyboardController.current
+    val haptic = LocalHapticFeedback.current
     val focusRequester = remember { FocusRequester() }
     val windowSize = rememberWindowSize()
     val isLandScape = windowSize.width > windowSize.height
@@ -156,8 +159,18 @@ fun AddUpdateTaskScreen(
         Modifier
             .fillMaxWidth()
             .systemBarsPadding()
+            .imePadding()
     ) {
-        Spacer(Modifier.height(8.dp))
+        Spacer(Modifier.height(16.dp))
+        Text(
+            "Add/Update Task",
+            fontSize = 18.sp,
+            fontWeight = FontWeight.SemiBold,
+            modifier = Modifier
+                .padding(horizontal = 8.dp)
+                .align(Alignment.CenterHorizontally)
+        )
+        Spacer(Modifier.height(16.dp))
 
         RoundedOutlinedTextField(
             value = title,
@@ -447,6 +460,7 @@ fun AddUpdateTaskScreen(
                 Text(if (reminder != null) DateUtil.getDate(reminder!!) else stringResource(R.string.add_date_time))
             }
             Button(onClick = {
+                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                 if (title.isNotEmpty()) {
                     if (task != null) {
                         val updateTask = task!!.copy(
