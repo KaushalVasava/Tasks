@@ -6,13 +6,13 @@ plugins {
 }
 
 android {
-    compileSdk = 35
+    compileSdk = 36
     namespace = "com.lahsuak.apps.tasks"
 
     defaultConfig {
         applicationId = "com.lahsuak.apps.tasks"
         minSdk = 21
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 29
         versionName = "1.0.7"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -47,6 +47,7 @@ android {
             dimension = "version"
             applicationIdSuffix = ".dev"
             versionNameSuffix = "-dev"
+            resValue("string", "app_name", "Task-Dev")
         }
         create("prod") {
             dimension = "version"

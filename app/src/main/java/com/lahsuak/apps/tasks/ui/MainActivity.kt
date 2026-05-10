@@ -1,13 +1,13 @@
 package com.lahsuak.apps.tasks.ui
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.content.IntentSender
 import android.content.pm.PackageManager
 import android.content.res.Configuration.UI_MODE_NIGHT_MASK
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.ManagedActivityResultLauncher
@@ -19,11 +19,15 @@ import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.biometric.BiometricPrompt.ERROR_NEGATIVE_BUTTON
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -32,6 +36,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
@@ -113,7 +118,6 @@ class MainActivity : AppCompatActivity() {
         }
 
     companion object {
-        var activityContext: Context? = null
         var shareTxt: String? = null
     }
 
@@ -130,12 +134,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        if (Build.VERSION_CODES.VANILLA_ICE_CREAM >= Build.VERSION.SDK_INT) {
-            theme.applyStyle(R.style.OptOutEdgeToEdgeEnforcement, /* force */ false)
-        }
         super.onCreate(savedInstanceState)
         setTheme(R.style.Theme_Tasks)
-        activityContext = this
         activateReviewInfo()
 
         observePreferences()
@@ -178,7 +178,10 @@ class MainActivity : AppCompatActivity() {
                         language = AppConstants.SharedPreference.DEFAULT_LANGUAGE_VALUE
                     )
                 )
-                Surface(Modifier.background(MaterialTheme.colorScheme.background)) {
+                Surface(Modifier
+                    .background(MaterialTheme.colorScheme.background)
+                    .windowInsetsPadding(WindowInsets.safeDrawing)
+                ) {
                     if (isScreenLoaded) {
                         TaskNavHost(
                             taskViewModel,
@@ -225,9 +228,13 @@ class MainActivity : AppCompatActivity() {
                                     finish()
                                 }
 
-                                override fun onErrorOccurred() {
-                                    toast { getString(R.string.something_went_wrong) }
-                                    finish()
+                                override fun onErrorOccurred(errorCode: Int, errorMessage: String) {
+                                    Log.d("TAG", "onErrorOccurred: $errorCode")
+                                    if (errorCode != ERROR_NEGATIVE_BUTTON)  {
+                                        toast { getString(R.string.something_went_wrong) }
+                                    } else {
+                                        finish()
+                                    }
                                 }
                             }
                         )
@@ -270,7 +277,7 @@ class MainActivity : AppCompatActivity() {
             )
 
             systemUiController.setNavigationBarColor(
-                color = actualBackgroundColor,
+                color = Color.Transparent,
                 darkIcons = actualBackgroundColor.luminance() > minLuminanceForDarkIcons,
                 navigationBarContrastEnforced = false
             )
@@ -351,6 +358,5 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         appUpdateManager.unregisterListener(appUpdateListener)
-        activityContext = null
     }
 }

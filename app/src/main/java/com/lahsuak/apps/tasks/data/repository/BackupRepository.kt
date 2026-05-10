@@ -2,6 +2,7 @@ package com.lahsuak.apps.tasks.data.repository
 
 import android.net.Uri
 import android.util.Log
+import com.lahsuak.apps.tasks.R
 import com.lahsuak.apps.tasks.TaskApp
 import com.lahsuak.apps.tasks.data.db.TaskDatabase
 import com.lahsuak.apps.tasks.data.model.SubTask
@@ -15,7 +16,6 @@ import com.lahsuak.apps.tasks.util.AppConstants.BackUpRepo.DATE_TIME
 import com.lahsuak.apps.tasks.util.AppConstants.BackUpRepo.END_DATE
 import com.lahsuak.apps.tasks.util.AppConstants.BackUpRepo.ID
 import com.lahsuak.apps.tasks.util.AppConstants.BackUpRepo.IMP
-import com.lahsuak.apps.tasks.util.AppConstants.DEFAULT_LINE_END
 import com.lahsuak.apps.tasks.util.AppConstants.BackUpRepo.PROGRESS
 import com.lahsuak.apps.tasks.util.AppConstants.BackUpRepo.REMINDER
 import com.lahsuak.apps.tasks.util.AppConstants.BackUpRepo.SID
@@ -23,8 +23,16 @@ import com.lahsuak.apps.tasks.util.AppConstants.BackUpRepo.START_DATE
 import com.lahsuak.apps.tasks.util.AppConstants.BackUpRepo.SUBTASKS
 import com.lahsuak.apps.tasks.util.AppConstants.BackUpRepo.TASK_DIR
 import com.lahsuak.apps.tasks.util.AppConstants.BackUpRepo.TITLE
+import com.lahsuak.apps.tasks.util.AppConstants.DEFAULT_LINE_END
 import com.lahsuak.apps.tasks.util.AppConstants.RESTORE
 import com.lahsuak.apps.tasks.util.CsvUtil
+import com.lahsuak.apps.tasks.util.toast
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.withContext
 import java.io.BufferedInputStream
 import java.io.BufferedOutputStream
 import java.io.File
@@ -33,12 +41,6 @@ import java.io.FileWriter
 import java.util.zip.ZipEntry
 import java.util.zip.ZipInputStream
 import java.util.zip.ZipOutputStream
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
-import kotlinx.coroutines.withContext
 
 class BackupRepository(
     private val database: TaskDatabase,
@@ -142,6 +144,9 @@ class BackupRepository(
                             file.inputStream().copyTo(zip)
                             zip.closeEntry()
                         }
+                    }
+                    context.toast {
+                        context.getString(R.string.data_export_sucessfully)
                     }
                     // delete the backup directory
                     backupDir.deleteRecursively()
@@ -260,7 +265,9 @@ class BackupRepository(
                         )
                         database.dao.insertSubTask(subTask)
                     }
-
+                    context.toast {
+                        context.getString(R.string.data_import_sucessfully)
+                    }
                     // delete the restore directory
                     restoreDir.deleteRecursively()
                 } catch (e: Exception) {

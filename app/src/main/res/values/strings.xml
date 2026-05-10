@@ -168,4 +168,6 @@
     <string name="follow_instagram">Follow me on the Instagram</string>
     <string name="donate">Support me</string>
     <string name="donate_me_desc">If you like my app and want to support me in improving this app then please donate some money</string>
+    <string name="data_export_sucessfully">Data exported successfully!</string>
+    <string name="data_import_sucessfully">Data imported successfully!</string>
 </resources>

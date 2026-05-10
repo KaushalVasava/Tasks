@@ -156,6 +156,7 @@ fun AddUpdateTaskScreen(
         Modifier
             .fillMaxWidth()
             .systemBarsPadding()
+            .imePadding()
     ) {
         Spacer(Modifier.height(8.dp))
 

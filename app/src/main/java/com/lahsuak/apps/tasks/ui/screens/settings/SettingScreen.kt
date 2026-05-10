@@ -4,6 +4,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.biometric.BiometricPrompt.ERROR_CANCELED
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -41,7 +42,6 @@ import com.lahsuak.apps.tasks.util.LanguageUtil.Companion.changeLocale
 import com.lahsuak.apps.tasks.util.biometric.BiometricAuthListener
 import com.lahsuak.apps.tasks.util.biometric.BiometricUtil
 import com.lahsuak.apps.tasks.util.preference.SettingPreferences
-import com.lahsuak.apps.tasks.util.toast
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -255,21 +255,17 @@ fun SettingScreen(
                                     }
 
                                     override fun onUserCancelled() {
-                                        context.toast {
-                                            context.getString(R.string.user_cancelled_the_operation)
-                                        }
                                     }
 
-                                    override fun onErrorOccurred() {
-                                        context.toast {
-                                            context.getString(R.string.something_went_wrong)
-                                        }
+                                    override fun onErrorOccurred(
+                                        errorCode: Int,
+                                        errorMessage: String
+                                    ) {
                                     }
                                 },
                                 cryptoObject = null,
                                 allowDeviceCredential = true
                             )
-                            settingViewModel.onFingerPrintChange(it, context)
                         },
                         SettingItem(
                             title = context.getString(R.string.backup_data),
